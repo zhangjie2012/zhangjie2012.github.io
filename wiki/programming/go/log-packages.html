@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2019-09-08 日 18:39 -->
+<!-- 2019-09-08 日 18:32 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>wiki</title>
+<title>Go 日志包</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -232,68 +232,96 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">wiki</h1>
+<h1 class="title">Go 日志包</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orga766f33">标准库</a></li>
+<li><a href="#orge565879">google/glog</a></li>
+<li><a href="#orgdb61e6a">sirupsen/logrus</a></li>
+<li><a href="#org15ebf71">uber-go/zap</a></li>
+<li><a href="#orgacaf24a">结论</a></li>
+</ul>
+</div>
+</div>
+<p>
+可能是 Go 尚年轻，行业对 Go 的应用领域还比较宽泛，也可能是开源的缘故，Go package 普遍造轮子的现象比较明显。
+</p>
 
-<div id="outline-container-orgc478f26" class="outline-2">
-<h2 id="orgc478f26">操作系统</h2>
-<div class="outline-text-2" id="text-orgc478f26">
+<p>
+对于日志包也是如此，没有像 google/glog 和 log4plus 之于 C++ 这么权威。尝试了一些的 Go logging package，结论如下：
+</p>
+
+<div id="outline-container-orga766f33" class="outline-2">
+<h2 id="orga766f33">标准库</h2>
+<div class="outline-text-2" id="text-orga766f33">
+<p>
+功能较少，不同级别的日志区分不开，小的测试项目可以取代 fmt 来 debug。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge565879" class="outline-2">
+<h2 id="orge565879"><a href="https://github.com/golang/glog">google/glog</a></h2>
+<div class="outline-text-2" id="text-orge565879">
+<p>
+google 类似 C++ 日志版本的 Go 版本，性能较好，使用也比较简单。
+</p>
+
 <ul class="org-ul">
-<li><a href="os/epoll.html">I/O 多路复用</a></li>
-<li><a href="os/other.html">其他</a></li>
+<li>优点：代码很短，性能好，易用性较好，稳定；K8s 内置的就是 glog，不过最近好像要基于 glog 做二次开发 <a href="https://github.com/kubernetes/klog">klog</a>；</li>
+<li>缺点：已经四五年没更新了···，日志级别区分的比较乱，需要二次封装</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga6dcc5b" class="outline-2">
-<h2 id="orga6dcc5b">程序设计</h2>
-<div class="outline-text-2" id="text-orga6dcc5b">
-</div>
-<div id="outline-container-org78cdf2a" class="outline-3">
-<h3 id="org78cdf2a">工程师素养</h3>
-<div class="outline-text-3" id="text-org78cdf2a">
+<div id="outline-container-orgdb61e6a" class="outline-2">
+<h2 id="orgdb61e6a"><a href="https://github.com/sirupsen/logrus">sirupsen/logrus</a></h2>
+<div class="outline-text-2" id="text-orgdb61e6a">
+<p>
+结构化的，可插拔的日志系统。
+</p>
+
 <ul class="org-ul">
-<li><a href="programming/programmer.html">技术人</a>：一些常用的办公设备和软件记录</li>
+<li>优点：业内评价较高，易用性好，定制化也很强，人性化。</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge3b9244" class="outline-3">
-<h3 id="orge3b9244">C++</h3>
-<div class="outline-text-3" id="text-orge3b9244">
+<div id="outline-container-org15ebf71" class="outline-2">
+<h2 id="org15ebf71"><a href="https://github.com/uber-go/zap">uber-go/zap</a></h2>
+<div class="outline-text-2" id="text-org15ebf71">
+<p>
+Uber 开源的日志系统。
+</p>
+
 <ul class="org-ul">
-<li><a href="programming/cpp/autotools.html">AutoTools</a>：编译工具</li>
-<li><a href="programming/cpp/gcc.html">gcc</a>：编译器</li>
-<li><a href="programming/cpp/makefile.html">Makefile</a></li>
-<li><a href="programming/cpp/perf.html">Perf</a>：性能剖析工具，其实只要记得 <code>perf top -p</code> 一个指令就行了</li>
-<li><a href="programming/cpp/valgrind.html">Valgrind</a>：Linux 下动态（指令框架）分析工具，主要用来做内存泄露检测。其他的工具还有 VLC，Nvwa 等</li>
+<li>优点：性能 <span class="underline"><span class="underline">非常</span></span> 好</li>
+<li>缺点：可能是设计就是为了设计之初就是为了高性能，定制性很强，就是非常不人性化，以至于不知道怎么定制···，好在有这个 <a href="https://github.com/sandipb/zap-examples">sandipb/zap-examples</a></li>
 </ul>
+
+<p>
+性能相比： <code>zap &gt; glog &gt; logrus &gt; log</code> ，值得一提的是，zap 是远大于 glog 和 logrus 的。
+</p>
 </div>
 </div>
 
-<div id="outline-container-org62a5ce0" class="outline-3">
-<h3 id="org62a5ce0">Go</h3>
-<div class="outline-text-3" id="text-org62a5ce0">
+<div id="outline-container-orgacaf24a" class="outline-2">
+<h2 id="orgacaf24a">结论</h2>
+<div class="outline-text-2" id="text-orgacaf24a">
 <ul class="org-ul">
-<li><a href="programming/go/build-env.html">构建环境</a>：安装、环境配置、工具链等说明</li>
-<li><a href="programming/go/log-packages.html">日志包</a>：常见的几种日志包对比</li>
-<li><a href="programming/go/package-manager.html">包管理工具</a></li>
-<li><a href="programming/go/project-layout.html">项目结构</a>：摘自 <a href="https://github.com/golang-standards/project-layout">project-layout</a>，go 工程的项目结构</li>
-<li><a href="programming/go/date-format.html">时间格式化与解析</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgced2116" class="outline-3">
-<h3 id="orgced2116">编码工具</h3>
-<div class="outline-text-3" id="text-orgced2116">
-<ul class="org-ul">
-<li><a href="programming/code-env/emacs.html">Emacs</a>：神之编辑器</li>
-<li><a href="programming/code-env/git.html">git</a> | <a href="programming/code-env/svn.html">svn</a>：版本管理器</li>
-<li><a href="programming/code-env/pip.html">pip</a>：Python 的包管理器</li>
+<li>高性能的系统，推荐使用 zap；</li>
+<li>业务系统推荐使用 logrus，glog 的日志级别（ <code>V()</code> ）很容易误导开发人员，个人体验并不是很好。</li>
 </ul>
 </div>
 </div>
 </div>
+<div id="postamble" class="status">
+<p class="date">Date: 2019-03-14 17:50:00</p>
+<p class="author">Author: JerryZhang</p>
+<p class="date">Created: 2019-09-08 日 18:32</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

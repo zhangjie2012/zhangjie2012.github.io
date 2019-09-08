@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2019-09-08 日 18:39 -->
+<!-- 2019-09-08 日 16:57 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>wiki</title>
+<title>Go 工程项目结构</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -232,68 +232,159 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">wiki</h1>
+<h1 class="title">Go 工程项目结构</h1>
+<p>
+不管是什么语言，稍微大的项目，目录布局都会有问题，只不过有些语言的框架自身就提供了目录结构规范。
+</p>
 
-<div id="outline-container-orgc478f26" class="outline-2">
-<h2 id="orgc478f26">操作系统</h2>
-<div class="outline-text-2" id="text-orgc478f26">
-<ul class="org-ul">
-<li><a href="os/epoll.html">I/O 多路复用</a></li>
-<li><a href="os/other.html">其他</a></li>
-</ul>
-</div>
-</div>
+<p>
+对于 Golang 尤为明显，还是语言比较年轻的缘故，还没有权威性的规范。
+</p>
 
-<div id="outline-container-orga6dcc5b" class="outline-2">
-<h2 id="orga6dcc5b">程序设计</h2>
-<div class="outline-text-2" id="text-orga6dcc5b">
-</div>
-<div id="outline-container-org78cdf2a" class="outline-3">
-<h3 id="org78cdf2a">工程师素养</h3>
-<div class="outline-text-3" id="text-org78cdf2a">
-<ul class="org-ul">
-<li><a href="programming/programmer.html">技术人</a>：一些常用的办公设备和软件记录</li>
-</ul>
-</div>
-</div>
+<p>
+<a href="https://github.com/golang-standards/project-layout">project-layout</a> 提供了 Go 大中型项目的目录规范。简单摘抄如下：
+</p>
 
-<div id="outline-container-orge3b9244" class="outline-3">
-<h3 id="orge3b9244">C++</h3>
-<div class="outline-text-3" id="text-orge3b9244">
-<ul class="org-ul">
-<li><a href="programming/cpp/autotools.html">AutoTools</a>：编译工具</li>
-<li><a href="programming/cpp/gcc.html">gcc</a>：编译器</li>
-<li><a href="programming/cpp/makefile.html">Makefile</a></li>
-<li><a href="programming/cpp/perf.html">Perf</a>：性能剖析工具，其实只要记得 <code>perf top -p</code> 一个指令就行了</li>
-<li><a href="programming/cpp/valgrind.html">Valgrind</a>：Linux 下动态（指令框架）分析工具，主要用来做内存泄露检测。其他的工具还有 VLC，Nvwa 等</li>
-</ul>
-</div>
-</div>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
-<div id="outline-container-org62a5ce0" class="outline-3">
-<h3 id="org62a5ce0">Go</h3>
-<div class="outline-text-3" id="text-org62a5ce0">
-<ul class="org-ul">
-<li><a href="programming/go/build-env.html">构建环境</a>：安装、环境配置、工具链等说明</li>
-<li><a href="programming/go/log-packages.html">日志包</a>：常见的几种日志包对比</li>
-<li><a href="programming/go/package-manager.html">包管理工具</a></li>
-<li><a href="programming/go/project-layout.html">项目结构</a>：摘自 <a href="https://github.com/golang-standards/project-layout">project-layout</a>，go 工程的项目结构</li>
-<li><a href="programming/go/date-format.html">时间格式化与解析</a></li>
-</ul>
-</div>
-</div>
 
-<div id="outline-container-orgced2116" class="outline-3">
-<h3 id="orgced2116">编码工具</h3>
-<div class="outline-text-3" id="text-orgced2116">
-<ul class="org-ul">
-<li><a href="programming/code-env/emacs.html">Emacs</a>：神之编辑器</li>
-<li><a href="programming/code-env/git.html">git</a> | <a href="programming/code-env/svn.html">svn</a>：版本管理器</li>
-<li><a href="programming/code-env/pip.html">pip</a>：Python 的包管理器</li>
-</ul>
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">功能</th>
+<th scope="col" class="org-left">目录</th>
+<th scope="col" class="org-left">注意事项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Go 目录</td>
+<td class="org-left"><code>/cmd/</code></td>
+<td class="org-left">项目的主目录，一般只包含 <code>main</code> 函数，调用的代码应该写在 <code>/internal</code> 和 <code>/pkg</code> 目录下。</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/internal</code></td>
+<td class="org-left">私有项目和库代码。一般放置不希望其他人在应用程序或者库中导入的代码。</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/pkg</code></td>
+<td class="org-left">外部应用程序可以使用的库代码。</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/vendor</code></td>
+<td class="org-left">应用程序依赖，由依赖管理工具（比如 ~dep~）管理的代码。注意如果你要构建库的时候， <span class="underline">不要</span> 提交程序库依赖代码。</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">服务应用程序目录</td>
+<td class="org-left"><code>/api</code></td>
+<td class="org-left">OpenAPI/Swagger specs, JSON schema files, protocol definition files。</td>
+</tr>
+
+<tr>
+<td class="org-left">常见应用程序目录</td>
+<td class="org-left"><code>/config</code></td>
+<td class="org-left">配置文件模板或者默认配置，请把 <code>confd</code> 或者 <code>consul-template</code> 模板文件放到这里。</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/init</code></td>
+<td class="org-left">系统启动（systemd，upstart，sysv）和进程管理/supervisor（runit，supervisord）配置。</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/scripts</code></td>
+<td class="org-left">各种构建，安装，分析等操作脚本。这些脚本使得根目录下的 Makefile 保持简洁。</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/build</code></td>
+<td class="org-left">打包和持续集成，容器构建配置和脚本放到 <code>/build/packages</code> 目录下，CI（travis，circle，drone）配置和脚本放到 <code>/build/ci</code> 目录下。</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/deployments</code></td>
+<td class="org-left">IaaS，PaaS，系统和容器编排配置部署和模板（docker-compose，kubernetes/helm，mesos，terraform，bosh）。</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/test</code></td>
+<td class="org-left">各种测试文件的目录</td>
+</tr>
+
+<tr>
+<td class="org-left">其它目录</td>
+<td class="org-left"><code>/docs</code></td>
+<td class="org-left">设计和用户文档（不包含 godoc 生成的文档）。</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/tools</code></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/examples</code></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/third_party</code></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/githooks</code></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/assets</code></td>
+<td class="org-left">静态资源（比如图片，logos 等）</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>/website</code></td>
+<td class="org-left">如果不使用 Github pages，这里放置你的项目网站数据。</td>
+</tr>
+
+<tr>
+<td class="org-left">不应包含的目录</td>
+<td class="org-left"><code>/src</code></td>
+<td class="org-left">容易混淆 <code>$GOPATH</code> 中的 <code>/src</code> 目录，极度不推荐。</td>
+</tr>
+</tbody>
+</table>
 </div>
-</div>
-</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2019-06-09 17:08:00</p>
+<p class="author">Author: JerryZhang</p>
+<p class="date">Created: 2019-09-08 日 16:57</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2019-09-08 日 18:39 -->
+<!-- 2019-09-08 日 11:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>wiki</title>
+<title>构建环境</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -232,68 +232,235 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">wiki</h1>
-
-<div id="outline-container-orgc478f26" class="outline-2">
-<h2 id="orgc478f26">操作系统</h2>
-<div class="outline-text-2" id="text-orgc478f26">
-<ul class="org-ul">
-<li><a href="os/epoll.html">I/O 多路复用</a></li>
-<li><a href="os/other.html">其他</a></li>
+<h1 class="title">构建环境</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0cecb9d">安装</a>
+<ul>
+<li><a href="#org2cb89dd">Linux，Mac OS X 或者 FreeBSD 安装</a></li>
+<li><a href="#org9b6b4ab">测试是否安装正确</a></li>
+<li><a href="#org54a6b2f">GOROOT 和 GOPATH 环境变量</a></li>
+</ul>
+</li>
+<li><a href="#org5d8e216">卸载</a></li>
+<li><a href="#orgc74517b">工具链</a></li>
+<li><a href="#org1776d70">跨平台编译</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga6dcc5b" class="outline-2">
-<h2 id="orga6dcc5b">程序设计</h2>
-<div class="outline-text-2" id="text-orga6dcc5b">
+<div id="outline-container-org0cecb9d" class="outline-2">
+<h2 id="org0cecb9d">安装</h2>
+<div class="outline-text-2" id="text-org0cecb9d">
 </div>
-<div id="outline-container-org78cdf2a" class="outline-3">
-<h3 id="org78cdf2a">工程师素养</h3>
-<div class="outline-text-3" id="text-org78cdf2a">
-<ul class="org-ul">
-<li><a href="programming/programmer.html">技术人</a>：一些常用的办公设备和软件记录</li>
-</ul>
+<div id="outline-container-org2cb89dd" class="outline-3">
+<h3 id="org2cb89dd">Linux，Mac OS X 或者 FreeBSD 安装</h3>
+<div class="outline-text-3" id="text-org2cb89dd">
+<ol class="org-ol">
+<li>前往<a href="https://golang.org/dl/">官网</a>，下载二进制包</li>
+<li>直接解压到 <code>/usr/local</code> 目录下： <code>tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar</code> （root 用户或者 sudo 执行）</li>
+<li>将 <code>/usr/local/go/bin</code> 添加 <code>PATH</code> 环境变量中，你可以将 <code>export PATH=$PATH:/usr/local/go/bin</code> 追加到 <code>/etc/profile</code> 或者 <code>~/.profile</code> 文件中</li>
+<li>执行 <code>go version</code> 看是否安装成功</li>
+</ol>
+
+<p>
+设置工作目录：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">GOROOT</span>=$<span style="color: #BA36A5;">HOME</span>/projects
+<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #BA36A5;">GOROOT</span>/bin
+</pre>
+</div>
+
+<p>
+将上面代码添加到 <code>~/.profile</code> 中。 <i>这里假定你的工作目录是 <code>projects</code> ，你也可以换成别的名字。</i>
+</p>
 </div>
 </div>
 
-<div id="outline-container-orge3b9244" class="outline-3">
-<h3 id="orge3b9244">C++</h3>
-<div class="outline-text-3" id="text-orge3b9244">
-<ul class="org-ul">
-<li><a href="programming/cpp/autotools.html">AutoTools</a>：编译工具</li>
-<li><a href="programming/cpp/gcc.html">gcc</a>：编译器</li>
-<li><a href="programming/cpp/makefile.html">Makefile</a></li>
-<li><a href="programming/cpp/perf.html">Perf</a>：性能剖析工具，其实只要记得 <code>perf top -p</code> 一个指令就行了</li>
-<li><a href="programming/cpp/valgrind.html">Valgrind</a>：Linux 下动态（指令框架）分析工具，主要用来做内存泄露检测。其他的工具还有 VLC，Nvwa 等</li>
-</ul>
+<div id="outline-container-org9b6b4ab" class="outline-3">
+<h3 id="org9b6b4ab">测试是否安装正确</h3>
+<div class="outline-text-3" id="text-org9b6b4ab">
+<p>
+切换到工作目录下（不是必须，但是建议这么做），创建目录 <code>src/hello</code> ，新建文件 <code>hello.go</code> ，写下经典的 <code>hello, world</code> ：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">package</span> main
+
+<span style="color: #0000FF;">import</span> <span style="color: #008000;">"fmt"</span>
+
+<span style="color: #0000FF;">func</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+    fmt.<span style="color: #006699;">Println</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"hello, world"</span><span style="color: #7388D6;">)</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+然后编译运行：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">$ cd $HOME/projects/src/hello
+$ <span style="color: #0000FF;">go</span> build
+$ ./hello
+hello, world
+</pre>
+</div>
 </div>
 </div>
 
-<div id="outline-container-org62a5ce0" class="outline-3">
-<h3 id="org62a5ce0">Go</h3>
-<div class="outline-text-3" id="text-org62a5ce0">
+<div id="outline-container-org54a6b2f" class="outline-3">
+<h3 id="org54a6b2f">GOROOT 和 GOPATH 环境变量</h3>
+<div class="outline-text-3" id="text-org54a6b2f">
+<p>
+GOPATH 是为了解决导入问题，用来显示 Go 代码的位置。GOPATH 必须按照规定的结构：
+</p>
+
 <ul class="org-ul">
-<li><a href="programming/go/build-env.html">构建环境</a>：安装、环境配置、工具链等说明</li>
-<li><a href="programming/go/log-packages.html">日志包</a>：常见的几种日志包对比</li>
-<li><a href="programming/go/package-manager.html">包管理工具</a></li>
-<li><a href="programming/go/project-layout.html">项目结构</a>：摘自 <a href="https://github.com/golang-standards/project-layout">project-layout</a>，go 工程的项目结构</li>
-<li><a href="programming/go/date-format.html">时间格式化与解析</a></li>
+<li><code>src</code> 目录是用来放源代码，src 下的路径决定了导入路径和可执行文件的名称</li>
+<li><code>pkg</code> 目录用来存放已安装的软件包对象，每个目标的操作系统和架构对都有自己的 pkg 子目录（pkg/GOOS<sub>GOARCH</sub>）</li>
+<li><code>bin</code> 目录用来放已经编译好的命令，比如 <code>gocode~，~godef</code> 等</li>
 </ul>
+
+<p>
+GOROOT：Go 的二进制分布在 <code>/usr/local/go</code> 下，但是 Go 工具有可能放在不同的位置下，这种情况下你可以将 GOROOT 指向不同的位置，注意 GOROOT 在需要自定义安装位置的时候才是必须要设置的，所以 GOROOT 是可选的。
+</p>
+
+<p>
+添加 GOPATH 和 GOROOT：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">GOPATH</span>=$<span style="color: #BA36A5;">HOME</span>/projects
+<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #BA36A5;">GOPATH</span>/bin
+<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">GOROOT</span>=$<span style="color: #BA36A5;">HOME</span>/go1.10
+<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #BA36A5;">GOROOT</span>/bin
+</pre>
+</div>
+
+<p>
+将上面代码添加到 <code>$HOME/.profile</code> 下。
+</p>
+</div>
 </div>
 </div>
 
-<div id="outline-container-orgced2116" class="outline-3">
-<h3 id="orgced2116">编码工具</h3>
-<div class="outline-text-3" id="text-orgced2116">
+<div id="outline-container-org5d8e216" class="outline-2">
+<h2 id="org5d8e216">卸载</h2>
+<div class="outline-text-2" id="text-org5d8e216">
+<ol class="org-ol">
+<li>删除 <code>/usr/local/go</code> 目录</li>
+<li>编辑 <code>/etc/profile</code> 或者 <code>$HOME/profile</code> 移除 <code>PATH</code> 环境变量中的 go bin 路径</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgc74517b" class="outline-2">
+<h2 id="orgc74517b">工具链</h2>
+<div class="outline-text-2" id="text-orgc74517b">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">名称</th>
+<th scope="col" class="org-left">说明</th>
+<th scope="col" class="org-left">安装</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">gocode</td>
+<td class="org-left">自动补全守护进程</td>
+<td class="org-left"><code>go get -u -v github.com/mdempsky/gocode</code></td>
+</tr>
+
+<tr>
+<td class="org-left">gopls</td>
+<td class="org-left">LSP server for Go</td>
+<td class="org-left"><code>go get -u -v golang.org/x/tools/gopls</code></td>
+</tr>
+
+<tr>
+<td class="org-left">godef</td>
+<td class="org-left">find symbol information in Go source</td>
+<td class="org-left"><code>go get -u -v github.com/rogpeppe/godef</code></td>
+</tr>
+
+<tr>
+<td class="org-left">guru</td>
+<td class="org-left">a tool for answering questions about Go source code</td>
+<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/guru</code></td>
+</tr>
+
+<tr>
+<td class="org-left">gorename</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/gorename</code></td>
+</tr>
+
+<tr>
+<td class="org-left">goimports</td>
+<td class="org-left">自动引入和删除包，这个牛逼了</td>
+<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/goimports</code></td>
+</tr>
+
+<tr>
+<td class="org-left">godoc</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/godoc</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<i>部分工具需要 FQ 才能安装。</i>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1776d70" class="outline-2">
+<h2 id="org1776d70">跨平台编译</h2>
+<div class="outline-text-2" id="text-org1776d70">
+<p>
+1.5 版本之后，Go 支持跨平台编译（碉堡的一个功能），在编译之前指定 <code>$GOOS</code> 和 <code>$GOARCH</code> 两个环境变量即可。这两个环境变量分别表示的目标的操作系统和编译体系架构的名称。常用的值：
+</p>
+
 <ul class="org-ul">
-<li><a href="programming/code-env/emacs.html">Emacs</a>：神之编辑器</li>
-<li><a href="programming/code-env/git.html">git</a> | <a href="programming/code-env/svn.html">svn</a>：版本管理器</li>
-<li><a href="programming/code-env/pip.html">pip</a>：Python 的包管理器</li>
+<li><code>GOOS~：~android~、~darwin~、~freebsd~、~linux~、~windows</code></li>
+<li><code>GOARCH~：~arm~、~amd64~、~386</code></li>
 </ul>
+
+<p>
+完整的可选值在 <a href="https://golang.org/doc/install/source#environment">Optional environment variables</a>。
+</p>
+
+<p>
+比如在 MacOS 上编译 CentOS7 下的二进制包： <code>GOOS=linux GOARCH=amd64 go build main</code> 。
+</p>
+
+<p>
+相关的 Stackoverflow 帖子：<a href="https://stackoverflow.com/questions/20728767/all-possible-goos-value">All possible GOOS value?</a> 中说明在 Go 1.7 之后，可以使用 <code>go tool dist list -json</code> 来显示可选的值（不加 <code>-json</code> 参数将显示为文本）。
+</p>
 </div>
 </div>
 </div>
+<div id="postamble" class="status">
+<p class="date">Date: 2017-12-07 09:41:24</p>
+<p class="author">Author: JerryZhang</p>
+<p class="date">Created: 2019-09-08 日 11:48</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

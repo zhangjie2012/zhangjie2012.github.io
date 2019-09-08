@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2019-09-08 日 18:39 -->
+<!-- 2019-09-08 日 18:32 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>wiki</title>
+<title>Go 包管理工具</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -232,68 +232,64 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">wiki</h1>
-
-<div id="outline-container-orgc478f26" class="outline-2">
-<h2 id="orgc478f26">操作系统</h2>
-<div class="outline-text-2" id="text-orgc478f26">
-<ul class="org-ul">
-<li><a href="os/epoll.html">I/O 多路复用</a></li>
-<li><a href="os/other.html">其他</a></li>
+<h1 class="title">Go 包管理工具</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgcecd282">govender</a>
+<ul>
+<li><a href="#orgbe163ad">创建项目</a></li>
+<li><a href="#org5da296c">常规使用</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga6dcc5b" class="outline-2">
-<h2 id="orga6dcc5b">程序设计</h2>
-<div class="outline-text-2" id="text-orga6dcc5b">
+<div id="outline-container-orgcecd282" class="outline-2">
+<h2 id="orgcecd282">govender</h2>
+<div class="outline-text-2" id="text-orgcecd282">
+<p>
+govendor: <a href="https://github.com/kardianos/govendor">https://github.com/kardianos/govendor</a>，安装： <code>go get -u github.com/kardianos/govendor</code> 。
+</p>
 </div>
-<div id="outline-container-org78cdf2a" class="outline-3">
-<h3 id="org78cdf2a">工程师素养</h3>
-<div class="outline-text-3" id="text-org78cdf2a">
+
+<div id="outline-container-orgbe163ad" class="outline-3">
+<h3 id="orgbe163ad">创建项目</h3>
+<div class="outline-text-3" id="text-orgbe163ad">
 <ul class="org-ul">
-<li><a href="programming/programmer.html">技术人</a>：一些常用的办公设备和软件记录</li>
+<li>项目初始化：~govendor init~</li>
+<li>查看文件状态：~govendor list~</li>
+<li>添加 package 到 vendor：~govendor add +external~</li>
+<li>在 <code>.gitignore</code> 中添加 package 过滤：</li>
 </ul>
+
+<div class="org-src-container">
+<pre class="src src-shell">vendor/*
+!vendor/vendor.json
+</pre>
+</div>
 </div>
 </div>
 
-<div id="outline-container-orge3b9244" class="outline-3">
-<h3 id="orge3b9244">C++</h3>
-<div class="outline-text-3" id="text-orge3b9244">
+<div id="outline-container-org5da296c" class="outline-3">
+<h3 id="org5da296c">常规使用</h3>
+<div class="outline-text-3" id="text-org5da296c">
 <ul class="org-ul">
-<li><a href="programming/cpp/autotools.html">AutoTools</a>：编译工具</li>
-<li><a href="programming/cpp/gcc.html">gcc</a>：编译器</li>
-<li><a href="programming/cpp/makefile.html">Makefile</a></li>
-<li><a href="programming/cpp/perf.html">Perf</a>：性能剖析工具，其实只要记得 <code>perf top -p</code> 一个指令就行了</li>
-<li><a href="programming/cpp/valgrind.html">Valgrind</a>：Linux 下动态（指令框架）分析工具，主要用来做内存泄露检测。其他的工具还有 VLC，Nvwa 等</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org62a5ce0" class="outline-3">
-<h3 id="org62a5ce0">Go</h3>
-<div class="outline-text-3" id="text-org62a5ce0">
-<ul class="org-ul">
-<li><a href="programming/go/build-env.html">构建环境</a>：安装、环境配置、工具链等说明</li>
-<li><a href="programming/go/log-packages.html">日志包</a>：常见的几种日志包对比</li>
-<li><a href="programming/go/package-manager.html">包管理工具</a></li>
-<li><a href="programming/go/project-layout.html">项目结构</a>：摘自 <a href="https://github.com/golang-standards/project-layout">project-layout</a>，go 工程的项目结构</li>
-<li><a href="programming/go/date-format.html">时间格式化与解析</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgced2116" class="outline-3">
-<h3 id="orgced2116">编码工具</h3>
-<div class="outline-text-3" id="text-orgced2116">
-<ul class="org-ul">
-<li><a href="programming/code-env/emacs.html">Emacs</a>：神之编辑器</li>
-<li><a href="programming/code-env/git.html">git</a> | <a href="programming/code-env/svn.html">svn</a>：版本管理器</li>
-<li><a href="programming/code-env/pip.html">pip</a>：Python 的包管理器</li>
+<li>git pull 下来项目后，本地同步安装 package： <code>govendor sync -v</code></li>
+<li>查看 package 被哪里引用： <code>govendor list -v package</code></li>
+<li>govendor 其实并不那么好用（不然 go 的 package 管理也不会这么混乱了），升级和删除 package 等，暴力解法是：删掉 vendor 目录，重新走一遍初始化</li>
 </ul>
 </div>
 </div>
 </div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2019-01-18 11:07</p>
+<p class="author">Author: JerryZhang</p>
+<p class="date">Created: 2019-09-08 日 18:32</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

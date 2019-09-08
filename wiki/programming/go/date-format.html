@@ -6,7 +6,7 @@
 <!-- 2019-09-08 日 18:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>wiki</title>
+<title>Go 时间格式化与解析</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -232,68 +232,129 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">wiki</h1>
-
-<div id="outline-container-orgc478f26" class="outline-2">
-<h2 id="orgc478f26">操作系统</h2>
-<div class="outline-text-2" id="text-orgc478f26">
-<ul class="org-ul">
-<li><a href="os/epoll.html">I/O 多路复用</a></li>
-<li><a href="os/other.html">其他</a></li>
+<h1 class="title">Go 时间格式化与解析</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0eaf8b8">所有的时间和日期选项</a></li>
+<li><a href="#orgf66a9f6">常用的时间和日期格式</a></li>
+<li><a href="#org17a32d0">预定义的日期和时间戳 layouts</a></li>
 </ul>
 </div>
 </div>
+<p>
+跟其他语言的设计不同（Python 等），Go 时间的格式化与解析都是通过 <code>layout</code> 参数来实现的。类似： <code>Mon Jan 2 15:04:05 MST 2006</code> 。
+</p>
 
-<div id="outline-container-orga6dcc5b" class="outline-2">
-<h2 id="orga6dcc5b">程序设计</h2>
-<div class="outline-text-2" id="text-orga6dcc5b">
-</div>
-<div id="outline-container-org78cdf2a" class="outline-3">
-<h3 id="org78cdf2a">工程师素养</h3>
-<div class="outline-text-3" id="text-org78cdf2a">
+<p>
+用 <code>01/02 03:04:05PM '06 -0700</code> 可以帮助记忆，某个字段使用某个值，是一种 <span class="underline">约定</span> 。两个函数：
+</p>
+
 <ul class="org-ul">
-<li><a href="programming/programmer.html">技术人</a>：一些常用的办公设备和软件记录</li>
+<li>Parse 将字符串解析成日期 <code>func Parse(layout, value string) (Time, error)</code></li>
+<li>Format 将日期格式化成字符串 <code>func (t Time) Format(layout string) string</code></li>
 </ul>
+
+<div id="outline-container-org0eaf8b8" class="outline-2">
+<h2 id="org0eaf8b8">所有的时间和日期选项</h2>
+<div class="outline-text-2" id="text-org0eaf8b8">
+<p>
+（用来书写 <code>layout</code> ）
+</p>
+
+<pre class="example">
+Type	 =&gt; Option
+--------------------------------------------------------------------
+Year     =&gt; 06   2006
+Month    =&gt; 01   1   Jan   January
+Day	     =&gt; 02   2   _2   (width two, right justified)
+Weekday	 =&gt; Mon   Monday
+Hours    =&gt; 03   3   15
+Minutes  =&gt; 04   4
+Seconds  =&gt; 05   5
+ms μs ns =&gt; .000   .000000   .000000000
+ms μs ns =&gt; .999   .999999   .999999999   (trailing zeros removed)
+am/pm    =&gt; PM   pm
+Timezone =&gt; MST
+Offset   =&gt; -0700   -07   -07:00   Z0700   Z07:00
+</pre>
 </div>
 </div>
 
-<div id="outline-container-orge3b9244" class="outline-3">
-<h3 id="orge3b9244">C++</h3>
-<div class="outline-text-3" id="text-orge3b9244">
-<ul class="org-ul">
-<li><a href="programming/cpp/autotools.html">AutoTools</a>：编译工具</li>
-<li><a href="programming/cpp/gcc.html">gcc</a>：编译器</li>
-<li><a href="programming/cpp/makefile.html">Makefile</a></li>
-<li><a href="programming/cpp/perf.html">Perf</a>：性能剖析工具，其实只要记得 <code>perf top -p</code> 一个指令就行了</li>
-<li><a href="programming/cpp/valgrind.html">Valgrind</a>：Linux 下动态（指令框架）分析工具，主要用来做内存泄露检测。其他的工具还有 VLC，Nvwa 等</li>
-</ul>
+<div id="outline-container-orgf66a9f6" class="outline-2">
+<h2 id="orgf66a9f6">常用的时间和日期格式</h2>
+<div class="outline-text-2" id="text-orgf66a9f6">
+<pre class="example">
+Layout	                   =&gt; Note
+------------------------------------------------------
+January 2 2006	           =&gt; Date
+01/02/06
+Jan-02-06
+------------------------------------------------------
+15:04:05	               =&gt; Time
+3:04:05 PM
+------------------------------------------------------
+Jan _2 15:04:05	           =&gt; Timestamp
+Jan _2 15:04:05.000000	      with microseconds
+------------------------------------------------------
+2006-01-02T15:04:05-0700   =&gt; ISO 8601
+2006-01-02
+15:04:05
+------------------------------------------------------
+02 Jan 06 15:04 MST	       =&gt; RFC 822
+02 Jan 06 15:04 -0700	      with numeric zone
+------------------------------------------------------
+Mon, 02 Jan 2006 15:04:05 MST	=&gt; RFC 1123
+Mon, 02 Jan 2006 15:04:05 -0700	   with numeric zone
+------------------------------------------------------
+</pre>
+
+<p>
+（这里可以理解成为大家的约定）
+</p>
 </div>
 </div>
 
-<div id="outline-container-org62a5ce0" class="outline-3">
-<h3 id="org62a5ce0">Go</h3>
-<div class="outline-text-3" id="text-org62a5ce0">
-<ul class="org-ul">
-<li><a href="programming/go/build-env.html">构建环境</a>：安装、环境配置、工具链等说明</li>
-<li><a href="programming/go/log-packages.html">日志包</a>：常见的几种日志包对比</li>
-<li><a href="programming/go/package-manager.html">包管理工具</a></li>
-<li><a href="programming/go/project-layout.html">项目结构</a>：摘自 <a href="https://github.com/golang-standards/project-layout">project-layout</a>，go 工程的项目结构</li>
-<li><a href="programming/go/date-format.html">时间格式化与解析</a></li>
-</ul>
-</div>
-</div>
+<div id="outline-container-org17a32d0" class="outline-2">
+<h2 id="org17a32d0">预定义的日期和时间戳 layouts</h2>
+<div class="outline-text-2" id="text-org17a32d0">
+<p>
+预定义的格式常量，可以直接拿来用（ <code>time</code> 库中）。
+</p>
 
-<div id="outline-container-orgced2116" class="outline-3">
-<h3 id="orgced2116">编码工具</h3>
-<div class="outline-text-3" id="text-orgced2116">
-<ul class="org-ul">
-<li><a href="programming/code-env/emacs.html">Emacs</a>：神之编辑器</li>
-<li><a href="programming/code-env/git.html">git</a> | <a href="programming/code-env/svn.html">svn</a>：版本管理器</li>
-<li><a href="programming/code-env/pip.html">pip</a>：Python 的包管理器</li>
-</ul>
+<pre class="example">
+ANSIC       = "Mon Jan _2 15:04:05 2006"
+UnixDate    = "Mon Jan _2 15:04:05 MST 2006"
+RubyDate    = "Mon Jan 02 15:04:05 -0700 2006"
+RFC822      = "02 Jan 06 15:04 MST"
+RFC822Z     = "02 Jan 06 15:04 -0700"
+RFC850      = "Monday, 02-Jan-06 15:04:05 MST"
+RFC1123     = "Mon, 02 Jan 2006 15:04:05 MST"
+RFC1123Z    = "Mon, 02 Jan 2006 15:04:05 -0700"
+RFC3339     = "2006-01-02T15:04:05Z07:00"
+RFC3339Nano = "2006-01-02T15:04:05.999999999Z07:00"
+Kitchen     = "3:04PM"
+// Handy time stamps.
+Stamp      = "Jan _2 15:04:05"
+StampMilli = "Jan _2 15:04:05.000"
+StampMicro = "Jan _2 15:04:05.000000"
+StampNano  = "Jan _2 15:04:05.000000000"
+</pre>
+
+<hr />
+
+<p>
+总体来看，Go 的这种做法，反倒比 Python，JavaScript 等统一一些。
+</p>
 </div>
 </div>
 </div>
+<div id="postamble" class="status">
+<p class="date">Date: 2019-01-18 11:07</p>
+<p class="author">Author: JerryZhang</p>
+<p class="date">Created: 2019-09-08 日 18:39</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>
