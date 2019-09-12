@@ -6,7 +6,7 @@
 <!-- 2019-09-12 Thu 17:38 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>2019-08</title>
+<title>使用 Docker 部署 Django Web server 最佳实践</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -232,176 +232,95 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">2019-08</h1>
-
-<div id="outline-container-org6a2e38d" class="outline-2">
-<h2 id="org6a2e38d">2019-08-30 09:38</h2>
-<div class="outline-text-2" id="text-org6a2e38d">
-<p>
-Emacs 用上了 lsp，速度确实不快，但是相比以前已经进步很多了。
-</p>
-
-<p>
-要论补全的话，lsp 框架确实是最好的。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org45e4129" class="outline-2">
-<h2 id="org45e4129">2019-08-27 14:10</h2>
-<div class="outline-text-2" id="text-org45e4129">
-<p>
-我一定要改掉经常带着耳机的坏习惯。
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgeb44e2e" class="outline-2">
-<h2 id="orgeb44e2e">2019-08-20 12:49</h2>
-<div class="outline-text-2" id="text-orgeb44e2e">
-<p>
-王垠是真的硬核，<a href="https://www.yinwang.org/blog-cn/2019/08/17/trust">https://www.yinwang.org/blog-cn/2019/08/17/trust</a>
-</p>
-
-<p>
-牛逼。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org58d8afb" class="outline-2">
-<h2 id="org58d8afb">2019-08-18 10:00</h2>
-<div class="outline-text-2" id="text-org58d8afb">
-<p>
-看到 C++ 代码，还是好亲切。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org45cb2f9" class="outline-2">
-<h2 id="org45cb2f9">2019-08-16 10:59</h2>
-<div class="outline-text-2" id="text-org45cb2f9">
-<p>
-<code>:first-of-type</code> 所选的元素必须要有一个共同的父元素，不然不会生效。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org5c278d6" class="outline-2">
-<h2 id="org5c278d6">2019-08-13 22:34</h2>
-<div class="outline-text-2" id="text-org5c278d6">
-<p>
-caicloud 的 K8s 教程：<a href="https://github.com/caicloud/kube-ladder">https://github.com/caicloud/kube-ladder</a>
-</p>
-</div>
-</div>
-
-<div id="outline-container-org4f36acf" class="outline-2">
-<h2 id="org4f36acf">2019-08-13 22:02</h2>
-<div class="outline-text-2" id="text-org4f36acf">
-<p>
-原来 Emacs 的 <code>S</code> 和 <code>s</code> 不是一个键位，因为几乎用不到，所以就没搞明白。
-</p>
-
-<ul class="org-ul">
-<li><code>S</code> 对应的是 <code>Super</code> 键</li>
-<li><code>s</code> 对应的是 <code>shift</code> 键</li>
+<h1 class="title">使用 Docker 部署 Django Web server 最佳实践</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7dc922c">1. 使用 Supervisor</a></li>
+<li><a href="#orgb5f4d9b">2. 服务参数传递</a></li>
+<li><a href="#orgf0d3a6b">3. 设置 bind mounts</a></li>
+<li><a href="#orgfebdc96">4. 将 migrate 在启动脚本中执行</a></li>
+<li><a href="#orgfe27e7b">5. 对上篇文章的纠正</a></li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-org3fe6b4e" class="outline-2">
-<h2 id="org3fe6b4e">2019-08-13 21:52</h2>
-<div class="outline-text-2" id="text-org3fe6b4e">
 <p>
-永远做对当前最优的选择。
+2018 年 9 月 8 日，我写了 <a href="../2018/docker-run-django-project.html">Docker 运行 Django 项目</a>，随着自己对 Docker 的更深一步了解，以及在 [qwerty](<a href="https://github.com/zhangjie2012/qwerty">https://github.com/zhangjie2012/qwerty</a>) 项目中的实践，感觉之前写的略有不足。这篇文章进行一定的补充说明。
+</p>
+
+<div id="outline-container-org7dc922c" class="outline-2">
+<h2 id="org7dc922c"><span class="section-number-2">1</span> 使用 Supervisor</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+在虚拟机上部署 Django 项目，一般使用的是 uwsgi，但是在容器中运行的服务必须有一个前台进程，所以在之前的文章中去掉了 uwsgi 的 <code>daemonize2</code> 选项，uwsgi 日志相关的配置也都删除了（因为要跑到前台），所以 uwsgi 的日志相当于是打在了标准输出上。
+虽然这符合 Docker 的规范，但是在项目上线运行调试的过程中，uwsgi 的日志最好能够保留下来，打印到标准输出，Docker 重启时就不存在了。
+</p>
+
+<p>
+<a href="http://supervisord.org/">Supervisor</a> 是 Python 写的一个进程控制系统，可以很方便的启动、重启、关闭进程。我们可以使用 Supervisor 来管理 uwsgi 进程，然后使得 Supervisor 跑在前台即可。
+<span class="underline">如果有多个进程需要运行在容器中，也可以使用 Supervisor，比如常见的 nginx+uwsgi</span> 。配置比较简单：
+</p>
+
+<pre class="example">
+[program:app-uwsgi]
+command = /usr/local/bin/uwsgi --ini /code/uwsgi.ini
+</pre>
+
+<p>
+然后在 Docker 启动命令设为 <code>supervisord -n</code> （ <code>-n</code> for run in the foreground）。拓展阅读：<a href="https://docs.docker.com/config/containers/multi-service_container/">Run multiple services in a container</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org0127388" class="outline-2">
-<h2 id="org0127388">2019-08-13 15:27</h2>
-<div class="outline-text-2" id="text-org0127388">
+<div id="outline-container-orgb5f4d9b" class="outline-2">
+<h2 id="orgb5f4d9b"><span class="section-number-2">2</span> 服务参数传递</h2>
+<div class="outline-text-2" id="text-2">
 <p>
-团队里做事情，一定要允许有不同的声音，但是同时也要统一有一个人来做决断。
+Web 服务会有一些参数要设置，比如 DB，缓存的地址、账号、密码等，以及日志的输出路径等等，Docker 部署时建议可变参数已环境变量（ <code>--env</code> ）的方式注入，但是实际操作中发现服务配置项往往与预期的要多，使用环境的方式启动命令会很长，很容易搞错，不容易维护。
+所以，将所以的服务配置项，使用 yml 文件维护，启动时挂载配置文件到容器指定目录下即可。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgdb24117" class="outline-2">
-<h2 id="orgdb24117">2019-08-12 18:37</h2>
-<div class="outline-text-2" id="text-orgdb24117">
+<div id="outline-container-orgf0d3a6b" class="outline-2">
+<h2 id="orgf0d3a6b"><span class="section-number-2">3</span> 设置 bind mounts</h2>
+<div class="outline-text-2" id="text-3">
 <p>
-git 删除分支报错: <code>error: unable to delete 'v1.0': remote ref does not exist</code>
-</p>
-
-<p>
-原因是: <code>v1.0</code> 既是一个分支名称，又是一个 tag 名。删除分支和 tag 用的都是 <code>git push origin :v1.0</code> ，这种情况下，就没有办法区分到底要删谁。解决的办法是明确的告诉 git，你要删什么：
-</p>
-
-<ul class="org-ul">
-<li><code>heads/v1.0</code> 指的是分支</li>
-<li><code>tags/v1.0</code> 值的是 tag</li>
-</ul>
-
-<p>
-删除分支: <code>git push origin :heads/v1.0</code> 。
+一些需要落地宿主机的文件，最常见的为服务日志，使用 bind mounts（ <code>--mounts</code> ）日志目录映射到宿主机（按照固定的目录规则，也方面后期日志收集），上面所有的服务配置文件也可以 mount 到容器中；
 </p>
 </div>
 </div>
 
-<div id="outline-container-org7f7d88c" class="outline-2">
-<h2 id="org7f7d88c">2019-08-12 17:32</h2>
-<div class="outline-text-2" id="text-org7f7d88c">
-<blockquote>
+<div id="outline-container-orgfebdc96" class="outline-2">
+<h2 id="orgfebdc96"><span class="section-number-2">4</span> 将 migrate 在启动脚本中执行</h2>
+<div class="outline-text-2" id="text-4">
 <p>
-计算机科学领域的任何问题都可以通过增加一个间接的中间层来解决。
-</p>
-</blockquote>
-
-<p>
-这几年影响最大的一句话。
+使用 Django 经常会需要 <code>migrate</code> ，在容器启动后，手动进入容器中执行 <code>migrate</code> 非常麻烦。好在 Dockerfile 中的 <code>ENTRYPOINT~，~CMD</code> 运行直接指定一个启动脚本，以应对复杂的服务启动。
+实际操作也比较简单，写一个 <code>startup.sh</code> 脚本，内部执行 <code>migrate</code> 然后启动服务即可。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orge30bca3" class="outline-2">
-<h2 id="orge30bca3">2019-08-05 15:00</h2>
-<div class="outline-text-2" id="text-orge30bca3">
-<p>
-ag(<a href="https://github.com/ggreer/the_silver_searcher">the<sub>sliver</sub><sub>searcher</sub></a> 过滤目录：
-</p>
+<div id="outline-container-orgfe27e7b" class="outline-2">
+<h2 id="orgfe27e7b"><span class="section-number-2">5</span> 对上篇文章的纠正</h2>
+<div class="outline-text-2" id="text-5">
+<ol class="org-ol">
+<li>使用 <code>--network</code> 而不是 <code>--link</code> ， <code>--link</code> 将被 Docker 废弃，network 的方式功能更强大，也比 <code>--link</code> 好用，具体见：<a href="https://docs.docker.com/network/links/">Legacy container links</a>；</li>
+<li>实际项目直接选择 <code>python:3</code> ，虽然使用 <code>python:3-alpine</code> 看似镜像很小，但安装了众多依赖后（python-dev），大小也差不了多少。而且我尝试基于 <code>python:3-alpine</code> 安装 mysqlclient 库时没成功；</li>
+</ol>
 
 <p>
-他会自动过滤版本管理器中过滤的文件内容，比如 .gitignore 和 .hgignore。但是很多时候执行 <code>ag</code> 并不是包含忽略文件的目录，比如 emacs 中执行 <code>counsel-ag</code> 的 ignore 判定是当前项目的根目录，但是有些项目的 ignore 并不是在根目录下，而是 src 目录下。
-</p>
-
-<p>
-ag 有个全局的 <code>.agignore</code> 文件，添加过滤文件即可解决问题。
+<a href="https://github.com/zhangjie2012/qwerty-server/">qwerty</a> 项目覆盖了上面所有的实践，不太清楚的地方，直接看代码即可。
 </p>
 </div>
 </div>
-
-<div id="outline-container-org3639e36" class="outline-2">
-<h2 id="org3639e36">2019-08-04 20:35</h2>
-<div class="outline-text-2" id="text-org3639e36">
-<p>
-<a href="http://pygments.org/">pygments</a> 是一个通用的代码语法高亮工具，支持很多语言。专门用于博客、论坛、wiki 等代码美化显示。
-</p>
-
-<p>
-后端使用 pygments 之后，前端需要 css 对应。使用 pygments 可自动生成集中内置的主题。在线查看：
-</p>
-
-<p>
-<a href="https://help.farbox.com/pygments.html">https://help.farbox.com/pygments.html</a>
-</p>
-
-<p>
-qwerty 也使用了。
-</p>
 </div>
-</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2019-03-03 15:13</p>
+<p class="author">Author: JerryZhang</p>
+<p class="date">Created: 2019-09-12 Thu 17:38</p>
+<p class="validation"></p>
 </div>
 </body>
 </html>
