@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>awk</title>
+<title>K8s 中的术语</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -231,82 +231,18 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">awk</h1>
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#org36f7f21">1. 工作方式</a></li>
-<li><a href="#orgbb754af">2. 常用内建函数</a></li>
-</ul>
-</div>
-</div>
-
-
-<div id="outline-container-org36f7f21" class="outline-2">
-<h2 id="org36f7f21"><span class="section-number-2">1</span> 工作方式</h2>
-<div class="outline-text-2" id="text-1">
-<p>
-awk 脚本结构: <code>awk 'BEGIN{ statements } statements2 END{ statements }'</code>
-</p>
-
-<ol class="org-ol">
-<li>执行 <code>begin</code> 中语句块</li>
-<li>从文件或 <code>stdin</code> 中读入一行，然后执行 <code>statements2</code> ，重复这个过程，直到文件全部被读取完毕</li>
-<li>执行 <code>end</code> 语句块</li>
-</ol>
-
-<p>
-常用特殊常量:
-</p>
-
+<h1 class="title">K8s 中的术语</h1>
 <ul class="org-ul">
-<li><code>NR</code>: 表示记录数量，在执行过程中对应当前行号</li>
-<li><code>NF</code>: 表示字段数量，在执行过程总对应当前行的字段数</li>
-<li><code>$0</code>: 这个变量包含执行过程中当前行的文本内容</li>
-<li><code>$1</code>: 第一个字段的文本内容</li>
-<li><code>$2</code>: 第二个字段的文本内容</li>
+<li>Node：节点，对应一台运行 K8s 的主机，虚拟机或者物理机</li>
+<li>Pod：若干容器组成的容器组，同一个组内的容器共享一个存储卷（Volume）</li>
+<li>RC（Replication Controllers）</li>
+<li>Service：服务</li>
+<li>Volumes：卷，对应一个目录，容器对其有访问权限</li>
+<li>labels：标签</li>
 </ul>
-
-<p>
-打印指定文本区域:
-</p>
-
-<p>
-确定行号: <code>seq 100 | awk 'NR=4, NR=6 {print}'</code>
-</p>
-
-<p>
-确定文本, 打印处于 <code>start_pattern</code> 和 <code>end_pattern</code> 之间的文本:  <code>awk \'\/start_pattern\/, \/end_pattern\/ filename</code>
-</p>
-
-<p>
-示例:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell">seq 100 | awk <span style="color: #008000;">'/13/,/15/'</span>
-cat /etc/passwd| awk <span style="color: #008000;">'/mai.*mail/,/news.*news/'</span>
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgbb754af" class="outline-2">
-<h2 id="orgbb754af"><span class="section-number-2">2</span> 常用内建函数</h2>
-<div class="outline-text-2" id="text-2">
-<ul class="org-ul">
-<li><code>index(string, search_string)</code>: 返回 search<sub>string</sub> 在 string 中出现的位置</li>
-<li><code>sub(regex, replacement_str, string)</code>: 将正则匹配到的第一处内容替换为 <code>replacement_str</code></li>
-<li><code>match(regex, string)</code>: 检查正则表达式是否能够匹配字符串</li>
-<li><code>length(string)</code>: 返回字符串长度 <code>echo | awk '{"grep root /etc/passwd" | getline cmdout; print length(cmdout) }'</code></li>
-<li><code>printf</code> 对输出进行格式化: <code>seq 10 | awk '{printf "-&gt;%4s\n", $1}'</code></li>
-</ul>
-</div>
-</div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Date: 2017-12-04 11:37:43</p>
+<p class="date">Date: 2018-08-28 14:56:5</p>
 <p class="author">Author: JerryZhang</p>
 <p class="validation"></p>
 </div>
