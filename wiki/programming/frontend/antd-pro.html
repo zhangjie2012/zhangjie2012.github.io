@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>构建环境</title>
+<title>Ant Design Pro</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -231,245 +231,159 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">构建环境</h1>
+<h1 class="title">Ant Design Pro</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5070326">1. 安装</a>
-<ul>
-<li><a href="#orgc173343">1.1. Linux，Mac OS X 或者 FreeBSD 安装</a></li>
-<li><a href="#org729793d">1.2. 测试是否安装正确</a></li>
-<li><a href="#org10dd67d">1.3. GOROOT 和 GOPATH 环境变量</a></li>
+<li><a href="#orgb9d9f19">1. 技术栈</a></li>
+<li><a href="#org7474eb3">2. 如何评价 Pro 2.0</a></li>
+<li><a href="#orgf316be2">3. Pro 和 UmiJS</a></li>
+<li><a href="#org3b3dad9">4. 部署时，文件名添加 hash 值</a></li>
+<li><a href="#org6b5686f">5. npm run start 报错</a></li>
 </ul>
-</li>
-<li><a href="#org765615e">2. 卸载</a></li>
-<li><a href="#orgd9874e2">3. 工具链</a></li>
-<li><a href="#org6b8df51">4. 跨平台编译</a>
-<ul>
-<li><a href="#orgb85788c">4.1. 开发环境</a></li>
+</div>
+</div>
+<p>
+<a href="https://pro.ant.design/docs/getting-started-cn">Ant Design Pro</a> 是一个前端的基于 React 脚手架（框架，开箱即用，提供了菜单和路由、数据处理等），设计是用于企业级中后台解决方案（内部系统之类的）。
+</p>
+
+<div id="outline-container-orgb9d9f19" class="outline-2">
+<h2 id="orgb9d9f19"><span class="section-number-2">1</span> 技术栈</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>ES2015+，主要使用 JavaScript（废话）</li>
+<li>React</li>
+<li><a href="https://umijs.org/zh/">UmiJS</a>：可插拔的企业级 react 应用框架，=1.0=
+之前是使用 roadhog 的，=umi = roadhog + 路由=。roadhog 封装了
+webpack，简化 webpack 的配置</li>
+<li>dva：数据流</li>
+<li>antd：前端 UI 组件，类似 Bootstrap</li>
 </ul>
-</li>
-</ul>
+
+<p>
+所以，Pro 是什么？就是把这些组件全部封装起来，然后提供了一些范例。比较适合我这种不关心也不想深入学习前端技术，只想作为技术手段来实现前端开发的人。对于，一个专业的前端开发者，我不认为
+Pro 是一个很好选择，直接使用 React 原生的脚手架 create-react-app +
+webpack + antd 更好，或者使用 umi 也行。
+</p>
+
+<p>
+Pro 没做什么太多额外的事情，而且臃肿的例子，删都要删除好久。目前还没有更好的解决方案。可以看我提的 <a href="https://github.com/ant-design/ant-design-pro/issues/2250">issue</a>。
+</p>
+
+<p>
+Pro 缺陷也是优势，对于我这样的伪前端（也不想深入）的人，只需要学习一下 ES6 和 React，然后照葫芦画瓢就可以开始写前端了。
+</p>
 </div>
 </div>
 
-<div id="outline-container-org5070326" class="outline-2">
-<h2 id="org5070326"><span class="section-number-2">1</span> 安装</h2>
-<div class="outline-text-2" id="text-1">
-</div>
-<div id="outline-container-orgc173343" class="outline-3">
-<h3 id="orgc173343"><span class="section-number-3">1.1</span> Linux，Mac OS X 或者 FreeBSD 安装</h3>
-<div class="outline-text-3" id="text-1-1">
+<div id="outline-container-org7474eb3" class="outline-2">
+<h2 id="org7474eb3"><span class="section-number-2">2</span> 如何评价 Pro 2.0</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+从 1.0 之前切换到 2.0，起初我是很抗拒的，因为 2.0 又加了很多乱七八糟的东西，改动比较大，菜单和路由合并了，这对于路由多的项目维护起来简直就是噩梦。
+</p>
+
+<p>
+再加上鉴权系统变得更加的复杂了，我对 Pro 的鉴权系统一直都持否定的态度，鸡肋，需要的满足不了，不需要的剥离很费劲。
+</p>
+
+<p>
+但是没办法啊，谁要自己前端菜呢，硬着头皮用了 2.0，砍无用的东西看了半天开才正式开始写（qwerty-client 就是这样）。用的时间长了，觉得 2.0 还是很不错的。直观上有几个地方值得夸赞：
+</p>
+
 <ol class="org-ol">
-<li>前往<a href="https://golang.org/dl/">官网</a>，下载二进制包</li>
-<li>直接解压到 <code>/usr/local</code> 目录下： <code>tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar</code> （root 用户或者 sudo 执行）</li>
-<li>将 <code>/usr/local/go/bin</code> 添加 <code>PATH</code> 环境变量中，你可以将 <code>export PATH=$PATH:/usr/local/go/bin</code> 追加到 <code>/etc/profile</code> 或者 <code>~/.profile</code> 文件中</li>
-<li>执行 <code>go version</code> 看是否安装成功</li>
+<li>配置更统一了，全部都在 config 文件下（用 umi 替代了 roadhog 之后）</li>
+<li>默认支持按需加载，撒花</li>
+<li>model 支持 page model，即 page 私有的 model 只需要放在 page 自己的
+models 文件夹下，无需像以前一样在 router 中注入，具体可以查看 umi
+的文档</li>
+<li>默认配置 alias，添加 <code>@/</code> 别名到 <code>src</code> 目录，引用模块更加方便了</li>
 </ol>
 
 <p>
-设置工作目录：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell"><span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">GOROOT</span>=$<span style="color: #BA36A5;">HOME</span>/projects
-<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #BA36A5;">GOROOT</span>/bin
-</pre>
-</div>
-
-<p>
-将上面代码添加到 <code>~/.profile</code> 中。 <i>这里假定你的工作目录是 <code>projects</code> ，你也可以换成别的名字。</i>
+当然国际化这种功能我是不关心的。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org729793d" class="outline-3">
-<h3 id="org729793d"><span class="section-number-3">1.2</span> 测试是否安装正确</h3>
-<div class="outline-text-3" id="text-1-2">
+<div id="outline-container-orgf316be2" class="outline-2">
+<h2 id="orgf316be2"><span class="section-number-2">3</span> Pro 和 UmiJS</h2>
+<div class="outline-text-2" id="text-3">
 <p>
-切换到工作目录下（不是必须，但是建议这么做），创建目录 <code>src/hello</code> ，新建文件 <code>hello.go</code> ，写下经典的 <code>hello, world</code> ：
+Pro 封装了 umi，umi 配置文件为 <code>.umirc.js</code> 或 <code>config/config.js</code> ，Pro 中使用 <code>config/config.js</code> ，但是进行了一定的改造。
 </p>
 
-<div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">package</span> main
-
-<span style="color: #0000FF;">import</span> <span style="color: #008000;">"fmt"</span>
-
-<span style="color: #0000FF;">func</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-    fmt.<span style="color: #006699;">Println</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"hello, world"</span><span style="color: #7388D6;">)</span>
-<span style="color: #707183;">}</span>
-</pre>
-</div>
-
 <p>
-然后编译运行：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-go">$ cd $HOME/projects/src/hello
-$ <span style="color: #0000FF;">go</span> build
-$ ./hello
-hello, world
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org10dd67d" class="outline-3">
-<h3 id="org10dd67d"><span class="section-number-3">1.3</span> GOROOT 和 GOPATH 环境变量</h3>
-<div class="outline-text-3" id="text-1-3">
-<p>
-GOPATH 是为了解决导入问题，用来显示 Go 代码的位置。GOPATH 必须按照规定的结构：
+相关配置需求可以查看这两篇文档：
 </p>
 
 <ul class="org-ul">
-<li><code>src</code> 目录是用来放源代码，src 下的路径决定了导入路径和可执行文件的名称</li>
-<li><code>pkg</code> 目录用来存放已安装的软件包对象，每个目标的操作系统和架构对都有自己的 pkg 子目录（pkg/GOOS<sub>GOARCH</sub>）</li>
-<li><code>bin</code> 目录用来放已经编译好的命令，比如 <code>gocode~，~godef</code> 等</li>
+<li><a href="https://pro.ant.design/docs/upgrade-v2-cn#%E6%B7%BB%E5%8A%A0%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-config/config.js">Pro：配置说明</a></li>
+<li><a href="https://umijs.org/zh/config/">UmiJS 所有配置项</a></li>
 </ul>
 
 <p>
-GOROOT：Go 的二进制分布在 <code>/usr/local/go</code> 下，但是 Go 工具有可能放在不同的位置下，这种情况下你可以将 GOROOT 指向不同的位置，注意 GOROOT 在需要自定义安装位置的时候才是必须要设置的，所以 GOROOT 是可选的。
+Pro <code>0.x</code> 版本和 <code>1.x</code> 版本 <code>npm run start</code> 进度卡到 <code>91%</code> 问题，可通过 <code>HARD_SOURCE=none npm start</code> 来解决，一些讨论见：<a href="https://github.com/ant-design/ant-design-pro/issues/1520">https://github.com/ant-design/ant-design-pro/issues/1520</a> 。
 </p>
 
 <p>
-添加 GOPATH 和 GOROOT：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell"><span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">GOPATH</span>=$<span style="color: #BA36A5;">HOME</span>/projects
-<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #BA36A5;">GOPATH</span>/bin
-<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">GOROOT</span>=$<span style="color: #BA36A5;">HOME</span>/go1.10
-<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #BA36A5;">GOROOT</span>/bin
-</pre>
-</div>
-
-<p>
-将上面代码添加到 <code>$HOME/.profile</code> 下。
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org765615e" class="outline-2">
-<h2 id="org765615e"><span class="section-number-2">2</span> 卸载</h2>
-<div class="outline-text-2" id="text-2">
-<ol class="org-ol">
-<li>删除 <code>/usr/local/go</code> 目录</li>
-<li>编辑 <code>/etc/profile</code> 或者 <code>$HOME/profile</code> 移除 <code>PATH</code> 环境变量中的 go bin 路径</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-orgd9874e2" class="outline-2">
-<h2 id="orgd9874e2"><span class="section-number-2">3</span> 工具链</h2>
-<div class="outline-text-2" id="text-3">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">名称</th>
-<th scope="col" class="org-left">说明</th>
-<th scope="col" class="org-left">安装</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">gocode</td>
-<td class="org-left">自动补全守护进程</td>
-<td class="org-left"><code>go get -u -v github.com/mdempsky/gocode</code></td>
-</tr>
-
-<tr>
-<td class="org-left">gopls</td>
-<td class="org-left">LSP server for Go</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/gopls</code></td>
-</tr>
-
-<tr>
-<td class="org-left">godef</td>
-<td class="org-left">find symbol information in Go source</td>
-<td class="org-left"><code>go get -u -v github.com/rogpeppe/godef</code></td>
-</tr>
-
-<tr>
-<td class="org-left">guru</td>
-<td class="org-left">a tool for answering questions about Go source code</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/guru</code></td>
-</tr>
-
-<tr>
-<td class="org-left">gorename</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/gorename</code></td>
-</tr>
-
-<tr>
-<td class="org-left">goimports</td>
-<td class="org-left">自动引入和删除包，这个牛逼了</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/goimports</code></td>
-</tr>
-
-<tr>
-<td class="org-left">godoc</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/godoc</code></td>
-</tr>
-</tbody>
-</table>
-
-<p>
-<i>部分工具需要 FQ 才能安装。</i>
+<code>2.0</code> 之后似乎没有这个问题了，但是有个另外一个问题，每次修改了 less 文件之后，编译速度特别慢（less 每次都要全量编译，cpu 不好的话速度会很慢），解决办法是删掉 <code>/config/plugin.config.js</code> 文件。
+删掉之后影响的是换主题，但是换主题实际在使用中基本上没啥用。讨论见：<a href="https://github.com/ant-design/ant-design-pro/issues/2947">https://github.com/ant-design/ant-design-pro/issues/2947</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6b8df51" class="outline-2">
-<h2 id="org6b8df51"><span class="section-number-2">4</span> 跨平台编译</h2>
+<div id="outline-container-org3b3dad9" class="outline-2">
+<h2 id="org3b3dad9"><span class="section-number-2">4</span> 部署时，文件名添加 hash 值</h2>
 <div class="outline-text-2" id="text-4">
 <p>
-1.5 版本之后，Go 支持跨平台编译（碉堡的一个功能），在编译之前指定 <code>$GOOS</code> 和 <code>$GOARCH</code> 两个环境变量即可。这两个环境变量分别表示的目标的操作系统和编译体系架构的名称。常用的值：
-</p>
-
-<ul class="org-ul">
-<li><code>GOOS~：~android~、~darwin~、~freebsd~、~linux~、~windows</code></li>
-<li><code>GOARCH~：~arm~、~amd64~、~386</code></li>
-</ul>
-
-<p>
-完整的可选值在 <a href="https://golang.org/doc/install/source#environment">Optional environment variables</a>。
+2.0 之后，=npm run build= 生成的 css 和 js 文件名不再包含 hash 值，这样会导致即便 nginx 设置了 <code>index.html</code> 不缓存，因为 css 和 js 每个版本的名字都是一样的，导致新版本更新之后，用户只有强制刷新浏览器才能生效。
 </p>
 
 <p>
-比如在 MacOS 上编译 CentOS7 下的二进制包： <code>GOOS=linux GOARCH=amd64 go build main</code> 。
+解决办法是在 <code>/config/config.js</code> 中添加 =hash:true=，这是 umi 的一个配置特性：
 </p>
 
 <p>
-相关的 Stackoverflow 帖子：<a href="https://stackoverflow.com/questions/20728767/all-possible-goos-value">All possible GOOS value?</a> 中说明在 Go 1.7 之后，可以使用 <code>go tool dist list -json</code> 来显示可选的值（不加 <code>-json</code> 参数将显示为文本）。
+<a href="https://umijs.org/zh/config/#hash">https://umijs.org/zh/config/#hash</a>
 </p>
 </div>
-
-<div id="outline-container-orgb85788c" class="outline-3">
-<h3 id="orgb85788c"><span class="section-number-3">4.1</span> 开发环境</h3>
-<div class="outline-text-3" id="text-4-1">
-<p>
-<a href="gocode.html">gocode</a>
-</p>
 </div>
+
+<div id="outline-container-org6b5686f" class="outline-2">
+<h2 id="org6b5686f"><span class="section-number-2">5</span> npm run start 报错</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+<code>npm run start</code> 的时候，报错：
+</p>
+
+<blockquote>
+<p>
+Module build failed: Error: The 'decorators' plugin requires a
+'decoratorsBeforeExport' option, whose value must be a boolean. If you
+are migrating from Babylon/Babel 6 or want to use the old decorators
+proposal, you should use the 'decorators-legacy' plugin instead of
+'decorators'.
+</p>
+</blockquote>
+
+<p>
+解决的办法是用 <code>npm install</code> ，不要使用 cnpm 这种镜像。讨论在 <a href="https://github.com/ant-design/ant-design-pro/issues/2043">ant-design-pro issues#2043 </a>，好像也没有看到具体的原因，应该是依赖问题。
+</p>
+
+<p>
+之前用 npm 的时候也有类似的情况，一般是因为包依赖有问题，因为是镜像缘故，包的同步总会有先后顺序，卡到中间的时候就会出现依赖版本问题。
+</p>
+
+<p>
+其实不光是 npm，其它的镜像也会出这种情况，比如 Emacs 的源引发的问题：<a href="https://github.com/abo-abo/swiper/issues/2087">swiper issue#2087</a>
+</p>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Date: 2017-12-07 09:41:24</p>
+<p class="date">Date: 2019-06-03 17:37</p>
 <p class="author">Author: JerryZhang</p>
 <p class="validation"></p>
 </div>

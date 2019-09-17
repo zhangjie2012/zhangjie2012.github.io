@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>构建环境</title>
+<title>Go 包选择与对比</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -231,245 +231,159 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">构建环境</h1>
+<h1 class="title">Go 包选择与对比</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5070326">1. 安装</a>
+<li><a href="#orge5bdce6">1. 日志</a>
 <ul>
-<li><a href="#orgc173343">1.1. Linux，Mac OS X 或者 FreeBSD 安装</a></li>
-<li><a href="#org729793d">1.2. 测试是否安装正确</a></li>
-<li><a href="#org10dd67d">1.3. GOROOT 和 GOPATH 环境变量</a></li>
+<li><a href="#org465ad2d">1.1. 标准库</a></li>
+<li><a href="#org699e837">1.2. google/glog</a></li>
+<li><a href="#org8110c23">1.3. sirupsen/logrus</a></li>
+<li><a href="#orgc9614ff">1.4. uber-go/zap</a></li>
+<li><a href="#orgb2533bd">1.5. 结论</a></li>
 </ul>
 </li>
-<li><a href="#org765615e">2. 卸载</a></li>
-<li><a href="#orgd9874e2">3. 工具链</a></li>
-<li><a href="#org6b8df51">4. 跨平台编译</a>
-<ul>
-<li><a href="#orgb85788c">4.1. 开发环境</a></li>
-</ul>
-</li>
+<li><a href="#org0d4c60b">2. Redis</a></li>
+<li><a href="#org52bf2bb">3. Mongo</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5070326" class="outline-2">
-<h2 id="org5070326"><span class="section-number-2">1</span> 安装</h2>
+
+<div id="outline-container-orge5bdce6" class="outline-2">
+<h2 id="orge5bdce6"><span class="section-number-2">1</span> 日志</h2>
 <div class="outline-text-2" id="text-1">
+<p>
+可能是 Go 尚年轻，行业对 Go 的应用领域还比较宽泛，也可能是开源的缘故，Go package 普遍造轮子的现象比较明显。
+</p>
+
+<p>
+对于日志包也是如此，没有像 google/glog 和 log4plus 之于 C++ 这么权威。尝试了一些的 Go logging package，结论如下：
+</p>
 </div>
-<div id="outline-container-orgc173343" class="outline-3">
-<h3 id="orgc173343"><span class="section-number-3">1.1</span> Linux，Mac OS X 或者 FreeBSD 安装</h3>
+
+<div id="outline-container-org465ad2d" class="outline-3">
+<h3 id="org465ad2d"><span class="section-number-3">1.1</span> 标准库</h3>
 <div class="outline-text-3" id="text-1-1">
-<ol class="org-ol">
-<li>前往<a href="https://golang.org/dl/">官网</a>，下载二进制包</li>
-<li>直接解压到 <code>/usr/local</code> 目录下： <code>tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar</code> （root 用户或者 sudo 执行）</li>
-<li>将 <code>/usr/local/go/bin</code> 添加 <code>PATH</code> 环境变量中，你可以将 <code>export PATH=$PATH:/usr/local/go/bin</code> 追加到 <code>/etc/profile</code> 或者 <code>~/.profile</code> 文件中</li>
-<li>执行 <code>go version</code> 看是否安装成功</li>
-</ol>
-
 <p>
-设置工作目录：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell"><span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">GOROOT</span>=$<span style="color: #BA36A5;">HOME</span>/projects
-<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #BA36A5;">GOROOT</span>/bin
-</pre>
-</div>
-
-<p>
-将上面代码添加到 <code>~/.profile</code> 中。 <i>这里假定你的工作目录是 <code>projects</code> ，你也可以换成别的名字。</i>
+功能较少，不同级别的日志区分不开，小的测试项目可以取代 fmt 来 debug。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org729793d" class="outline-3">
-<h3 id="org729793d"><span class="section-number-3">1.2</span> 测试是否安装正确</h3>
+<div id="outline-container-org699e837" class="outline-3">
+<h3 id="org699e837"><span class="section-number-3">1.2</span> <a href="https://github.com/golang/glog">google/glog</a></h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
-切换到工作目录下（不是必须，但是建议这么做），创建目录 <code>src/hello</code> ，新建文件 <code>hello.go</code> ，写下经典的 <code>hello, world</code> ：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">package</span> main
-
-<span style="color: #0000FF;">import</span> <span style="color: #008000;">"fmt"</span>
-
-<span style="color: #0000FF;">func</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-    fmt.<span style="color: #006699;">Println</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"hello, world"</span><span style="color: #7388D6;">)</span>
-<span style="color: #707183;">}</span>
-</pre>
-</div>
-
-<p>
-然后编译运行：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-go">$ cd $HOME/projects/src/hello
-$ <span style="color: #0000FF;">go</span> build
-$ ./hello
-hello, world
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org10dd67d" class="outline-3">
-<h3 id="org10dd67d"><span class="section-number-3">1.3</span> GOROOT 和 GOPATH 环境变量</h3>
-<div class="outline-text-3" id="text-1-3">
-<p>
-GOPATH 是为了解决导入问题，用来显示 Go 代码的位置。GOPATH 必须按照规定的结构：
+google 类似 C++ 日志版本的 Go 版本，性能较好，使用也比较简单。
 </p>
 
 <ul class="org-ul">
-<li><code>src</code> 目录是用来放源代码，src 下的路径决定了导入路径和可执行文件的名称</li>
-<li><code>pkg</code> 目录用来存放已安装的软件包对象，每个目标的操作系统和架构对都有自己的 pkg 子目录（pkg/GOOS<sub>GOARCH</sub>）</li>
-<li><code>bin</code> 目录用来放已经编译好的命令，比如 <code>gocode~，~godef</code> 等</li>
+<li>优点：代码很短，性能好，易用性较好，稳定；K8s 内置的就是 glog，不过最近好像要基于 glog 做二次开发 <a href="https://github.com/kubernetes/klog">klog</a>；</li>
+<li>缺点：已经四五年没更新了···，日志级别区分的比较乱，需要二次封装</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8110c23" class="outline-3">
+<h3 id="org8110c23"><span class="section-number-3">1.3</span> <a href="https://github.com/sirupsen/logrus">sirupsen/logrus</a></h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+结构化的，可插拔的日志系统。
+</p>
+
+<ul class="org-ul">
+<li>优点：业内评价较高，易用性好，定制化也很强，人性化。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc9614ff" class="outline-3">
+<h3 id="orgc9614ff"><span class="section-number-3">1.4</span> <a href="https://github.com/uber-go/zap">uber-go/zap</a></h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+Uber 开源的日志系统。
+</p>
+
+<ul class="org-ul">
+<li>优点：性能 <span class="underline"><span class="underline">非常</span></span> 好</li>
+<li>缺点：可能是设计就是为了设计之初就是为了高性能，定制性很强，就是非常不人性化，以至于不知道怎么定制···，好在有这个 <a href="https://github.com/sandipb/zap-examples">sandipb/zap-examples</a></li>
 </ul>
 
 <p>
-GOROOT：Go 的二进制分布在 <code>/usr/local/go</code> 下，但是 Go 工具有可能放在不同的位置下，这种情况下你可以将 GOROOT 指向不同的位置，注意 GOROOT 在需要自定义安装位置的时候才是必须要设置的，所以 GOROOT 是可选的。
-</p>
-
-<p>
-添加 GOPATH 和 GOROOT：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell"><span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">GOPATH</span>=$<span style="color: #BA36A5;">HOME</span>/projects
-<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #BA36A5;">GOPATH</span>/bin
-<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">GOROOT</span>=$<span style="color: #BA36A5;">HOME</span>/go1.10
-<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #BA36A5;">GOROOT</span>/bin
-</pre>
-</div>
-
-<p>
-将上面代码添加到 <code>$HOME/.profile</code> 下。
+性能相比： <code>zap &gt; glog &gt; logrus &gt; log</code> ，值得一提的是，zap 是远大于 glog 和 logrus 的。
 </p>
 </div>
 </div>
+
+<div id="outline-container-orgb2533bd" class="outline-3">
+<h3 id="orgb2533bd"><span class="section-number-3">1.5</span> 结论</h3>
+<div class="outline-text-3" id="text-1-5">
+<ul class="org-ul">
+<li>高性能的系统，推荐使用 zap；</li>
+<li>业务系统推荐使用 logrus，glog 的日志级别（ <code>V()</code> ）很容易误导开发人员，个人体验并不是很好。</li>
+</ul>
+</div>
+</div>
 </div>
 
-<div id="outline-container-org765615e" class="outline-2">
-<h2 id="org765615e"><span class="section-number-2">2</span> 卸载</h2>
+<div id="outline-container-org0d4c60b" class="outline-2">
+<h2 id="org0d4c60b"><span class="section-number-2">2</span> Redis</h2>
 <div class="outline-text-2" id="text-2">
+<p>
+redis go clients: <a href="https://redis.io/clients#go">https://redis.io/clients#go</a>
+</p>
+
+<p>
+推荐两个：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://github.com/go-redis/redis">go-redis/redis</a>：对 Redis 命令进行了封装，易用性也好，支持集群</li>
+<li><a href="https://github.com/gomodule/redigo">gomodule/redigo</a>：不支持集群，更接近原生的 Redis 的使用方法（Print-like API），并且提供了常用基本类型的转换方法，统一的结果处理方法。用习惯了觉得非常简单</li>
+</ul>
+
+<p>
+各有优劣势，看个人喜好和业务场景：
+</p>
+
 <ol class="org-ol">
-<li>删除 <code>/usr/local/go</code> 目录</li>
-<li>编辑 <code>/etc/profile</code> 或者 <code>$HOME/profile</code> 移除 <code>PATH</code> 环境变量中的 go bin 路径</li>
+<li>轻度依赖缓存，量也不是很大的情况下，推荐使用 redigo，感觉上比 go-redis 要方便一些</li>
+<li>重度依赖缓存，量很大，使用 go-redis，特性支持的好，主要对 Cluster 方便容量扩展</li>
 </ol>
 </div>
 </div>
-
-<div id="outline-container-orgd9874e2" class="outline-2">
-<h2 id="orgd9874e2"><span class="section-number-2">3</span> 工具链</h2>
+<div id="outline-container-org52bf2bb" class="outline-2">
+<h2 id="org52bf2bb"><span class="section-number-2">3</span> Mongo</h2>
 <div class="outline-text-2" id="text-3">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">名称</th>
-<th scope="col" class="org-left">说明</th>
-<th scope="col" class="org-left">安装</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">gocode</td>
-<td class="org-left">自动补全守护进程</td>
-<td class="org-left"><code>go get -u -v github.com/mdempsky/gocode</code></td>
-</tr>
-
-<tr>
-<td class="org-left">gopls</td>
-<td class="org-left">LSP server for Go</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/gopls</code></td>
-</tr>
-
-<tr>
-<td class="org-left">godef</td>
-<td class="org-left">find symbol information in Go source</td>
-<td class="org-left"><code>go get -u -v github.com/rogpeppe/godef</code></td>
-</tr>
-
-<tr>
-<td class="org-left">guru</td>
-<td class="org-left">a tool for answering questions about Go source code</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/guru</code></td>
-</tr>
-
-<tr>
-<td class="org-left">gorename</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/gorename</code></td>
-</tr>
-
-<tr>
-<td class="org-left">goimports</td>
-<td class="org-left">自动引入和删除包，这个牛逼了</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/goimports</code></td>
-</tr>
-
-<tr>
-<td class="org-left">godoc</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/godoc</code></td>
-</tr>
-</tbody>
-</table>
-
 <p>
-<i>部分工具需要 FQ 才能安装。</i>
+MongoDB 官方在 2018 年的 2 月 14 日发布了 MongoDB Go Driver Alpha 版本，四天前发布了第一个正式版本，算是很晚了。
 </p>
-</div>
-</div>
 
-<div id="outline-container-org6b8df51" class="outline-2">
-<h2 id="org6b8df51"><span class="section-number-2">4</span> 跨平台编译</h2>
-<div class="outline-text-2" id="text-4">
 <p>
-1.5 版本之后，Go 支持跨平台编译（碉堡的一个功能），在编译之前指定 <code>$GOOS</code> 和 <code>$GOARCH</code> 两个环境变量即可。这两个环境变量分别表示的目标的操作系统和编译体系架构的名称。常用的值：
+以前社区主要维护的是 <code>gopkg.in/mgo.v2</code> 已经七年了，用的人比较多，但是目前已经不在维护了（不维护的主要原因是作者已经不再使用 MongoDB，并且维护一个好的项目太耗费时间而没带来什么好处）。
+</p>
+
+<p>
+如何选择是比较难的，官方的 mongo-go-driver 只有 1.0 版本，另外一个虽然成熟稳定，但是不再维护，不再维护意味着 Bug 不再修，更重要的是 MongoDB 版本还在更新，很多特性的支持不足甚至会出现不兼容的情况。
+</p>
+
+<p>
+<a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a> 和 <a href="https://github.com/go-mgo/mgo">mgo.v2</a> 都用过，一点建议：
 </p>
 
 <ul class="org-ul">
-<li><code>GOOS~：~android~、~darwin~、~freebsd~、~linux~、~windows</code></li>
-<li><code>GOARCH~：~arm~、~amd64~、~386</code></li>
+<li>目前依旧建议使用 mgo.v2 企业不比社区，稳定性第一位，而且 MongoDB 版本的升级不一定会导致业务使用的 MongoDB 升级</li>
+<li>可以持续观望 mongo-go-driver，官方支持肯定靠谱，怕的是不兼容的更新，再等个一年左右多发几个正式版再说</li>
+<li>就使用体验而言 mongo-go-driver 比 mgo.v2 要好一些， <code>bson.D</code> 比 <code>bson.M</code> 好用一些，就是文档范例不够完善，不知道怎么用，以前用的时候，不得已只能翻他自己的测试用例。有个小项目用的是 Beta  版本，看到后几次版本发布，欲哭无泪（各种不兼容更新），还不知道咋搞呢···</li>
 </ul>
-
-<p>
-完整的可选值在 <a href="https://golang.org/doc/install/source#environment">Optional environment variables</a>。
-</p>
-
-<p>
-比如在 MacOS 上编译 CentOS7 下的二进制包： <code>GOOS=linux GOARCH=amd64 go build main</code> 。
-</p>
-
-<p>
-相关的 Stackoverflow 帖子：<a href="https://stackoverflow.com/questions/20728767/all-possible-goos-value">All possible GOOS value?</a> 中说明在 Go 1.7 之后，可以使用 <code>go tool dist list -json</code> 来显示可选的值（不加 <code>-json</code> 参数将显示为文本）。
-</p>
-</div>
-
-<div id="outline-container-orgb85788c" class="outline-3">
-<h3 id="orgb85788c"><span class="section-number-3">4.1</span> 开发环境</h3>
-<div class="outline-text-3" id="text-4-1">
-<p>
-<a href="gocode.html">gocode</a>
-</p>
-</div>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Date: 2017-12-07 09:41:24</p>
+<p class="date">Date: 2019-03-14 17:50:00</p>
 <p class="author">Author: JerryZhang</p>
 <p class="validation"></p>
 </div>
