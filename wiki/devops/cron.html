@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Blog</title>
+<title>crontab</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -181,7 +181,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -231,34 +231,93 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Blog</h1>
+<h1 class="title">crontab</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge02d1b3">1. 基本配置</a></li>
+<li><a href="#org337f7bc">2. 配置实践</a></li>
+<li><a href="#orged97a7b">3. crontab 样例</a></li>
+</ul>
+</div>
+</div>
+<p>
+crontab 是 Linux 下的定时器。常见的使用方式：
+</p>
 
-<div id="outline-container-orgf0682b8" class="outline-2">
-<h2 id="orgf0682b8">2019</h2>
-<div class="outline-text-2" id="text-orgf0682b8">
 <ul class="org-ul">
-<li>09-04: <a href="2019/build-site-with-org-mode.html">拥抱 org-mode</a></li>
-<li>03-03: <a href="2019/best-practices-for-docker-deploy-django.html">使用 Docker 部署 Django Web server 最佳实践</a></li>
-<li>03-04: <a href="2019/2018-reading.html">2018 价值阅读</a></li>
-<li>01-28: <a href="2019/javascript-null-vs-undefined.html">Javascript null vs undefined</a></li>
+<li><code>crontab -l [user]</code> ：查看 user 用户的 crontab</li>
+<li><code>crontab -e [user]</code> ：编辑 user 用户的 crontab</li>
+<li><code>crontab -d [user]</code> ：删除 user 用户的 crontab</li>
+</ul>
+
+<p>
+<code>user</code> 是可选的，如果不设置则表示当前用户。
+</p>
+
+<div id="outline-container-orge02d1b3" class="outline-2">
+<h2 id="orge02d1b3"><span class="section-number-2">1</span> 基本配置</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+基本格式：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">* * * * * command
+</pre>
+</div>
+
+<p>
+分别表示，分、时、日、月、周 和 执行命令。
+</p>
+
+<ul class="org-ul">
+<li>分，=0-59= , 每分钟用 <code>*</code> 或者 <code>*/1</code> 表示</li>
+<li>时，=0-23= , <code>1</code> 表示凌晨一点</li>
+<li>天，=1-31=</li>
+<li>月，=1-12=</li>
+<li>周，=0-6= ，从星期天开始</li>
+<li>command，就是执行命令，使用时请使用命令的绝对路径，比如 <code>/user/local/bin/python</code> 而不是 <code>python</code></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org52ac934" class="outline-2">
-<h2 id="org52ac934">2018</h2>
-<div class="outline-text-2" id="text-org52ac934">
+<div id="outline-container-org337f7bc" class="outline-2">
+<h2 id="org337f7bc"><span class="section-number-2">2</span> 配置实践</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+以分钟为例，
+</p>
+
 <ul class="org-ul">
-<li>12-17: <a href="2018/an-overall-view-on-docker-ecosystem-containers-moby-swarm-linuxkit-containerd-kubernete.html">{译} Docker 生态系统一览 - Containers, Moby, Swarm, Linuxkit, containerd, Kubernetes ..</a></li>
-<li>12-15: <a href="2018/different-from-docker-and-vm.html">{译} Docker 和 VM 的区别</a></li>
-<li>12-06: <a href="2018/go-http-get-close-body.html">Go http.Get 是必须要 close response body</a></li>
-<li>12-06: <a href="2018/go-flag-usage.html">flag 中的 usage 一个细节</a></li>
-<li>10-25: <a href="2018/redis-cluster-hash.html">Redis cluster 中的 hashing</a></li>
-<li>10-24: <a href="2018/consistent-hashing.html">{译} 一致性 hash 指南</a></li>
-<li>09-08: <a href="2018/docker-run-django-project.html">使用 Docker 运行 Django 项目</a></li>
+<li><code>crontab</code> 最小的单位是 <code>分钟</code> ，所以没有比分钟更小的粒度了。</li>
+<li><code>/</code> 表示 <code>每=，在分钟上 =*/2</code> 表示每两分钟，=*/1= 跟 <code>*</code> 相同表示每分钟</li>
+<li>直接写数值表示的是固定时间触发，=2= 表示 2 分的时候执行</li>
+<li><code>a-b</code> 表示时间段，=2-10= 表示 2 到 10 分钟之间每分钟都执行</li>
+<li><code>a,b,c</code> 逗号分隔，表示该时间点触发，=10,30= 表示 10 分和 30 分时执行</li>
+<li>如果你不关心命令的执行结果，可以在命令后添加 <code>&gt; /dev/null 2&gt;&amp;1</code> ，也可以将结果定向到某个文件中，方便出错后查看</li>
 </ul>
 </div>
 </div>
+
+<div id="outline-container-orged97a7b" class="outline-2">
+<h2 id="orged97a7b"><span class="section-number-2">3</span> crontab 样例</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><code>0 0 * * * /data/backupdb</code> ：在每天的 <code>00:00</code> 备份 DB</li>
+<li><code>*/2 * * * * /data/ping</code> ：每两分钟做一次 ping 检测</li>
+<li><code>30 18 * * * 5 /data/weeky</code> ：每周五的 <code>18:30</code> 发周报，你懂的</li>
+<li><code>* */2 * * * /data/backupdb</code> ：每两小时备份一次 DB</li>
+<li><code>0 9 * * 1-5 /data/sign</code> ：每周的周一到周五的早上 <code>09:00</code> 签到</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2017-12-04 11:37:43</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
 </div>
 </body>
 </html>
