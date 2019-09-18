@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Django 实现分库</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Django 实现分库</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#新建项目">1. 新建项目</a></li>
+<li><a href="#数据库配置">2. 数据库配置</a></li>
+<li><a href="#创建数据库">3. 创建数据库</a></li>
+<li><a href="#添加模型类">4. 添加模型类</a></li>
+<li><a href="#数据库路由器">5. 数据库路由器</a></li>
+<li><a href="#分库使用">6. 分库使用</a>
+<ul>
+<li><a href="#自动选择一个库">6.1. 自动选择一个库</a></li>
+</ul>
+</li>
+<li><a href="#结尾">7. 结尾</a></li>
+</ul>
+</div>
+</div>
+<p>
+网站后端的数据库随着业务的不断扩大，用户的累积，数据库的压力会逐渐增大。一种办法是优化使用方法，也就是的优化
+SQL
+语句啦，添加缓存以达到减少存取的目的；另外一种办法是修改使用架构，在数据库层面上「分库分表」。
+</p>
+
+<p>
+以前做手游服务器的时候，数据库用的是 NxM 的结构，即 N 个数据库，M
+个表。通过用户 ID
+哈希把不同的用户分布到不同的表中，以达到「均衡」的目的。分库分表是很常见的解决数据库压力的方法，适用于很多业务场景，比如社交类app，用户表、用户评论这种只会不断累加但不会删除。
+</p>
+
+<p>
+我遇到一个刚需的例子是：日志统计平台，当然少不了日志存储。日志的特性是相互之间没有任何关联(业务简单)，一直会增量上报(量大)，单表存储，很快就会有查询性能问题。这是可能最合适的分库分表的业务场景了。
+</p>
+
+<p>
+ORM 几乎是数据库切分的「天敌」(本质上他们有这不同的设计策略)。而我用的是
+Django，Django 的 ORM
+基本上就可以「分表」说再见了，一个模型对应一个表，如果要 10 个表，就要写
+10 个模型，使用上麻烦，而且不容易扩展和维护。Django
+提供了同时使用多数据库的方法，通过配置路由规则来选择使用的数据库，看起来是的「垂直分库」变的可行，这篇文章将介绍在日志统计平台中如何实现日志存储的分库。
+</p>
+
+<blockquote>
+<p>
+BTW，在此之前我的日志系统是我自己脱离 Django 直接封装了一层 MySQL
+的使用接口，实现 10*10
+的日志存储库表结构，用了一段时间也没出现问题。缺陷就是增加新功能的时候太过繁琐，为不同业务的查询封装了多个接口，最蛋疼的时候没有
+django <code>migrate</code> 这样的工具，增加、删除字段会变的很复杂。
+</p>
+</blockquote>
+
+<p>
+日志统计平台有自身的业务，以及其它要存储的数据用 <code>default</code>
+来存储，日志自身的存储将被分成 10 个库，然后按照服务器 ID 哈希到这 10
+个库中。库的别名为 <code>sharding0</code>, <code>sharding1</code>, &#x2026;, =sharding9=。
+</p>
+
+<div id="outline-container-org6ab8b4e" class="outline-2">
+<h2 id="新建项目"><a id="org6ab8b4e"></a><span class="section-number-2">1</span> 新建项目</h2>
+<div class="outline-text-2" id="text-新建项目">
+<p>
+首先创建一个 <code>logstat</code> 的项目，然后一个创建 <code>report</code> 的 app。
+</p>
+
+<pre class="example">
+&gt;&gt;&gt; django-admin startproject logstat
+&gt;&gt;&gt; cd logstat
+&gt;&gt;&gt; django-startapp report
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org19462ef" class="outline-2">
+<h2 id="数据库配置"><a id="org19462ef"></a><span class="section-number-2">2</span> 数据库配置</h2>
+<div class="outline-text-2" id="text-数据库配置">
+<p>
+配置 <code>setting</code> 中配置 <code>default</code> DATABASES：
+</p>
+
+<pre class="example">
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'logstat',
+        'USER': 'logstat_user',
+        'PASSWORD': 'logstat_password',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'CHARSET': 'utf8',
+    },
+}
+</pre>
+
+<p>
+接下来配置分库日志的数据库，为了 demo 写起来方便，改成 2 个库：
+</p>
+
+<pre class="example">
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'logstat',
+        'USER': 'logstat_user',
+        'PASSWORD': 'logstat_password',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'CHARSET': 'utf8',
+    },
+    'logsharding0': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'logsharding0',
+        'USER': 'logstat_user',
+        'PASSWORD': 'logstat_password',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'CHARSET': 'utf8',
+    },
+    'logsharding1': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'logsharding1',
+        'USER': 'logstat_user',
+        'PASSWORD': 'logstat_password',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'CHARSET': 'utf8',
+    },
+}
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgf942521" class="outline-2">
+<h2 id="创建数据库"><a id="orgf942521"></a><span class="section-number-2">3</span> 创建数据库</h2>
+<div class="outline-text-2" id="text-创建数据库">
+<pre class="example">
+create database logstat charset='utf8';
+grant all on logstat.* to 'logstat_user'@localhost identified by 'logstat_password';
+create database logsharding0 charset='utf8';
+grant all on logsharding0.* to 'logstat_user'@localhost identified by 'logstat_password';
+create database logsharding1 charset='utf8';
+grant all on logsharding1.* to 'logstat_user'@localhost identified by 'logstat_password';
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org98b54c6" class="outline-2">
+<h2 id="添加模型类"><a id="org98b54c6"></a><span class="section-number-2">4</span> 添加模型类</h2>
+<div class="outline-text-2" id="text-添加模型类">
+<p>
+在 <code>logstat/report/models.py</code> 中添加我们要存储的日志格式：
+</p>
+
+<pre class="example">
+class Log(models.Model):
+    serverid = models.IntegerField('服务器ID')
+    logid = models.IntegerField('日志类型')
+    desc = models.TextField('日志内容', blank=True)
+    report_dt = models.DateTimeField('上报时间')
+</pre>
+
+<p>
+然后将 app 添加到 <code>INSTALLED_APPS</code> 中。=./manage.py makemigrations= 产生
+migrations 文件。
+</p>
+
+<p>
+同步数据库：
+</p>
+
+<pre class="example">
+./manage.py migrate
+./manage.py migrate --database=logsharding0
+./manage.py migrate --database=logsharding1
+</pre>
+
+<p>
+这时候我们发现，所有的 migrations 都在 <code>default</code>, <code>logsharding0</code>,
+<code>logsharding1</code> 分别创建了表。这显然不是我们想要的。我们想要的效果是
+<code>report</code> app 中的模型不在 <code>default</code> 中创建，只在 <code>logshardingx</code>
+中创建，而 <code>default</code> 中的模型，也不希望在 <code>logshardingx</code> 中创建。
+</p>
+
+<p>
+此时我们需要添加数据库路由器。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org359756b" class="outline-2">
+<h2 id="数据库路由器"><a id="org359756b"></a><span class="section-number-2">5</span> 数据库路由器</h2>
+<div class="outline-text-2" id="text-数据库路由器">
+<p>
+在 <code>logstat/report</code> 中创建 <code>log_router.py</code> 文件，添加路由规则：
+</p>
+
+<pre class="example">
+class LogRouter(object):
+    def allow_migrate(self, db, app_label, model_name=None, **hints):
+        if app_label == 'report':
+            return db == 'logsharding0' or db == 'logsharding1'
+        return None
+</pre>
+
+<p>
+意思是，在 <code>migrate</code> 时，如果是 <code>report</code> App，并且 <code>database</code> 是
+<code>logshardingx</code> 是可以创建的，否则不创建。
+</p>
+
+<p>
+在 <code>setting.py</code> 中添加数据库路由器，使之生效：
+</p>
+
+<pre class="example">
+DATABASE_ROUTERS = ['report.log_router.LogRouter',]
+</pre>
+
+<p>
+同步数据库：
+</p>
+
+<pre class="example">
+./manage.py migrate
+./manage.py migrate --database=logsharding0
+./manage.py migrate --database=logsharding1
+</pre>
+
+<p>
+这时，我们发现 <code>report_log</code> 表已经不再 <code>log_stat</code> 库中，而只出现在
+<code>logshardingx</code> 中。但是在 <code>logshardingx</code> 还是会有
+<code>auth_group=，=auth_group_permissions</code> &#x2026; 这些 Django
+组件的表。到现在，我们已经实现了分库的效果，这些额外的表我们不用关心，但是总觉得不优雅，还是去比较好。
+</p>
+
+<p>
+这些额外的 App 分别是 <code>admin</code>, <code>auth=，=contenttypes</code>, <code>sessions</code>,
+<code>messages</code>, <code>staticfiles=，同样我们需要为他们设置路由规则，在 =logstat</code>
+下创建 <code>default_router.py</code> 添加路由规则，使得其余的 App 自动只选择
+=default=：
+</p>
+
+<pre class="example">
+class DefaultRouter(object):
+    def allow_migrate(self, db, app_label, model_name=None, **hints):
+        if app_label == 'admin' \
+           or app_label == 'auth' \
+           or app_label == 'staticfiles' \
+           or app_label == 'sessions' \
+           or app_label == 'messages' \
+           or app_label == 'contenttypes':
+            return db == 'default'
+        return None
+</pre>
+
+<p>
+同样添加到 <code>DATABASE_ROUTERS</code> 中，
+</p>
+
+<pre class="example">
+DATABASE_ROUTERS = [
+    'logstat.default_router.DefaultRouter',
+    'report.log_router.LogRouter',
+]
+</pre>
+
+<p>
+再执行 <code>migrate --database=xxx</code> 时，只创建了两个表，=django<sub>migrations</sub>=
+和 <code>report_log</code> ，这就是我们想要的效果。
+</p>
+
+<p>
+备注: <code>django_migrations</code> 这个表是必须存在的，它是数据库 <code>migrate</code>
+记录，以保证再次 <code>migrate</code> 时，=migrations= 文件不被重复执行。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgba8f090" class="outline-2">
+<h2 id="分库使用"><a id="orgba8f090"></a><span class="section-number-2">6</span> 分库使用</h2>
+<div class="outline-text-2" id="text-分库使用">
+<p>
+Django
+在<a href="file:///model/advanced-multiple-databases.html">多数据库文档</a>中提供了指定数据库的用法，但是我个人倾向于一个简单的规则：「同时只操作一个库」。从那个库中查询的数据，无论是修改、保存还是删除，都只操作同一个库。像：
+</p>
+
+<pre class="example">
+&gt;&gt;&gt; user_obj.save(using='new_users')
+&gt;&gt;&gt; user_obj.delete(using='legacy_users')
+</pre>
+
+<p>
+这种用户从一个表迁移到另外一个表，应该写的更明确一些，应在业务上迁移而不是利用
+<code>using</code> 关键字和 Django
+的设计取巧。尽管这非常方便，但是对于维护代码的人简直就是灾难！所谓业务上的迁移是，首先创建一个新的用户(<code>User.objects.using('new_users').create()</code>)，待新用户创建以后，再删除旧用户(<code>User.objects.using('legacy_users').filter().delete()</code>)，逻辑清晰。
+</p>
+</div>
+
+<div id="outline-container-org1024499" class="outline-3">
+<h3 id="自动选择一个库"><a id="org1024499"></a><span class="section-number-3">6.1</span> 自动选择一个库</h3>
+<div class="outline-text-3" id="text-自动选择一个库">
+<p>
+日志存储的需求是：基于 <code>serverid</code> 的 hash
+值选择一个存储库中的模型，封装一个函数即可:
+</p>
+
+<pre class="example">
+def db_slice(serverid):
+    slice_list = (
+        'logsharding0',
+        'logsharding0'
+    )
+    return slice_list[serverid % 2]
+</pre>
+
+<p>
+使用实例：
+</p>
+
+<pre class="example">
+# 创建对象
+Log.objects.using(db_slice(1)).create(
+    serverid=1,
+    logid=1001,
+    desc='lalala',
+    report_dt=datetime.now()
+)
+
+# 查询对象
+Log.objects.using(db_slice(1)).all()
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org54f06fe" class="outline-2">
+<h2 id="结尾"><a id="org54f06fe"></a><span class="section-number-2">7</span> 结尾</h2>
+<div class="outline-text-2" id="text-结尾">
+<p>
+自此，一个分库的例子就讲完了，也比较简单。聊几句个人想法，选择框架和选择技术，因为业务场景不同，很难有一个完美的解决方案，总是要做一些取舍。
+</p>
+
+<p>
+比如说，自己写一个直接独立于 Django 的分库分表策略并不难，但是脱离了
+Django 这一套东西，常用的 API 用不了(<code>create</code>, <code>filter</code>, <code>delete</code>
+etc)，为每一个操作封装一个 SQL
+操作，测试起来比较麻烦，灵活性太强，扩展性差，重要的是还要防止 SQL
+注入。
+</p>
+
+<p>
+如果用 Django 的多 DB 实现策略，也有问题。首先是路由，新的 app
+如果忘了设置路由规则，很容易把表生成到不想生成的地方，而且 Django
+官方文档也说了，并不会检查非 <code>default</code>
+迁移的一致性(1.10之后版本可能支持)。其次是外键，使用了分库之后外键约束自然就没有了，这也不算一个问题。还有在使用上，每次访问数据库都必须要用
+<code>using</code>
+显式的选择一个数据库。忘了如果路由规则设置没问题会直接报错这倒还好，如果选择错了，就蛋疼了，因为他们每个库的结构都是一样的，很难查出问题。这将为写代码增加复杂性。
+</p>
+
+<p>
+我的建议是，既然没有一个完美的方案，就应该尽量的保证逻辑简单、清晰，不要过分的依赖框架，少使用
+hack 技巧。像上面那种
+</p>
+
+<pre class="example">
+&gt;&gt;&gt; user_obj.save(using='new_users')
+&gt;&gt;&gt; user_obj.delete(using='legacy_users')
+</pre>
+
+<p>
+尽管可行，但个人认为这是非常不可取的。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2016-12-25 00:00:00</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
