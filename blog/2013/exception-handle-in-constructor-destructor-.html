@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>C++ 构造/析构函数中的异常处理</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">C++ 构造/析构函数中的异常处理</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#构造函数中的异常">1. 构造函数中的异常</a></li>
+<li><a href="#析构函数中的异常">2. 析构函数中的异常</a></li>
+<li><a href="#总结">3. 总结</a></li>
+</ul>
+</div>
+</div>
+<p>
+C++ 为什么会引入(需要)异常?
+</p>
+
+<blockquote>
+<p>
+The C++ 编程语言:
+一个库的作者可以检测出发生了运行时错误，但一般不知道怎样去处理它们（因为和用户具体的应用有关）；另一方面，库的用户知道怎样处理这些错误，但却无法检查它们何时发生（如果能检测，就可以再用户的代码里处理了，不用留给库去发现）。
+</p>
+
+<p>
+C++ primer: Exceptions let us separate problem detection from problem
+resolution(错误检测和错误处理分离开).
+</p>
+</blockquote>
+
+<div id="outline-container-org2f38a69" class="outline-2">
+<h2 id="构造函数中的异常"><a id="org2f38a69"></a><span class="section-number-2">1</span> 构造函数中的异常</h2>
+<div class="outline-text-2" id="text-构造函数中的异常">
+<p>
+C++
+的构造函数没有返回值，使用异常来处理构造函数中的错误(或者其它)是一种很好的办法。但是一定在构造函数中使用异常一定要小心。
+</p>
+
+<p>
+我们知道，当出现异常的时候，会调用类析构函数。然而，在构造函数中抛出异常的时候，不会去调用析构函数，此时如果处理不当，会出现内存泄露。
+</p>
+
+<p>
+如下：
+</p>
+
+<pre class="example">
+class TestA
+{
+public:
+    TestA()
+    {
+        std::cout &lt;&lt; "TestA Contructor" &lt;&lt; std::endl;
+    }
+    ~TestA()
+    {
+        std::cout &lt;&lt; "TestA Destructor" &lt;&lt; std::endl;
+    }
+};
+
+class TestB
+{
+public:
+    TestB()
+    {
+        std::cout &lt;&lt; "TestB Constructor" &lt;&lt; std::endl;
+    }
+
+    ~TestB()
+    {
+        std::cout &lt;&lt; "TestB Destructor" &lt;&lt; std::endl;
+    }
+};
+
+class TestC
+{
+public:
+    TestC()
+    {
+        ta = new TestA();
+        tb = new TestB();
+        throw std::string("something trigger a exception");
+        std::cout &lt;&lt; "TestC() Constructor" &lt;&lt; std::endl;
+    }
+
+    ~TestC()
+    {
+        delete ta;
+        delete tb;
+        std::cout &lt;&lt; "TestC() Destructor" &lt;&lt; std::endl;
+    }
+
+private:
+    TestA* ta;
+    TestB* tb;
+};
+
+int main()
+{
+    try
+    {
+        TestC tc;
+    }
+    catch (const std::string&amp; exp)
+    {
+        std::cout &lt;&lt; exp &lt;&lt; std::endl;
+    }
+}
+</pre>
+
+<p>
+输出:
+</p>
+
+<pre class="example">
+TestA Contructor
+TestB Constructor
+something trigger a exception
+</pre>
+
+<p>
+ta 和 tb 内存泄露。如何避免这种问题呢？
+</p>
+
+<pre class="example">
+class TestC
+{
+public:
+    TestC()
+    {
+        try
+        {
+            ta = new TestA();
+            tb = new TestB();
+            throw std::string("something trigger a exception");
+        }
+        catch(const std::string&amp; exp)
+        {
+            std::cout &lt;&lt; exp &lt;&lt; std::endl;
+            cleanup();
+            throw;
+        }
+
+        std::cout &lt;&lt; "TestC() Constructor" &lt;&lt; std::endl;
+    }
+
+    ~TestC()
+    {
+        cleanup();
+        std::cout &lt;&lt; "TestC() Destructor" &lt;&lt; std::endl;
+    }
+
+    void cleanup()
+    {
+        delete ta; ta = NULL;
+        delete tb; tb = NULL;
+    }
+
+private:
+    TestA* ta;
+    TestB* tb;
+};
+
+int main()
+{
+    try
+    {
+        TestC tc;
+    }
+    catch (...)
+    {
+        std::cout &lt;&lt; "construtor failure." &lt;&lt; std::endl;
+    }
+}
+</pre>
+
+<p>
+输出:
+</p>
+
+<pre class="example">
+TestA Contructor
+TestB Constructor
+something trigger a exception
+TestA Destructor
+TestB Destructor
+construtor failure.
+</pre>
+
+<p>
+新添加了一个 <code>cleanup</code> 函数，用来清理该类在堆上的资源。这么做的好处：
+</p>
+
+<ol class="org-ol">
+<li>当构造函数中基于某种原因抛出异常时，手动把资源释放，避免内存泄露。</li>
+<li>抛出一个空的异常，通知外围的程序，TestC构造失败了。</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orga88952c" class="outline-2">
+<h2 id="析构函数中的异常"><a id="orga88952c"></a><span class="section-number-2">2</span> 析构函数中的异常</h2>
+<div class="outline-text-2" id="text-析构函数中的异常">
+<p>
+析构函数的作用是释放资源，如果某一行代码抛出了异常，后面的代码将得不到执行，造成内存泄露。
+</p>
+
+<p>
+详细可以去看 Effective C++ item 08: Prevent exceptions from leaving
+destructors.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1b0ba7a" class="outline-2">
+<h2 id="总结"><a id="org1b0ba7a"></a><span class="section-number-2">3</span> 总结</h2>
+<div class="outline-text-2" id="text-总结">
+<p>
+看似这个问题简单，很容易得到解决。然而，实际开发中面临的情况会比上面复杂(恶劣)的多，比如
+10 个指针，只完成了 3
+个指针的初始化，某个指针的一个操作引发了异常。即便我们有 cleanup()
+函数，因为其他指针没有得到任何初始化(随机值)，在 delete
+的时候一样会程序崩溃。
+</p>
+
+<p>
+我相信没有一个解决此类的问题的通用方案。但是，我们可以用一些原则来避免出现问题：
+</p>
+
+<ol class="org-ol">
+<li>构造函数/析构函数应该保持简单，只完成成员的初始化和释放资源，不要夹杂其它无关操作。</li>
+<li>构造函数/析构函数应该在内部处理掉异常，不要依靠外围程序来处理异常。</li>
+<li>避免在构造函数中抛出异常，禁止在析构函数中抛出异常。</li>
+<li>如果可以的话，可以把复杂的操作封装成函数，在构造/析构函数中直接调用。比如构造函数仅仅完成基本的初始化(指针赋空等)，用init()来做实际的初始化，用cleanup()做资源释放，析构函数只调用。</li>
+</ol>
+
+<p>
+其实核心思想就是保持程序逻辑的简单即可，如果你的设计足够合理，那么就不会面临这种问题。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2013-12-22 00:00:00</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

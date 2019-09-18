@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>sprintf<sub>s和swprintf</sub><sub>s在Release和Debug不同模式表现不同</sub></title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">sprintf<sub>s和swprintf</sub><sub>s在Release和Debug不同模式表现不同</sub></h1>
+<p>
+int sprintf<sub>s</sub>( char /buffer, size<sub>t</sub> sizeOfBuffer, const char /format [,
+argument] &#x2026; ); int swprintf<sub>s</sub>( wchar<sub>t</sub> /buffer, size<sub>t</sub> sizeOfBuffer,
+const wchar<sub>t</sub> /format [, argument]&#x2026; );
+</p>
+
+<p>
+msdn对第二个参数的解释仅仅是"Maximum number of characters to
+store."即，可存储的最大字符个数。按照常规(至少我)的理解是这样去理解这个参数的:
+当输入的字符个数大于 sizeOfBuffer 时，会进行截断等限制，用以保证不会让
+buffer 溢出；当输入的个数小于或者等于 sizeOfBuffer
+时，正常赋值即可，sprintf 和 sprintf<sub>s</sub> 的区别仅在于加了一个 sizeOfBuffer
+的判断。
+</p>
+
+<p>
+msdn 的解释是：
+</p>
+
+<blockquote>
+<p>
+The other main difference between sprintf<sub>s</sub> and sprintf is that
+sprintf<sub>s</sub> takes a length parameter specifying the size of the output
+buffer in characters. If the buffer is too small for the text being
+printed then the buffer is set to an empty string and the invalid
+parameter handler is invoked.
+</p>
+</blockquote>
+
+<p>
+可是实际上，在 Debug 和 Release 下 sprintf<sub>s</sub> 表现形式不同：
+</p>
+
+<p>
+Debug 模式：
+</p>
+
+<pre class="example">
+#include &lt;iostream&gt;
+#include &lt;cstdio&gt;
+
+int main()
+{
+    const int buf_size = 32;
+
+    char buf1[buf_size];
+    memset(buf1, 0, buf_size);
+    char buf2[buf_size];
+    memset(buf2, 1, buf_size);
+    // breakpoint1
+    sprintf_s(buf2, buf_size*2, "%s", "hello, world!");
+    // breakpoint2
+}
+</pre>
+
+<p>
+在 sprintf<sub>s</sub> 上下插入一个端点，如上代码注释，breakpoint1 时内存块：
+</p>
+
+<pre class="example">
+0x002EFC0C  01 01 01 01 01 01 01 01  ........    &lt;-- buf2 [8 * 4 = 32]
+0x002EFC14  01 01 01 01 01 01 01 01  ........
+0x002EFC1C  01 01 01 01 01 01 01 01  ........
+0x002EFC24  01 01 01 01 01 01 01 01  ........
+0x002EFC2C  cc cc cc cc cc cc cc cc  ????????
+0x002EFC34  00 00 00 00 00 00 00 00  ........    &lt;-- buf1 [8 * 4  = 32]
+0x002EFC3C  00 00 00 00 00 00 00 00  ........
+0x002EFC44  00 00 00 00 00 00 00 00  ........
+0x002EFC4C  00 00 00 00 00 00 00 00  ........
+</pre>
+
+<p>
+breakpoint2 时内存块：
+</p>
+
+<pre class="example">
+&lt;code&gt;0x002EFC0C  68 65 6c 6c 6f 2c 20 77  hello, w    &lt;-- buf2 [8 * 8 = 64]
+0x002EFC14  6f 72 6c 64 21 00 fe fe  orld!.??
+0x002EFC1C  fe fe fe fe fe fe fe fe  ????????
+0x002EFC24  fe fe fe fe fe fe fe fe  ????????
+0x002EFC2C  fe fe fe fe fe fe fe fe  ????????
+0x002EFC34  fe fe fe fe fe fe fe fe  ????????    &lt;-- buf1 [被覆盖了 8 * 3 = 24]
+0x002EFC3C  fe fe fe fe fe fe fe fe  ????????
+0x002EFC44  fe fe fe fe fe fe fe fe  ????????
+0x002EFC4C  00 00 00 00 00 00 00 00  ........
+&lt;/code&gt;
+</pre>
+
+<p>
+可以看出由于 sizeOfBuffer 传入值大于
+buf<sub>size</sub>，导致了越界，覆盖了高地址的内存块（修改了 buf1 的值）。
+</p>
+
+<p>
+Release 验证代码：
+</p>
+
+<pre class="example">
+#include &lt;iostream&gt;
+#include &lt;cstdio&gt;
+
+int main()
+{
+    const int buf_size = 32;
+
+    char buf1[buf_size];
+    memset(buf1, 0, buf_size);
+    std::cout &lt;&lt; buf1 &lt;&lt; std::endl;
+    char buf2[buf_size];
+    memset(buf2, 1, buf_size);
+
+    int ret_size = sprintf_s(buf2, buf_size*4, "%s", "hello, world!");
+    std::cout &lt;&lt; ret_size &lt;&lt; std::endl;
+}
+</pre>
+
+<p>
+运行到最后的内存块：
+</p>
+
+<pre class="example">
+0x0030F768  68 65 6c 6c 6f 2c 20 77  hello, w   &lt;-- buf1 [8 * 4 = 32]
+0x0030F770  6f 72 6c 64 21 00 01 01  orld!...
+0x0030F778  01 01 01 01 01 01 01 01  ........
+0x0030F780  01 01 01 01 01 01 01 01  ........
+0x0030F788  00 00 00 00 00 00 00 00  ........   &lt;-- buf2 [8 * 4 = 32]
+0x0030F790  00 00 00 00 00 00 00 00  ........
+0x0030F798  00 00 00 00 00 00 00 00  ........
+0x0030F7A0  00 00 00 00 00 00 00 00  ........
+</pre>
+
+<p>
+尽管我刻意的修改了几次 sprintf<sub>s</sub> 的 sizeOfBuffer
+传入值，但是它始终没有越界。
+</p>
+
+<p>
+总结：
+</p>
+
+<ul class="org-ul">
+<li>在 Debug 模式下 sprintf<sub>s</sub> 是这样干的，它做的第一件事情是给 buffer
+的空间长度扩展为 sizeOfBuffer ，不论实际上是否需要 sizeOfBuffer
+长度的空间，也不考虑 buffer 自身的内存大小，然后进行后面的赋值操作。
+这样带来的一个问题就是假如 sizeOfBuffer 的实际值大于 buffer
+自身的内存大小，就会覆盖掉不属于自己内存块，进而引发 bug。</li>
+<li>在 Release
+模式下，按照我们所想的那样执行（从表象看：范围检查，不会进行内存扩充操作）。</li>
+</ul>
+
+<p>
+我进行了源码分析，结果追踪到 <code>_vsnprintf_s_l</code>
+这个方法以后，就找不到源码了，所以最终也没有看到微软对于 <code>sprintf_s</code>
+的实现方式（网上也没有搜到具体的源码实现）。我感觉造成这种不同有两种可能，一种是针对
+DEBUG 和 RELEASE 分别对应两个实现版本；第二种是在 Release
+模式下，编译器对代码安全检查和优化，而 Debug 模式下故意将问题暴漏出来。
+</p>
+
+<hr />
+
+<p>
+<a href="http://msdn.microsoft.com/en-us/library/ce3zzk1kv=vs.80">sprintf<sub>s</sub>,
+swprintf<sub>s</sub> MSDN的解释</a>
+</p>
+
+<pre class="example">
+int sprintf_s(
+   char *buffer,
+   size_t sizeOfBuffer,
+   const char *format [,
+      argument] ...
+);
+int swprintf_s(
+   wchar_t *buffer,
+   size_t sizeOfBuffer,
+   const wchar_t *format [,
+      argument]...
+);
+</pre>
+
+<p>
+Parameters
+</p>
+
+<ol class="org-ol">
+<li>buffer -&gt; Storage location for output</li>
+<li>sizeOfBuffer -&gt; Maximum number of characters to store.</li>
+<li>format -&gt; Format-control string</li>
+<li>argument -&gt; Optional arguments</li>
+</ol>
+
+<p>
+Return Value
+</p>
+
+<p>
+The number of characters written, or &#x2013;1 if an error occurred. If buffer
+or format is a null pointer, sprintf<sub>s</sub> and swprintf<sub>s</sub> return -1 and set
+errno to EINVAL. sprintf<sub>s</sub> returns the number of bytes stored in buffer,
+not counting the terminating null character. swprintf<sub>s</sub> returns the
+number of wide characters stored in buffer, not counting the terminating
+null wide character.
+</p>
+
+<p>
+Remarks
+</p>
+
+<p>
+The sprintf<sub>s</sub> function formats and stores a series of characters and
+values in buffer. Each argument (if any) is converted and output
+according to the corresponding format specification in format. The
+format consists of ordinary characters and has the same form and
+function as the format argument for printf. A null character is appended
+after the last character written. If copying occurs between strings that
+overlap, the behavior is undefined. One main difference between
+sprintf<sub>s</sub> and sprintf is that sprintf<sub>s</sub> checks the format string for
+valid formatting characters, whereas sprintf only checks if the format
+string or buffer are NULL pointers. If either check fails, the invalid
+parameter handler is invoked, as described in Parameter Validation. If
+execution is allowed to continue, the function returns -1 and sets errno
+to EINVAL. The other main difference between sprintf<sub>s</sub> and sprintf is
+that sprintf<sub>s</sub> takes a length parameter specifying the size of the
+output buffer in characters. If the buffer is too small for the text
+being printed then the buffer is set to an empty string and the invalid
+parameter handler is invoked. Unlike snprintf, sprintf<sub>s</sub> guarantees that
+the buffer will be null-terminated (unless the buffer size is zero).
+swprintf<sub>s</sub> is a wide-character version of sprintf<sub>s</sub>; the pointer
+arguments to swprintf<sub>s</sub> are wide-character strings. Detection of
+encoding errors in swprintf<sub>s</sub> may differ from that in sprintf<sub>s</sub>. The
+versions of these functions with the _l suffix are identical except that
+they use the locale parameter passed in instead of the current thread
+locale.
+</p>
+
+<p>
+PS: 如果有不同的理解，或者找到了源码，欢迎追加。
+</p>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2013-03-24 08:33:08</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
