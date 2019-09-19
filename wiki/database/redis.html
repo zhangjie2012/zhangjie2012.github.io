@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>wiki</title>
+<title>Redis</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -231,246 +231,241 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">wiki</h1>
+<h1 class="title">Redis</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgfe7ba04">1. 操作系统</a></li>
-<li><a href="#orgdaf0a52">2. 数据结构和算法</a></li>
-<li><a href="#orgcf5034f">3. 数据库</a>
+<li><a href="#org294079e">1. Command</a></li>
+<li><a href="#org2d6ef31">2. Redis cluster</a>
 <ul>
-<li><a href="#org1e7857c">3.1. 关系型数据库</a></li>
-<li><a href="#orgf65864b">3.2. 面向文档的数据库（Document-oriented databases）</a></li>
-<li><a href="#org2dbc422">3.3. NoSQL</a></li>
+<li><a href="#org265ede3">2.1. 数据分片</a></li>
 </ul>
 </li>
-<li><a href="#org015c9c0">4. DevOps</a>
+<li><a href="#orgfd8382f">3. 持久化</a>
 <ul>
-<li><a href="#org8eafd2e">4.1. 系统运维</a></li>
-<li><a href="#orga4358de">4.2. 中间件</a></li>
-<li><a href="#org87b05c3">4.3. 容器化</a>
-<ul>
-<li><a href="#org35e046e">4.3.1. Docker</a></li>
-<li><a href="#orgd91a55e">4.3.2. K8s</a></li>
+<li><a href="#orgf13158c">3.1. RDB</a></li>
+<li><a href="#orgcd9b679">3.2. AOF</a></li>
+<li><a href="#orgf502361">3.3. 从 RDB 切换到 AOF</a></li>
 </ul>
 </li>
-<li><a href="#org97d99b6">4.4. 监控告警</a></li>
-<li><a href="#org8efe442">4.5. 日志</a></li>
-</ul>
-</li>
-<li><a href="#org756001d">5. 程序设计</a>
-<ul>
-<li><a href="#org575eda6">5.1. 前端</a></li>
-<li><a href="#org9ff8111">5.2. C++</a></li>
-<li><a href="#org23b095f">5.3. Go</a></li>
-<li><a href="#orga6e3e01">5.4. 编码工具</a></li>
-</ul>
-</li>
-<li><a href="#orgb325492">6. 成长</a></li>
+<li><a href="#orgb83d7b4">4. Resource</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgfe7ba04" class="outline-2">
-<h2 id="orgfe7ba04"><span class="section-number-2">1</span> 操作系统</h2>
+<div id="outline-container-org294079e" class="outline-2">
+<h2 id="org294079e"><span class="section-number-2">1</span> Command</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
-<li><a href="os/epoll.html">I/O 多路复用</a></li>
-<li><a href="os/other.html">其他</a></li>
+<li>启动: <code>redis-server redis.conf</code></li>
+<li>关闭: <code>redis-cli shutdown</code></li>
+<li>客户端连接: <code>redis-cli -h &lt;hostname&gt; -p &lt;port&gt; -a &lt;password&gt;</code></li>
+<li>退出客户端: <code>QUIT</code></li>
+<li><code>INFO</code></li>
+<li><code>CLIENT LIST</code>: 连接的客户端列表</li>
+<li><code>DBSIZE</code>: 返回当前数据库的 KEY 的数量</li>
+<li><code>MONITOR</code>: 实时打印出 Redis 服务器接收到的命令，调试用</li>
+<li><code>redis-cli  KEYS "a0002*" | xargs redis-cli  DEL</code>: delete keys with pattern</li>
+<li><code>FLUSHALL</code>: 清空整个 Redis 服务器的数据</li>
+<li><code>FLUSHDB</code>: 清空当前数据库中的所有 key</li>
+<li><code>LASTSAVE</code>: 返回最近一次 Redis 成功将数据保存到磁盘上的时间，以 UNIX 时间戳格式表示</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgdaf0a52" class="outline-2">
-<h2 id="orgdaf0a52"><span class="section-number-2">2</span> 数据结构和算法</h2>
+<div id="outline-container-org2d6ef31" class="outline-2">
+<h2 id="org2d6ef31"><span class="section-number-2">2</span> Redis cluster</h2>
 <div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org265ede3" class="outline-3">
+<h3 id="org265ede3"><span class="section-number-3">2.1</span> 数据分片</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+集群没使用一致的散列方式，而是使用不同形式的分片，每个 key
+在概念上都称为 hash slot 的一部分。
+</p>
+
+<p>
+在 Redis 集群中一共有 16384 个 hash slot，根据给定的 key
+计算出属于哪一个 hash slot。算法为 =CRC16(key)/16384=。
+</p>
+
+<p>
+集群中的每个节点都只负责 hash slot 的自己，因此假设你有 3 个节点的集群：
+</p>
+
 <ul class="org-ul">
-<li>hash
-<ul class="org-ul">
-<li><a href="../blog/2018/consistent-hashing.html">一致性 hash 指南</a>：翻译的一篇文章，虽然核心是一致性 hash，但对 hash 基础也有介绍</li>
-<li><a href="../blog/2018/redis-cluster-hash.html">Redis 集群中的 hash 算法</a></li>
-<li><a href="data-structure-and-algorithm/hash.html">一些资料</a></li>
-</ul></li>
+<li>A 节点包含 <code>0~5500</code> 的 hash slot；</li>
+<li>B 节点包含 <code>5501~11000</code> 的 hash slot；</li>
+<li>C 节点包含 <code>11001~16383</code> 的 hash slot；</li>
 </ul>
+
+<p>
+有关一致性 hash 可以查看我之前翻译的这篇文章：<a href="https://www.zhangjiee.com/blog/2018/consistent-hashing.html">https://www.zhangjiee.com/blog/2018/consistent-hashing.html</a>
+</p>
+</div>
 </div>
 </div>
 
-<div id="outline-container-orgcf5034f" class="outline-2">
-<h2 id="orgcf5034f"><span class="section-number-2">3</span> 数据库</h2>
+<div id="outline-container-orgfd8382f" class="outline-2">
+<h2 id="orgfd8382f"><span class="section-number-2">3</span> 持久化</h2>
 <div class="outline-text-2" id="text-3">
+<p>
+Redis 有两种持久化的方式：快照（RDB 文件）和追加式文件（AOF 文件）：
+</p>
+
+<ul class="org-ul">
+<li>RDB 持久化方式会在一个特定的间隔保存那个时间点的一个数据快照；</li>
+<li>AOF 持久化方式则会记录每一个服务器收到的写操作。在服务启动时，这些记录的操作会逐条执行从而重建出原来的数据。
+写操作命令记录的格式跟 Redis 协议一致，以追加的方式进行保存；</li>
+<li>Redis 的持久化是可以禁用的，就是说你可以让数据的生命周期只存在于服务器的运行时间里；</li>
+<li>两种方式的持久化是可以同时存在的，但是当 Redis 重启时，AOF 文件会被优先用于重建数据；</li>
+</ul>
+
+<p>
+注意，Redis 一般作为单纯的缓存，也就意味着都是可被重建的数据，所以一般无需持久化（持久化会为运维带来成本）。
+还有些公司会将 Redis 作为消息中间件（PUB/SUB），在安全性要求比较高的业务场景下，使用持久化也不咋靠谱，
+单点就不说了，Cluster 在添加或者删除节点的时候也有丢失数据的风险，所以高安全性的消息中间件推荐使用 Kafka，而不是 Redis。
+</p>
+
+<p>
+下面只是作为知识扩展：
+</p>
 </div>
-<div id="outline-container-org1e7857c" class="outline-3">
-<h3 id="org1e7857c"><span class="section-number-3">3.1</span> 关系型数据库</h3>
+
+<div id="outline-container-orgf13158c" class="outline-3">
+<h3 id="orgf13158c"><span class="section-number-3">3.1</span> RDB</h3>
 <div class="outline-text-3" id="text-3-1">
+<p>
+优点：
+</p>
+
 <ul class="org-ul">
-<li><a href="database/mysql.html">MySQL</a></li>
+<li>RDB 文件是一个很简洁的单文件，它保存了某个时间点的 Redis 数据，很适合用于做备份。
+你可以设定一个时间点对 RDB 文件进行归档，这样就能在需要的时候很轻易的把数据恢复到不同的版本；</li>
+<li>基于上面所描述的特性，RDB 很适合用于灾备。单文件很方便就能传输到远程的服务器上；</li>
+<li>RDB 的性能很好，需要进行持久化时，主进程会 fork 一个子进程出来，
+然后把持久化的工作交给子进程，自己不会有相关的 I/O 操作；</li>
+<li>比起 AOF，在数据量比较大的情况下，RDB 的启动速度更快；</li>
+</ul>
+
+<p>
+缺点：
+</p>
+
+<ul class="org-ul">
+<li>RDB 容易造成数据的丢失。假设每 5 分钟保存一次快照，如果 Redis 因为某些原因不能正常工作，那么从上次产生快照到 Redis
+出现问题这段时间的数据就会丢失了；</li>
+<li>RDB 使用 <code>fork()</code> 产生子进程进行数据的持久化，如果数据比较大的话可能就会花费点时间，造成
+Redis 停止服务几毫秒。如果数据量很大且 CPU 性能不是很好的时候，停止服务的时间甚至会到 1 秒；</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgf65864b" class="outline-3">
-<h3 id="orgf65864b"><span class="section-number-3">3.2</span> 面向文档的数据库（Document-oriented databases）</h3>
+<div id="outline-container-orgcd9b679" class="outline-3">
+<h3 id="orgcd9b679"><span class="section-number-3">3.2</span> AOF</h3>
 <div class="outline-text-3" id="text-3-2">
+<p>
+快照并不是很可靠。如果你的电脑突然宕机了，或者电源断了，又或者不小心杀掉了进程，那么最新的数据就会丢失。而
+AOF 文件则提供了一种更为可靠的持久化方式。每当 Redis
+接受到会修改数据集的命令时，就会把命令追加到 AOF 文件里，当你重启 Redis
+时，AOF 里的命令会被重新执行一次，重建数据。
+</p>
+
+<p>
+优点:
+</p>
+
 <ul class="org-ul">
-<li><a href="database/mongodb.html">MongoDB</a></li>
+<li>比 RDB 可靠。你可以制定不同的 fsync 策略：不进行 fsync、每秒 fsync
+一次和每次查询进行 fsync。默认是每秒 fsync
+一次。这意味着你最多丢失一秒钟的数据；</li>
+<li>AOF
+日志文件是一个纯追加的文件。就算是遇到突然停电的情况，也不会出现日志的定位或者损坏问题。甚至如果因为某些原因（例如磁盘满了）命令只写了一半到日志文件里，我们也可以用
+redis-check-aof 这个工具很简单的进行修复；</li>
+<li>当 AOF 文件太大时，Redis
+会自动在后台进行重写。重写很安全，因为重写是在一个新的文件上进行，同时
+Redis
+会继续往旧的文件追加数据。新文件上会写入能重建当前数据集的最小操作命令的集合。当新文件重写完，Redis
+会把新旧文件进行切换，然后开始把数据写到新文件上；</li>
+<li>AOF
+把操作命令以简单易懂的格式一条接一条的保存在文件里，很容易导出来用于恢复数据。例如我们不小心用
+FLUSHALL
+命令把所有数据刷掉了，只要文件没有被重写，我们可以把服务停掉，把最后那条命令删掉，然后重启服务，这样就能把被刷掉的数据恢复回来；</li>
+</ul>
+
+<p>
+缺点：
+</p>
+
+<ul class="org-ul">
+<li>在相同的数据集下，AOF 文件的大小一般会比 RDB 文件大；</li>
+<li>在某些 fsync 策略下，AOF 的速度会比 RDB 慢。通常 fsync
+设置为每秒一次就能获得比较高的性能，而在禁止 fsync
+的情况下速度可以达到 RDB 的水平；</li>
+<li>在过去曾经发现一些很罕见的 BUG 导致使用 AOF
+重建的数据跟原数据不一致的问题；</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2dbc422" class="outline-3">
-<h3 id="org2dbc422"><span class="section-number-3">3.3</span> NoSQL</h3>
+<div id="outline-container-orgf502361" class="outline-3">
+<h3 id="orgf502361"><span class="section-number-3">3.3</span> 从 RDB 切换到 AOF</h3>
 <div class="outline-text-3" id="text-3-3">
+<p>
+这里只说 <code>Redis &gt;= 2.2</code> 版本的方式：
+</p>
+
+<p>
+备份一个最新的 <code>dump.rdb</code> 的文件，并把备份文件放在一个安全的地方。
+</p>
+
+<p>
+运行以下两条命令：
+</p>
+
+<pre class="example">
+$ redis-cli config set appendonly yes
+$ redis-cli config set save ""
+</pre>
+
 <ul class="org-ul">
-<li><a href="database/redis.html">Redis</a></li>
+<li>确保数据跟切换前一致；</li>
+<li>确保数据正确的写到AOF文件里；</li>
 </ul>
+
+<blockquote>
+<p>
+第二条命令是用来禁用 RDB
+的持久化方式，但是这不是必须的，因为你可以同时启用两种持久化方式。
+</p>
+
+<p>
+记得对配置文件 redis.conf 进行编辑启用
+AOF，因为命令行方式修改配置在重启 Redis 后就会失效。
+</p>
+</blockquote>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org015c9c0" class="outline-2">
-<h2 id="org015c9c0"><span class="section-number-2">4</span> DevOps</h2>
+<div id="outline-container-orgb83d7b4" class="outline-2">
+<h2 id="orgb83d7b4"><span class="section-number-2">4</span> Resource</h2>
 <div class="outline-text-2" id="text-4">
-</div>
-<div id="outline-container-org8eafd2e" class="outline-3">
-<h3 id="org8eafd2e"><span class="section-number-3">4.1</span> 系统运维</h3>
-<div class="outline-text-3" id="text-4-1">
-<dl class="org-dl">
-<dt>基础命令</dt><dd><a href="devops/awk.html">awk</a>，<a href="devops/sed.html">sed</a>，<a href="devops/tar.html">tar</a>，<a href="devops/rsync.html">rsync</a>，<a href="devops/cron.html">crontab</a>，<a href="devops/find.html">find</a>，<a href="devops/process-mgr.html">进程管理</a>，<a href="devops/ssh.html">SSH</a></dd>
-<dt>配置</dt><dd><a href="devops/ps1.html">PS1</a></dd>
-<dt>操作系统</dt><dd><a href="devops/ubuntu.html">Ubuntu</a>，<a href="devops/ops-faq.html">系统 FAQ</a></dd>
-<dt>系统管理</dt><dd><a href="devops/systemd.html">systemd</a> 和 <a href="devops/journalctl.html">journalctl</a></dd>
-</dl>
-</div>
-</div>
-
-<div id="outline-container-orga4358de" class="outline-3">
-<h3 id="orga4358de"><span class="section-number-3">4.2</span> 中间件</h3>
-<div class="outline-text-3" id="text-4-2">
 <ul class="org-ul">
-<li><a href="devops/nginx.html">nginx</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org87b05c3" class="outline-3">
-<h3 id="org87b05c3"><span class="section-number-3">4.3</span> 容器化</h3>
-<div class="outline-text-3" id="text-4-3">
-</div>
-<div id="outline-container-org35e046e" class="outline-4">
-<h4 id="org35e046e"><span class="section-number-4">4.3.1</span> Docker</h4>
-<div class="outline-text-4" id="text-4-3-1">
-<ul class="org-ul">
-<li><a href="devops/docker-tutorial.html">学习笔记</a></li>
-<li><a href="devops/docker-tutorial2.html">官方文档翻译</a></li>
-<li><a href="devops/dockerfile-best-practice.html">Dockerfile 最佳实践</a></li>
-<li>博客:
-<ul class="org-ul">
-<li><a href="../blog/2018/different-from-docker-and-vm.html">{译} Docker 和 VM 的区别</a></li>
-</ul></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgd91a55e" class="outline-4">
-<h4 id="orgd91a55e"><span class="section-number-4">4.3.2</span> K8s</h4>
-<div class="outline-text-4" id="text-4-3-2">
-<ul class="org-ul">
-<li><a href="devops/k8s-concept.html">术语</a></li>
-<li><a href="devops/k8s-kubectl.html">kubectl</a>：kubectl 使用文档</li>
-<li><a href="devops/k8s-ingress.html">Ingress</a></li>
-<li><a href="devops/k8s-practice.html">实践</a></li>
-<li><a href="devops/k8s-resource.html">资源</a>：各种帅帅的图</li>
+<li>官方网站: <a href="http://redis.io/">http://redis.io/</a></li>
+<li>Redis 命令参考: <a href="http://redisdoc.com/">http://redisdoc.com/</a></li>
+<li>django-redis 文档: <a href="https://niwinz.github.io/django-redis/latest/">https://niwinz.github.io/django-redis/latest/</a></li>
+<li>Redis 监控: <a href="https://github.com/nkrode/RedisLive">https://github.com/nkrode/RedisLive</a></li>
 </ul>
 </div>
 </div>
 </div>
-
-<div id="outline-container-org97d99b6" class="outline-3">
-<h3 id="org97d99b6"><span class="section-number-3">4.4</span> 监控告警</h3>
-<div class="outline-text-3" id="text-4-4">
-<ul class="org-ul">
-<li><a href="devops/promethues.html">基于 Prometheus 的监控告警</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org8efe442" class="outline-3">
-<h3 id="org8efe442"><span class="section-number-3">4.5</span> 日志</h3>
-<div class="outline-text-3" id="text-4-5">
-<ul class="org-ul">
-<li><a href="devops/log.html">日志收集</a></li>
-</ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org756001d" class="outline-2">
-<h2 id="org756001d"><span class="section-number-2">5</span> 程序设计</h2>
-<div class="outline-text-2" id="text-5">
-</div>
-<div id="outline-container-org575eda6" class="outline-3">
-<h3 id="org575eda6"><span class="section-number-3">5.1</span> 前端</h3>
-<div class="outline-text-3" id="text-5-1">
-<ul class="org-ul">
-<li><a href="programming/frontend/css.html">CSS</a></li>
-<li><a href="programming/frontend/less.html">less</a></li>
-<li><a href="programming/frontend/react.html">React</a></li>
-<li><a href="programming/frontend/webpack.html">Webpack</a></li>
-<li><a href="programming/frontend/antd-pro.html">Ant Design Pro</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org9ff8111" class="outline-3">
-<h3 id="org9ff8111"><span class="section-number-3">5.2</span> C++</h3>
-<div class="outline-text-3" id="text-5-2">
-<ul class="org-ul">
-<li><a href="programming/cpp/autotools.html">AutoTools</a>：编译工具</li>
-<li><a href="programming/cpp/gcc.html">gcc</a>：编译器</li>
-<li><a href="programming/cpp/makefile.html">Makefile</a></li>
-<li><a href="programming/cpp/perf.html">Perf</a>：性能剖析工具，其实只要记得 <code>perf top -p</code> 一个指令就行了</li>
-<li><a href="programming/cpp/valgrind.html">Valgrind</a>：Linux 下动态（指令框架）分析工具，主要用来做内存泄露检测。其他的工具还有 VLC，Nvwa 等</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org23b095f" class="outline-3">
-<h3 id="org23b095f"><span class="section-number-3">5.3</span> Go</h3>
-<div class="outline-text-3" id="text-5-3">
-<ul class="org-ul">
-<li><a href="programming/go/build-env.html">构建环境</a>：安装、环境配置、工具链等说明</li>
-<li><a href="programming/go/packages.html">packages</a>：各种库的对比和选型</li>
-<li><a href="programming/go/package-manager.html">包管理工具</a></li>
-<li><a href="programming/go/project-layout.html">项目结构</a>：摘自 <a href="https://github.com/golang-standards/project-layout">project-layout</a>，go 工程的项目结构</li>
-<li><a href="programming/go/date-format.html">时间格式化与解析</a></li>
-<li><a href="programming/go/resource.html">资源</a>：一些资源链接</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orga6e3e01" class="outline-3">
-<h3 id="orga6e3e01"><span class="section-number-3">5.4</span> 编码工具</h3>
-<div class="outline-text-3" id="text-5-4">
-<ul class="org-ul">
-<li><a href="programming/code-env/emacs.html">Emacs</a>：神之编辑器</li>
-<li><a href="programming/code-env/git.html">git</a> | <a href="programming/code-env/svn.html">svn</a>：版本管理器</li>
-<li><a href="programming/code-env/pip.html">pip</a>：Python 的包管理器</li>
-</ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgb325492" class="outline-2">
-<h2 id="orgb325492"><span class="section-number-2">6</span> 成长</h2>
-<div class="outline-text-2" id="text-6">
-<ul class="org-ul">
-<li><a href="growing/programmer.html">技术人</a>：一些常用的办公设备和软件记录</li>
-<li><a href="growing/mgr.html">个人管理</a>：一些摘抄和感悟</li>
-<li><a href="growing/think-back.html">反思</a></li>
-</ul>
-</div>
-</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2017-12-04 10:58:35</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
 </div>
 </body>
 </html>

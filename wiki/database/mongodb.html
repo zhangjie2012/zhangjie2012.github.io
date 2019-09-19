@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>wiki</title>
+<title>MongoDB</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -231,246 +231,144 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">wiki</h1>
+<h1 class="title">MongoDB</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgfe7ba04">1. 操作系统</a></li>
-<li><a href="#orgdaf0a52">2. 数据结构和算法</a></li>
-<li><a href="#orgcf5034f">3. 数据库</a>
+<li><a href="#org1902f5d">1. 安装</a></li>
+<li><a href="#orgd391d4e">2. 常用命令</a>
 <ul>
-<li><a href="#org1e7857c">3.1. 关系型数据库</a></li>
-<li><a href="#orgf65864b">3.2. 面向文档的数据库（Document-oriented databases）</a></li>
-<li><a href="#org2dbc422">3.3. NoSQL</a></li>
+<li><a href="#org65123ce">2.1. 库级别命令</a></li>
+<li><a href="#org42efcc3">2.2. 表级别命令</a></li>
+<li><a href="#org5136f2a">2.3. 其它</a></li>
 </ul>
 </li>
-<li><a href="#org015c9c0">4. DevOps</a>
+<li><a href="#org25c968f">3. 备份与恢复</a></li>
+<li><a href="#org8b8eda6">4. FAQ</a>
 <ul>
-<li><a href="#org8eafd2e">4.1. 系统运维</a></li>
-<li><a href="#orga4358de">4.2. 中间件</a></li>
-<li><a href="#org87b05c3">4.3. 容器化</a>
-<ul>
-<li><a href="#org35e046e">4.3.1. Docker</a></li>
-<li><a href="#orgd91a55e">4.3.2. K8s</a></li>
+<li><a href="#org97d9a7b">4.1. Q: 如何查询嵌套内容？</a></li>
+<li><a href="#orgdf48a34">4.2. Q: <code>db.stats()</code> 中 <code>dataSize</code> 为什么比 <code>storageSize</code> 要大？</a></li>
 </ul>
 </li>
-<li><a href="#org97d99b6">4.4. 监控告警</a></li>
-<li><a href="#org8efe442">4.5. 日志</a></li>
-</ul>
-</li>
-<li><a href="#org756001d">5. 程序设计</a>
-<ul>
-<li><a href="#org575eda6">5.1. 前端</a></li>
-<li><a href="#org9ff8111">5.2. C++</a></li>
-<li><a href="#org23b095f">5.3. Go</a></li>
-<li><a href="#orga6e3e01">5.4. 编码工具</a></li>
-</ul>
-</li>
-<li><a href="#orgb325492">6. 成长</a></li>
+<li><a href="#org7791175">5. Resource</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgfe7ba04" class="outline-2">
-<h2 id="orgfe7ba04"><span class="section-number-2">1</span> 操作系统</h2>
+<div id="outline-container-org1902f5d" class="outline-2">
+<h2 id="org1902f5d"><span class="section-number-2">1</span> 安装</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
-<li><a href="os/epoll.html">I/O 多路复用</a></li>
-<li><a href="os/other.html">其他</a></li>
+<li>设置清华大学提供的镜像源：<a href="https://mirror.tuna.tsinghua.edu.cn/help/mongodb/">https://mirror.tuna.tsinghua.edu.cn/help/mongodb/</a>，然后通过包管理工具（yum、apt 等）安装</li>
+<li>也可以使用 Docker 的方式启动，<a href="https://hub.docker.com/_/mongo">这里</a></li>
 </ul>
+
+<p>
+推荐使用 Docker，挂载存储到本地。
+</p>
 </div>
 </div>
 
-<div id="outline-container-orgdaf0a52" class="outline-2">
-<h2 id="orgdaf0a52"><span class="section-number-2">2</span> 数据结构和算法</h2>
+<div id="outline-container-orgd391d4e" class="outline-2">
+<h2 id="orgd391d4e"><span class="section-number-2">2</span> 常用命令</h2>
 <div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org65123ce" class="outline-3">
+<h3 id="org65123ce"><span class="section-number-3">2.1</span> 库级别命令</h3>
+<div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
-<li>hash
-<ul class="org-ul">
-<li><a href="../blog/2018/consistent-hashing.html">一致性 hash 指南</a>：翻译的一篇文章，虽然核心是一致性 hash，但对 hash 基础也有介绍</li>
-<li><a href="../blog/2018/redis-cluster-hash.html">Redis 集群中的 hash 算法</a></li>
-<li><a href="data-structure-and-algorithm/hash.html">一些资料</a></li>
-</ul></li>
+<li><code>user ${db}</code>: 切换数据库</li>
+<li><code>show dbs</code>: 查看所有数据库</li>
+<li><code>show users</code>: 显示用户</li>
+<li><code>db.dropDatabase()</code>: 删除当前数据库</li>
+<li><code>db.getName()</code>: 查看当前数据库（名称）</li>
+<li><code>db.version()</code>: 查看当前 DB 版本</li>
+<li><code>db.stats()</code>: 查看库表状态（表、对象数量，对象大小，数据大小，存储大小，索引数量，索引大小等）</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgcf5034f" class="outline-2">
-<h2 id="orgcf5034f"><span class="section-number-2">3</span> 数据库</h2>
+<div id="outline-container-org42efcc3" class="outline-3">
+<h3 id="org42efcc3"><span class="section-number-3">2.2</span> 表级别命令</h3>
+<div class="outline-text-3" id="text-2-2">
+<ul class="org-ul">
+<li><code>show collections</code>: 查看所有的 collections</li>
+<li><code>db.${collection}.stat()</code>: 查看当前表的状态（大小、数量、索引等）</li>
+<li><code>db.${collection}.count()</code>: 表行数量</li>
+<li><code>db.${collection}.find()</code>: 不设置条件时，查询所有的数据，查询条件为JSON 结构，调用 <code>limit</code> 函数可限制记录条数</li>
+<li><code>db.${collection}.getIndexes()</code>: 查看当前表的所有索引</li>
+<li><code>db.${collection}.dropIndex("${idx_name}")</code>: 删除索引， <code>dropIndexes()</code> 删除所有索引</li>
+<li><code>db.${collection}.distinct(field, query, options)</code>: 字段去重，具体请看 <a href="https://docs.mongodb.com/manual/reference/method/db.collection.distinct/">db.collection.distinct()</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5136f2a" class="outline-3">
+<h3 id="org5136f2a"><span class="section-number-3">2.3</span> 其它</h3>
+<div class="outline-text-3" id="text-2-3">
+<ul class="org-ul">
+<li><code>help</code>: 万能的帮助命令，可针对库，表等分别调用，用好了基本上不需要查阅手册</li>
+<li><code>pretty()</code>: 友好的显示结果，可与各种查询命令一起使用</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org25c968f" class="outline-2">
+<h2 id="org25c968f"><span class="section-number-2">3</span> 备份与恢复</h2>
 <div class="outline-text-2" id="text-3">
-</div>
-<div id="outline-container-org1e7857c" class="outline-3">
-<h3 id="org1e7857c"><span class="section-number-3">3.1</span> 关系型数据库</h3>
-<div class="outline-text-3" id="text-3-1">
+<p>
+MongoDB 中常使用 <code>mongodump</code> 来备份数据，使用 <code>mongorestore</code> 来恢复数据。
+</p>
+
 <ul class="org-ul">
-<li><a href="database/mysql.html">MySQL</a></li>
+<li>mongodump: <code>mongodump -h &lt;hostname&gt;&lt;:port&gt; -d dbname -o dbdirectory</code></li>
+<li>mongorestore: <code>mongorestore -h &lt;hostname&gt;&lt;:port&gt; -d dbname &lt;path&gt;</code></li>
 </ul>
+
+<p>
+<b>注意</b>: 这两个命令特别坑的地方在于，如果不指定路径会自动选择当前目录下文件，一般命令不加任何参数会自动提示 <code>help</code> ，而这两个命令不会。所以备份和恢复两个命令一定不能搞混了，有一次我备份数据的时候使用了 mongorestore 导致旧的数据恢复了。
+</p>
 </div>
 </div>
 
-<div id="outline-container-orgf65864b" class="outline-3">
-<h3 id="orgf65864b"><span class="section-number-3">3.2</span> 面向文档的数据库（Document-oriented databases）</h3>
-<div class="outline-text-3" id="text-3-2">
-<ul class="org-ul">
-<li><a href="database/mongodb.html">MongoDB</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org2dbc422" class="outline-3">
-<h3 id="org2dbc422"><span class="section-number-3">3.3</span> NoSQL</h3>
-<div class="outline-text-3" id="text-3-3">
-<ul class="org-ul">
-<li><a href="database/redis.html">Redis</a></li>
-</ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org015c9c0" class="outline-2">
-<h2 id="org015c9c0"><span class="section-number-2">4</span> DevOps</h2>
+<div id="outline-container-org8b8eda6" class="outline-2">
+<h2 id="org8b8eda6"><span class="section-number-2">4</span> FAQ</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org8eafd2e" class="outline-3">
-<h3 id="org8eafd2e"><span class="section-number-3">4.1</span> 系统运维</h3>
+<div id="outline-container-org97d9a7b" class="outline-3">
+<h3 id="org97d9a7b"><span class="section-number-3">4.1</span> Q: 如何查询嵌套内容？</h3>
 <div class="outline-text-3" id="text-4-1">
-<dl class="org-dl">
-<dt>基础命令</dt><dd><a href="devops/awk.html">awk</a>，<a href="devops/sed.html">sed</a>，<a href="devops/tar.html">tar</a>，<a href="devops/rsync.html">rsync</a>，<a href="devops/cron.html">crontab</a>，<a href="devops/find.html">find</a>，<a href="devops/process-mgr.html">进程管理</a>，<a href="devops/ssh.html">SSH</a></dd>
-<dt>配置</dt><dd><a href="devops/ps1.html">PS1</a></dd>
-<dt>操作系统</dt><dd><a href="devops/ubuntu.html">Ubuntu</a>，<a href="devops/ops-faq.html">系统 FAQ</a></dd>
-<dt>系统管理</dt><dd><a href="devops/systemd.html">systemd</a> 和 <a href="devops/journalctl.html">journalctl</a></dd>
-</dl>
+<p>
+A: 使用 <code>.</code> 语法，比如 <code>db.xxx.find({"aa.bb": "cc"})</code> 将会查询 <code>xxx</code> 表中 <code>aa</code> 结构中的 <code>bb = cc</code> 的条目。
+</p>
 </div>
 </div>
 
-<div id="outline-container-orga4358de" class="outline-3">
-<h3 id="orga4358de"><span class="section-number-3">4.2</span> 中间件</h3>
+<div id="outline-container-orgdf48a34" class="outline-3">
+<h3 id="orgdf48a34"><span class="section-number-3">4.2</span> Q: <code>db.stats()</code> 中 <code>dataSize</code> 为什么比 <code>storageSize</code> 要大？</h3>
 <div class="outline-text-3" id="text-4-2">
-<ul class="org-ul">
-<li><a href="devops/nginx.html">nginx</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org87b05c3" class="outline-3">
-<h3 id="org87b05c3"><span class="section-number-3">4.3</span> 容器化</h3>
-<div class="outline-text-3" id="text-4-3">
-</div>
-<div id="outline-container-org35e046e" class="outline-4">
-<h4 id="org35e046e"><span class="section-number-4">4.3.1</span> Docker</h4>
-<div class="outline-text-4" id="text-4-3-1">
-<ul class="org-ul">
-<li><a href="devops/docker-tutorial.html">学习笔记</a></li>
-<li><a href="devops/docker-tutorial2.html">官方文档翻译</a></li>
-<li><a href="devops/dockerfile-best-practice.html">Dockerfile 最佳实践</a></li>
-<li>博客:
-<ul class="org-ul">
-<li><a href="../blog/2018/different-from-docker-and-vm.html">{译} Docker 和 VM 的区别</a></li>
-</ul></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgd91a55e" class="outline-4">
-<h4 id="orgd91a55e"><span class="section-number-4">4.3.2</span> K8s</h4>
-<div class="outline-text-4" id="text-4-3-2">
-<ul class="org-ul">
-<li><a href="devops/k8s-concept.html">术语</a></li>
-<li><a href="devops/k8s-kubectl.html">kubectl</a>：kubectl 使用文档</li>
-<li><a href="devops/k8s-ingress.html">Ingress</a></li>
-<li><a href="devops/k8s-practice.html">实践</a></li>
-<li><a href="devops/k8s-resource.html">资源</a>：各种帅帅的图</li>
-</ul>
+<p>
+A: <code>storageSize</code> 是实际数据库所有占用大小的总和，不做压缩的情况下，要比 <code>dataSize</code> 要大，因为它还包含未使用的空间。但是如果你使用 <code>WiredTiger</code> 存储引擎，数据在磁盘是上压缩过的，所以比 <code>dataSize</code> 看起来要小。看 <a href="https://stackoverflow.com/questions/34054780/how-can-mongodb-datasize-be-larger-than-storagesize">这里</a>。
+</p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org97d99b6" class="outline-3">
-<h3 id="org97d99b6"><span class="section-number-3">4.4</span> 监控告警</h3>
-<div class="outline-text-3" id="text-4-4">
-<ul class="org-ul">
-<li><a href="devops/promethues.html">基于 Prometheus 的监控告警</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org8efe442" class="outline-3">
-<h3 id="org8efe442"><span class="section-number-3">4.5</span> 日志</h3>
-<div class="outline-text-3" id="text-4-5">
-<ul class="org-ul">
-<li><a href="devops/log.html">日志收集</a></li>
-</ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org756001d" class="outline-2">
-<h2 id="org756001d"><span class="section-number-2">5</span> 程序设计</h2>
+<div id="outline-container-org7791175" class="outline-2">
+<h2 id="org7791175"><span class="section-number-2">5</span> Resource</h2>
 <div class="outline-text-2" id="text-5">
-</div>
-<div id="outline-container-org575eda6" class="outline-3">
-<h3 id="org575eda6"><span class="section-number-3">5.1</span> 前端</h3>
-<div class="outline-text-3" id="text-5-1">
 <ul class="org-ul">
-<li><a href="programming/frontend/css.html">CSS</a></li>
-<li><a href="programming/frontend/less.html">less</a></li>
-<li><a href="programming/frontend/react.html">React</a></li>
-<li><a href="programming/frontend/webpack.html">Webpack</a></li>
-<li><a href="programming/frontend/antd-pro.html">Ant Design Pro</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org9ff8111" class="outline-3">
-<h3 id="org9ff8111"><span class="section-number-3">5.2</span> C++</h3>
-<div class="outline-text-3" id="text-5-2">
-<ul class="org-ul">
-<li><a href="programming/cpp/autotools.html">AutoTools</a>：编译工具</li>
-<li><a href="programming/cpp/gcc.html">gcc</a>：编译器</li>
-<li><a href="programming/cpp/makefile.html">Makefile</a></li>
-<li><a href="programming/cpp/perf.html">Perf</a>：性能剖析工具，其实只要记得 <code>perf top -p</code> 一个指令就行了</li>
-<li><a href="programming/cpp/valgrind.html">Valgrind</a>：Linux 下动态（指令框架）分析工具，主要用来做内存泄露检测。其他的工具还有 VLC，Nvwa 等</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org23b095f" class="outline-3">
-<h3 id="org23b095f"><span class="section-number-3">5.3</span> Go</h3>
-<div class="outline-text-3" id="text-5-3">
-<ul class="org-ul">
-<li><a href="programming/go/build-env.html">构建环境</a>：安装、环境配置、工具链等说明</li>
-<li><a href="programming/go/packages.html">packages</a>：各种库的对比和选型</li>
-<li><a href="programming/go/package-manager.html">包管理工具</a></li>
-<li><a href="programming/go/project-layout.html">项目结构</a>：摘自 <a href="https://github.com/golang-standards/project-layout">project-layout</a>，go 工程的项目结构</li>
-<li><a href="programming/go/date-format.html">时间格式化与解析</a></li>
-<li><a href="programming/go/resource.html">资源</a>：一些资源链接</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orga6e3e01" class="outline-3">
-<h3 id="orga6e3e01"><span class="section-number-3">5.4</span> 编码工具</h3>
-<div class="outline-text-3" id="text-5-4">
-<ul class="org-ul">
-<li><a href="programming/code-env/emacs.html">Emacs</a>：神之编辑器</li>
-<li><a href="programming/code-env/git.html">git</a> | <a href="programming/code-env/svn.html">svn</a>：版本管理器</li>
-<li><a href="programming/code-env/pip.html">pip</a>：Python 的包管理器</li>
+<li><a href="https://ruby-china.org/topics/27659">数据库 MongoDB 与 MySQL 深入对比</a></li>
 </ul>
 </div>
 </div>
 </div>
-
-<div id="outline-container-orgb325492" class="outline-2">
-<h2 id="orgb325492"><span class="section-number-2">6</span> 成长</h2>
-<div class="outline-text-2" id="text-6">
-<ul class="org-ul">
-<li><a href="growing/programmer.html">技术人</a>：一些常用的办公设备和软件记录</li>
-<li><a href="growing/mgr.html">个人管理</a>：一些摘抄和感悟</li>
-<li><a href="growing/think-back.html">反思</a></li>
-</ul>
-</div>
-</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2018-07-09 12:02:46</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
 </div>
 </body>
 </html>

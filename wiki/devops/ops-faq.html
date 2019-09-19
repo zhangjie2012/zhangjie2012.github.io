@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>wiki</title>
+<title>运维 FAQ</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -231,246 +231,192 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">wiki</h1>
+<h1 class="title">运维 FAQ</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgfe7ba04">1. 操作系统</a></li>
-<li><a href="#orgdaf0a52">2. 数据结构和算法</a></li>
-<li><a href="#orgcf5034f">3. 数据库</a>
+<li><a href="#orgdf0edcd">1. Shell 相关</a>
 <ul>
-<li><a href="#org1e7857c">3.1. 关系型数据库</a></li>
-<li><a href="#orgf65864b">3.2. 面向文档的数据库（Document-oriented databases）</a></li>
-<li><a href="#org2dbc422">3.3. NoSQL</a></li>
+<li><a href="#orgae62169">1.1. 登录读取配置的流程</a>
+<ul>
+<li><a href="#orgc4a17fc">1.1.1. login shell</a></li>
+<li><a href="#org577357d">1.1.2. non-login shell</a></li>
 </ul>
 </li>
-<li><a href="#org015c9c0">4. DevOps</a>
-<ul>
-<li><a href="#org8eafd2e">4.1. 系统运维</a></li>
-<li><a href="#orga4358de">4.2. 中间件</a></li>
-<li><a href="#org87b05c3">4.3. 容器化</a>
-<ul>
-<li><a href="#org35e046e">4.3.1. Docker</a></li>
-<li><a href="#orgd91a55e">4.3.2. K8s</a></li>
+<li><a href="#orgb31a1cb">1.2. <code>~/.profile</code> 和 <code>~/.bashrc</code> 的区别</a></li>
+<li><a href="#org1f2ff11">1.3. <code>/etc/bashrc</code> 做了哪些事？</a></li>
+<li><a href="#org1b2863a">1.4. <code>~/.bash_history</code> 是干嘛的？</a></li>
+<li><a href="#org7f81369">1.5. <code>~/.bash_logout</code> 是干嘛的？</a></li>
+<li><a href="#orgb6cb649">1.6. 查看当前 shell</a></li>
 </ul>
 </li>
-<li><a href="#org97d99b6">4.4. 监控告警</a></li>
-<li><a href="#org8efe442">4.5. 日志</a></li>
-</ul>
-</li>
-<li><a href="#org756001d">5. 程序设计</a>
-<ul>
-<li><a href="#org575eda6">5.1. 前端</a></li>
-<li><a href="#org9ff8111">5.2. C++</a></li>
-<li><a href="#org23b095f">5.3. Go</a></li>
-<li><a href="#orga6e3e01">5.4. 编码工具</a></li>
-</ul>
-</li>
-<li><a href="#orgb325492">6. 成长</a></li>
+<li><a href="#org9713c9d">2. 如何矫正系统时间</a></li>
+<li><a href="#orgd10fd03">3. 如何查看机器基本信息（发行版本，CPU，内存等）</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgfe7ba04" class="outline-2">
-<h2 id="orgfe7ba04"><span class="section-number-2">1</span> 操作系统</h2>
+<div id="outline-container-orgdf0edcd" class="outline-2">
+<h2 id="orgdf0edcd"><span class="section-number-2">1</span> Shell 相关</h2>
 <div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgae62169" class="outline-3">
+<h3 id="orgae62169"><span class="section-number-3">1.1</span> 登录读取配置的流程</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+广义的 shell 分两种，一种为 login shell（通过终端登录），另外一种为 non-login shell（通过图形界面登录）。
+</p>
+
+<p>
+所有 shell 都会走的流程：
+</p>
+
+<ol class="org-ol">
+<li><code>/etc/profile</code>: 系统整体的设置，不建议修改</li>
+<li><code>/etc/inputrc</code>: 设置终端热键，声音等</li>
+<li><code>/etc/profile.d/*sh</code>: 设置 bash 操作接口的颜色、语系、ll 与 ls 命令的别名、vi 命令的别名，which 的命令的别名等</li>
+<li><code>/etc/profile.d/i18n.sh</code>: 设置语言，CentOS 7 是 <code>lang.sh</code> 脚本</li>
+</ol>
+</div>
+
+<div id="outline-container-orgc4a17fc" class="outline-4">
+<h4 id="orgc4a17fc"><span class="section-number-4">1.1.1</span> login shell</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<ol class="org-ol">
+<li><code>~/.bash_profile</code></li>
+<li><code>~/.bash_login</code></li>
+<li><code>~/.profile</code></li>
+</ol>
+
+<p>
+bash 的 login shell 只会读取上面三个文件中的一个，而读取的顺序则是按照上面的顺序。而一般情况下 <code>~/.bash_profile</code> 中会有这样一块代码:
+</p>
+
+<pre class="example">
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+</pre>
+
+<p>
+如果存在 <code>~/.bashrc</code> 则使用它，而 <code>~/.bashrc</code> 中又会包含这样一段代码:
+</p>
+
+<pre class="example">
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+</pre>
+
+<p>
+触发加载 <code>/etc/bashrc</code> 的内容。整理下来 login shell 的读取流程是: <code>~/.bash_profile =&gt; ~/.bashrc =&gt; /etc/bashrc</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org577357d" class="outline-4">
+<h4 id="org577357d"><span class="section-number-4">1.1.2</span> non-login shell</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+仅仅会读 <code>~/.bashrc</code> <code>&gt; =/etc/bashrc</code>
+</p>
+
+<p>
+扩展: <a href="http://www.linuxfromscratch.org/blfs/view/svn/postlfs/profile.html">TheBash Shell Startup Files</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb31a1cb" class="outline-3">
+<h3 id="orgb31a1cb"><span class="section-number-3">1.2</span> <code>~/.profile</code> 和 <code>~/.bashrc</code> 的区别</h3>
+<div class="outline-text-3" id="text-1-2">
 <ul class="org-ul">
-<li><a href="os/epoll.html">I/O 多路复用</a></li>
-<li><a href="os/other.html">其他</a></li>
+<li>这两者都具有个性化定制功能</li>
+<li><code>~/.profile</code> 可以设定本用户专有的路径、环境变量等等，它只能登入的时候执行一次</li>
+<li><code>~/.bashrc</code> 也是某用户专有设定文档，可以设定路径，命令别名，每次 shell script 的执行都会使用它一次</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgdaf0a52" class="outline-2">
-<h2 id="orgdaf0a52"><span class="section-number-2">2</span> 数据结构和算法</h2>
+<div id="outline-container-org1f2ff11" class="outline-3">
+<h3 id="org1f2ff11"><span class="section-number-3">1.3</span> <code>/etc/bashrc</code> 做了哪些事？</h3>
+<div class="outline-text-3" id="text-1-3">
+<ol class="org-ol">
+<li>依据不同的 UID 规定 umask 的值</li>
+<li>依据不同的 UID 规定提示符（PS1变量）</li>
+<li>调用 <code>/etc/profile.d/*.sh</code> 的设置</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org1b2863a" class="outline-3">
+<h3 id="org1b2863a"><span class="section-number-3">1.4</span> <code>~/.bash_history</code> 是干嘛的？</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+历史命令记录，登录之后读入内存。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7f81369" class="outline-3">
+<h3 id="org7f81369"><span class="section-number-3">1.5</span> <code>~/.bash_logout</code> 是干嘛的？</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+记录了当我注销 bash 后系统再帮我做完指定的操作才能离开。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb6cb649" class="outline-3">
+<h3 id="orgb6cb649"><span class="section-number-3">1.6</span> 查看当前 shell</h3>
+<div class="outline-text-3" id="text-1-6">
+<ul class="org-ul">
+<li>所有的系统Shell: <code>cat /etc/shells</code></li>
+<li>查看用户对应的 shell: <code>cat /etc/passwd</code> 或者 <code>echo $SHELL</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9713c9d" class="outline-2">
+<h2 id="org9713c9d"><span class="section-number-2">2</span> 如何矫正系统时间</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
-<li>hash
-<ul class="org-ul">
-<li><a href="../blog/2018/consistent-hashing.html">一致性 hash 指南</a>：翻译的一篇文章，虽然核心是一致性 hash，但对 hash 基础也有介绍</li>
-<li><a href="../blog/2018/redis-cluster-hash.html">Redis 集群中的 hash 算法</a></li>
-<li><a href="data-structure-and-algorithm/hash.html">一些资料</a></li>
-</ul></li>
+<li>修改时区: <code>sudo cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</code></li>
+<li>时间同步: <code>sudo ntpdate time.windows.com</code></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgcf5034f" class="outline-2">
-<h2 id="orgcf5034f"><span class="section-number-2">3</span> 数据库</h2>
+<div id="outline-container-orgd10fd03" class="outline-2">
+<h2 id="orgd10fd03"><span class="section-number-2">3</span> 如何查看机器基本信息（发行版本，CPU，内存等）</h2>
 <div class="outline-text-2" id="text-3">
-</div>
-<div id="outline-container-org1e7857c" class="outline-3">
-<h3 id="org1e7857c"><span class="section-number-3">3.1</span> 关系型数据库</h3>
-<div class="outline-text-3" id="text-3-1">
 <ul class="org-ul">
-<li><a href="database/mysql.html">MySQL</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgf65864b" class="outline-3">
-<h3 id="orgf65864b"><span class="section-number-3">3.2</span> 面向文档的数据库（Document-oriented databases）</h3>
-<div class="outline-text-3" id="text-3-2">
-<ul class="org-ul">
-<li><a href="database/mongodb.html">MongoDB</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org2dbc422" class="outline-3">
-<h3 id="org2dbc422"><span class="section-number-3">3.3</span> NoSQL</h3>
-<div class="outline-text-3" id="text-3-3">
-<ul class="org-ul">
-<li><a href="database/redis.html">Redis</a></li>
+<li><code>cat /etc/os-release</code>: 发行版本</li>
+<li><code>cat /etc/issue</code>: 操作系统版本</li>
+<li><code>cat /etc/inittab</code>: 查看启动项，使用 systemd 的系统，已经不再需要这个文件</li>
+<li><code>cat /etc/passwd</code>: 查看所有用户的列表</li>
+<li><code>cat /etc/group</code>: 查看用户组</li>
+<li><code>cat /proc/version</code>: Linux 版本号，相当于 <code>uname -r=，=uname-a</code> 查看更多信息</li>
+<li><code>cat /proc/cpuinfo</code>: CPU 信息</li>
+<li><code>cat /proc/meminfo</code>: 内存信息(i.e. mem used, free, swap size)</li>
+<li><code>cat /proc/partitions</code>: 所有设备的所有分区</li>
+<li><code>cat /proc/swasps</code>: 所有 swap 分区的信息</li>
+<li><code>df -h</code>: 查看硬盘大小</li>
+<li><code>du -sh</code>: 查看当前文件夹大小</li>
+<li><code>free</code>: 查看系统可用内存，可选参数 <code>-m</code> <code>-h</code></li>
 </ul>
 </div>
 </div>
 </div>
-
-<div id="outline-container-org015c9c0" class="outline-2">
-<h2 id="org015c9c0"><span class="section-number-2">4</span> DevOps</h2>
-<div class="outline-text-2" id="text-4">
-</div>
-<div id="outline-container-org8eafd2e" class="outline-3">
-<h3 id="org8eafd2e"><span class="section-number-3">4.1</span> 系统运维</h3>
-<div class="outline-text-3" id="text-4-1">
-<dl class="org-dl">
-<dt>基础命令</dt><dd><a href="devops/awk.html">awk</a>，<a href="devops/sed.html">sed</a>，<a href="devops/tar.html">tar</a>，<a href="devops/rsync.html">rsync</a>，<a href="devops/cron.html">crontab</a>，<a href="devops/find.html">find</a>，<a href="devops/process-mgr.html">进程管理</a>，<a href="devops/ssh.html">SSH</a></dd>
-<dt>配置</dt><dd><a href="devops/ps1.html">PS1</a></dd>
-<dt>操作系统</dt><dd><a href="devops/ubuntu.html">Ubuntu</a>，<a href="devops/ops-faq.html">系统 FAQ</a></dd>
-<dt>系统管理</dt><dd><a href="devops/systemd.html">systemd</a> 和 <a href="devops/journalctl.html">journalctl</a></dd>
-</dl>
-</div>
-</div>
-
-<div id="outline-container-orga4358de" class="outline-3">
-<h3 id="orga4358de"><span class="section-number-3">4.2</span> 中间件</h3>
-<div class="outline-text-3" id="text-4-2">
-<ul class="org-ul">
-<li><a href="devops/nginx.html">nginx</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org87b05c3" class="outline-3">
-<h3 id="org87b05c3"><span class="section-number-3">4.3</span> 容器化</h3>
-<div class="outline-text-3" id="text-4-3">
-</div>
-<div id="outline-container-org35e046e" class="outline-4">
-<h4 id="org35e046e"><span class="section-number-4">4.3.1</span> Docker</h4>
-<div class="outline-text-4" id="text-4-3-1">
-<ul class="org-ul">
-<li><a href="devops/docker-tutorial.html">学习笔记</a></li>
-<li><a href="devops/docker-tutorial2.html">官方文档翻译</a></li>
-<li><a href="devops/dockerfile-best-practice.html">Dockerfile 最佳实践</a></li>
-<li>博客:
-<ul class="org-ul">
-<li><a href="../blog/2018/different-from-docker-and-vm.html">{译} Docker 和 VM 的区别</a></li>
-</ul></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgd91a55e" class="outline-4">
-<h4 id="orgd91a55e"><span class="section-number-4">4.3.2</span> K8s</h4>
-<div class="outline-text-4" id="text-4-3-2">
-<ul class="org-ul">
-<li><a href="devops/k8s-concept.html">术语</a></li>
-<li><a href="devops/k8s-kubectl.html">kubectl</a>：kubectl 使用文档</li>
-<li><a href="devops/k8s-ingress.html">Ingress</a></li>
-<li><a href="devops/k8s-practice.html">实践</a></li>
-<li><a href="devops/k8s-resource.html">资源</a>：各种帅帅的图</li>
-</ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org97d99b6" class="outline-3">
-<h3 id="org97d99b6"><span class="section-number-3">4.4</span> 监控告警</h3>
-<div class="outline-text-3" id="text-4-4">
-<ul class="org-ul">
-<li><a href="devops/promethues.html">基于 Prometheus 的监控告警</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org8efe442" class="outline-3">
-<h3 id="org8efe442"><span class="section-number-3">4.5</span> 日志</h3>
-<div class="outline-text-3" id="text-4-5">
-<ul class="org-ul">
-<li><a href="devops/log.html">日志收集</a></li>
-</ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org756001d" class="outline-2">
-<h2 id="org756001d"><span class="section-number-2">5</span> 程序设计</h2>
-<div class="outline-text-2" id="text-5">
-</div>
-<div id="outline-container-org575eda6" class="outline-3">
-<h3 id="org575eda6"><span class="section-number-3">5.1</span> 前端</h3>
-<div class="outline-text-3" id="text-5-1">
-<ul class="org-ul">
-<li><a href="programming/frontend/css.html">CSS</a></li>
-<li><a href="programming/frontend/less.html">less</a></li>
-<li><a href="programming/frontend/react.html">React</a></li>
-<li><a href="programming/frontend/webpack.html">Webpack</a></li>
-<li><a href="programming/frontend/antd-pro.html">Ant Design Pro</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org9ff8111" class="outline-3">
-<h3 id="org9ff8111"><span class="section-number-3">5.2</span> C++</h3>
-<div class="outline-text-3" id="text-5-2">
-<ul class="org-ul">
-<li><a href="programming/cpp/autotools.html">AutoTools</a>：编译工具</li>
-<li><a href="programming/cpp/gcc.html">gcc</a>：编译器</li>
-<li><a href="programming/cpp/makefile.html">Makefile</a></li>
-<li><a href="programming/cpp/perf.html">Perf</a>：性能剖析工具，其实只要记得 <code>perf top -p</code> 一个指令就行了</li>
-<li><a href="programming/cpp/valgrind.html">Valgrind</a>：Linux 下动态（指令框架）分析工具，主要用来做内存泄露检测。其他的工具还有 VLC，Nvwa 等</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org23b095f" class="outline-3">
-<h3 id="org23b095f"><span class="section-number-3">5.3</span> Go</h3>
-<div class="outline-text-3" id="text-5-3">
-<ul class="org-ul">
-<li><a href="programming/go/build-env.html">构建环境</a>：安装、环境配置、工具链等说明</li>
-<li><a href="programming/go/packages.html">packages</a>：各种库的对比和选型</li>
-<li><a href="programming/go/package-manager.html">包管理工具</a></li>
-<li><a href="programming/go/project-layout.html">项目结构</a>：摘自 <a href="https://github.com/golang-standards/project-layout">project-layout</a>，go 工程的项目结构</li>
-<li><a href="programming/go/date-format.html">时间格式化与解析</a></li>
-<li><a href="programming/go/resource.html">资源</a>：一些资源链接</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orga6e3e01" class="outline-3">
-<h3 id="orga6e3e01"><span class="section-number-3">5.4</span> 编码工具</h3>
-<div class="outline-text-3" id="text-5-4">
-<ul class="org-ul">
-<li><a href="programming/code-env/emacs.html">Emacs</a>：神之编辑器</li>
-<li><a href="programming/code-env/git.html">git</a> | <a href="programming/code-env/svn.html">svn</a>：版本管理器</li>
-<li><a href="programming/code-env/pip.html">pip</a>：Python 的包管理器</li>
-</ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgb325492" class="outline-2">
-<h2 id="orgb325492"><span class="section-number-2">6</span> 成长</h2>
-<div class="outline-text-2" id="text-6">
-<ul class="org-ul">
-<li><a href="growing/programmer.html">技术人</a>：一些常用的办公设备和软件记录</li>
-<li><a href="growing/mgr.html">个人管理</a>：一些摘抄和感悟</li>
-<li><a href="growing/think-back.html">反思</a></li>
-</ul>
-</div>
-</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2018-09-11 15:29:32</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
 </div>
 </body>
 </html>
