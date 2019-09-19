@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-09-19 Thu 10:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Smells Like Teen Spirit</title>
+<title>基于 Prometheus 监控告警</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -180,7 +181,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -230,41 +231,71 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Smells Like Teen Spirit</h1>
-
-<div id="outline-container-orgc7e0a4e" class="outline-2">
-<h2 id="orgc7e0a4e">Entry</h2>
-<div class="outline-text-2" id="text-orgc7e0a4e">
-<dl class="org-dl">
-<dt><a href="blog/index.html">Blog</a></dt><dd>网络日志，偏技术和思考，知识放 Wiki，非技术的都放在了 Youth 里</dd>
-<dt><a href="reading/links.html">Links</a></dt><dd>经常看的网站</dd>
-<dt><a href="wiki/index.html">Wiki</a></dt><dd>知识点整理</dd>
-<dt><a href="reading/read-books.html">Read</a>、<a href="reading/unread-books.html">Unreading</a></dt><dd>读过的和打算读的书，包括电子书</dd>
-</dl>
-</div>
-</div>
-
-<div id="outline-container-org320c311" class="outline-2">
-<h2 id="org320c311">Remember</h2>
-<div class="outline-text-2" id="text-org320c311">
-<dl class="org-dl">
-<dt><a href="youth/index.html">Youth</a></dt><dd>永远年轻，永远热泪盈眶；从大学开始到现在的人生经历和感悟</dd>
-<dt><a href="weekly/index.html">Weekly</a></dt><dd>碎碎念，零散的记录</dd>
-<dt><a href="other/duomi.html">音乐回忆</a></dt><dd>2014-06 之前在多米上听的歌，写脚本抓的</dd>
-<dt><a href="other/once.html">曾经发表在 ONCE 上的一些话</a></dt><dd>以前做的一个网站，后来关了</dd>
-</dl>
-</div>
-</div>
-
-<div id="outline-container-org9946ffd" class="outline-2">
-<h2 id="org9946ffd">Social Links</h2>
-<div class="outline-text-2" id="text-org9946ffd">
-<ul class="org-ul">
-<li><a href="https://github.com/zhangjie2012">Github</a></li>
-<li><a href="https://www.zhihu.com/people/zhang-jie-86-68/activities">知乎</a></li>
-<li><a href="https://music.163.com/#/user/home?id=30239300">网易云音乐</a></li>
-<li><a href="https://twitter.com/duzhuoyizui">Twitter</a></li>
+<h1 class="title">基于 Prometheus 监控告警</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd7b80d5">1. 监控告警组件</a>
+<ul>
+<li><a href="#org1a5b7dd">1.1. 上报</a></li>
+<li><a href="#org1ff8bbd">1.2. metrics 收集</a></li>
+<li><a href="#org17619b2">1.3. UI 显示</a></li>
+<li><a href="#orga27be45">1.4. 告警</a></li>
 </ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd7b80d5" class="outline-2">
+<h2 id="orgd7b80d5"><span class="section-number-2">1</span> 监控告警组件</h2>
+<div class="outline-text-2" id="text-1">
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/prom.png" alt="prom.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1a5b7dd" class="outline-3">
+<h3 id="org1a5b7dd"><span class="section-number-3">1.1</span> 上报</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Prometheus 提供了各种 exporter，除了业务之外的组件（Node，Redis，MySQL等）基本已经支持，业务自身的需要对接 Prometheus Client API。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1ff8bbd" class="outline-3">
+<h3 id="org1ff8bbd"><span class="section-number-3">1.2</span> metrics 收集</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Prometheus 中包含 TSDB（时间序列 DB），用作数据存储。Prometheus 采用的是 pull 的方案，配置之后会按照规则定时获取 metrics 并存储到 TSDB 中，TSDB 可以序列化到本地（SSD 比较好）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org17619b2" class="outline-3">
+<h3 id="org17619b2"><span class="section-number-3">1.3</span> UI 显示</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Promethues 有自己的 Web UI，但是比较简陋。业内的做法是对接 Grafana 显示数据。Grafana 提供了丰富的 <a href="https://grafana.com/dashboards">Dashboards</a>，直接导入即可。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga27be45" class="outline-3">
+<h3 id="orga27be45"><span class="section-number-3">1.4</span> 告警</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+Grafana 自身是支持告警的，但是比较蛋疼的点在于告警规则不支持模板变量，那就约等于没有了···
+</p>
+
+<p>
+业内常用的做法是使用 Alertmanager，它提供了多种告警策略，甚至包含了 Webhook 的方式(自定义告警、对接自有的告警系统)。
+</p>
+</div>
 </div>
 </div>
 </div>

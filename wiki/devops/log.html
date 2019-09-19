@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-09-19 Thu 10:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Smells Like Teen Spirit</title>
+<title>DevOps - 日志收集</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -180,7 +181,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -230,40 +231,50 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Smells Like Teen Spirit</h1>
-
-<div id="outline-container-orgc7e0a4e" class="outline-2">
-<h2 id="orgc7e0a4e">Entry</h2>
-<div class="outline-text-2" id="text-orgc7e0a4e">
-<dl class="org-dl">
-<dt><a href="blog/index.html">Blog</a></dt><dd>网络日志，偏技术和思考，知识放 Wiki，非技术的都放在了 Youth 里</dd>
-<dt><a href="reading/links.html">Links</a></dt><dd>经常看的网站</dd>
-<dt><a href="wiki/index.html">Wiki</a></dt><dd>知识点整理</dd>
-<dt><a href="reading/read-books.html">Read</a>、<a href="reading/unread-books.html">Unreading</a></dt><dd>读过的和打算读的书，包括电子书</dd>
-</dl>
+<h1 class="title">DevOps - 日志收集</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org65c5c51">1. 一个简易的日志收集方案</a></li>
+</ul>
 </div>
 </div>
 
-<div id="outline-container-org320c311" class="outline-2">
-<h2 id="org320c311">Remember</h2>
-<div class="outline-text-2" id="text-org320c311">
-<dl class="org-dl">
-<dt><a href="youth/index.html">Youth</a></dt><dd>永远年轻，永远热泪盈眶；从大学开始到现在的人生经历和感悟</dd>
-<dt><a href="weekly/index.html">Weekly</a></dt><dd>碎碎念，零散的记录</dd>
-<dt><a href="other/duomi.html">音乐回忆</a></dt><dd>2014-06 之前在多米上听的歌，写脚本抓的</dd>
-<dt><a href="other/once.html">曾经发表在 ONCE 上的一些话</a></dt><dd>以前做的一个网站，后来关了</dd>
-</dl>
-</div>
+<div id="outline-container-org65c5c51" class="outline-2">
+<h2 id="org65c5c51"><span class="section-number-2">1</span> 一个简易的日志收集方案</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+设计图：
+</p>
+
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/log.png" alt="log.png" />
+</p>
 </div>
 
-<div id="outline-container-org9946ffd" class="outline-2">
-<h2 id="org9946ffd">Social Links</h2>
-<div class="outline-text-2" id="text-org9946ffd">
+<ol class="org-ol">
+<li>主机使用 filebeat 上报日志到 Redis (<code>list</code>, <code>channel</code> 等)</li>
+<li>起一个服务「订阅」Redis <code>list</code> 或者 <code>channel</code> 中的日志，然后：
+
 <ul class="org-ul">
-<li><a href="https://github.com/zhangjie2012">Github</a></li>
-<li><a href="https://www.zhihu.com/people/zhang-jie-86-68/activities">知乎</a></li>
-<li><a href="https://music.163.com/#/user/home?id=30239300">网易云音乐</a></li>
-<li><a href="https://twitter.com/duzhuoyizui">Twitter</a></li>
+<li>按照文件名称保存到本地</li>
+<li>根据日志中的日志级别进行告警通知</li>
+<li>按需求将只是保存到 MySQL 或者 MongoDB 中（分表分库）</li>
+</ul></li>
+</ol>
+
+<p>
+可优化的地方：
+</p>
+
+<ul class="org-ul">
+<li>此方案适合业务量不是很大的情况下， <code>1000条/秒</code> 应该是抗的住的（ <code>360万/小时</code> ），如果业务量比这个更大怎么办：
+<ul class="org-ul">
+<li>redis 拆分成多通道，水平拆分，或者换成 Kafka</li>
+</ul></li>
+<li>业务日志可以已 JSON 的方式打出，更方便检索</li>
 </ul>
 </div>
 </div>
