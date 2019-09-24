@@ -236,25 +236,25 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org63c11b7">1. 什么是 Ingress ？</a></li>
-<li><a href="#org0ce5b75">2. 先决条件</a></li>
-<li><a href="#org988dbec">3. Ingress 资源</a></li>
-<li><a href="#org3c76225">4. Ingress controllers</a></li>
-<li><a href="#orgbc4fab5">5. 开始之前</a></li>
-<li><a href="#orge80e12d">6. Ingress 类型</a>
+<li><a href="#orgf3e2048">1. 什么是 Ingress ？</a></li>
+<li><a href="#org7479e64">2. 先决条件</a></li>
+<li><a href="#org88da2b0">3. Ingress 资源</a></li>
+<li><a href="#orga2c7893">4. Ingress controllers</a></li>
+<li><a href="#org128dca1">5. 开始之前</a></li>
+<li><a href="#org3e4e388">6. Ingress 类型</a>
 <ul>
-<li><a href="#orgdddf9c6">6.1. 单个服务</a></li>
-<li><a href="#orga731a5c">6.2. 简单的扇出（fanout）</a></li>
-<li><a href="#org528556c">6.3. 基于名称的 vhost</a></li>
-<li><a href="#org0619a7b">6.4. TLS</a></li>
-<li><a href="#org5c628be">6.5. 负载均衡</a></li>
+<li><a href="#org27425ce">6.1. 单个服务</a></li>
+<li><a href="#org3bb0bf1">6.2. 简单的扇出（fanout）</a></li>
+<li><a href="#orgfefddbc">6.3. 基于名称的 vhost</a></li>
+<li><a href="#org24dd202">6.4. TLS</a></li>
+<li><a href="#orga6e9a4f">6.5. 负载均衡</a></li>
 </ul>
 </li>
-<li><a href="#orgfdc480d">7. 更新 Ingress</a></li>
-<li><a href="#org8cb7482">8. 跨可用区域失败</a></li>
-<li><a href="#orga6e8e58">9. 未来的工作</a>
+<li><a href="#org549f664">7. 更新 Ingress</a></li>
+<li><a href="#org43c05ec">8. 跨可用区域失败</a></li>
+<li><a href="#org6a3fdb4">9. 未来的工作</a>
 <ul>
-<li><a href="#org6eae95e">9.1. 备选方案</a></li>
+<li><a href="#org3b018e3">9.1. 备选方案</a></li>
 </ul>
 </li>
 </ul>
@@ -285,8 +285,8 @@ _tips_：Vhosts 分为两种情况，一种是基于 IP 的（IP-based virtual h
 <li>服务：K8s 中的服务等价于使用了 label 选择器的 pods 集合。除非另有说明，否则服务被当做成拥有虚拟 IPs 只能在集群内部网络路由</li>
 </ul>
 
-<div id="outline-container-org63c11b7" class="outline-2">
-<h2 id="org63c11b7"><span class="section-number-2">1</span> 什么是 Ingress ？</h2>
+<div id="outline-container-orgf3e2048" class="outline-2">
+<h2 id="orgf3e2048"><span class="section-number-2">1</span> 什么是 Ingress ？</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 通常，服务和 pods 拥有的 IPs 只能在集群网络路由。所有的在边缘路由器结束的流量会被丢弃或者转发到别的地方。就像下面这样：
@@ -318,8 +318,8 @@ Ingress 提供了一系列的规则允许入站连接到达集群服务。
 </div>
 </div>
 
-<div id="outline-container-org0ce5b75" class="outline-2">
-<h2 id="org0ce5b75"><span class="section-number-2">2</span> 先决条件</h2>
+<div id="outline-container-org7479e64" class="outline-2">
+<h2 id="org7479e64"><span class="section-number-2">2</span> 先决条件</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 在你使用 Ingress 资源之前，你需要了解一些事情。Ingress 是一个 beta 资源，在任何 K8s 发布 1.1 之前都是不可用的。你需要一个 Ingress 控制器来满足 Ingress，简单的创建资源将不起作用。
@@ -335,8 +335,8 @@ GCE/谷歌 K8s 引擎在 master 上部署了一个 ingress 控制器。你可以
 </div>
 </div>
 
-<div id="outline-container-org988dbec" class="outline-2">
-<h2 id="org988dbec"><span class="section-number-2">3</span> Ingress 资源</h2>
+<div id="outline-container-org88da2b0" class="outline-2">
+<h2 id="org88da2b0"><span class="section-number-2">3</span> Ingress 资源</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 一个最小的 Ingress 像这样：
@@ -386,8 +386,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-org3c76225" class="outline-2">
-<h2 id="org3c76225"><span class="section-number-2">4</span> Ingress controllers</h2>
+<div id="outline-container-orga2c7893" class="outline-2">
+<h2 id="orga2c7893"><span class="section-number-2">4</span> Ingress controllers</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 为了使 ingress 资源生效，集群必须有一个 Ingress controller 运行。这和其他类型的控制器不用，通常作为 <code>kube-controller-manager</code>  二进制的一部分来运行，跟随集群一直启动。选择一个合适你集群的 ingress controller 实现，或者你自己实现一个。
@@ -401,8 +401,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-orgbc4fab5" class="outline-2">
-<h2 id="orgbc4fab5"><span class="section-number-2">5</span> 开始之前</h2>
+<div id="outline-container-org128dca1" class="outline-2">
+<h2 id="org128dca1"><span class="section-number-2">5</span> 开始之前</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 以下文档介绍了一套 Ingress 资源跨平台资源暴露的特性，在理想情况下，所有的 Ingress 控制器应该满足这个规范，但是我们还没有实现。
@@ -411,12 +411,12 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-orge80e12d" class="outline-2">
-<h2 id="orge80e12d"><span class="section-number-2">6</span> Ingress 类型</h2>
+<div id="outline-container-org3e4e388" class="outline-2">
+<h2 id="org3e4e388"><span class="section-number-2">6</span> Ingress 类型</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-orgdddf9c6" class="outline-3">
-<h3 id="orgdddf9c6"><span class="section-number-3">6.1</span> 单个服务</h3>
+<div id="outline-container-org27425ce" class="outline-3">
+<h3 id="org27425ce"><span class="section-number-3">6.1</span> 单个服务</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 现有的 K8s 概念允许你暴露单个服务（查看<a href="https://kubernetes.io/docs/concepts/services-networking/ingress/#alternatives">备选方案</a>），不过你也可以通过 Ingress 来实现，通过指定一个没有规则的默认后端服务。
@@ -449,8 +449,8 @@ test-ingress        -             testsvc:80     107.178.254.228
 </div>
 </div>
 
-<div id="outline-container-orga731a5c" class="outline-3">
-<h3 id="orga731a5c"><span class="section-number-3">6.2</span> 简单的扇出（fanout）</h3>
+<div id="outline-container-org3bb0bf1" class="outline-3">
+<h3 id="org3bb0bf1"><span class="section-number-3">6.2</span> 简单的扇出（fanout）</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 如前所述，在 K8s 中的 pods 的 IPs 只能在集群内部访问，所以我们需要在边缘获取流量并且代理到正确的端点。这个组件通常用来做高可用负载均衡。Ingress 允许你将负载均衡的量降到最低，比如像下面的设置:
@@ -506,8 +506,8 @@ test      -
 </div>
 </div>
 
-<div id="outline-container-org528556c" class="outline-3">
-<h3 id="org528556c"><span class="section-number-3">6.3</span> 基于名称的 vhost</h3>
+<div id="outline-container-orgfefddbc" class="outline-3">
+<h3 id="orgfefddbc"><span class="section-number-3">6.3</span> 基于名称的 vhost</h3>
 <div class="outline-text-3" id="text-6-3">
 <p>
 基于名称的 vhosts 为相同的 IP 地址提供不同的 host 名称。
@@ -550,8 +550,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-org0619a7b" class="outline-3">
-<h3 id="org0619a7b"><span class="section-number-3">6.4</span> TLS</h3>
+<div id="outline-container-org24dd202" class="outline-3">
+<h3 id="org24dd202"><span class="section-number-3">6.4</span> TLS</h3>
 <div class="outline-text-3" id="text-6-4">
 <p>
 通过指定包含 TLS 私有 key 和证书的 secret 可以提高 Ingress 的安全。当前 Ingress 只支持单一的 TLS 端口，443，并假定 TLS termination。如果 TLS 配置小节指定了不同的 hosts，
@@ -593,8 +593,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-org5c628be" class="outline-3">
-<h3 id="org5c628be"><span class="section-number-3">6.5</span> 负载均衡</h3>
+<div id="outline-container-orga6e9a4f" class="outline-3">
+<h3 id="orga6e9a4f"><span class="section-number-3">6.5</span> 负载均衡</h3>
 <div class="outline-text-3" id="text-6-5">
 <p>
 一个 Ingress 控制器是一些负载均衡策略设置的引导，可以应用到所有的 Ingress 上，比如负载均衡算法，后端权重方案，等等。更多的高级负载均衡概念（比如：回话保持、动态权重等），还没有通过 Ingress 暴露。
@@ -608,8 +608,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-orgfdc480d" class="outline-2">
-<h2 id="orgfdc480d"><span class="section-number-2">7</span> 更新 Ingress</h2>
+<div id="outline-container-org549f664" class="outline-2">
+<h2 id="org549f664"><span class="section-number-2">7</span> 更新 Ingress</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 你已经添加了一个 Ingress，现在你可以编辑它：
@@ -669,8 +669,8 @@ test      -                       178.91.123.132
 </div>
 </div>
 
-<div id="outline-container-org8cb7482" class="outline-2">
-<h2 id="org8cb7482"><span class="section-number-2">8</span> 跨可用区域失败</h2>
+<div id="outline-container-org43c05ec" class="outline-2">
+<h2 id="org43c05ec"><span class="section-number-2">8</span> 跨可用区域失败</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 云服务提供商之间的跨故障域传播流量的技术不同，请详细查询 Ingress 控制器的文档，有关在联合群集中部署 Ingress 的详细信息，请参阅 <a href="https://kubernetes.io/docs/concepts/cluster-administration/federation/">联合文档</a>。
@@ -678,8 +678,8 @@ test      -                       178.91.123.132
 </div>
 </div>
 
-<div id="outline-container-orga6e8e58" class="outline-2">
-<h2 id="orga6e8e58"><span class="section-number-2">9</span> 未来的工作</h2>
+<div id="outline-container-org6a3fdb4" class="outline-2">
+<h2 id="org6a3fdb4"><span class="section-number-2">9</span> 未来的工作</h2>
 <div class="outline-text-2" id="text-9">
 <ul class="org-ul">
 <li>支持各种 HTTPS/TLS 模式</li>
@@ -689,8 +689,8 @@ test      -                       178.91.123.132
 </ul>
 </div>
 
-<div id="outline-container-org6eae95e" class="outline-3">
-<h3 id="org6eae95e"><span class="section-number-3">9.1</span> 备选方案</h3>
+<div id="outline-container-org3b018e3" class="outline-3">
+<h3 id="org3b018e3"><span class="section-number-3">9.1</span> 备选方案</h3>
 <div class="outline-text-3" id="text-9-1">
 <p>
 不直接涉及 Ingress 资源你可以有多重方式暴露服务：
