@@ -316,7 +316,7 @@ for the JavaScript code in this tag.
 <h3 id="orgb742df8"><span class="section-number-3">2.1</span> 安装 Emacs</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
-直接使用系统的包管理工具安装的 Emacs 版本都很低，推荐使用源码安装，当前最新的版本是 26.2。源码编译安装即可。下面的 Ubuntu 18.04 上安装流程：
+直接使用系统的包管理工具安装的 Emacs 版本都很低，推荐使用源码安装，当前最新的版本是 26.3。源码编译安装即可。下面的 Ubuntu 18.04 上安装流程：
 </p>
 
 <p>
@@ -327,18 +327,29 @@ for the JavaScript code in this tag.
 <pre class="src src-shell">apt install make
 apt install gcc
 apt-get install build-essential texinfo libx11-dev libxpm-dev libjpeg-dev libpng-dev libgif-dev libtiff-dev libgtk2.0-dev libncurses-dev
-./configure --with-gnutls=no
-make -j4
+./autogen.sh
+./configure
+make -j2
 sudo make install
 </pre>
 </div>
 
 <p>
-打开 <code>.bashrc</code> 添加 alias： <code>alias em="emacs -nw"</code> ，这样就可以使用 <code>em</code> 打开 Emacs 了。
+打开 <code>.bashrc</code> 添加两行 alias：
 </p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #006FE0;">alias</span> <span style="color: #BA36A5;">em</span>=<span style="color: #008000;">"env TERM=xterm-256color emacs -nw"</span>
+<span style="color: #006FE0;">alias</span> <span style="color: #BA36A5;">emacs</span>=<span style="color: #008000;">"env TERM=xterm-256color emacs -nw"</span>
+</pre>
+</div>
 
 <p>
 备注：我常用的环境是 MacOS 和 Ubuntu，MacOS 使用 <code>brew install emacs</code>  即可。
+</p>
+
+<p>
+<span class="underline">注意</span> 如果编译提示 <code>configure: error: The following required libraries were not found: gnutls</code> 需要安装 <code>gnutls</code> 开发包，使用 <code>apt-cache search 'libgnutls.*-dev'</code> 找到对应的包，然后安装 <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
 </p>
 </div>
 </div>
@@ -1011,7 +1022,7 @@ elisp 比较熟的有自己的办法优化，当然我不熟。我的解决办�
 <h3 id="org5018b90"><span class="section-number-3">5.11</span> 如何将 markdown 转成 org-mode</h3>
 <div class="outline-text-3" id="text-5-11">
 <p>
-<code>.org</code> 文件可以很轻松的通过 <code>org-md-export-to-markdown</code> 生成 <code>.md</code> 文件。 <code>.md</code> 文件可以借助 Pandoc 生成 <code>.org</code>  <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
+<code>.org</code> 文件可以很轻松的通过 <code>org-md-export-to-markdown</code> 生成 <code>.md</code> 文件。 <code>.md</code> 文件可以借助 Pandoc 生成 <code>.org</code>  <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>。
 </p>
 
 <div class="org-src-container">
@@ -1072,6 +1083,10 @@ elisp 比较熟的有自己的办法优化，当然我不熟。我的解决办�
 <div id="text-footnotes">
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://stackoverflow.com/questions/52722096/build-emacs-and-gnutls-not-found">https://stackoverflow.com/questions/52722096/build-emacs-and-gnutls-not-found</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
 <a href="https://emacs.stackexchange.com/questions/5465/how-to-migrate-markdown-files-to-emacs-org-mode-format">https://emacs.stackexchange.com/questions/5465/how-to-migrate-markdown-files-to-emacs-org-mode-format</a>
 </p></div></div>
 

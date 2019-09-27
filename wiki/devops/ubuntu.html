@@ -343,8 +343,23 @@ for the JavaScript code in this tag.
 </ol>
 
 <p>
-GUI 版本很不稳定，不如直接使用命令行（ <code>ss-local</code> ），配合 systemd 设置服务开机启动。
+GUI 版本很不稳定，不如直接使用命令行（ <code>ss-local</code> ），配合 <code>systemd</code> 设置服务开机启动。
 </p>
+
+<p>
+配置文件：
+</p>
+
+<pre class="example">
+{
+    "server":"",
+    "server_port": xx,
+    "local_port":1080,
+    "password":"",
+    "timeout":60,
+    "method":"chacha20-ietf-poly1305"
+}
+</pre>
 </div>
 </div>
 
@@ -366,6 +381,32 @@ GUI 版本很不稳定，不如直接使用命令行（ <code>ss-local</code> �
 <div class="outline-text-3" id="text-5-3">
 <p>
 Sock5 proxy：<a href="https://www.irif.fr/~jch/software/polipo/">Polipo</a>
+</p>
+
+<ol class="org-ol">
+<li>安装: <code>apt install polipo</code></li>
+<li><p>
+修改配置文件: <code>/etc/polipo/config</code> ，添加：
+</p>
+<pre class="example">
+proxyAddress = "0.0.0.0"
+
+socksParentProxy = "127.0.0.1:1080"
+socksProxyType = socks5
+</pre></li>
+<li>重启: <code>service restart polipo</code></li>
+</ol>
+
+<p>
+设置代理（polipo 的端口是 8123）：
+</p>
+
+<pre class="example">
+export http_proxy="http://127.0.0.1:8123" export https_proxy="http://127.0.0.1:8123"
+</pre>
+
+<p>
+测试是否生效: <code>curl ip.gs</code>
 </p>
 </div>
 </div>
