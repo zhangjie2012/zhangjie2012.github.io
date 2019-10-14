@@ -1,0 +1,1118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Emacs</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Emacs</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org02c4af7">1. 开始之前</a></li>
+<li><a href="#org1fe930a">2. 基础</a>
+<ul>
+<li><a href="#orgb742df8">2.1. 安装 Emacs</a>
+<ul>
+<li><a href="#org90434c2">2.1.1. Ubuntu</a></li>
+<li><a href="#org29cc6b6">2.1.2. MacOS</a></li>
+</ul>
+</li>
+<li><a href="#org6d85cac">2.2. 键位约定</a></li>
+</ul>
+</li>
+<li><a href="#orgf6ab8c8">3. 插件推荐</a></li>
+<li><a href="#orgc25f865">4. 日常工作</a>
+<ul>
+<li><a href="#orgbc53974">4.1. 项目</a></li>
+<li><a href="#org36713f2">4.2. 多窗口</a></li>
+<li><a href="#org4dd0385">4.3. 日常编辑</a></li>
+<li><a href="#org76c718d">4.4. 版本管理</a></li>
+</ul>
+</li>
+<li><a href="#orga3839a3">5. FAQ</a>
+<ul>
+<li><a href="#org083d1e1">5.1. 是否要使用 Evil ？</a></li>
+<li><a href="#org7072a2c">5.2. 我可不可以用 Emacs 完成 XXX 能做的事情？</a></li>
+<li><a href="#orgbd8499d">5.3. 使用 GUI 版本还是 Terminal ?</a></li>
+<li><a href="#org8ad5bb3">5.4. 如何记忆 Emacs 快捷键？</a></li>
+<li><a href="#orgc38b12a">5.5. 如何去掉空白字符</a></li>
+<li><a href="#orgaa54187">5.6. 包安装问题</a></li>
+<li><a href="#org7e6a1f8">5.7. Emacs 启动速度太慢怎么办？</a></li>
+<li><a href="#org5064259">5.8. 如何软重启 Emacs？</a></li>
+<li><a href="#org53cd7b7">5.9. 如何更新所有的依赖包？</a></li>
+<li><a href="#org7e40742">5.10. 行逆序排序</a></li>
+<li><a href="#org5018b90">5.11. 如何将 markdown 转成 org-mode</a></li>
+</ul>
+</li>
+<li><a href="#org4e256cb">6. Resource</a>
+<ul>
+<li><a href="#org51d4f70">6.1. Blog/Site/Tutorial</a></li>
+<li><a href="#org7b173ff">6.2. Article</a></li>
+<li><a href="#org0927436">6.3. Configure reference</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org02c4af7" class="outline-2">
+<h2 id="org02c4af7"><span class="section-number-2">1</span> 开始之前</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+我在大学（2009 年左右）的时候接触 Linux（Ubuntu），选择编辑器时感觉 Vim 入门很难，只是因为好奇就选择了 Emacs。大学期间和我的第一份工作主要的开发环境是 Windows，Emacs 虽然在私下里花了很多精力折腾，但正式使用 Emacs 作为开发环境是 2014 年以后，之后工作环境主要聚焦在 CentOS/Mac/Ubuntu 上，直到现在，Emacs 都是我的主力编辑器：
+</p>
+
+<dl class="org-dl">
+<dt>前端</dt><dd>JavasSript/HTML/CSS/LESS, React(jsx)</dd>
+<dt>后端</dt><dd>C/C++, Python/Django, Go</dd>
+<dt>日常</dt><dd>Shell，YAML，JSON，&#x2026;</dd>
+<dt>写文章</dt><dd>org-mode，Markdown</dd>
+</dl>
+
+<p>
+从 Emacs 22 到最新的 Emacs 26，Emacs 越来越好用了，常用的插件已经官方集成进去了，生态圈也越来越好了，有像 <a href="https://github.com/purcell">purcell</a> 这样的牛人来领军配置，还有 <a href="https://github.com/syl20bnr/spacemacs">spacemacs</a> 这样集大成者开箱即用的配置。以前我写过 <a href="https://www.zhangjiee.com/blog/emacs-simple-tutorial">Emacs 简易教程</a>，那个时候（2014年）还是主要使用 C/C++ 做游戏服务器开发，那份教程已经很久没有更新了，后面我将集中经历维护这份文档。
+</p>
+
+<p>
+另外，我的配置文件在 <a href="https://github.com/zhangjie2012/_emacs.d">_emacs.d</a>。我的邮箱是 <span class="underline">me@zhangjiee.com</span> ，欢迎与我交流 Emacs 使用心得。
+</p>
+
+
+<div class="figure">
+<p><img src="https://wiki-1252349778.cos.ap-shanghai.myqcloud.com/2019/emacs-hello.png" alt="emacs-hello.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1fe930a" class="outline-2">
+<h2 id="org1fe930a"><span class="section-number-2">2</span> 基础</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgb742df8" class="outline-3">
+<h3 id="orgb742df8"><span class="section-number-3">2.1</span> 安装 Emacs</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org90434c2" class="outline-4">
+<h4 id="org90434c2"><span class="section-number-4">2.1.1</span> Ubuntu</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+直接使用系统的包管理工具安装的 Emacs 版本都很低，推荐使用源码安装，当前最新的版本是 26.3。源码编译安装即可。下面的 Ubuntu 18.04 上安装流程：
+</p>
+
+<p>
+下载源码：<a href="http://mirrors.ustc.edu.cn/gnu/emacs/">http://mirrors.ustc.edu.cn/gnu/emacs/</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">apt install make
+apt install gcc
+apt-get install build-essential texinfo libx11-dev libxpm-dev libjpeg-dev libpng-dev libgif-dev libtiff-dev libgtk2.0-dev libncurses-dev
+./autogen.sh
+./configure
+make -j2
+sudo make install
+</pre>
+</div>
+
+<p>
+打开 <code>.bashrc</code> 添加两行 alias：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #006FE0;">alias</span> <span style="color: #BA36A5;">em</span>=<span style="color: #008000;">"env TERM=xterm-256color emacs -nw"</span>
+<span style="color: #006FE0;">alias</span> <span style="color: #BA36A5;">emacs</span>=<span style="color: #008000;">"env TERM=xterm-256color emacs -nw"</span>
+</pre>
+</div>
+
+<p>
+<span class="underline">注意</span> 如果编译提示 <code>configure: error: The following required libraries were not found: gnutls</code> 需要安装 <code>gnutls</code> 开发包，使用 <code>apt-cache search 'libgnutls.*-dev'</code> 找到对应的包，然后安装 <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org29cc6b6" class="outline-4">
+<h4 id="org29cc6b6"><span class="section-number-4">2.1.2</span> MacOS</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<pre class="example">
+brew install emacs
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6d85cac" class="outline-3">
+<h3 id="org6d85cac"><span class="section-number-3">2.2</span> 键位约定</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Emacs 快捷键约定，新手可能不知道代表的键位，如下：
+</p>
+
+<ul class="org-ul">
+<li><code>C-</code> ：Ctrl 键</li>
+<li><code>M-</code> ：Meta 键（指的是键盘上的 Alt）</li>
+<li><code>S-</code> ：Super 键，很少用</li>
+<li><code>s-</code> ：Shift 键，很少用</li>
+<li><code>DEL</code> ：键盘上的 <code>Backspace</code> 键，而不是实际的 <code>Delete</code> 键</li>
+<li><code>SPC</code> ：空格键</li>
+</ul>
+
+<p>
+Emacs 几乎所有的快捷键都是以 <code>C-</code> 开始的，也是 Emacs 令人诟病的一部分（伤小拇指，还好我的小拇指健在）。系统默认的绑定键都是 <code>C-x</code> 开始的，用户自定义的大多是 <code>C-c</code> 开始的。
+</p>
+
+<p>
+每个初学者建议先阅读 Emacs 的 <code>help-with-tutorial</code> （ <code>C-h t</code> ）。走一遍，基本上就可以流畅的操作 Emacs 了。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf6ab8c8" class="outline-2">
+<h2 id="orgf6ab8c8"><span class="section-number-2">3</span> 插件推荐</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://github.com/emacs-tw/awesome-emacs">awesome-emacs</a> 是按照分类整理的。下面列一下我正在使用的插件，以及一些使用心得。
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">插件名称</th>
+<th scope="col" class="org-left">插件介绍</th>
+<th scope="col" class="org-left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><a href="https://www.flycheck.org/en/latest/">Flycheck</a></td>
+<td class="org-left">强大的语法检查框架</td>
+<td class="org-left">需要编程语言的 lint 工具配合，比如 eslint、golint。编码必备插件</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/abo-abo/ace-window">ace-window</a></td>
+<td class="org-left">多窗口切换</td>
+<td class="org-left">以前一直用 <a href="https://github.com/deb0ch/emacs-winum">emacs-winum</a></td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/abo-abo/avy">avy</a></td>
+<td class="org-left">光标快速定位（按照字符、单词、行等）</td>
+<td class="org-left">以前用的是 <a href="https://github.com/winterTTr/ace-jump-mode">ace-jump</a></td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/company-mode/company-mode">company-mode</a></td>
+<td class="org-left">模块化补全插件（支持各种语言和后端）</td>
+<td class="org-left"><a href="https://github.com/auto-complete/auto-complete">auto-compete</a> 用了几年，后来切换到了 company，auto-complete 没有 company 精准。编码必备插件</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/magnars/expand-region.el">expand-region</a></td>
+<td class="org-left">快速选中文本（单词、括号内内容、段落等）</td>
+<td class="org-left">比如我常用 <code>M-s s</code> 选中一个单词，用 <code>M-s p</code> 选中括号内内容，然后复制</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/nschum/highlight-symbol.el">highlight-symbol</a></td>
+<td class="org-left">高亮当前单词</td>
+<td class="org-left">在相同单词之间切换，官方使用 <code>F3</code> 绑定；我进行了重新绑定。 <code>M- -</code> 高亮当前单词</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/abo-abo/swiper">ivy</a></td>
+<td class="org-left">一般 ido+smex，ivy，<a href="https://github.com/emacs-helm/helm">helm</a> 三者必须选一</td>
+<td class="org-left">helm 用了四五年，最近才切换到 ivy</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/emacs-lsp/lsp-mode">lsp-mode</a></td>
+<td class="org-left"><a href="https://langserver.org">LSP</a> 的 Emacs 客户端</td>
+<td class="org-left">目前不是特别成熟</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/magit/magit">magit</a></td>
+<td class="org-left">Git 版本管理</td>
+<td class="org-left">启动速度太慢了，不用了</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/magnars/multiple-cursors.el">multiple-cursors</a></td>
+<td class="org-left">多鼠标操作</td>
+<td class="org-left"><a href="http://emacsrocks.com/e13.html">Emacs Rocks! Episode 13: multiple-cursors</a></td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://orgmode.org">org-mode</a></td>
+<td class="org-left">最牛逼的插件，没有之一</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/bbatsov/projectile">projectile</a></td>
+<td class="org-left">项目管理框架，在一个 Emacs 下管理多个项目</td>
+<td class="org-left">可以与 ivy 一起使用，<a href="https://github.com/ericdanan/counsel-projectile">counsel-projectile</a></td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/Fanael/rainbow-delimiters">rainbow-delimiters</a></td>
+<td class="org-left">彩虹括号</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/joaotavora/yasnippet">yasnippet</a></td>
+<td class="org-left">模板系统，代码片段框架</td>
+<td class="org-left">要与 <a href="https://github.com/AndreaCrotti/yasnippet-snippets">yasnippet-snippets</a> 一起使用</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+语言的开发环境配置一直很恼人（很费时间），我记得以前刚配置 C/C++ 的开发环境时，折腾了一个月左右时间才找到一个相对比较满意的开发环境（折腾完之后使用起来可真爽啊）： <code>xcscope + etags + c++-mode</code> 。
+</p>
+
+<p>
+写 Python 的时候也折腾了长时间的缩进问题。 Go 就更不用说了···，Go 工具链很完整，但由于 Go 的版本升级很快，工具链根本跟不上，+gocode+ 已经迁移了三次地址了。
+</p>
+
+<p>
+后来看到了 <a href="https://langserver.org/">LSP（Language Server Protocol）</a> 项目，感觉这个项目才是终极解法：插件化，C/S 模式。目前已经默认支持 Python 和 Go 了，虽然还是有许许多多的 Bug，但比起 2018 年我试的时候已经成熟太多了。有社区的驱动，发展很快。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgc25f865" class="outline-2">
+<h2 id="orgc25f865"><span class="section-number-2">4</span> 日常工作</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+使用一个编码工具，无论是 Vim/Emacs，还是 Sublime/Atom/VSCode，甚至是 PyCharm/VS系列，除了生态（社区支持，插件是否完整）之外，最重要的是工作流。单纯快捷键差别在不同的编码环境下切换成本都不大，在我看来核心的成本在于养成的工作流（习惯）不容易改变，内心也会有一定的抵抗情绪。
+</p>
+</div>
+
+<div id="outline-container-orgbc53974" class="outline-3">
+<h3 id="orgbc53974"><span class="section-number-3">4.1</span> 项目</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+使用 Projectile 之后，包含 <code>.svn</code> <code>.git</code> 的项目，Emacs 会自动识别为一个项目，也可以手动添加一个空的 <code>.projectile</code> 文件到项目中。
+counsel 本身也提供了很多很好用的快捷键。 <i>Emacs 自带的快捷键就略过了。</i>
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">快捷键</th>
+<th scope="col" class="org-left">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>C-c g</code></td>
+<td class="org-left">在当前的 git 文件中打开文件，很好用</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-c p b</code></td>
+<td class="org-left">切换 buffer，类似 ~C-x b~，只不过是针对当前项目的</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-c p b</code></td>
+<td class="org-left">在当前项目打开的 Buffer 中切换</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-c p f</code></td>
+<td class="org-left">在打开的项目中打开文件</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-c p i</code></td>
+<td class="org-left">清空 projectile 当前项目的缓存（有的时候文件被删掉了需要清理一下，不然会造成干扰）</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-c p p</code></td>
+<td class="org-left">切换项目</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-c p s g</code></td>
+<td class="org-left">当前项目下面下搜索，使用 grep 命令，不过我更喜欢用 ag =&gt; <code>C-c p s s</code> 或者 `C-c k`</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-x C-b</code></td>
+<td class="org-left">列出所有 Buffer</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-x b</code></td>
+<td class="org-left">在所有打开的 Buffer 中切换，Emacs 自带</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-x k</code></td>
+<td class="org-left">关闭当前 Buffer</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org36713f2" class="outline-3">
+<h3 id="org36713f2"><span class="section-number-3">4.2</span> 多窗口</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+结合 avy 实现，默认的切换快捷键（ <code>C-x o</code> ）很鸡肋。
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">快捷键</th>
+<th scope="col" class="org-left">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>C-x 0</code></td>
+<td class="org-left">关闭当前窗口（并不是关闭 Buffer）</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-x 1</code></td>
+<td class="org-left">只保留当前窗口</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-x 2</code></td>
+<td class="org-left">水平分屏</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-x 3</code></td>
+<td class="org-left">垂直分屏</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-o 1/2/3/4...</code></td>
+<td class="org-left">切换窗口</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org4dd0385" class="outline-3">
+<h3 id="org4dd0385"><span class="section-number-3">4.3</span> 日常编辑</h3>
+<div class="outline-text-3" id="text-4-3">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">快捷键</th>
+<th scope="col" class="org-left">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>C-c j</code></td>
+<td class="org-left">当前 git 中搜索</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-c k</code></td>
+<td class="org-left">当前目录下搜索（使用 ag）</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-s</code></td>
+<td class="org-left">全文搜索</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>F3</code></td>
+<td class="org-left">打开 Eshell</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>F4</code></td>
+<td class="org-left">插入当前时间</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>F6</code></td>
+<td class="org-left">显示当前文件路径</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M--</code></td>
+<td class="org-left">高亮当前单词， <code>M-p/n</code> 跳转到上一个和下一个</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-m</code></td>
+<td class="org-left">不断扩大区域的选中</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-s ;</code></td>
+<td class="org-left">跳转到单词</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-s P</code></td>
+<td class="org-left">选中括号内的内容</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-s f</code></td>
+<td class="org-left">选中当前函数</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-s j</code></td>
+<td class="org-left">快速跳转到行</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-s l</code></td>
+<td class="org-left">打开/关闭行号</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-s s</code></td>
+<td class="org-left">选中当前单词</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-y</code></td>
+<td class="org-left">kill-ring</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-y</code></td>
+<td class="org-left">剪切板历史（很有用）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org76c718d" class="outline-3">
+<h3 id="org76c718d"><span class="section-number-3">4.4</span> 版本管理</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+在不使用任何插件的情况下（内置的 VC），svn 和 git 都支持：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">快捷键</th>
+<th scope="col" class="org-left">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>C-x v =</code></td>
+<td class="org-left">文件 diff</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-x v l</code></td>
+<td class="org-left">当前文件提交记录</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-x v +</code></td>
+<td class="org-left">git pull，svn up</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-x v P</code></td>
+<td class="org-left">git push，svn push</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<a href="https://magit.vc/">Magit</a> 是最出名的一个插件，也是功能最完善的：只要记得 <code>C-x g</code> 一个快捷键就行了，然后按 <code>?</code> 引导操作即可。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga3839a3" class="outline-2">
+<h2 id="orga3839a3"><span class="section-number-2">5</span> FAQ</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org083d1e1" class="outline-3">
+<h3 id="org083d1e1"><span class="section-number-3">5.1</span> 是否要使用 Evil ？</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+因人而异，如果之前你曾是 Vim 用户，建议你用 Evil。因为我一开始就用的是 Emacs，而不是 Vim，所以我一直用的是 Emacs 的键映射。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7072a2c" class="outline-3">
+<h3 id="org7072a2c"><span class="section-number-3">5.2</span> 我可不可以用 Emacs 完成 XXX 能做的事情？</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+没有银弹！纵然 Emacs 可能「可以做任何事情」，比如收发邮件、GTD、阅读 pdf、打开图片等等。然而我以为用合适的工具做合适的事情才是重要的.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbd8499d" class="outline-3">
+<h3 id="orgbd8499d"><span class="section-number-3">5.3</span> 使用 GUI 版本还是 Terminal ?</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+这个分歧很大，使用 GUI 可以让你很完备的使用 Emacs，不用担心快捷键冲突，具有更好的编辑效果，但是经常会有编码问题，如果使用终端的话，只要设置终端的编码就可以了；而且汉字的字体设置也很繁琐（我使用中英文等宽的 <code>WenQuanYi Zen Hei Mono</code> 解决了这个问题）。
+</p>
+
+<p>
+使用终端的问题是快捷键很大概率冲突，因为 Emacs 几乎占了所有的快捷键。比如我会使用 <code>M + 1/2/3/..</code> 切换 Emacs 中的窗口，而这个往往是很多终端切换页签的快捷键（Ubuntu 和 Windows 下的 Xshell 都是如此）。要自己重新设置快捷键。
+</p>
+
+<p>
+不管是使用 GUI 还是 Terminal，全凭个人喜好。我之前一直用终端，最近（2019-06-04）切换到了 GUI。
+</p>
+
+<p>
+<i>2019-06-15 10:03:35</i>
+</p>
+
+<p>
+在尝试了两周的 GUI 之后，最终还是切换到了 Terminal。主要原因是：
+</p>
+
+<ul class="org-ul">
+<li>大部分编码等宽字体都不是中英文等宽的，比如我最喜爱的 <code>Source Code Pro~，你看到的终端等宽大多是因为终端帮你设置了字体的高度和宽度。~Ubuntu mono</code> 和 <code>M +1</code> 是中英文等宽的，但不是等高的，编辑的时候跳跃让人很不爽。文泉驿是一个绝对的等宽和等高字体，但是 Mac 下的字体实在太丑了～</li>
+<li>以前我最大的快捷键冲突是切换页签的 <code>M - 1/2/3/...</code> ，最近发现了 <a href="https://github.com/abo-abo/ace-window">ace-window</a> ，使用 <code>M - o 1/2/3</code> 切换页签，解决了这个问题。</li>
+<li>最后一个问题是工作流，因为工作性质的原因，不管是做服务器开发还是前端开发，都是需要实时的跟终端交互，GUI 和 终端切换，没有终端自身两个页签切换来的流畅。</li>
+</ul>
+
+<p>
+对 GUI 最大的怀念是可以无缝的跟系统的剪切板融合，比如在别的地方 <code>Ctrl + c</code> 复制的内容，可以在 Emacs 中 <code>M-y</code> 粘贴过来，反之亦然。
+</p>
+
+<p>
+<i>2019-06-24 10:29:43</i>
+</p>
+
+<p>
+Ubuntu 下文泉驿是 OK 的，还不错，MacOS 有点丑。习惯了之后还有点离不开 GUI（快捷键真舒服啊），准备用终端写代码，GUI 写文档（文章），准备适应一段时间。
+</p>
+
+<p>
+<i>2019-07-08 20:57:06</i>
+</p>
+
+<p>
+Ubuntu GUI 无法切换搜狗输入法，与默认的 Mark 快捷键冲突，解决办法是修改 locale， <code>/etc/default/locale</code> 中添加 <code>LC_CTYPE=zh_CN.UTF-8</code> ，然后重启即可（中文桌面情况下是没有这个问题的）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8ad5bb3" class="outline-3">
+<h3 id="org8ad5bb3"><span class="section-number-3">5.4</span> 如何记忆 Emacs 快捷键？</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外（就是上面描述的内容）并不需要刻意的记忆，只要你掌握了两点：
+</p>
+
+<ol class="org-ol">
+<li>在 Emacs 中所有的快捷键对应的都是一个 Lisp 函数，快捷键忘了的话，可以使用 <code>M-x</code> 调用函数来实现相应的功能（如果使用了 helm 或者 ivy，绑定的快捷键会自动显示出来）</li>
+<li>查看当前 mode 的所有快捷键可以使用 <code>C-h m</code> 寻求帮助，正如第一条所述： <code>C-h m</code> 对应的函数是 <code>describe-mode</code></li>
+</ol>
+
+<p>
+另外，Emacs 有个 <a href="https://github.com/justbur/emacs-which-key">emacs-which-key</a> 的插件，有快捷键提示。比如，在 Markdown 模式下，快捷键前缀都是 <code>C-c C-c</code> 但是后面你可能忘了，当你按下 <code>C-c C-c</code> 时，它会这样提示你：
+</p>
+
+
+<div class="figure">
+<p><img src="https://wiki-1252349778.cos.ap-shanghai.myqcloud.com/2019/emacs-wiki-which-key-0.png" alt="emacs-wiki-which-key-0.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc38b12a" class="outline-3">
+<h3 id="orgc38b12a"><span class="section-number-3">5.5</span> 如何去掉空白字符</h3>
+<div class="outline-text-3" id="text-5-5">
+<ul class="org-ul">
+<li><code>M-\</code> ：删除光标周围的空格和 tab</li>
+<li><code>M-&lt;SPC&gt;</code> ：删除光标周围的空格和 tab，但是保留一个</li>
+</ul>
+
+<p>
+另外，我会给文件保存（~C-x s~）时，添加一个 hook：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> show-trailing-whitespace t<span style="color: #707183;">)</span>
+<span style="color: #707183;">(</span>add-hook 'before-save-hook 'delete-trailing-whitespace<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+这样在每次保存文件的时候，会自动删掉每行或者段落后面多于的空白字符和空行。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaa54187" class="outline-3">
+<h3 id="orgaa54187"><span class="section-number-3">5.6</span> 包安装问题</h3>
+<div class="outline-text-3" id="text-5-6">
+<p>
+因为某些原因官方的 elpa 源无法使用怎么办？ 如果没有 FQ 的环境，使用清华大学提供了 elpa 镜像源：<a href="https://mirror.tuna.tsinghua.edu.cn/help/elpa/">https://mirror.tuna.tsinghua.edu.cn/help/elpa/</a>
+</p>
+
+<p>
+包依赖问题导致安装失败，函数不存在等问题，怎么解决？ 这种情况一般是因为依赖的包版本有问题，当安装时存在多个源时，不管源之间的同步速度有多快，总会有版本滞后的问题。所以，安装时尽可能只选一个同一个源，比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> package-archives
+      '<span style="color: #7388D6;">(</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"gnu"</span> . <span style="color: #008000;">"https://elpa.gnu.org/packages/"</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"melpa"</span> . <span style="color: #008000;">"https://melpa.org/packages/"</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"melpa-stable"</span> . <span style="color: #008000;">"https://stable.melpa.org/packages/"</span><span style="color: #909183;">)</span>
+        <span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+如果发现类似问题，可以注释掉其中的两个，只保留一个，比如 ~melpta-stable~，一般能解决此问题。之前在安装 helm 的时候经常遇到依赖有问题，刚才（2019-05-31）安装 ivy 也遇到了类似的问题，给 github ivy 提了一个 <a href="https://github.com/abo-abo/swiper/issues/2087">issue</a> 才解决了这个问题（社区的力量真强大）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7e6a1f8" class="outline-3">
+<h3 id="org7e6a1f8"><span class="section-number-3">5.7</span> Emacs 启动速度太慢怎么办？</h3>
+<div class="outline-text-3" id="text-5-7">
+<p>
+<code>M-x emacs-init-time</code> 可以查看 Emacs 启动耗费时间。
+</p>
+
+<p>
+多一个插件都会增加启动成本，不信你 <code>emacs -Q</code> 试试，所以要尽可能的减少插件。你可以使用 <a href="https://github.com/dacap/keyfreq">keyfreq</a> 来查看你常用的快捷键有哪些。筛选出不常用的插件给干掉，这是解决启动速度慢的根本办法。
+</p>
+
+<p>
+如何定位插件耗时？
+</p>
+
+<ul class="org-ul">
+<li>使用 profiler：<a href="https://punchagan.muse-amuse.in/blog/how-i-learnt-to-use-emacs-profiler/">https://punchagan.muse-amuse.in/blog/how-i-learnt-to-use-emacs-profiler/</a></li>
+<li>使用 esup：<a href="https://github.com/jschaf/esup">https://github.com/jschaf/esup</a></li>
+<li>使用 <a href="https://github.com/purcell/emacs.d/blob/master/lisp/init-benchmarking.el">https://github.com/purcell/emacs.d/blob/master/lisp/init-benchmarking.el</a></li>
+</ul>
+
+<p>
+定位之后如何优化？
+</p>
+
+<p>
+elisp 比较熟的有自己的办法优化，当然我不熟。我的解决办法是：
+</p>
+
+<ul class="org-ul">
+<li>基本上不用的插件、UI 上炫酷的插件都干掉</li>
+<li>使用 <a href="https://github.com/jwiegley/use-package">use-package</a> ，use-package 并不是包管理工具，只是一个宏，用来配置和加载包。
+你可以设置延迟加载包，以提高第一次打开的速度。还有一个好处是，使用 use-package 组织包更清晰，对于 use-package 我还处于研究阶段，粗暴的使用 <code>:init</code> 和 <code>:config</code> 配置，实际上有很多优雅的方法</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5064259" class="outline-3">
+<h3 id="org5064259"><span class="section-number-3">5.8</span> 如何软重启 Emacs？</h3>
+<div class="outline-text-3" id="text-5-8">
+<p>
+所谓软重启指的是通过命令重新加载配置文件：
+</p>
+
+<ul class="org-ul">
+<li><code>eval-buffer</code> 会执行当前 buffer 的 lisp，切换到 <code>init.el</code> 文件，然后执行 <code>eval-buffer</code></li>
+<li>在 <code>*scratch*</code> 中输入 <code>(load-file user-init-file)</code> ，然后选中 <code>C-x C-e</code></li>
+</ul>
+
+<p>
+两个的原理差不多， <code>C-x C-e</code> 是执行选中的内容， <code>eval-buffer</code> 是执行当前 buffer。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org53cd7b7" class="outline-3">
+<h3 id="org53cd7b7"><span class="section-number-3">5.9</span> 如何更新所有的依赖包？</h3>
+<div class="outline-text-3" id="text-5-9">
+<ol class="org-ol">
+<li><code>M-x list-package</code></li>
+<li><code>U</code> 标记所有不是最新的包</li>
+<li><code>x</code> 执行更新</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org7e40742" class="outline-3">
+<h3 id="org7e40742"><span class="section-number-3">5.10</span> 行逆序排序</h3>
+<div class="outline-text-3" id="text-5-10">
+<ol class="org-ol">
+<li><code>M-x sort-lines</code></li>
+<li><code>M-x reverse-region</code></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org5018b90" class="outline-3">
+<h3 id="org5018b90"><span class="section-number-3">5.11</span> 如何将 markdown 转成 org-mode</h3>
+<div class="outline-text-3" id="text-5-11">
+<p>
+<code>.org</code> 文件可以很轻松的通过 <code>org-md-export-to-markdown</code> 生成 <code>.md</code> 文件。 <code>.md</code> 文件可以借助 Pandoc 生成 <code>.org</code>  <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">pandoc -f markdown -t org -o test.org test.md
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4e256cb" class="outline-2">
+<h2 id="org4e256cb"><span class="section-number-2">6</span> Resource</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org51d4f70" class="outline-3">
+<h3 id="org51d4f70"><span class="section-number-3">6.1</span> Blog/Site/Tutorial</h3>
+<div class="outline-text-3" id="text-6-1">
+<ul class="org-ul">
+<li><a href="https://planet.emacslife.com/">Planet Emacslife</a>：Emacs 百科全书，大杂烩</li>
+<li><a href="https://www.reddit.com/r/emacs/">Emacs reddit channel</a>：reddit 上的 Emacs 专题</li>
+<li>[<a href="http://oremacs.com/">http://oremacs.com/</a>][oremacs]</li>
+<li><a href="http://ergoemacs.org/emacs/emacs.html">Practical Emacs Tutorial</a>：Emacs 练习手册</li>
+<li><a href="https://emacsthemes.com/">Emacs Themes</a>：主题集合</li>
+<li><a href="https://github.com/emacs-tw/awesome-emacs">awesome-emacs</a></li>
+<li><a href="http://melpa.org/">melpa</a> 插件集合</li>
+<li><a href="https://sachachua.com/blog/category/emacs/">Living an awesome Life</a>：Emacs category</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7b173ff" class="outline-3">
+<h3 id="org7b173ff"><span class="section-number-3">6.2</span> Article</h3>
+<div class="outline-text-3" id="text-6-2">
+<ul class="org-ul">
+<li><a href="https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/guide-zh.org">一年成为 Emacs 高手 (像神一样使用编辑器)</a>， <span class="underline">@chenbin</span> 解释了 Emacs 的好处以及如何成为高手。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0927436" class="outline-3">
+<h3 id="org0927436"><span class="section-number-3">6.3</span> Configure reference</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+社区有很多优秀的配置（我的配置大多都是到处「摘抄」的）：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://github.com/purcell/emacs.d">purcell/emacs.d</a>：久负盛名</li>
+<li><a href="https://github.com/redguardtoo/emacs.d">redguardtoo/emacs.d</a></li>
+<li><a href="https://github.com/hlissner/doom-emacs">hlissner/doom-emacs</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://stackoverflow.com/questions/52722096/build-emacs-and-gnutls-not-found">https://stackoverflow.com/questions/52722096/build-emacs-and-gnutls-not-found</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://emacs.stackexchange.com/questions/5465/how-to-migrate-markdown-files-to-emacs-org-mode-format">https://emacs.stackexchange.com/questions/5465/how-to-migrate-markdown-files-to-emacs-org-mode-format</a>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="date">Date: 2018-06-22 23:24:56</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
