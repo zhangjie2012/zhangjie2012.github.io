@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Go 工程项目结构</title>
+<title>Go 项目布局标准</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -231,7 +231,62 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Go 工程项目结构</h1>
+<h1 class="title">Go 项目布局标准</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org043075e">1. Go 项目布局标准（Standard Go Project Layout）</a>
+<ul>
+<li><a href="#orga7067a2">1.1. Go 目录</a>
+<ul>
+<li><a href="#orgbce1f10">1.1.1. <code>/cmd</code></a></li>
+<li><a href="#org6a0b734">1.1.2. <code>/internal</code></a></li>
+<li><a href="#orgc1aaae6">1.1.3. <code>/pkg</code></a></li>
+<li><a href="#orgbf6fafe">1.1.4. <code>/vendor</code></a></li>
+</ul>
+</li>
+<li><a href="#orgc535b71">1.2. 服务应用程序目录</a>
+<ul>
+<li><a href="#org2736041">1.2.1. <code>/api</code></a></li>
+</ul>
+</li>
+<li><a href="#org6ad4d7c">1.3. Web 应用程序目录</a>
+<ul>
+<li><a href="#org0d33ecf">1.3.1. <code>/web</code></a></li>
+</ul>
+</li>
+<li><a href="#org1ff2f30">1.4. 通用的应用程序目录</a>
+<ul>
+<li><a href="#org3e4a6a6">1.4.1. <code>/configs</code></a></li>
+<li><a href="#orgcb2577d">1.4.2. <code>/init</code></a></li>
+<li><a href="#orgd8f3f18">1.4.3. <code>/scripts</code></a></li>
+<li><a href="#org40afc8f">1.4.4. <code>/build</code></a></li>
+<li><a href="#orgba1dfd2">1.4.5. <code>/deployment</code></a></li>
+<li><a href="#orgd9e3d17">1.4.6. <code>/test</code></a></li>
+</ul>
+</li>
+<li><a href="#orgb204a08">1.5. 其他目录</a>
+<ul>
+<li><a href="#org9ccd6e5">1.5.1. <code>/docs</code></a></li>
+<li><a href="#orgc5ee2b5">1.5.2. <code>/tools</code></a></li>
+<li><a href="#org2527e15">1.5.3. <code>/examples</code></a></li>
+<li><a href="#org6b6e7be">1.5.4. <code>/third_party</code></a></li>
+<li><a href="#orgc473270">1.5.5. <code>/githooks</code></a></li>
+<li><a href="#org75eb0a1">1.5.6. <code>/assets</code></a></li>
+<li><a href="#orgbf0d5c4">1.5.7. <code>/website</code></a></li>
+</ul>
+</li>
+<li><a href="#orge95a87c">1.6. 你不应该使用的目录</a>
+<ul>
+<li><a href="#org52f5b50">1.6.1. <code>/src</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <p>
 不管是什么语言，稍微大的项目，目录布局都会有问题，只不过有些语言的框架自身就提供了目录结构规范。
 </p>
@@ -241,143 +296,360 @@ for the JavaScript code in this tag.
 </p>
 
 <p>
-<a href="https://github.com/golang-standards/project-layout">project-layout</a> 提供了 Go 大中型项目的目录规范。简单摘抄如下：
+<a href="https://github.com/golang-standards/project-layout">project-layout</a> 提供了 Go 大中型项目的目录规范。本文对内容进行了整理，隔段时间会根据原项目中更新一次。
 </p>
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<hr />
 
+<div id="outline-container-org043075e" class="outline-2">
+<h2 id="org043075e"><span class="section-number-2">1</span> Go 项目布局标准（Standard Go Project Layout）</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+这 <span class="underline">不是</span> Go 官方的标准；但是它参考了 Go 生态中常见的布局模式（以前的和新兴的）。
+</p>
 
-<colgroup>
-<col  class="org-left" />
+<p>
+如果你仅仅是用来学习 Go 或者写一个小的 Demo 是不需要按照此项目结构的（一个 <code>main.go</code> 可能就足够了）。
+但如果你打算做一个长期的项目来维护，合理的代码结构是非常重要的，不然随着代码变多，依赖关系会变的混乱不堪，难以维护。
+有很多人参同时维护一个项目的时候，代码结构就更重要了，就需要引入通用的管理软件包和库的方法。
+</p>
 
-<col  class="org-left" />
+<p>
+如果需要命名、代码风格方面的帮助，请先运行 <a href="https://golang.org/cmd/gofmt/">gofmt</a> 和 <a href="https://github.com/golang/lint">golint</a> , 推荐阅读 Go 代码风格指南和建议的文档：
+</p>
 
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">功能</th>
-<th scope="col" class="org-left">目录</th>
-<th scope="col" class="org-left">注意事项</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">Go 目录</td>
-<td class="org-left"><code>/cmd/</code></td>
-<td class="org-left">项目的主目录，一般只包含 <code>main</code> 函数，调用的代码应该写在 <code>/internal</code> 和 <code>/pkg</code> 目录下。</td>
-</tr>
+<ul class="org-ul">
+<li><a href="https://talks.golang.org/2014/names.slide#1">https://talks.golang.org/2014/names.slide</a></li>
+<li><a href="https://golang.org/doc/effective_go.html#names">https://golang.org/doc/effective<sub>go.html</sub>#names</a></li>
+<li><a href="https://blog.golang.org/package-names">https://blog.golang.org/package-names</a></li>
+<li><a href="https://github.com/golang/go/wiki/CodeReviewComments">https://github.com/golang/go/wiki/CodeReviewComments</a></li>
+<li><a href="https://rakyll.org/style-packages/">https://rakyll.org/style-packages/</a> (rakyll/JBD)</li>
+</ul>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/internal</code></td>
-<td class="org-left">私有项目和库代码。一般放置不希望其他人在应用程序或者库中导入的代码。</td>
-</tr>
+<p>
+更多的关于命名和代码组织结构的建议资料：
+</p>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/pkg</code></td>
-<td class="org-left">外部应用程序可以使用的库代码。</td>
-</tr>
+<ul class="org-ul">
+<li><a href="https://www.youtube.com/watch?v=PTE4VJIdHPg">GopherCon EU 2018: Peter Bourgon - Best Practices for Industrial Programming</a></li>
+<li><a href="https://www.youtube.com/watch?v=MzTcsI6tn-0">GopherCon Russia 2018: Ashley McNamara + Brian Ketelsen - Go best practices.</a></li>
+<li><a href="https://www.youtube.com/watch?v=ltqV6pDKZD8">GopherCon 2017: Edward Muller - Go Anti-Patterns</a></li>
+<li><a href="https://www.youtube.com/watch?v=oL6JBUk6tj0">GopherCon 2018: Kat Zien - How Do You Structure Your Go Apps</a></li>
+</ul>
+</div>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/vendor</code></td>
-<td class="org-left">应用程序依赖，由依赖管理工具（比如 ~dep~）管理的代码。注意如果你要构建库的时候， <span class="underline">不要</span> 提交程序库依赖代码。</td>
-</tr>
-</tbody>
-<tbody>
-<tr>
-<td class="org-left">服务应用程序目录</td>
-<td class="org-left"><code>/api</code></td>
-<td class="org-left">OpenAPI/Swagger specs, JSON schema files, protocol definition files。</td>
-</tr>
+<div id="outline-container-orga7067a2" class="outline-3">
+<h3 id="orga7067a2"><span class="section-number-3">1.1</span> Go 目录</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-orgbce1f10" class="outline-4">
+<h4 id="orgbce1f10"><span class="section-number-4">1.1.1</span> <code>/cmd</code></h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+项目的主应用目录。目录中名称一般与可执行文件相对应（比如： <code>/cmd/myapp</code> ）。
+</p>
 
-<tr>
-<td class="org-left">常见应用程序目录</td>
-<td class="org-left"><code>/config</code></td>
-<td class="org-left">配置文件模板或者默认配置，请把 <code>confd</code> 或者 <code>consul-template</code> 模板文件放到这里。</td>
-</tr>
+<p>
+<span class="underline">不要</span> 在本目录下放很多的代码，如果代码可以被其他项目导入使用的，请放到 <code>/pkg</code> 目录下，
+如果代码不可复用或者你不希望其他项目使用，请放到 <code>/internal</code> 目录下。
+</p>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/init</code></td>
-<td class="org-left">系统启动（systemd，upstart，sysv）和进程管理/supervisor（runit，supervisord）配置。</td>
-</tr>
+<p>
+通常只包含一个简单的 <code>main</code> 函数，调用 <code>/internal</code> 和 <code>/pkg</code> 中的代码。
+</p>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/scripts</code></td>
-<td class="org-left">各种构建，安装，分析等操作脚本。这些脚本使得根目录下的 Makefile 保持简洁。</td>
-</tr>
+<p>
+查看 <code>/cmd</code> 目录范例：<a href="https://github.com/golang-standards/project-layout/blob/master/cmd/README.md">https://github.com/golang-standards/project-layout/blob/master/cmd/README.md</a>
+</p>
+</div>
+</div>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/build</code></td>
-<td class="org-left">打包和持续集成，容器构建配置和脚本放到 <code>/build/packages</code> 目录下，CI（travis，circle，drone）配置和脚本放到 <code>/build/ci</code> 目录下。</td>
-</tr>
+<div id="outline-container-org6a0b734" class="outline-4">
+<h4 id="org6a0b734"><span class="section-number-4">1.1.2</span> <code>/internal</code></h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+私有的应用和库代码。这些是是不希望被其他应用程序或者库导入的代码。
+</p>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/deployments</code></td>
-<td class="org-left">IaaS，PaaS，系统和容器编排配置部署和模板（docker-compose，kubernetes/helm，mesos，terraform，bosh）。</td>
-</tr>
+<p>
+注意，这种布局方式是 Go 编译器强制限制的，查看 Go 1.4 的 <a href="https://golang.org/doc/go1.4#internalpackages">发布日志</a>，而且不只是顶部的 <code>internal</code> 目录，所有子目录中的 <code>internal</code> 目录都受限制。
+</p>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/test</code></td>
-<td class="org-left">各种测试文件的目录</td>
-</tr>
+<p>
+（也就是说，在 Go 编译器层面约束的 <code>internal</code> 目录是不可被导出的）
+</p>
+</div>
+</div>
 
-<tr>
-<td class="org-left">其它目录</td>
-<td class="org-left"><code>/docs</code></td>
-<td class="org-left">设计和用户文档（不包含 godoc 生成的文档）。</td>
-</tr>
+<div id="outline-container-orgc1aaae6" class="outline-4">
+<h4 id="orgc1aaae6"><span class="section-number-4">1.1.3</span> <code>/pkg</code></h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+外部应用可以使用的库代码（比如 <code>/pkg/mypubliclib</code> ）。
+</p>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/tools</code></td>
-<td class="org-left">&#xa0;</td>
-</tr>
+<p>
+当根目录中包含很多非 Go 的组件时，这也是将 Go 代码分组到一起的一个办法，也使得运行各种 Go 工具更加的容易。
+</p>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/examples</code></td>
-<td class="org-left">&#xa0;</td>
-</tr>
+<p>
+查看哪些流程的项目使用 <a href="https://github.com/golang-standards/project-layout/blob/master/pkg/README.md"><code>/pkg</code></a> 目录。这是一种很常见的布局方式，但还没有被普遍接受，而且 Go 社区中的有些人不推荐这么做。
+</p>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/third_party</code></td>
-<td class="org-left">&#xa0;</td>
-</tr>
+<p>
+如果应用不大，额外嵌套一个目录没什么价值，就不需要使用了；在项目很大，根目录比较复杂的情况下，可以考虑一下（特别是包含了很多的非 Go 程序组件）。
+</p>
+</div>
+</div>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/githooks</code></td>
-<td class="org-left">&#xa0;</td>
-</tr>
+<div id="outline-container-orgbf6fafe" class="outline-4">
+<h4 id="orgbf6fafe"><span class="section-number-4">1.1.4</span> <code>/vendor</code></h4>
+<div class="outline-text-4" id="text-1-1-4">
+<p>
+应用程序依赖包（手动管理或者使用包管理工具类似 <a href="https://github.com/golang/dep">dep</a> 或者新版本中内置的，但仍旧在实验阶段的 <a href="https://github.com/golang/go/wiki/Modules">modules</a> 特性）。
+</p>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/assets</code></td>
-<td class="org-left">静态资源（比如图片，logos 等）</td>
-</tr>
+<p>
+如果要构建库的话, <span class="underline">不要</span> 提交应用程序依赖。
+</p>
 
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>/website</code></td>
-<td class="org-left">如果不使用 Github pages，这里放置你的项目网站数据。</td>
-</tr>
+<p>
+注意 <a href="https://golang.org/doc/go1.13#modules">1.13</a> 的 Go 允许打开模块代理特性（使用 <a href="https://proxy.golang.org/">https://proxy.golang.org/</a> 作为他们的模块代理服务器）。
+从 <a href="https://blog.golang.org/module-mirror-launch">这里</a> 查看更多的信息，看他是否满足你的需求。如果满足的话，你可能都不需要 'vendor' 目录了。
+</p>
+</div>
+</div>
+</div>
 
-<tr>
-<td class="org-left">不应包含的目录</td>
-<td class="org-left"><code>/src</code></td>
-<td class="org-left">容易混淆 <code>$GOPATH</code> 中的 <code>/src</code> 目录，极度不推荐。</td>
-</tr>
-</tbody>
-</table>
+<div id="outline-container-orgc535b71" class="outline-3">
+<h3 id="orgc535b71"><span class="section-number-3">1.2</span> 服务应用程序目录</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org2736041" class="outline-4">
+<h4 id="org2736041"><span class="section-number-4">1.2.1</span> <code>/api</code></h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+OpenAPI/Swagger 规范，JSON 模式（schema）文件，协议定义文件。
+</p>
+
+<p>
+查看 <a href="https://github.com/golang-standards/project-layout/blob/master/api/README.md"> <code>/api</code> </a> 范例。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6ad4d7c" class="outline-3">
+<h3 id="org6ad4d7c"><span class="section-number-3">1.3</span> Web 应用程序目录</h3>
+<div class="outline-text-3" id="text-1-3">
+</div>
+<div id="outline-container-org0d33ecf" class="outline-4">
+<h4 id="org0d33ecf"><span class="section-number-4">1.3.1</span> <code>/web</code></h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+Web 应用程序特定组件：静态网站资源，服务端模板和单网页应用（SPAs）。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1ff2f30" class="outline-3">
+<h3 id="org1ff2f30"><span class="section-number-3">1.4</span> 通用的应用程序目录</h3>
+<div class="outline-text-3" id="text-1-4">
+</div>
+<div id="outline-container-org3e4a6a6" class="outline-4">
+<h4 id="org3e4a6a6"><span class="section-number-4">1.4.1</span> <code>/configs</code></h4>
+<div class="outline-text-4" id="text-1-4-1">
+<p>
+配置文件模板和默认的配置项。
+</p>
+
+<p>
+把 <code>confd</code> 或者 <code>consul-template</code> 模板文件放到这儿。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcb2577d" class="outline-4">
+<h4 id="orgcb2577d"><span class="section-number-4">1.4.2</span> <code>/init</code></h4>
+<div class="outline-text-4" id="text-1-4-2">
+<p>
+系统初始化（systemd, upstart, sysv）和进程管理（runit, supervisord）配置。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd8f3f18" class="outline-4">
+<h4 id="orgd8f3f18"><span class="section-number-4">1.4.3</span> <code>/scripts</code></h4>
+<div class="outline-text-4" id="text-1-4-3">
+<p>
+用于构建、安装、分析等操作脚本。
+</p>
+
+<p>
+这些脚本可以使根部的 <code>Makefile</code> 文件变的小且简单，比如：<a href="https://github.com/hashicorp/terraform/blob/master/Makefile">https://github.com/hashicorp/terraform/blob/master/Makefile</a>
+</p>
+
+<p>
+查看 <a href="https://github.com/golang-standards/project-layout/blob/master/scripts/README.md"> <code>/script</code> </a> 范例。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org40afc8f" class="outline-4">
+<h4 id="org40afc8f"><span class="section-number-4">1.4.4</span> <code>/build</code></h4>
+<div class="outline-text-4" id="text-1-4-4">
+<p>
+打包和持续集成。
+</p>
+
+<p>
+Put your cloud (AMI), container (Docker), OS (deb, rpm, pkg) package configurations and scripts in the <code>/build/package</code> directory.
+</p>
+
+<p>
+Put your CI (travis, circle, drone) configurations and scripts in the <code>/build/ci</code> directory. Note that some of the CI tools (e.g., Travis CI) are very picky about the location of their config files. Try putting the config files in the /build/ci directory linking them to the location where the CI tools expect them (when possible).
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgba1dfd2" class="outline-4">
+<h4 id="orgba1dfd2"><span class="section-number-4">1.4.5</span> <code>/deployment</code></h4>
+<div class="outline-text-4" id="text-1-4-5">
+<p>
+IaaS, PaaS，系统和容器编排文件和模板（docker-compose, kubernetes/helm, mesos, terraform, bosh）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd9e3d17" class="outline-4">
+<h4 id="orgd9e3d17"><span class="section-number-4">1.4.6</span> <code>/test</code></h4>
+<div class="outline-text-4" id="text-1-4-6">
+<p>
+其他外部测试应用程序和测试数据。较大的项目需要一个数据目录，如果你想让 Go 忽略掉他的话，可以命名为 <code>/test/data</code> 或者 <code>/test/testdata</code> 。
+Go 还会忽略以 <code>.</code> 或者 <code>_</code> 开头的文件。
+</p>
+
+<p>
+查看 <a href="https://github.com/golang-standards/project-layout/blob/master/test/README.md"> <code>/test</code> </a> 更多范例。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb204a08" class="outline-3">
+<h3 id="orgb204a08"><span class="section-number-3">1.5</span> 其他目录</h3>
+<div class="outline-text-3" id="text-1-5">
+</div>
+<div id="outline-container-org9ccd6e5" class="outline-4">
+<h4 id="org9ccd6e5"><span class="section-number-4">1.5.1</span> <code>/docs</code></h4>
+<div class="outline-text-4" id="text-1-5-1">
+<p>
+设计和用户文档（除了 godoc 生成的文档之外）。
+</p>
+
+<p>
+查看 <a href="https://github.com/golang-standards/project-layout/blob/master/docs/README.md">/docs</a> 更多范例。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc5ee2b5" class="outline-4">
+<h4 id="orgc5ee2b5"><span class="section-number-4">1.5.2</span> <code>/tools</code></h4>
+<div class="outline-text-4" id="text-1-5-2">
+<p>
+此项目的支持工具。注意，这些工具可以从 <code>/pkg</code> 和 <code>/internal</code> 目录中导入代码。
+</p>
+
+<p>
+查看 <a href="https://github.com/golang-standards/project-layout/blob/master/tools/README.md">/tools</a> 更多范例。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2527e15" class="outline-4">
+<h4 id="org2527e15"><span class="section-number-4">1.5.3</span> <code>/examples</code></h4>
+<div class="outline-text-4" id="text-1-5-3">
+<p>
+你的应用程序或者公共库的范例。
+</p>
+
+<p>
+查看 <a href="https://github.com/golang-standards/project-layout/blob/master/examples/README.md">/example</a> 更多范例。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6b6e7be" class="outline-4">
+<h4 id="org6b6e7be"><span class="section-number-4">1.5.4</span> <code>/third_party</code></h4>
+<div class="outline-text-4" id="text-1-5-4">
+<p>
+外部帮助工具，交叉代码和其他第三方工具（比如：Swagger UI）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc473270" class="outline-4">
+<h4 id="orgc473270"><span class="section-number-4">1.5.5</span> <code>/githooks</code></h4>
+<div class="outline-text-4" id="text-1-5-5">
+<p>
+Git hooks.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org75eb0a1" class="outline-4">
+<h4 id="org75eb0a1"><span class="section-number-4">1.5.6</span> <code>/assets</code></h4>
+<div class="outline-text-4" id="text-1-5-6">
+<p>
+与项目一起的其他资源文件（图片，logos 等等）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbf0d5c4" class="outline-4">
+<h4 id="orgbf0d5c4"><span class="section-number-4">1.5.7</span> <code>/website</code></h4>
+<div class="outline-text-4" id="text-1-5-7">
+<p>
+如果你不使用 github pages，就在这里放置项目的网站数据。
+</p>
+
+<p>
+查看 <a href="https://github.com/golang-standards/project-layout/blob/master/website/README.md">/website</a> 更多范例。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge95a87c" class="outline-3">
+<h3 id="orge95a87c"><span class="section-number-3">1.6</span> 你不应该使用的目录</h3>
+<div class="outline-text-3" id="text-1-6">
+</div>
+<div id="outline-container-org52f5b50" class="outline-4">
+<h4 id="org52f5b50"><span class="section-number-4">1.6.1</span> <code>/src</code></h4>
+<div class="outline-text-4" id="text-1-6-1">
+<p>
+一些 Go 项目包含 <code>src</code> 目录，通常是 Java 世界中的程序员干的。但是你如果想省点事的话，千万不要这么干（除非你想让你的 Go 项目看起来像是 Java）。
+</p>
+
+<p>
+在 <a href="https://golang.org/doc/code.html">How to Write Go Code</a> 中说过不要将项目中的 <code>/src</code> 目录和 Go 工作区间（ <code>GOPATH</code> ）中的 <code>/src</code> 目录混淆。
+</p>
+
+<p>
+<code>GOPATH</code> 在顶级目录中包含了 <code>/pkg</code> <code>/bin</code> 和 <code>/src</code> 目录。如果你把你的代码放在 <code>/src</code> 子目录下，你的包路径会类似这样
+<code>/some/path/to/workspace/src/your_project/src/your_code.go</code> 。尽管 Go 1.11 之后，项目可以放在 <code>GOPATH</code> 之外，但并不意味这这种布局是一个好主意。
+</p>
+
+<hr />
+
+<p>
+最后更新时间 2019-10-17 13:08:27。
+</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="date">Date: 2019-06-09 17:08:00</p>
