@@ -239,8 +239,13 @@ for the JavaScript code in this tag.
 <li><a href="#orgb9d9f19">1. 技术栈</a></li>
 <li><a href="#org7474eb3">2. 如何评价 Pro 2.0</a></li>
 <li><a href="#orgf316be2">3. Pro 和 UmiJS</a></li>
-<li><a href="#org3b3dad9">4. 部署时，文件名添加 hash 值</a></li>
-<li><a href="#org6b5686f">5. npm run start 报错</a></li>
+<li><a href="#org8b370e8">4. 如何评价 Pro 4.0</a></li>
+<li><a href="#orgbe3cd9a">5. FAQ</a>
+<ul>
+<li><a href="#org3b3dad9">5.1. 部署时，文件名添加 hash 值</a></li>
+<li><a href="#org6b5686f">5.2. npm run start 报错</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -254,17 +259,14 @@ for the JavaScript code in this tag.
 <ul class="org-ul">
 <li>ES2015+，主要使用 JavaScript（废话）</li>
 <li>React</li>
-<li><a href="https://umijs.org/zh/">UmiJS</a>：可插拔的企业级 react 应用框架，=1.0=
-之前是使用 roadhog 的，=umi = roadhog + 路由=。roadhog 封装了
-webpack，简化 webpack 的配置</li>
+<li><a href="https://umijs.org/zh/">UmiJS</a>：可插拔的企业级 react 应用框架， <code>1.0</code> 之前是使用 roadhog 的， <code>umi = roadhog + 路由</code> 。roadhog 封装了 webpack，简化 webpack 的配置</li>
 <li>dva：数据流</li>
-<li>antd：前端 UI 组件，类似 Bootstrap</li>
+<li>antd：前端基于 React 的 UI 组件，类似 Bootstrap</li>
 </ul>
 
 <p>
-所以，Pro 是什么？就是把这些组件全部封装起来，然后提供了一些范例。比较适合我这种不关心也不想深入学习前端技术，只想作为技术手段来实现前端开发的人。对于，一个专业的前端开发者，我不认为
-Pro 是一个很好选择，直接使用 React 原生的脚手架 create-react-app +
-webpack + antd 更好，或者使用 umi 也行。
+所以，Pro 是什么？就是把这些组件全部封装起来，然后提供了一些范例。比较适合我这种不关心也不想深入学习前端技术，只想作为技术手段来实现前端开发的人。对于，一个专业的前端开发者，我不认为 Pro 是一个很好选择，
+直接使用 React 原生的脚手架 create-react-app + webpack + antd 更好，或者使用 umi 也行。
 </p>
 
 <p>
@@ -295,9 +297,7 @@ Pro 缺陷也是优势，对于我这样的伪前端（也不想深入）的人�
 <ol class="org-ol">
 <li>配置更统一了，全部都在 config 文件下（用 umi 替代了 roadhog 之后）</li>
 <li>默认支持按需加载，撒花</li>
-<li>model 支持 page model，即 page 私有的 model 只需要放在 page 自己的
-models 文件夹下，无需像以前一样在 router 中注入，具体可以查看 umi
-的文档</li>
+<li>model 支持 page model，即 page 私有的 model 只需要放在 page 自己的 models 文件夹下，无需像以前一样在 router 中注入，具体可以查看 umi 的文档</li>
 <li>默认配置 alias，添加 <code>@/</code> 别名到 <code>src</code> 目录，引用模块更加方便了</li>
 </ol>
 
@@ -334,11 +334,39 @@ Pro <code>0.x</code> 版本和 <code>1.x</code> 版本 <code>npm run start</code
 </div>
 </div>
 
-<div id="outline-container-org3b3dad9" class="outline-2">
-<h2 id="org3b3dad9"><span class="section-number-2">4</span> 部署时，文件名添加 hash 值</h2>
+<div id="outline-container-org8b370e8" class="outline-2">
+<h2 id="org8b370e8"><span class="section-number-2">4</span> 如何评价 Pro 4.0</h2>
 <div class="outline-text-2" id="text-4">
 <p>
-2.0 之后，=npm run build= 生成的 css 和 js 文件名不再包含 hash 值，这样会导致即便 nginx 设置了 <code>index.html</code> 不缓存，因为 css 和 js 每个版本的名字都是一样的，导致新版本更新之后，用户只有强制刷新浏览器才能生效。
+六月份发布了 v4 版本，一直比较忙也没时间去研究。从 0.x 版本用到 2.0 版本，我对 Pro 的发展一直不抱有很乐观的态度（甚至有些消极），以前在 issue 上有过一些争论，以至于对研发团队产品规划略有不满。
+</p>
+
+<p>
+今天（2019-10-24）得空看了一下 v4 和 <a href="https://umijs.org/zh/guide/">UmiJS</a>，大有改观。涉及到我所关心的几个点列了一下：
+</p>
+
+<ul class="org-ul">
+<li>v4 变成了 umi.js 的一个模板，安装也比较纯粹，选模板一样选择 ant design pro 即可；以前更像是 clone 下来完整的代码然后继续开发，不像是一个工具；</li>
+<li>抽象出 <span class="underline">区块(Block)</span> 的概念，把以前的组件全部单独出去，可插拔（ <code>umi block list</code> ），框架不再臃肿，鉴权相关的也简单的许多， <i>早就该这么搞了，也是我以前感觉 Pro 定位不清晰的原因</i> ；</li>
+<li>layout 也抽象成了一个单独的组件：<a href="https://github.com/ant-design/ant-design-pro-layout"> ant-design-pro-layout</a>，这个有待商榷，这种是不是 antd 的责任？</li>
+<li>主打 Typescript，还好兼容 Javascript，一直没功夫学习 ts，学不动了</li>
+</ul>
+
+<p>
+如果不是为了省事，直接使用 umi 创建一个 App 写模板也挺好的，成本也不高。这一次更新给研发团队点赞!
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbe3cd9a" class="outline-2">
+<h2 id="orgbe3cd9a"><span class="section-number-2">5</span> FAQ</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org3b3dad9" class="outline-3">
+<h3 id="org3b3dad9"><span class="section-number-3">5.1</span> 部署时，文件名添加 hash 值</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+2.0 之后， <code>npm run build</code> 生成的 css 和 js 文件名不再包含 hash 值，这样会导致即便 nginx 设置了 <code>index.html</code> 不缓存，因为 css 和 js 每个版本的名字都是一样的，导致新版本更新之后，用户只有强制刷新浏览器才能生效。
 </p>
 
 <p>
@@ -351,9 +379,9 @@ Pro <code>0.x</code> 版本和 <code>1.x</code> 版本 <code>npm run start</code
 </div>
 </div>
 
-<div id="outline-container-org6b5686f" class="outline-2">
-<h2 id="org6b5686f"><span class="section-number-2">5</span> npm run start 报错</h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-org6b5686f" class="outline-3">
+<h3 id="org6b5686f"><span class="section-number-3">5.2</span> npm run start 报错</h3>
+<div class="outline-text-3" id="text-5-2">
 <p>
 <code>npm run start</code> 的时候，报错：
 </p>
@@ -379,6 +407,7 @@ proposal, you should use the 'decorators-legacy' plugin instead of
 <p>
 其实不光是 npm，其它的镜像也会出这种情况，比如 Emacs 的源引发的问题：<a href="https://github.com/abo-abo/swiper/issues/2087">swiper issue#2087</a>
 </p>
+</div>
 </div>
 </div>
 </div>
