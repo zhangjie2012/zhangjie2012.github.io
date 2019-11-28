@@ -355,13 +355,7 @@ GUI 版本很不稳定，不如直接使用命令行（ <code>ss-local</code> �
 <h4 id="orgbe43ec6"><span class="section-number-4">5.1.1</span> ss-local 配置</h4>
 <div class="outline-text-4" id="text-5-1-1">
 <p>
-创建目录和文件：
-</p>
-
-<ul class="org-ul">
-<li><code>sudo mkdir /etc/ss-local</code></li>
-<li><p>
-<code>touch config.json</code>
+配置文件在 <code>/etc/shadowsocks-libev</code> 目录下。文件内容改为：
 </p>
 <pre class="example">
 {
@@ -372,43 +366,11 @@ GUI 版本很不稳定，不如直接使用命令行（ <code>ss-local</code> �
   "timeout":60,
   "method":"chacha20-ietf-poly1305"
 }
-</pre></li>
-<li><p>
-配置 systemd <code>sudo touch /lib/systemd/system/ss-local.service</code>
+</pre>
+
+<p>
+systemd unit 名字为： <code>shadowsock-libev</code> 直接重启即可。设置开机启动 <code>systemctl enable shadowsock-libev</code> 。
 </p>
-<pre class="example">
-[Unit]
-Description=ss-local
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/ss-local -c /etc/ss-local/config.json -v
-
-[Install]
-WantedBy=multi-user.target
-</pre></li>
-<li>启动服务 <code>systemctl start ss-local</code></li>
-<li>设置开机启动 <code>systemctl enable ss-local</code></li>
-<li><p>
-查看服务状态 <code>systemctl status ss-local</code>
-</p>
-<pre class="example">
-  ● ss-local.service - ss-local
-   Loaded: loaded (/lib/systemd/system/ss-local.service; enabled; vendor preset: enabled)
-   Active: active (running) since Thu 2019-10-10 20:54:42 CST; 1min 20s ago
- Main PID: 3851 (ss-local)
-    Tasks: 1 (limit: 4915)
-   Memory: 428.0K
-   CGroup: /system.slice/ss-local.service
-           └─3851 /usr/bin/ss-local -c /etc/ss-local/hk.json -v
-
-10月 10 20:54:42 ubuntu-xps systemd[1]: Started ss-local.
-10月 10 20:54:42 ubuntu-xps ss-local[3851]:  2019-10-10 20:54:42 INFO: initializing ciphers... chacha20-ietf-poly1305
-10月 10 20:54:42 ubuntu-xps ss-local[3851]:  2019-10-10 20:54:42 INFO: listening at 127.0.0.1:1080
-10月 10 20:54:42 ubuntu-xps ss-local[3851]:  2019-10-10 20:54:42 INFO: running from root user
-
-</pre></li>
-</ul>
 </div>
 </div>
 </div>

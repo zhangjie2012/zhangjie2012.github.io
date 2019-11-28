@@ -1,0 +1,729 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>React Router</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">React Router</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5b37a71">1. 主要组件</a>
+<ul>
+<li><a href="#org1675b3c">1.1. 路由器</a></li>
+<li><a href="#org5333549">1.2. 路由匹配</a></li>
+<li><a href="#orge63a9f6">1.3. 路由变更（Nav）</a></li>
+</ul>
+</li>
+<li><a href="#org20723e5">2. <span class="todo TODO">TODO</span> 服务端渲染（Server Rendering）</a></li>
+<li><a href="#org29c2087">3. 代码拆分（Code Splitting）</a></li>
+<li><a href="#org01ea9b0">4. 滚动恢复</a>
+<ul>
+<li><a href="#org75098ec">4.1. 滚动到顶部</a></li>
+<li><a href="#orgb5c4457">4.2. 通用的解决方案</a></li>
+</ul>
+</li>
+<li><a href="#org687e145">5. 原理</a>
+<ul>
+<li><a href="#org8dd4e73">5.1. 静态路由</a></li>
+<li><a href="#org444c5d2">5.2. <span class="todo TODO">TODO</span> 背景</a></li>
+<li><a href="#org725afdb">5.3. <span class="todo TODO">TODO</span> 动态路由</a></li>
+<li><a href="#orgc170259">5.4. <span class="todo TODO">TODO</span> 嵌套路由</a></li>
+<li><a href="#orgdb7b8bf">5.5. <span class="todo TODO">TODO</span> 响应式路由</a></li>
+</ul>
+</li>
+<li><a href="#org8b22d0c">6. <span class="todo TODO">TODO</span> Testing</a></li>
+<li><a href="#org47429df">7. <span class="todo TODO">TODO</span> Redux Integration</a></li>
+<li><a href="#org1ad1311">8. <span class="todo TODO">TODO</span> Static Routes</a></li>
+</ul>
+</div>
+</div>
+<p>
+<a href="https://reacttraining.com/react-router/web/guides/quick-start">react-router</a>
+</p>
+
+<div id="outline-container-org5b37a71" class="outline-2">
+<h2 id="org5b37a71"><span class="section-number-2">1</span> 主要组件</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+React Router 主要分三类组件：
+</p>
+
+<ul class="org-ul">
+<li>路由器（routers），比如 <code>&lt;BrowserRouter&gt;</code> 和 <code>&lt;HashRouter&gt;</code></li>
+<li>路由匹配，比如 <code>&lt;Route&gt;</code> 和 <code>&lt;Switch&gt;</code></li>
+<li>导航（Navigation），比如 <code>&lt;Link&gt;</code>, <code>&lt;NavLink&gt;</code> 和 <code>&lt;Redirect&gt;</code> ，也成为路由变更</li>
+</ul>
+
+<p>
+所有的组件，都需要从 <code>react-router-dom</code> 库中导入。
+</p>
+</div>
+
+<div id="outline-container-org1675b3c" class="outline-3">
+<h3 id="org1675b3c"><span class="section-number-3">1.1</span> 路由器</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+路由组件的核心是 React Router，对于 Web 项目， <code>react-router-dom</code> 提供了 <code>&lt;BrowserRouter&gt;</code> 和 <code>&lt;HashRouter&gt;</code> 两种 routers。
+主要区别在于他们存储 URL 和与服务器通信的方式。
+</p>
+
+<ul class="org-ul">
+<li><code>&lt;BrowserRouter&gt;</code> 使用正常的 URL 路径，要求正确的配置服务器地址</li>
+<li><code>&lt;HashRouter&gt;</code> 讲当前的路径存储再 hash 部分中，网址看起来是这样的 <code>http://example.com/#/your/page</code> 。
+hash 值不会发送到服务器中，也就意味着不需要特殊的服务器配置。</li>
+</ul>
+
+<p>
+使用 Router 要确保顶层的 <code>&lt;App /&gt;</code> 放在 Router 之中，如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">import</span> React from <span style="color: #008000;">"react"</span>;
+<span style="color: #0000FF;">import</span> ReactDOM from <span style="color: #008000;">"react-dom"</span>;
+<span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> BrowserRouter <span style="color: #707183;">}</span> from <span style="color: #008000;">"react-router-dom"</span>;
+
+<span style="color: #0000FF;">function</span> <span style="color: #006699;">App</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+  <span style="color: #0000FF;">return</span> &lt;h1&gt;Hello React Router&lt;/h1&gt;;
+<span style="color: #707183;">}</span>
+
+ReactDOM.render<span style="color: #707183;">(</span>
+  &lt;BrowserRouter&gt;
+    &lt;App /&gt;
+  &lt;/BrowserRouter&gt;,
+  document.getElementById<span style="color: #7388D6;">(</span><span style="color: #008000;">"root"</span><span style="color: #7388D6;">)</span>
+<span style="color: #707183;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5333549" class="outline-3">
+<h3 id="org5333549"><span class="section-number-3">1.2</span> 路由匹配</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+有两个路由匹配组件： <code>Switch</code> 和 <code>Route</code> 。当 <code>&lt;Switch&gt;</code> 渲染的时候，它会搜索它的 <span class="underline">子</span> <code>&lt;Route&gt;</code> 元素，找到与当前 URL 匹配的元素。
+匹配到之后就会忽略其他的路由。也就意味着特殊的路径要放在不特殊路径的 <b>前面</b> 。
+</p>
+
+<p>
+如果找不到匹配项， <code>&lt;Switch&gt;</code> 会什么都不渲染（null）。
+</p>
+
+<p>
+值得注意的是， <code>&lt;Route path&gt;</code> 只会匹配 URL 的 <b>开头</b> ，不是全部。所以 <code>&lt;Route path="/"&gt;</code> 总是会匹配所有的 URL。
+因为这个原因，我们通常把它放在 <code>&lt;Switch&gt;</code> 的最后。另外一个解决办法是使用 <code>exact</code> 参数，全部匹配路径，比如： <code>&lt;Route exact path="/"&gt;</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge63a9f6" class="outline-3">
+<h3 id="orge63a9f6"><span class="section-number-3">1.3</span> 路由变更（Nav）</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+React Router 提供了 <code>&lt;Link&gt;</code> 组件来创建链接。当使用 <code>&lt;Link&gt;</code> 的时候，会渲染成 anchor（ <code>&lt;a&gt;</code> ）。
+</p>
+
+<p>
+<code>&lt;NavLink&gt;</code> 是 <code>&lt;Link&gt;</code> 的一种特殊类型，当其 prop 与当前位置匹配时，可以将其自身设置为「活动」。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-html">&lt;<span style="color: #006699;">NavLink</span> <span style="color: #BA36A5;">to</span>=<span style="color: #008000;">"/react"</span> <span style="color: #BA36A5;">activeClassName</span>=<span style="color: #008000;">"hurray"</span>&gt;
+  React
+&lt;/<span style="color: #006699;">NavLink</span>&gt;
+</pre>
+</div>
+
+<p>
+可以用于对当前选中的页面做一些特殊的样式设置之类的。
+</p>
+
+<p>
+如果想要强制导航，你可以使用 <code>&lt;Redirect&gt;</code> 。当渲染的时候，它会使用 prop 进行导航。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org20723e5" class="outline-2">
+<h2 id="org20723e5"><span class="section-number-2">2</span> <span class="todo TODO">TODO</span> 服务端渲染（Server Rendering）</h2>
+</div>
+<div id="outline-container-org29c2087" class="outline-2">
+<h2 id="org29c2087"><span class="section-number-2">3</span> 代码拆分（Code Splitting）</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+代码拆分可以理解成代码按需加载。为了实现这个目标，需要使用 webpack， <code>@babel/plugin-syntax-dynamic-import</code> 和 loadable-components。
+</p>
+
+<p>
+webpack 默认支持动态导入；但是，你如果使用了 Babel（比如：把 JSX 编译成 JavaScript），那么你就需要使用 @babel/plugin-syntax-dynamic-import 插件。
+这只是一个语法插件，意味着 Babel 不会做任何额外的转换。该插件仅允许 Babel 解析动态导入，因此 webpack 可以将 bundle 他们作为代码拆分。你的 <code>.babelrc</code> 可能长这样：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #707183;">{</span>
+  <span style="color: #008000;">"presets"</span>: <span style="color: #7388D6;">[</span><span style="color: #008000;">"@babel/preset-react"</span><span style="color: #7388D6;">]</span>,
+  <span style="color: #008000;">"plugins"</span>: <span style="color: #7388D6;">[</span><span style="color: #008000;">"@babel/plugin-syntax-dynamic-import"</span><span style="color: #7388D6;">]</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+loadable-components 是一个库加载组件用来动态导入。它自动处理各种边缘情况，使代码拆分变的很简单。下面是使用范例：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">import</span> loadable from <span style="color: #008000;">"@loadable/component"</span>;
+<span style="color: #0000FF;">import</span> Loading from <span style="color: #008000;">"./Loading.js"</span>;
+
+<span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">LoadableComponent</span> = loadable<span style="color: #707183;">(</span><span style="color: #7388D6;">()</span> =&gt; <span style="color: #0000FF;">import</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"./Dashboard.js"</span><span style="color: #7388D6;">)</span>, <span style="color: #7388D6;">{</span>
+  fallback: &lt;Loading /&gt;
+<span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>;
+
+<span style="color: #0000FF;">export</span> <span style="color: #0000FF;">default</span> <span style="color: #0000FF;">class</span> LoadableDashboard <span style="color: #0000FF;">extends</span> React.Component <span style="color: #707183;">{</span>
+  render<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">return</span> &lt;LoadableComponent /&gt;;
+  <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+当程序运行时，动态加载，fallback 是加载期间展示的组件。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org01ea9b0" class="outline-2">
+<h2 id="org01ea9b0"><span class="section-number-2">4</span> 滚动恢复</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org75098ec" class="outline-3">
+<h3 id="org75098ec"><span class="section-number-3">4.1</span> 滚动到顶部</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+当有一个长页面时，经常有滚动到顶部的需求。使用 <code>&lt;ScrollToTop&gt;</code> 可以轻松解决这个问题，该组件将在每次导航时向上滚动窗口。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> useEffect <span style="color: #707183;">}</span> from <span style="color: #008000;">"react"</span>;
+<span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> useLocation <span style="color: #707183;">}</span> from <span style="color: #008000;">"react-router-dom"</span>;
+
+<span style="color: #0000FF;">export</span> <span style="color: #0000FF;">default</span> <span style="color: #0000FF;">function</span> ScrollToTop<span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+  <span style="color: #0000FF;">const</span> <span style="color: #7388D6;">{</span> pathname <span style="color: #7388D6;">}</span> = useLocation<span style="color: #7388D6;">()</span>;
+
+  useEffect<span style="color: #7388D6;">(</span><span style="color: #909183;">()</span> =&gt; <span style="color: #909183;">{</span>
+    window.scrollTo<span style="color: #709870;">(</span>0, 0<span style="color: #709870;">)</span>;
+  <span style="color: #909183;">}</span>, <span style="color: #909183;">[</span>pathname<span style="color: #909183;">]</span><span style="color: #7388D6;">)</span>;
+
+  <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">null</span>;
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+如果你用的是 React 16.8 之前的版本，你可以用 <code>React.Component</code> 来做相同的事情：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">import</span> React from <span style="color: #008000;">"react"</span>;
+<span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> withRouter <span style="color: #707183;">}</span> from <span style="color: #008000;">"react-router-dom"</span>;
+
+<span style="color: #0000FF;">class</span> ScrollToTop <span style="color: #0000FF;">extends</span> React.Component <span style="color: #707183;">{</span>
+  componentDidUpdate<span style="color: #7388D6;">(</span>prevProps<span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">if</span> <span style="color: #909183;">(</span>
+      <span style="color: #D0372D;">this</span>.props.location.pathname !== prevProps.location.pathname
+    <span style="color: #909183;">)</span> <span style="color: #909183;">{</span>
+      window.scrollTo<span style="color: #709870;">(</span>0, 0<span style="color: #709870;">)</span>;
+    <span style="color: #909183;">}</span>
+  <span style="color: #7388D6;">}</span>
+
+  render<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">null</span>;
+  <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+
+<span style="color: #0000FF;">export</span> <span style="color: #0000FF;">default</span> withRouter<span style="color: #707183;">(</span>ScrollToTop<span style="color: #707183;">)</span>;
+</pre>
+</div>
+
+<p>
+然后把他们放在应用的顶部，路由器的下方：
+</p>
+
+<pre class="example">
+function App() {
+  return (
+    &lt;Router&gt;
+      &lt;ScrollToTop /&gt;
+      &lt;App /&gt;
+    &lt;/Router&gt;
+  );
+}
+</pre>
+
+<p>
+如果你将标签页连接到路由器，那么当切换标签页时，你不希望滚动到顶部。而是滚动到特定位置。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> useEffect <span style="color: #707183;">}</span> from <span style="color: #008000;">"react"</span>;
+
+<span style="color: #0000FF;">function</span> <span style="color: #006699;">ScrollToTopOnMount</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+  useEffect<span style="color: #7388D6;">(</span><span style="color: #909183;">()</span> =&gt; <span style="color: #909183;">{</span>
+    window.scrollTo<span style="color: #709870;">(</span>0, 0<span style="color: #709870;">)</span>;
+  <span style="color: #909183;">}</span>, <span style="color: #909183;">[]</span><span style="color: #7388D6;">)</span>;
+
+  <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">null</span>;
+<span style="color: #707183;">}</span>
+
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Render this somewhere using:</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&lt;Route path="..." children={&lt;LongContent /&gt;} /&gt;</span>
+<span style="color: #0000FF;">function</span> <span style="color: #006699;">LongContent</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+  <span style="color: #0000FF;">return</span> <span style="color: #7388D6;">(</span>
+    &lt;div&gt;
+      &lt;ScrollToTopOnMount /&gt;
+
+      &lt;h1&gt;Here is my <span style="color: #6434A3;">long</span> <span style="color: #BA36A5;">content</span> page&lt;/h1&gt;
+      &lt;p&gt;...&lt;/p&gt;
+    &lt;/div&gt;
+  <span style="color: #7388D6;">)</span>;
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+同样，如果使用 React 16.8 以前的版本，可以这么做：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">import</span> React from <span style="color: #008000;">"react"</span>;
+
+<span style="color: #0000FF;">class</span> ScrollToTopOnMount <span style="color: #0000FF;">extends</span> React.Component <span style="color: #707183;">{</span>
+  componentDidMount<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+    window.scrollTo<span style="color: #909183;">(</span>0, 0<span style="color: #909183;">)</span>;
+  <span style="color: #7388D6;">}</span>
+
+  render<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">null</span>;
+  <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Render this somewhere using:</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&lt;Route path="..." children={&lt;LongContent /&gt;} /&gt;</span>
+<span style="color: #0000FF;">class</span> LongContent <span style="color: #0000FF;">extends</span> React.Component <span style="color: #707183;">{</span>
+  render<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">return</span> <span style="color: #909183;">(</span>
+      &lt;div&gt;
+        &lt;ScrollToTopOnMount /&gt;
+
+        &lt;h1&gt;Here is my <span style="color: #6434A3;">long</span> <span style="color: #BA36A5;">content</span> page&lt;/h1&gt;
+        &lt;p&gt;...&lt;/p&gt;
+      &lt;/div&gt;
+    <span style="color: #909183;">)</span>;
+  <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb5c4457" class="outline-3">
+<h3 id="orgb5c4457"><span class="section-number-3">4.2</span> 通用的解决方案</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+对于通用的解决办法（浏览器已经开始原生实现），我们讨论两件事情：
+</p>
+
+<ol class="org-ol">
+<li>向上滚动导航，这样就不会开始一个新的底部屏幕</li>
+<li>恢复滚动位置，点击「后退」和「前进」溢出元素（但不是点击链接）</li>
+</ol>
+
+<p>
+在这个点上，我们希望要有一个通用的 API，答题思路是这样的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript">&lt;Router&gt;
+  &lt;ScrollRestoration&gt;
+    &lt;div&gt;
+      &lt;h1&gt;App&lt;/h1&gt;
+
+      &lt;RestoredScroll id=<span style="color: #008000;">"bunny"</span>&gt;
+        &lt;div style=<span style="color: #707183;">{</span><span style="color: #7388D6;">{</span> height: <span style="color: #008000;">"200px"</span>, overflow: <span style="color: #008000;">"auto"</span> <span style="color: #7388D6;">}</span><span style="color: #707183;">}</span>&gt;
+          I will overflow
+        &lt;/div&gt;
+      &lt;/RestoredScroll&gt;
+    &lt;/div&gt;
+  &lt;/ScrollRestoration&gt;
+&lt;/Router&gt;
+</pre>
+</div>
+
+<p>
+首先， <code>ScrollRestoration</code> 会向上滚动导航；其次，它会用 <code>location.key</code> 保存窗口滚动位置，并且 <code>ScrollRestoration</code> 的位置放在 <code>sessionStorage</code> 。
+然后，当 <code>ScrollRestoration</code> 或者 <code>RestoredScroll</code> 组件挂载时，他们可以从 <code>sessionStorage</code> 中查找他们的位置。
+</p>
+
+<p>
+<i>说了半天，原来都是设想，不看了..</i>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org687e145" class="outline-2">
+<h2 id="org687e145"><span class="section-number-2">5</span> 原理</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+这份指南的目的是说明使用 React Router 时要具有的思维模型。我们称作「动态路由」，与你熟悉的「静态路由」完全不同 。
+</p>
+</div>
+
+<div id="outline-container-org8dd4e73" class="outline-3">
+<h3 id="org8dd4e73"><span class="section-number-3">5.1</span> 静态路由</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+如果你用过 Rails，Express，Angular 等。那你就已经用过静态路由了。在这些框架中，所有的路由部分都要放在应用初始化任何渲染的前面。
+React Router pre-v4 也是静态的（大部分）。让我们看一下在 Express 中是如何动态配置路由的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Express Style routing:</span>
+app.get<span style="color: #707183;">(</span><span style="color: #008000;">"/"</span>, handleIndex<span style="color: #707183;">)</span>;
+app.get<span style="color: #707183;">(</span><span style="color: #008000;">"/invoices"</span>, handleInvoices<span style="color: #707183;">)</span>;
+app.get<span style="color: #707183;">(</span><span style="color: #008000;">"/invoices/:id"</span>, handleInvoice<span style="color: #707183;">)</span>;
+app.get<span style="color: #707183;">(</span><span style="color: #008000;">"/invoices/:id/edit"</span>, handleInvoiceEdit<span style="color: #707183;">)</span>;
+
+app.listen<span style="color: #707183;">()</span>;
+</pre>
+</div>
+
+<p>
+注意，是在程序监听之前是如何生命路由的。客户端一侧的路由也是类似的。在 Angular 中，你也要提前声明好路由，
+然后在顶部导入他们（ <code>AppModule</code> 渲染之前）：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Angular Style routing:</span>
+<span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">appRoutes</span>: Routes = <span style="color: #707183;">[</span>
+  <span style="color: #7388D6;">{</span>
+    path: <span style="color: #008000;">"crisis-center"</span>,
+    component: CrisisListComponent
+  <span style="color: #7388D6;">}</span>,
+  <span style="color: #7388D6;">{</span>
+    path: <span style="color: #008000;">"hero/:id"</span>,
+    component: HeroDetailComponent
+  <span style="color: #7388D6;">}</span>,
+  <span style="color: #7388D6;">{</span>
+    path: <span style="color: #008000;">"heroes"</span>,
+    component: HeroListComponent,
+    data: <span style="color: #909183;">{</span> title: <span style="color: #008000;">"Heroes List"</span> <span style="color: #909183;">}</span>
+  <span style="color: #7388D6;">}</span>,
+  <span style="color: #7388D6;">{</span>
+    path: <span style="color: #008000;">""</span>,
+    redirectTo: <span style="color: #008000;">"/heroes"</span>,
+    pathMatch: <span style="color: #008000;">"full"</span>
+  <span style="color: #7388D6;">}</span>,
+  <span style="color: #7388D6;">{</span>
+    path: <span style="color: #008000;">"**"</span>,
+    component: PageNotFoundComponent
+  <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">]</span>;
+
+@NgModule<span style="color: #707183;">(</span><span style="color: #7388D6;">{</span>
+  imports: <span style="color: #909183;">[</span>RouterModule.forRoot<span style="color: #709870;">(</span>appRoutes<span style="color: #709870;">)</span><span style="color: #909183;">]</span>
+<span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>
+<span style="color: #0000FF;">export</span> <span style="color: #0000FF;">class</span> AppModule <span style="color: #707183;">{}</span>
+</pre>
+</div>
+
+<p>
+Ember 使用了比较常规的 <code>routes.js</code> 文件，但也是在你的程序渲染之前做的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Ember Style Router:</span>
+Router.map<span style="color: #707183;">(</span><span style="color: #0000FF;">function</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+  <span style="color: #D0372D;">this</span>.route<span style="color: #909183;">(</span><span style="color: #008000;">"about"</span><span style="color: #909183;">)</span>;
+  <span style="color: #D0372D;">this</span>.route<span style="color: #909183;">(</span><span style="color: #008000;">"contact"</span><span style="color: #909183;">)</span>;
+  <span style="color: #D0372D;">this</span>.route<span style="color: #909183;">(</span><span style="color: #008000;">"rentals"</span>, <span style="color: #0000FF;">function</span><span style="color: #709870;">()</span> <span style="color: #709870;">{</span>
+    <span style="color: #D0372D;">this</span>.route<span style="color: #907373;">(</span><span style="color: #008000;">"show"</span>, <span style="color: #6276BA;">{</span> path: <span style="color: #008000;">"/:rental_id"</span> <span style="color: #6276BA;">}</span><span style="color: #907373;">)</span>;
+  <span style="color: #709870;">}</span><span style="color: #909183;">)</span>;
+<span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>;
+
+<span style="color: #0000FF;">export</span> <span style="color: #0000FF;">default</span> Router;
+</pre>
+</div>
+
+<p>
+尽管 API 不同，但他们都是「静态路由」模型，React Router 也一直跟进到 V4。
+</p>
+
+<p>
+为了用好 React Router，你需要忘了这些。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org444c5d2" class="outline-3">
+<h3 id="org444c5d2"><span class="section-number-3">5.2</span> <span class="todo TODO">TODO</span> 背景</h3>
+</div>
+<div id="outline-container-org725afdb" class="outline-3">
+<h3 id="org725afdb"><span class="section-number-3">5.3</span> <span class="todo TODO">TODO</span> 动态路由</h3>
+</div>
+<div id="outline-container-orgc170259" class="outline-3">
+<h3 id="orgc170259"><span class="section-number-3">5.4</span> <span class="todo TODO">TODO</span> 嵌套路由</h3>
+</div>
+<div id="outline-container-orgdb7b8bf" class="outline-3">
+<h3 id="orgdb7b8bf"><span class="section-number-3">5.5</span> <span class="todo TODO">TODO</span> 响应式路由</h3>
+</div>
+</div>
+
+<div id="outline-container-org8b22d0c" class="outline-2">
+<h2 id="org8b22d0c"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> Testing</h2>
+</div>
+<div id="outline-container-org47429df" class="outline-2">
+<h2 id="org47429df"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> Redux Integration</h2>
+</div>
+<div id="outline-container-org1ad1311" class="outline-2">
+<h2 id="org1ad1311"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> Static Routes</h2>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2019-11-27 14:41:40</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
