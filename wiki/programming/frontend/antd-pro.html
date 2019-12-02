@@ -240,17 +240,21 @@ for the JavaScript code in this tag.
 <li><a href="#org7474eb3">2. 如何评价 Pro 2.0</a></li>
 <li><a href="#orgf316be2">3. Pro 和 UmiJS</a></li>
 <li><a href="#org8b370e8">4. 如何评价 Pro 4.0</a></li>
-<li><a href="#orgbe3cd9a">5. FAQ</a>
+<li><a href="#orged90b2c">5. 从 0.x 升级到 V2</a></li>
+<li><a href="#org66523ac">6. 再次评价 umi</a></li>
+<li><a href="#orgbe3cd9a">7. FAQ</a>
 <ul>
-<li><a href="#org3b3dad9">5.1. 部署时，文件名添加 hash 值</a></li>
-<li><a href="#org6b5686f">5.2. npm run start 报错</a></li>
+<li><a href="#org3b3dad9">7.1. 部署时，文件名添加 hash 值</a></li>
+<li><a href="#org6b5686f">7.2. npm run start 报错</a></li>
+<li><a href="#org8a1ab9d">7.3. v1 升级 v2 之后报错：An immer producer returned a new value <b>and</b> modified its draft.</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <p>
-<a href="https://pro.ant.design/docs/getting-started-cn">Ant Design Pro</a> 是一个前端的基于 React 脚手架（框架，开箱即用，提供了菜单和路由、数据处理等），设计是用于企业级中后台解决方案（内部系统之类的）。
+<a href="https://pro.ant.design/docs/getting-started-cn">Ant Design Pro</a> 是一个前端的基于 React 脚手架（框架，开箱即用，提供了菜单和路由、数据处理等），
+设计是用于企业级中后台解决方案（内部系统之类的）。
 </p>
 
 <div id="outline-container-orgb9d9f19" class="outline-2">
@@ -275,6 +279,10 @@ Pro 没做什么太多额外的事情，而且臃肿的例子，删都要删除�
 
 <p>
 Pro 缺陷也是优势，对于我这样的伪前端（也不想深入）的人，只需要学习一下 ES6 和 React，然后照葫芦画瓢就可以开始写前端了。
+</p>
+
+<p>
+<i>随着版本的升级，这里说的技术栈已经不准确了，类似 V2 之后逐渐都用 TypeScript 来实现，而不是 JS</i>
 </p>
 </div>
 </div>
@@ -358,13 +366,95 @@ Pro <code>0.x</code> 版本和 <code>1.x</code> 版本 <code>npm run start</code
 </div>
 </div>
 
-<div id="outline-container-orgbe3cd9a" class="outline-2">
-<h2 id="orgbe3cd9a"><span class="section-number-2">5</span> FAQ</h2>
+<div id="outline-container-orged90b2c" class="outline-2">
+<h2 id="orged90b2c"><span class="section-number-2">5</span> 从 0.x 升级到 V2</h2>
 <div class="outline-text-2" id="text-5">
+<p>
+<span class="underline">2019-12-02 UPDATE</span>
+</p>
+
+<p>
+2018 刚开始使用 Pro 是 0.x 版本，后来不知道有没有使用 1.x 版本，忘记了；本身 Pro 就是由一堆的 package 组成的，所以具体的版本已经对应不上了。
+</p>
+
+<p>
+随着内容的增多，打包的速度越来越慢，在刚开始使用的时候还经常会出现 webpack 打包卡到 91% 的经典问题（网上很多人也反馈，后来通过更换电脑解决）。
+后来用 v2 写过一个博客系统，深感 v2 比 v1 无论从效率上还是代码组织上都略胜一筹，所以在今年的 11 月份准备长痛不如短痛，升级一下。
+</p>
+
+<p>
+如上面所说，v2 和 v4 的区别仅在于重新进行了抽象：Pro 变成了一个 UI template，而脚手架的能力下沉到了 umi。所以升级到 V2 就可以了，升级文档：
+<a href="https://v2-pro.ant.design/docs/upgrade-v2-cn">https://v2-pro.ant.design/docs/upgrade-v2-cn</a> 文档只是写了迁移流程，而原理性的东西没说。因此，没遇到问题还好，只要遇到问题就很头大。
+</p>
+
+<p>
+迁移的很快，但是测试起来之后，出现了很多小的问题（大部分是代码兼容性问题）。最麻烦的一个问题是，路由死循环。
+当可变 URL 和 redirect 放到一起的时候，就很容易出现死循环；因为 V2 的路由方式跟 V1 不一样了，不再允许使用 <code>&lt;Switch&gt;</code> ，很多代码的写法要重新适配。
+而且死循环问题在开发环境下很难复现，生产环境下基本上是必现的。后来逐渐的规避问题，也没能从根源上解决。
+</p>
+
+<p>
+我之前提过一个 issue： <a href="https://github.com/ant-design/ant-design-pro/issues/5548">https://github.com/ant-design/ant-design-pro/issues/5548</a> ，说是可能是 umi 的 bug，让我去 umi 再提 issue。
+但是 ant 系的开源项目，为了减少 issue，提 issue 的流程都特别麻烦，我也就没提了。
+</p>
+
+<p>
+今天再一次出现了路由死循环的问题，但是我打的包有问题，我同事打的包就没问题，做了很多尝试。后来通过删除 node<sub>modules</sub> 和 package-lock.json 解决。
+</p>
+
+<p>
+<span class="underline">总之：前端这一套东西真是让人心力俱疲。</span>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org66523ac" class="outline-2">
+<h2 id="org66523ac"><span class="section-number-2">6</span> 再次评价 umi</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+以前写了断断续续的写了几年的前端（前后端一起写），从去年开始用 React，Pro 这一套东西也有近两年了，对前端的东西真的挺失望的。
+从来没有一项技术让我有了从入门到放弃的感觉，即便是当年学 C++ 的时候，也是越学越有信心。
+</p>
+
+<p>
+最新的项目用的是 V4，V4 有了比较大的提升，但是仍旧有一些基础的 Bug。前端的脚手架与前端的技术一样，更新实在太快了。
+即便是 Release 版本，因为本地的环境差异很大（npm 版本，各种依赖包的版本），也有参差不齐的开源项目，发布的正式版也总是有很多的问题。
+但如果不持续更新的话，隔几个版本就会出现不兼容的更新，再想升级就蛋疼了。
+</p>
+
+<p>
+在我眼里，前端的东西，就是如此的不堪，从 Javascript 语言问世这个问题就已经存在了，后面做的事情无论是 node.js 还是 TypeScript 都是在修修补补。
+都无法从根源上解决问题。但是没办法，我们需要他，他依旧是 Github 热度永远第一的语言。
+</p>
+
+<p>
+那怎么办呢？
+</p>
+
+<p>
+经过我自己躺过的坑，我建议对前端的核心技术还是需要深入了解一下，尽量用原生的框架，而不是像 Pro 这样的脚手架，他封装了太多的东西，
+而且每一层都有可能是不稳定因素，虽然他对于二流前端，的确可以快速的搭建一套系统出来，但是一但出了问题就很致命了，你根本就不知道发生了什么。
+我发现他竟然连 react-router 都封装了一层。
+</p>
+
+<p>
+何为原生呢？
+</p>
+
+<p>
+React 全家桶（react，react-router，redux 等）了解之后，使用官方的的 create-react-app 来创建应用，UI 库自己选型即可。这样的好处是遇到了问题
+网上都有足够的资料帮你解决，社区也很好。坦白说，阿里开源的 antd 系列，社区都不怎么好。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbe3cd9a" class="outline-2">
+<h2 id="orgbe3cd9a"><span class="section-number-2">7</span> FAQ</h2>
+<div class="outline-text-2" id="text-7">
 </div>
 <div id="outline-container-org3b3dad9" class="outline-3">
-<h3 id="org3b3dad9"><span class="section-number-3">5.1</span> 部署时，文件名添加 hash 值</h3>
-<div class="outline-text-3" id="text-5-1">
+<h3 id="org3b3dad9"><span class="section-number-3">7.1</span> 部署时，文件名添加 hash 值</h3>
+<div class="outline-text-3" id="text-7-1">
 <p>
 2.0 之后， <code>npm run build</code> 生成的 css 和 js 文件名不再包含 hash 值，这样会导致即便 nginx 设置了 <code>index.html</code> 不缓存，因为 css 和 js 每个版本的名字都是一样的，导致新版本更新之后，用户只有强制刷新浏览器才能生效。
 </p>
@@ -380,8 +470,8 @@ Pro <code>0.x</code> 版本和 <code>1.x</code> 版本 <code>npm run start</code
 </div>
 
 <div id="outline-container-org6b5686f" class="outline-3">
-<h3 id="org6b5686f"><span class="section-number-3">5.2</span> npm run start 报错</h3>
-<div class="outline-text-3" id="text-5-2">
+<h3 id="org6b5686f"><span class="section-number-3">7.2</span> npm run start 报错</h3>
+<div class="outline-text-3" id="text-7-2">
 <p>
 <code>npm run start</code> 的时候，报错：
 </p>
@@ -406,6 +496,27 @@ proposal, you should use the 'decorators-legacy' plugin instead of
 
 <p>
 其实不光是 npm，其它的镜像也会出这种情况，比如 Emacs 的源引发的问题：<a href="https://github.com/abo-abo/swiper/issues/2087">swiper issue#2087</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org8a1ab9d" class="outline-3">
+<h3 id="org8a1ab9d"><span class="section-number-3">7.3</span> v1 升级 v2 之后报错：An immer producer returned a new value <b>and</b> modified its draft.</h3>
+<div class="outline-text-3" id="text-7-3">
+<p>
+<a href="https://github.com/umijs/umi/issues/592">https://github.com/umijs/umi/issues/592</a>
+</p>
+
+<p>
+之前在 reducers 中使用了 state，但是升级之后不允许这么用了（好像是说简化写法，具体可以看 <a href="https://umijs.org/zh/guide/config.html#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">配置文件</a>）。一种 hack 的解决办法是上面 issue 中提到的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">stockList</span> = <span style="color: #707183;">[</span>...state.stockList<span style="color: #707183;">]</span>
+</pre>
+</div>
+
+<p>
+但是不知道这种方式的原理是什么。
 </p>
 </div>
 </div>
