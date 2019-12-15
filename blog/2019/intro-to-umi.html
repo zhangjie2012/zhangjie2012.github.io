@@ -1,0 +1,748 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>基于 umi 构建中后台前端项目入门</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">基于 umi 构建中后台前端项目入门</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgb01d398">1. 目标</a></li>
+<li><a href="#org755daac">2. 需要了解的前置技术</a>
+<ul>
+<li><a href="#orgcfed8f7">2.1. 必须要了解的</a></li>
+<li><a href="#orgc141e0c">2.2. 可选的要了解的</a></li>
+</ul>
+</li>
+<li><a href="#org5a078ed">3. React 简介</a></li>
+<li><a href="#org1f8fb0b">4. 脚手架（scaffold）</a></li>
+<li><a href="#org21a0b08">5. umi</a>
+<ul>
+<li><a href="#org5ea545b">5.1. ant design pro 与 umi</a></li>
+<li><a href="#org3a4fdb3">5.2. <span class="todo TODO">TODO</span> umi 安装</a></li>
+<li><a href="#org66f1cc6">5.3. <span class="todo TODO">TODO</span> 目录结构</a></li>
+<li><a href="#orgb80c2b4">5.4. <span class="todo TODO">TODO</span> 实例：一个页面的生命周期</a></li>
+<li><a href="#org8400a2a">5.5. <span class="todo TODO">TODO</span> 部署</a></li>
+</ul>
+</li>
+<li><a href="#org03a67c7">6. <span class="todo TODO">TODO</span> 结语</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb01d398" class="outline-2">
+<h2 id="orgb01d398"><span class="section-number-2">1</span> 目标</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+相比于后端（甚至是 App、小程序开发）而言，前端发展到现在还没有一个相对成熟稳定的姿态。
+Web 前端开发并不难，JS/HTML/CSS 也都很好理解，但是从学习到可以开始写生产代码，曲线比较陡峭。根源在于组件、框架、工具等比较混乱，变更又很快。
+对于初学者有了基础知识之后就不知道怎么选择、怎么再进一步。
+</p>
+
+<p>
+本文的目标在于帮助那些有一定的程序设计经验的后端开发或者运维，利用 umi 可以快速上手写一些前端项目。
+</p>
+
+<p>
+虽然陆陆续续写前端有四五年了，但都是迫于产品化前端资源匮乏的情况下，才写的（大部分在写后端）。所以，我不是一个专职的前端。
+从 2018 年开始用 React 全家桶写，本文的很多思路也是基于这个经历。所以目标更在于「启发」而非面面俱到的「教程」。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org755daac" class="outline-2">
+<h2 id="org755daac"><span class="section-number-2">2</span> 需要了解的前置技术</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+一点前端技术都不想学就开始写，那是不可能的。所以一些前端基础还是要有的。放心，基础技术都很简单。
+</p>
+</div>
+
+<div id="outline-container-orgcfed8f7" class="outline-3">
+<h3 id="orgcfed8f7"><span class="section-number-3">2.1</span> 必须要了解的</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li>前端三剑客：
+<ul class="org-ul">
+<li>ES6/ES7： <a href="https://es6.ruanyifeng.com/">ECMAScript 7 入门</a>，把前几章看完就行了，掌握基本语法。大约需要 1 小时</li>
+<li>CSS： MDN 的文档 <a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS">CSS（层叠样式表）</a>很不错，有时间通读；<a href="https://book.douban.com/subject/2308234/">CSS权威指南（第三版）</a> 这本书很好</li>
+<li>HTML：MDN 的文章 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML">HTML（超文本标记语言）</a>很不错，有时间通读</li>
+</ul></li>
+<li>React：Facebook 开源的、时下最热的前端框架，<a href="https://zh-hans.reactjs.org/tutorial/tutorial.html">官方文档</a>，一定要通读一遍，但是例子没必要全部实现。跟学 JavaScript 一样，有那些东西，基本的语法是要有的</li>
+<li>LESS：LESS 是对 CSS 的一层抽象，使用的时候最终还是会转换成 CSS，<a href="http://lesscss.org/usage/">官方文档</a>，建议了解其基本语法</li>
+<li><a href="https://www.npmjs.com/">npm</a>/<a href="https://yarnpkg.com/lang/en/">yarm</a>：包管理和构建工具</li>
+</ul>
+
+<p>
+说明：
+</p>
+
+<ul class="org-ul">
+<li>ECMAScript 和 JavaScript 的关系：ES 一种规范，而 JS 是实现（其他实现还有 ActionScript），很多时候 ES 和 JS 是混用的，等价成一个东西。
+ES6 和 ES2015 也是同一个东西，只是叫法不一样。</li>
+<li>HTML/CSS 是前端基础中的基础，*必须* 要了解其基本语法，但是他们真的简单，不要有心里压力。HTML 没有太多可说的，对于 CSS 要掌握的有：
+<ul class="org-ul">
+<li>基础：颜色、字体、文字样式、对齐、阴影 <i>简单，1 个小时足够</i></li>
+<li>选择器：类选择器、ID 选择器、属性选择器、伪类和伪元素 <i>简单，两个小时学习足够</i></li>
+<li>HTML 结构和样式层叠关系 <i>会有点绕，但都是些语法</i></li>
+<li>盒模型： <code>margin</code> <code>padding</code> <code>border</code> 这是布局的基础 <i>简单，一个小时足够</i></li>
+<li>布局：常用的几种定位方式， float 布局难，flex 布局很好理解很好操作。/整体有点难度，但是可以跳过/</li>
+</ul></li>
+<li><p>
+了解 CSS 之后，LESS 只要看一遍就不用再看了，给你一个例子立马就明白了：
+</p>
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #0000ff;">.main-menu </span><span style="color: #707183;">{</span>
+  <span style="color: #00AA00;">padding</span>: 20px 0;
+  <span style="color: #00AA00;">background</span>: <span style="color: #000000; background-color: #e2e2e2;">#e2e2e2</span>;
+<span style="color: #707183;">}</span>
+
+<span style="color: #0000ff;">.main-menu &gt; .navigation </span><span style="color: #707183;">{</span>
+  <span style="color: #00AA00;">display</span>: inline-block;
+  <span style="color: #00AA00;">padding</span>: 20px 0;
+  <span style="color: #00AA00;">width</span>: 30%;
+  <span style="color: #00AA00;">font-style</span>: 15px;
+  <span style="color: #00AA00;">color</span>: <span style="color: #ffffff; background-color: #333;">#333</span>;
+<span style="color: #707183;">}</span>
+
+<span style="color: #0000ff;">.main-menu &gt; .navigation:hover </span><span style="color: #707183;">{</span>
+  <span style="color: #00AA00;">text-decoration</span>: none;
+  <span style="color: #00AA00;">color</span>: <span style="color: #ffffff; background-color: #0a6c9f;">#0a6c9f</span>;
+  <span style="color: #00AA00;">background</span>: <span style="color: #000000; background-color: #e2e2e2;">#e2e2e2</span>;
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+<p>
+这是 CSS 写法，下面 LESS 的写法：
+</p>
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #006FE0;">@background-color</span>: <span style="color: #000000; background-color: #e2e2e2;">#e2e2e2</span>;
+<span style="color: #006FE0;">@padding</span>: 20px 0;
+
+<span style="color: #0000ff;">.main-menu </span><span style="color: #707183;">{</span>
+  <span style="color: #0000ff;">&amp; </span><span style="color: #7388D6;">{</span>
+    <span style="color: #00AA00;">padding</span>: <span style="color: #006FE0;">@padding</span>;
+    <span style="color: #00AA00;">background</span>: <span style="color: #006FE0;">@background-color</span>;
+  <span style="color: #7388D6;">}</span>
+
+  <span style="color: #0000ff;">&gt; .navigation </span><span style="color: #7388D6;">{</span>
+    <span style="color: #00AA00;">display</span>: inline-block;
+    <span style="color: #00AA00;">padding</span>: <span style="color: #006FE0;">@padding</span>;
+    <span style="color: #00AA00;">width</span>: 30%;
+    <span style="color: #00AA00;">font-style</span>: 15px;
+    <span style="color: #00AA00;">color</span>: <span style="color: #ffffff; background-color: #333;">#333</span>;
+    <span style="color: #0000ff;">&amp;:hover </span><span style="color: #909183;">{</span>
+      <span style="color: #00AA00;">text-decoration</span>: none;
+      <span style="color: #00AA00;">color</span>: <span style="color: #ffffff; background-color: #0a6c9f;">#0a6c9f</span>;
+      <span style="color: #00AA00;">background</span>: <span style="color: #006FE0;">@background-color</span>;
+    <span style="color: #909183;">}</span>
+  <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+<p>
+可以理解成 LESS 是 CSS 的预编译语言，最后都会转成 CSS 来运行，而且在 LESS 中写 CSS 的语法也一点问题都没有。
+</p></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc141e0c" class="outline-3">
+<h3 id="orgc141e0c"><span class="section-number-3">2.2</span> 可选的要了解的</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+当然前提是 React 技术栈，不然那可就多了。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://nodejs.org/zh-cn/">node.js</a> 是一个基于 Chrome V8 引擎 的 JavaScript 运行时</li>
+<li><a href="https://reacttraining.com/react-router/web/guides/quick-start">react-router</a> URL 路由器：负责把一个 URL 路径绑定到一个 React 组件上 <i>好理解</i></li>
+<li><a href="https://redux.js.org/">redux</a> JavaScript 可预测的状态容器，<a href="https://react-redux.js.org/">react-redux</a> 是 React 的实现  <i>难理解</i></li>
+<li><a href="https://github.com/redux-saga/redux-saga">redux-saga</a> 他是 redux 的中间件 <i>难理解</i></li>
+</ul>
+
+<p>
+说明：
+</p>
+
+<ul class="org-ul">
+<li>早起 JavaScript 离开浏览器是不能运行的，node 使得在他可以像 Python 一样在命令行也可以运行，可以写 server 端；这使得 JavaScript 更加的工程化</li>
+<li><p>
+可预测的状态容器不好理解，但是我理解的是他解决的是组件之间数据通信、状态的问题：
+</p>
+<ul class="org-ul">
+<li><code>store</code> 用来存储状态（数据）</li>
+<li><code>action</code> 改变状态的动作（向后端请求、或者 A 组件的变化影响 B 组件）</li>
+<li><code>reducer</code> <code>action</code> 的结果处理，修改 <code>store</code> ，生成新的 <code>store</code></li>
+</ul>
+<p>
+redux 语法很晦涩，redux-saga 目的是更优雅的管理 Side Effects （比如异步请求）
+</p></li>
+<li>redux + redux-saga 还是很难理解，<a href="https://dvajs.com/guide/">dva</a> 整合了 redux 和 redux-saga 用起来就很舒服了</li>
+</ul>
+
+<p>
+<b>刚开始学不用深入了解每一个关联技术的工作原理，只要知道他的存在目的是什么，是为了解决什么问题。</b>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org5a078ed" class="outline-2">
+<h2 id="org5a078ed"><span class="section-number-2">3</span> React 简介</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+官方提供了丰富的文档，还有配套的案例，比我写的好多了，所以不再赘述。这里只说一下我所理解的 React 到底干了什么事情。
+</p>
+
+<p>
+下面是一个点击按钮，数值自增的例子，用 jQuery 实现是这样的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript">&lt;!DOCTYPE html&gt;
+&lt;html lang=<span style="color: #008000;">"en"</span>&gt;
+  &lt;head&gt;
+    &lt;meta charset=<span style="color: #008000;">"UTF-8"</span> /&gt;
+    &lt;script src=<span style="color: #008000;">"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"</span>&gt;&lt;/script&gt;
+    &lt;script&gt;
+      $<span style="color: #707183;">(</span>document<span style="color: #707183;">)</span>.ready<span style="color: #707183;">(</span><span style="color: #0000FF;">function</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+        $<span style="color: #909183;">(</span><span style="color: #008000;">"button"</span><span style="color: #909183;">)</span>.click<span style="color: #909183;">(</span><span style="color: #0000FF;">function</span><span style="color: #709870;">()</span> <span style="color: #709870;">{</span>
+          <span style="color: #0000FF;">var</span> <span style="color: #BA36A5;">count</span> = $<span style="color: #907373;">(</span><span style="color: #008000;">"#count"</span><span style="color: #907373;">)</span>.text<span style="color: #907373;">()</span>;
+          $<span style="color: #907373;">(</span><span style="color: #008000;">"#count"</span><span style="color: #907373;">)</span>.text<span style="color: #907373;">(</span>parseInt<span style="color: #6276BA;">(</span>count<span style="color: #6276BA;">)</span> + 1<span style="color: #907373;">)</span>;
+        <span style="color: #709870;">}</span><span style="color: #909183;">)</span>;
+      <span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>;
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div&gt;
+      init value is: &lt;span style=<span style="color: #008000;">"color: red"</span> id=<span style="color: #008000;">"count"</span>&gt;0&lt;/span&gt;
+      &lt;br /&gt;
+      &lt;button&gt;&#28857;&#25105;&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>
+demo: <a href="https://codesandbox.io/s/click-one-jquery-guim0">https://codesandbox.io/s/click-one-jquery-guim0</a>
+</p>
+
+<p>
+如果用 React 实现是这样的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">import</span> React, <span style="color: #707183;">{</span> Component <span style="color: #707183;">}</span> from <span style="color: #008000;">"react"</span>;
+<span style="color: #0000FF;">import</span> ReactDOM from <span style="color: #008000;">"react-dom"</span>;
+
+<span style="color: #0000FF;">class</span> ClickPlusOne <span style="color: #0000FF;">extends</span> Component <span style="color: #707183;">{</span>
+  state = <span style="color: #7388D6;">{</span>
+    count: 0
+  <span style="color: #7388D6;">}</span>;
+  click = <span style="color: #7388D6;">()</span> =&gt; <span style="color: #7388D6;">{</span>
+    <span style="color: #D0372D;">this</span>.setState<span style="color: #909183;">(</span><span style="color: #709870;">{</span>
+      count: <span style="color: #D0372D;">this</span>.state + 1,
+    <span style="color: #709870;">}</span><span style="color: #909183;">)</span>
+  <span style="color: #7388D6;">}</span>;
+
+  render<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">const</span> <span style="color: #909183;">{</span> count <span style="color: #909183;">}</span> = <span style="color: #D0372D;">this</span>.state;
+    <span style="color: #0000FF;">return</span> <span style="color: #909183;">(</span>
+      &lt;div&gt;
+        init value is: &lt;span style=<span style="color: #709870;">{</span><span style="color: #907373;">{</span> color: <span style="color: #008000;">"red"</span> <span style="color: #907373;">}</span><span style="color: #709870;">}</span>&gt;<span style="color: #709870;">{</span>count<span style="color: #709870;">}</span>&lt;/span&gt;
+        &lt;br /&gt;
+        &lt;button onClick=<span style="color: #709870;">{</span><span style="color: #D0372D;">this</span>.click<span style="color: #709870;">}</span>&gt;&#35831;&#28857;&#25105;&lt;/button&gt;
+      &lt;/div&gt;
+    <span style="color: #909183;">)</span>;
+  <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+
+<span style="color: #0000FF;">function</span> <span style="color: #006699;">App</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+  <span style="color: #0000FF;">return</span> <span style="color: #7388D6;">(</span>
+    &lt;div className=<span style="color: #008000;">"App"</span>&gt;
+      &lt;ClickPlusOne /&gt;
+    &lt;/div&gt;
+  <span style="color: #7388D6;">)</span>;
+<span style="color: #707183;">}</span>
+
+<span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">rootElement</span> = document.getElementById<span style="color: #707183;">(</span><span style="color: #008000;">"root"</span><span style="color: #707183;">)</span>;
+ReactDOM.render<span style="color: #707183;">(</span>&lt;App /&gt;, rootElement<span style="color: #707183;">)</span>;
+</pre>
+</div>
+
+<p>
+demo: <a href="https://codesandbox.io/s/click-plus-react-uh290">https://codesandbox.io/s/click-plus-react-uh290</a>
+</p>
+
+<p>
+在上面的基础上再加一个功能，根据数量渲染一个列表出来。对于 jQuery：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript">&lt;!DOCTYPE html&gt;
+&lt;html lang=<span style="color: #008000;">"en"</span>&gt;
+  &lt;head&gt;
+    &lt;meta charset=<span style="color: #008000;">"UTF-8"</span> /&gt;
+    &lt;script src=<span style="color: #008000;">"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"</span>&gt;&lt;/script&gt;
+    &lt;script&gt;
+      $<span style="color: #707183;">(</span>document<span style="color: #707183;">)</span>.ready<span style="color: #707183;">(</span><span style="color: #0000FF;">function</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+        $<span style="color: #909183;">(</span><span style="color: #008000;">"button"</span><span style="color: #909183;">)</span>.click<span style="color: #909183;">(</span><span style="color: #0000FF;">function</span><span style="color: #709870;">()</span> <span style="color: #709870;">{</span>
+          <span style="color: #0000FF;">var</span> <span style="color: #BA36A5;">count</span> = $<span style="color: #907373;">(</span><span style="color: #008000;">"#count"</span><span style="color: #907373;">)</span>.text<span style="color: #907373;">()</span>;
+          $<span style="color: #907373;">(</span><span style="color: #008000;">"#count"</span><span style="color: #907373;">)</span>.text<span style="color: #907373;">(</span>parseInt<span style="color: #6276BA;">(</span>count<span style="color: #6276BA;">)</span> + 1<span style="color: #907373;">)</span>;
+
+          <span style="color: #0000FF;">var</span> <span style="color: #BA36A5;">listHtml</span> = <span style="color: #907373;">[]</span>;
+          <span style="color: #0000FF;">for</span> <span style="color: #907373;">(</span><span style="color: #0000FF;">var</span> <span style="color: #BA36A5;">i</span> = 0; i &lt; count; i++<span style="color: #907373;">)</span> <span style="color: #907373;">{</span>
+            listHtml += <span style="color: #008000;">`&lt;li&gt;item: ${i + 1}&lt;/li&gt;`</span>;
+          <span style="color: #907373;">}</span>
+          $<span style="color: #907373;">(</span><span style="color: #008000;">"#list"</span><span style="color: #907373;">)</span>.html<span style="color: #907373;">(</span>listHtml<span style="color: #907373;">)</span>;
+        <span style="color: #709870;">}</span><span style="color: #909183;">)</span>;
+      <span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>;
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div&gt;
+      init value is: &lt;span style=<span style="color: #008000;">"color: red"</span> id=<span style="color: #008000;">"count"</span>&gt;0&lt;/span&gt; &lt;br /&gt;
+      &lt;button&gt;&#28857;&#25105;&lt;/button&gt;
+      &lt;ul id=<span style="color: #008000;">"list"</span>&gt;&lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>
+<a href="https://codesandbox.io/s/click-jquery-list-fww7j">https://codesandbox.io/s/click-jquery-list-fww7j</a>
+</p>
+
+<p>
+对于 React：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">import</span> React, <span style="color: #707183;">{</span> Component <span style="color: #707183;">}</span> from <span style="color: #008000;">"react"</span>;
+<span style="color: #0000FF;">import</span> ReactDOM from <span style="color: #008000;">"react-dom"</span>;
+
+<span style="color: #0000FF;">class</span> ClickPlusOne <span style="color: #0000FF;">extends</span> Component <span style="color: #707183;">{</span>
+  state = <span style="color: #7388D6;">{</span>
+    count: 0
+  <span style="color: #7388D6;">}</span>;
+
+  click = <span style="color: #7388D6;">()</span> =&gt; <span style="color: #7388D6;">{</span>
+    <span style="color: #D0372D;">this</span>.setState<span style="color: #909183;">(</span><span style="color: #709870;">{</span>
+      count: <span style="color: #D0372D;">this</span>.state.count + 1
+    <span style="color: #709870;">}</span><span style="color: #909183;">)</span>;
+  <span style="color: #7388D6;">}</span>;
+
+  createList = <span style="color: #7388D6;">()</span> =&gt; <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">const</span> <span style="color: #909183;">{</span> count <span style="color: #909183;">}</span> = <span style="color: #D0372D;">this</span>.state;
+    <span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">children</span> = <span style="color: #909183;">[]</span>;
+    <span style="color: #0000FF;">for</span> <span style="color: #909183;">(</span><span style="color: #0000FF;">let</span> <span style="color: #BA36A5;">i</span> = 0; i &lt; count; i++<span style="color: #909183;">)</span> <span style="color: #909183;">{</span>
+      children.push<span style="color: #709870;">(</span>&lt;li key=<span style="color: #907373;">{</span>i<span style="color: #907373;">}</span>&gt;item: <span style="color: #907373;">{</span>i + 1<span style="color: #907373;">}</span>&lt;/li&gt;<span style="color: #709870;">)</span>;
+    <span style="color: #909183;">}</span>
+    <span style="color: #0000FF;">return</span> children;
+  <span style="color: #7388D6;">}</span>;
+
+  render<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">const</span> <span style="color: #909183;">{</span> count <span style="color: #909183;">}</span> = <span style="color: #D0372D;">this</span>.state;
+    <span style="color: #0000FF;">return</span> <span style="color: #909183;">(</span>
+      &lt;div&gt;
+        init value is: &lt;span style=<span style="color: #709870;">{</span><span style="color: #907373;">{</span> color: <span style="color: #008000;">"red"</span> <span style="color: #907373;">}</span><span style="color: #709870;">}</span>&gt;<span style="color: #709870;">{</span>count<span style="color: #709870;">}</span>&lt;/span&gt;
+        &lt;br /&gt;
+        &lt;button onClick=<span style="color: #709870;">{</span><span style="color: #D0372D;">this</span>.click<span style="color: #709870;">}</span>&gt;&#35831;&#28857;&#25105;&lt;/button&gt;
+        &lt;ul&gt;<span style="color: #709870;">{</span><span style="color: #D0372D;">this</span>.createList<span style="color: #907373;">()</span><span style="color: #709870;">}</span>&lt;/ul&gt;
+      &lt;/div&gt;
+    <span style="color: #909183;">)</span>;
+  <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+
+<span style="color: #0000FF;">function</span> <span style="color: #006699;">App</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+  <span style="color: #0000FF;">return</span> <span style="color: #7388D6;">(</span>
+    &lt;div className=<span style="color: #008000;">"App"</span>&gt;
+      &lt;ClickPlusOne /&gt;
+    &lt;/div&gt;
+  <span style="color: #7388D6;">)</span>;
+<span style="color: #707183;">}</span>
+
+<span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">rootElement</span> = document.getElementById<span style="color: #707183;">(</span><span style="color: #008000;">"root"</span><span style="color: #707183;">)</span>;
+ReactDOM.render<span style="color: #707183;">(</span>&lt;App /&gt;, rootElement<span style="color: #707183;">)</span>;
+</pre>
+</div>
+
+<p>
+demo: <a href="https://codesandbox.io/s/click-plus-react-list-ugws4">https://codesandbox.io/s/click-plus-react-list-ugws4</a>
+</p>
+
+<p>
+上面这两个例子，可以看到：
+</p>
+
+<ul class="org-ul">
+<li>不管是 jQuery 还是 React 的实现方式，他们都干的事情是：当数据变更时，修改 DOM 结构（内容），这个过程可以称之为「渲染」</li>
+<li>React 代码并不比 jQuery 的代码少，只不过写起来更加优雅一些。尤其是业务逻辑复杂之后，React 代码结构更清晰
+我个人以为：React 更加符合后端程序思维方式</li>
+</ul>
+
+<p>
+这两个例子反映不到的是：
+</p>
+
+<ul class="org-ul">
+<li>React 是 <span class="underline">单向数据</span> 流的，当 state（组件内部） 和 props（传入）发生变更时，触发渲染</li>
+<li>在 React 中一切都是组件，每个组件都有自己的生命周期 <a href="http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/">react-lifecycle-methods-diagram</a>，在每个生命周期函数中都可以做一些事情，比如：
+<ul class="org-ul">
+<li>在 <code>componentDidMount</code> 时，异步向后端请求数据</li>
+<li>在 <code>render</code> 时，返回渲染之后的 DOM 结构</li>
+<li>在 <code>componentDidUpdate</code> 时，判断数据变更，重新请求数据</li>
+<li>在 <code>componentWillUnmount</code> 时，卸载数据</li>
+</ul></li>
+</ul>
+
+<p>
+React <span class="underline">并不是</span> 完整的前端框架解决方案，他只是提供了高效的 DOM 渲染（同样 vue.js 也是如此），脚手架解决方案。
+React 官方的脚手架是 <a href="https://github.com/facebook/create-react-app">create-react-app</a>。
+</p>
+</div>
+</div>
+<div id="outline-container-org1f8fb0b" class="outline-2">
+<h2 id="org1f8fb0b"><span class="section-number-2">4</span> 脚手架（scaffold）</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+经常写后端人知道后端有 Web 框架，比如：Python 的 Django，flask；Java 的 Sprint Boot；Go 的 Gin 等。一个后端的框架一般会包含那些呢？
+</p>
+
+<ul class="org-ul">
+<li>接入层（网络层），负责与外部通信协议命令字转换等</li>
+<li>路由层（Router），API 映射到具体的业务逻辑 handler</li>
+<li>逻辑处理层（Viewer），处理业务逻辑</li>
+<li>缓存层（Cache），页面数据缓存</li>
+<li>模型层（Model），定义数据库表，对数据库基本操作 CRUD 提供易用的接口</li>
+<li>其他：统一异常处理，日志系统，监控，调优工具等</li>
+<li>构建部署工具</li>
+</ul>
+
+<p>
+（如果是微服务框架，还会提供服务注册，服务发现等能力）。
+</p>
+
+<p>
+不同的语言的框架，或者说不同业务场景产生的框架包含的内容不一样。但其目的都是：为了减少重复工作而提供的模块、工具抽象。
+</p>
+
+<p>
+对于前端也是类似，只不过前端一般叫 Scaffold，即脚手架。
+这个神秘的词汇，如果你查一下维基百科，<a href="https://en.wikipedia.org/wiki/Scaffold_(programming)">Scaffold (programming)</a> 就会发现他和 framework 基本上是一个东西。所以&#x2026; 别想那么多了。就是前端框架。
+</p>
+
+<p>
+（我自己 yy 过为什么前端叫脚手架而不叫框架，大约是因为前端的概念用的太乱了，组件，框架乱飞，但是干的事情又不太一样，比如 Bootstrap 也叫框架，React 也叫框架 &#x2026;）
+</p>
+
+<p>
+一个前端脚手架一般会包含这些部分：
+</p>
+
+<ul class="org-ul">
+<li>网络请求层（request）：与后端异步通信（一般是 HTTP 请求），比较出名的有 <a href="https://github.com/github/fetch">fetch</a>，<a href="https://github.com/axios/axios">axios</a>；通常会对基础库再封装一层，然后提供统一的错误处理；</li>
+<li>路由层（Router）：浏览器中访问的每一个 URL 对应的逻辑处理组件，比如 <a href="https://reacttraining.com/react-router/web/guides/quick-start">react-router</a>；还有一种称之为约定式路由，即 URL 路径与目录结构一一对应；</li>
+<li>逻辑处理层（Viewer）：具体的页面逻辑和渲染</li>
+<li>各种浏览器兼容转换
+<ul class="org-ul">
+<li>TypeScript 转换成 JavaScript</li>
+<li>将 ES6/ES7 转换成 ES5，一般使用 <a href="https://babeljs.io/">babel</a></li>
+<li>将 LESS/SASS 转换成 CSS</li>
+</ul></li>
+<li>构建打包、性能优化：一般是对 <a href="https://webpack.js.org/">webpack</a> 的二次封装；代码分割；代码打包压缩，代码混淆</li>
+</ul>
+
+<p>
+其实可以看出前端所干的事情比后端要少很多，而且远没有后端那么成熟，类似运行兼容这种应该是语言层面应该解决的问题，不应该框架来解决。但其目标也是为了减少重复工作。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org21a0b08" class="outline-2">
+<h2 id="org21a0b08"><span class="section-number-2">5</span> umi</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+<a href="https://umijs.org/">umi</a> 是蚂蚁金服开源的企业级的基于 React 技术栈的应用框架。他的定位类似与 create-react-app，除了上面说的一般脚手架所包含的部分之外，他还集成了：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://ant.design/index-cn">antd</a>：基于 React 的 UI 组件库（类似 Bootstrap，只不过 Bootstrap 是用 JS 实现的）</li>
+<li><a href="https://dvajs.com/guide/">dva</a>：基于 redux 和 redux-saga 的数据流方案，简化使用 redux 成本； umi 融合了 dva，并且提供了 model 自动加载等，又简化了 dva 的使用成本；</li>
+</ul>
+</div>
+
+<div id="outline-container-org5ea545b" class="outline-3">
+<h3 id="org5ea545b"><span class="section-number-3">5.1</span> ant design pro 与 umi</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+其实我一开始是不知道 umi 的，只知道 Ant Design Pro。从 Pro 0.x/1.0 到 Pro 4.0（umi） 只不过短短的两年多时间，只能感叹发展太快了，我恰好在挖财做云平台完整的经历了从 Pro 到 umi 的蜕变。
+</p>
+
+<p>
+这期间躺了很多坑，也在 issue 上吐槽了。然而，最终的结果还是比较令人满意的。大体的发展图是这样的：
+</p>
+
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/from-pro-umi.png" alt="from-pro-umi.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3a4fdb3" class="outline-3">
+<h3 id="org3a4fdb3"><span class="section-number-3">5.2</span> <span class="todo TODO">TODO</span> umi 安装</h3>
+</div>
+<div id="outline-container-org66f1cc6" class="outline-3">
+<h3 id="org66f1cc6"><span class="section-number-3">5.3</span> <span class="todo TODO">TODO</span> 目录结构</h3>
+</div>
+<div id="outline-container-orgb80c2b4" class="outline-3">
+<h3 id="orgb80c2b4"><span class="section-number-3">5.4</span> <span class="todo TODO">TODO</span> 实例：一个页面的生命周期</h3>
+</div>
+<div id="outline-container-org8400a2a" class="outline-3">
+<h3 id="org8400a2a"><span class="section-number-3">5.5</span> <span class="todo TODO">TODO</span> 部署</h3>
+</div>
+</div>
+<div id="outline-container-org03a67c7" class="outline-2">
+<h2 id="org03a67c7"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> 结语</h2>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2019-12-15 11:04:29</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
