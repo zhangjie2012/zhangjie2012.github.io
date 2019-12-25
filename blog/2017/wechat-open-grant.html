@@ -236,16 +236,18 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#component_access_token-获取与更新">1. 1. <code>component_access_token</code> 获取与更新</a></li>
-<li><a href="#pre_auth_code-获取">2. 2. <code>pre_auth_code</code> 获取</a></li>
-<li><a href="#引导用户进入授权页">3. 3. 引导用户进入授权页</a></li>
-<li><a href="#获取接口调用凭据和账号基本信息">4. 4. 获取接口调用凭据和账号基本信息</a></li>
-<li><a href="#定时刷新授权公众号接口调用令牌">5. 5. 定时刷新授权公众号接口调用令牌</a></li>
+<li><a href="#orgb7ac376">1. <code>component_access_token</code> 获取与更新</a></li>
+<li><a href="#org1813dc2">2. <code>pre_auth_code</code> 获取</a></li>
+<li><a href="#orgb111695">3. 引导用户进入授权页</a></li>
+<li><a href="#orgf262cfa">4. 获取接口调用凭据和账号基本信息</a></li>
+<li><a href="#org2854b10">5. 定时刷新授权公众号接口调用令牌</a></li>
 </ul>
 </div>
 </div>
 <p>
-我们业务需要同一个域名接入多个微信公众号，很多线下的业务客户都是以店铺为单位的（比如餐饮），店铺都有自己的微信公众号，所以这种需求很常见。但是微信限制同一个域名不可以同时接入多个微信公众号（没有看到微信明文的文档说明，但我们测试下来是几十个之后就不能再接入了），针对此类需求，微信又提供了「第三方平台开发」的功能来满足。
+我们业务需要同一个域名接入多个微信公众号，很多线下的业务客户都是以店铺为单位的（比如餐饮），店铺都有自己的微信公众号，所以这种需求很常见。
+但是微信限制同一个域名不可以同时接入多个微信公众号（没有看到微信明文的文档说明，但我们测试下来是几十个之后就不能再接入了），针对此类需求，
+微信又提供了「第三方平台开发」的功能来满足。
 </p>
 
 <p>
@@ -255,9 +257,7 @@ for the JavaScript code in this tag.
 <hr />
 
 <p>
-官方文档从
-<a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1419318292&amp;token=8e3cd7c1f59abf1f919433daeaabd2883d815d70&amp;lang=zh_CN">这里</a>
-开始。
+官方文档从 <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1419318292&amp;token=8e3cd7c1f59abf1f919433daeaabd2883d815d70&amp;lang=zh_CN">这里</a> 开始。
 </p>
 
 <p>
@@ -265,31 +265,19 @@ for the JavaScript code in this tag.
 </p>
 
 <ul class="org-ul">
-<li><ol class="org-ol">
-<li>微信第三方平台：为我们提供 API，获取信息；</li>
-</ol></li>
-
-<li><ol class="org-ol">
-<li>微信公众号：待接入的微信公众号；</li>
-</ol></li>
-
-<li><ol class="org-ol">
-<li>第三方平台服务器：需要我们自己开发配接的服务器，业务无关；</li>
-</ol></li>
-
-<li><ol class="org-ol">
-<li>业务服务器：实际业务相关；</li>
-</ol></li>
+<li>a. 微信第三方平台：为我们提供 API，获取信息；</li>
+<li>b. 微信公众号：待接入的微信公众号；</li>
+<li>c. 第三方平台服务器：需要我们自己开发配接的服务器，业务无关；</li>
+<li>d. 业务服务器：实际业务相关；</li>
 </ul>
 
 <p>
-a, b, d 都是独立的，相互之间不会有通信，关联都是通过 c
-来桥接的。我们不关心业务相关的部分，所以本文只介绍 a, b,
-c。为避免概念混乱，文章中将用 a, b, c 来代替上面的三个概念。
+a, b, d 都是独立的，相互之间不会有通信，关联都是通过 c 来桥接的。我们不关心业务相关的部分，所以本文只介绍 a, b, c。
+为避免概念混乱，文章中将用 a, b, c 来代替上面的三个概念。
 </p>
 
 <p>
-<a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1453779503&amp;token=8e3cd7c1f59abf1f919433daeaabd2883d815d70&amp;lang=zh_CN">授权流程技术说明</a>提供了下面这样一张图片：
+<a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1453779503&amp;token=8e3cd7c1f59abf1f919433daeaabd2883d815d70&amp;lang=zh_CN">授权流程技术说明</a> 提供了下面这样一张图片：
 </p>
 
 <p>
@@ -301,63 +289,54 @@ c。为避免概念混乱，文章中将用 a, b, c 来代替上面的三个概�
 </p>
 
 <p>
-图中的「公众号用户」对应的上面的 b；「组建方网站」对应的是上面的
-c；而后面的「公众平台组建授权网站」和「公众平台API」都是
-a，都是微信提供的，我们需要通过 API 的方式来实现获取 token 和授权过程。
+图中的「公众号用户」对应的上面的 b；「组建方网站」对应的是上面的 c；而后面的「公众平台组建授权网站」和「公众平台API」都是 a，
+都是微信提供的，我们需要通过 API 的方式来实现获取 token 和授权过程。
 </p>
 
 <p>
-如果对接过微信公众号的开发者应该知道，微信都是通过 <code>access_token</code>
-来维护微信与开发者服务器之间的认证关系的，定期更新 <code>access_token</code>
-来保活，所有的 API 交互基础都是
-=access<sub>token</sub>=。与微信公众号开发不同的是，第三方平台需要很多个
-token，当然原理差不多。
+如果对接过微信公众号的开发者应该知道，微信都是通过 <code>access_token</code> 来维护微信与开发者服务器之间的认证关系的，定期更新 <code>access_token</code> 来保活，
+所有的 API 交互基础都是 <code>access_token</code> 。与微信公众号开发不同的是，第三方平台需要很多个 token，当然原理差不多。
 </p>
 
 <p>
-与之前 <code>access_token</code> 对应的则是第三方平台的
-<code>component_access_token=，=component_access_token</code> 是 c 和 a
-交互认证的凭据。所以我们的第一个问题来了。
+与之前 <code>access_token</code> 对应的则是第三方平台的 <code>component_access_token</code> ， <code>component_access_token</code> 是 c 和 a 交互认证的凭据。
+所以我们的第一个问题来了。
 </p>
 
-<div id="outline-container-org1c35ade" class="outline-2">
-<h2 id="component_access_token-获取与更新"><a id="org1c35ade"></a><span class="section-number-2">1</span> 1. <code>component_access_token</code> 获取与更新</h2>
-<div class="outline-text-2" id="text-component_access_token-获取与更新">
+<div id="outline-container-orgb7ac376" class="outline-2">
+<h2 id="orgb7ac376"><span class="section-number-2">1</span> <code>component_access_token</code> 获取与更新</h2>
+<div class="outline-text-2" id="text-1">
 <p>
-在开发者第三方平台创建审核通过之后，a 会每隔 10
-分钟向第三方的消息接收地址推送一次
-=component<sub>verify</sub><sub>ticket</sub>=，消息接受地址是我们自己在第三方平台配置的「授权事件接收URL」（URL
-由 c 中提供）。所以我们可以 c 可以定期的得到 =component<sub>verify</sub><sub>ticket</sub>=。
+在开发者第三方平台创建审核通过之后，a 会每隔 10 分钟向第三方的消息接收地址推送一次 <code>component_verify_ticket=，
+消息接受地址是我们自己在第三方平台配置的「授权事件接收URL」（URL 由 c 中提供）。所以我们可以 c 可以定期的得到 =component_verify_ticket</code> 。
 </p>
 
 <p>
-c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供，解密内容在 body
-中，解密流程见文档：<a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1419318479&amp;lang=zh_CN">消息加解密接入指引</a>，我们的后端语言是
-Python3，提供的范例是 Python2 的，编解码上费了一段时间。
+c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供，解密内容在 body 中，解密流程见文档：<a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1419318479&amp;lang=zh_CN">消息加解密接入指引</a>，我们的后端语言是 Python3，
+提供的范例是 Python2 的，编解码上费了一段时间。
 </p>
 
 <p>
 解密后得到字符串是 XML 格式的：
 </p>
 
-<pre class="example">
-&lt;xml&gt;
-&lt;AppId&gt; &lt;/AppId&gt;
-&lt;CreateTime&gt;1413192605 &lt;/CreateTime&gt;
-&lt;InfoType&gt; &lt;/InfoType&gt;
-&lt;ComponentVerifyTicket&gt; &lt;/ComponentVerifyTicket&gt;
-&lt;/xml&gt;
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #000088; background-color: #DEDEDE;">xml</span>&gt;
+  &lt;<span style="color: #000088; background-color: #DEDEDE;">AppId</span>&gt; &lt;/<span style="color: #000088; background-color: #DEDEDE;">AppId</span>&gt;
+  &lt;<span style="color: #000088; background-color: #DEDEDE;">CreateTime</span>&gt;1413192605 &lt;/<span style="color: #000088; background-color: #DEDEDE;">CreateTime</span>&gt;
+  &lt;<span style="color: #000088; background-color: #DEDEDE;">InfoType</span>&gt; &lt;/<span style="color: #000088; background-color: #DEDEDE;">InfoType</span>&gt;
+  &lt;<span style="color: #000088; background-color: #DEDEDE;">ComponentVerifyTicket</span>&gt; &lt;/<span style="color: #000088; background-color: #DEDEDE;">ComponentVerifyTicket</span>&gt;
+&lt;/<span style="color: #000088; background-color: #DEDEDE;">xml</span>&gt;
 </pre>
+</div>
 
 <p>
-当 <code>InfoType</code> 为 <code>component_verify_ticket</code> 即可得到
-<code>component_verify_ticket</code> 值。
+当 <code>InfoType</code> 为 <code>component_verify_ticket</code> 即可得到 <code>component_verify_ticket</code> 值。
 </p>
 
 <p>
-令牌 <code>component_access_token</code> 的值是通过 <code>component_verify_ticket</code> +
-<code>AppID</code> + <code>AppSecret</code> 三个值来获取的，并且有效期是 2
-小时，并且令牌每天的请求次数是有限制的，所以我们需要：
+令牌 <code>component_access_token</code> 的值是通过 <code>component_verify_ticket</code> + <code>AppID</code> + <code>AppSecret</code> 三个值来获取的，并且有效期是 2 小时，
+并且令牌每天的请求次数是有限制的，所以我们需要：
 </p>
 
 <ol class="org-ol">
@@ -370,71 +349,60 @@ Python3，提供的范例是 Python2 的，编解码上费了一段时间。
 </p>
 
 <p>
-自此，a 和 c 就完成了保活流程。当 b 接入 c 时，需要向 a 获取
-<code>pre_auth_code=，=pre_auth_code</code> 用于 c 授权 b 时所需的 API 认证。
+自此，a 和 c 就完成了保活流程。当 b 接入 c 时，需要向 a 获取 <code>pre_auth_code</code> ， <code>pre_auth_code</code> 用于 c 授权 b 时所需的 API 认证。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd2b1903" class="outline-2">
-<h2 id="pre_auth_code-获取"><a id="orgd2b1903"></a><span class="section-number-2">2</span> 2. <code>pre_auth_code</code> 获取</h2>
-<div class="outline-text-2" id="text-pre_auth_code-获取">
+<div id="outline-container-org1813dc2" class="outline-2">
+<h2 id="org1813dc2"><span class="section-number-2">2</span> <code>pre_auth_code</code> 获取</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 预授权码与令牌不同，虽然它也有有效期（30分钟），但是只有在需要授权时才需要，所以我们同步获取即可，不需要定时更新。
 </p>
 
 <p>
-即便如此，为了避免 30 分钟之内多次请求，我们采用的策略是将预授权码缓存到
-Redis 中，当需要授权时，先从 Redis
-中获取，获取失败时，再同步向微信服务器获取。
+即便如此，为了避免 30 分钟之内多次请求，我们采用的策略是将预授权码缓存到 Redis 中，当需要授权时，先从 Redis 中获取，获取失败时，再同步向微信服务器获取。
 </p>
 
 <p>
-具体的获取策略比较简单，看微信文档即可。拿到 <code>pre_auth_code</code>
-之后，就可以做授权操作了。
+具体的获取策略比较简单，看微信文档即可。拿到 <code>pre_auth_code</code> 之后，就可以做授权操作了。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org8a5ec11" class="outline-2">
-<h2 id="引导用户进入授权页"><a id="org8a5ec11"></a><span class="section-number-2">3</span> 3. 引导用户进入授权页</h2>
-<div class="outline-text-2" id="text-引导用户进入授权页">
+<div id="outline-container-orgb111695" class="outline-2">
+<h2 id="orgb111695"><span class="section-number-2">3</span> 引导用户进入授权页</h2>
+<div class="outline-text-2" id="text-3">
 <p>
-要注意，授权页本身是由微信自身（a）提供的，不是我们自己（c）提供的。c
-提供的仅仅是一个「引导」。实操的时候两步即可：
+要注意，授权页本身是由微信自身（a）提供的，不是我们自己（c）提供的。c 提供的仅仅是一个「引导」。实操的时候两步即可：
 </p>
 
 <ol class="org-ol">
 <li>授权页链接（=auth<sub>url</sub>=）为：=<a href="https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=xxxx&amp;pre_auth_code=xxxxx&amp;redirect_uri=xxxx&amp;auth_type=xxx=%EF%BC%8C%E8%BF%99%E7%A7%8D%E6%A0%B7%E5%BC%8F">https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=xxxx&amp;pre_auth_code=xxxxx&amp;redirect_uri=xxxx&amp;auth_type=xxx=，这种样式</a>。</li>
-<li>在我们自己的服务器 c 中提供一个页面，页面中提供一个跳转连接，跳转到
-=auth<sub>url</sub>=。用户点击链接之后将跳转到微信提供的授权页，然后管理员扫码授权。</li>
+<li>在我们自己的服务器 c 中提供一个页面，页面中提供一个跳转连接，跳转到 <code>auth_url</code> 。用户点击链接之后将跳转到微信提供的授权页，然后管理员扫码授权。</li>
 </ol>
 
 <p>
-<b>这块有点绕，微信文档上没有提供实际的交互截图，所以一开始我一直以为二维码是我们用
-<code>auth_url</code> 生成的，然后给管理员扫码；万万没有授权页面是由微信提供的。</b>
+<b>这块有点绕，微信文档上没有提供实际的交互截图，所以一开始我一直以为二维码是我们用 <code>auth_url</code> 生成的，然后给管理员扫码；万万没有授权页面是由微信提供的。</b>
 </p>
 
 <p>
-用户授权成功后会回调 <code>auth_url</code> 中 c 设置的 <code>redirect_uri=，c
-将得到为针对该微信公众号的授权码 =auth_code</code> 和过期时间 =expires<sub>in</sub>=。
+用户授权成功后会回调 <code>auth_url</code> 中 c 设置的 <code>redirect_uri</code> ，c 将得到为针对该微信公众号的授权码 <code>auth_code</code> 和过期时间 <code>expires_in</code> 。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org720c8b6" class="outline-2">
-<h2 id="获取接口调用凭据和账号基本信息"><a id="org720c8b6"></a><span class="section-number-2">4</span> 4. 获取接口调用凭据和账号基本信息</h2>
-<div class="outline-text-2" id="text-获取接口调用凭据和账号基本信息">
+<div id="outline-container-orgf262cfa" class="outline-2">
+<h2 id="orgf262cfa"><span class="section-number-2">4</span> 获取接口调用凭据和账号基本信息</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 有了 <code>auth_code</code> 之后：
 </p>
 
 <ol class="org-ol">
-<li>通过 <code>component_appid</code> 和 <code>auth_code</code> 可以获得「接口调用凭据」-&gt;
-<code>authorizer_appid=，=auth_access_token</code> 和 =auth<sub>refresh</sub><sub>token</sub>=；</li>
-<li>再通过 <code>component_appid</code> 和 <code>authorizer_appid</code>
-可以获得「账号基本信息」 -&gt;
-<code>nick_name=，=service_type_info=，=principal_name</code> 等；</li>
+<li>通过 <code>component_appid</code> 和 <code>auth_code</code> 可以获得「接口调用凭据」-&gt; <code>authorizer_appid=，=auth_access_token</code> 和 <code>auth_refresh_token</code> ；</li>
+<li>再通过 <code>component_appid</code> 和 <code>authorizer_appid</code> 可以获得「账号基本信息」 -&gt; <code>nick_name</code> ， <code>service_type_info</code> ， <code>principal_name</code> 等；</li>
 </ol>
 
 <p>
@@ -442,24 +410,20 @@ Redis 中，当需要授权时，先从 Redis
 </p>
 
 <p>
-有个地方要注意的是：=pre<sub>auth</sub><sub>code</sub>= 有过期时间，并且一个 <code>pre_auth_code</code>
-只能对接一个 b，所以授权成功之后记得清除掉 <code>pre_auth_code</code>
-缓存，以便下次重新获取。
+有个地方要注意的是：=pre<sub>auth</sub><sub>code</sub>= 有过期时间，并且一个 <code>pre_auth_code</code> 只能对接一个 b，所以授权成功之后记得清除掉 <code>pre_auth_code</code> 缓存，以便下次重新获取。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org71d9b3d" class="outline-2">
-<h2 id="定时刷新授权公众号接口调用令牌"><a id="org71d9b3d"></a><span class="section-number-2">5</span> 5. 定时刷新授权公众号接口调用令牌</h2>
-<div class="outline-text-2" id="text-定时刷新授权公众号接口调用令牌">
+<div id="outline-container-org2854b10" class="outline-2">
+<h2 id="org2854b10"><span class="section-number-2">5</span> 定时刷新授权公众号接口调用令牌</h2>
+<div class="outline-text-2" id="text-5">
 <p>
-<code>auth_access_token</code> 是有有效期的，所以和 <code>component_access_token</code>
-一样，需要定时更新。
+<code>auth_access_token</code> 是有有效期的，所以和 <code>component_access_token</code> 一样，需要定时更新。
 </p>
 
 <p>
-第三方平台提供了专门的 <code>auth_refresh_token</code> 来更新
-=auth<sub>access</sub><sub>token</sub>=。API 调用比较简单，不再赘述。
+第三方平台提供了专门的 <code>auth_refresh_token</code> 来更新 <code>auth_access_token</code> 。API 调用比较简单，不再赘述。
 </p>
 
 <hr />

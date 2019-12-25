@@ -236,10 +236,10 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#服务启动">1. 服务启动</a></li>
-<li><a href="#服务运行">2. 服务运行</a></li>
-<li><a href="#服务终止">3. 服务终止</a></li>
-<li><a href="#syncingress">4. syncIngress</a></li>
+<li><a href="#orgb904b16">1. 服务启动</a></li>
+<li><a href="#org80067b0">2. 服务运行</a></li>
+<li><a href="#orgaab0863">3. 服务终止</a></li>
+<li><a href="#orge08f5ec">4. syncIngress</a></li>
 </ul>
 </div>
 </div>
@@ -248,8 +248,8 @@ for the JavaScript code in this tag.
 </p>
 
 <div id="outline-container-orgb904b16" class="outline-2">
-<h2 id="服务启动"><a id="orgb904b16"></a><span class="section-number-2">1</span> 服务启动</h2>
-<div class="outline-text-2" id="text-服务启动">
+<h2 id="orgb904b16"><span class="section-number-2">1</span> 服务启动</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 在 main 中 <code>ngx.Start()</code> 将启动服务。
 </p>
@@ -320,32 +320,24 @@ func (n *NGINXController) Start() {
 </pre>
 
 <p>
-1、=store.Run= 会调用 <code>informers.Run</code> 进而触发
-Endpoint、Service、ingress、等 informer 的 <code>Run=，总之是触发 Informer
-开始监听各种 Add、Delete、Update 事件，当接收到事件时，写入 =updateCh</code>
-中。
+1、 <code>store.Run</code> 会调用 <code>informers.Run</code> 进而触发 Endpoint、Service、ingress、等 informer 的 <code>Run</code> ，
+总之是触发 Informer 开始监听各种 Add、Delete、Update 事件，当接收到事件时，写入 <code>updateCh</code> 中。
 </p>
 
 <p>
-2、启动 nginx 进程（配置路径：="/etc/nginx/nginx.conf"<code>），nginx
-运行出错时会将错误写入到 =ngxErrCh</code> 中。
+2、启动 nginx 进程（配置路径： <code>"/etc/nginx/nginx.conf"</code> ），nginx 运行出错时会将错误写入到 <code>ngxErrCh</code> 中。
 </p>
 
 <p>
-3、启动 <code>syncQueue=，=syncQueue</code> 是个
-<code>task.Queue=，任务队列。它所做的事情是不断的从队列中取出元素，回调某个函数，然后把该元素删除。这里的回调函数是
-=syncIngress</code> 在初始化 NGINXController 时设置的。=syncIngress=
-完成了将传入的 Ingress Event 处理之后生成新的 nginx 配置文件，然后
-reload nginx，在文章后面会详细介绍。至于 <code>task.Queue</code>
-我会单独写一篇文章说明内部实现。
+3、启动 <code>syncQueue=，=syncQueue</code> 是个 <code>task.Queue</code> ，任务队列。它所做的事情是不断的从队列中取出元素，回调某个函数，然后把该元素删除。
+这里的回调函数是 <code>syncIngress</code> 在初始化 NGINXController 时设置的。 <code>syncIngress</code> 完成了将传入的 Ingress Event 处理之后生成新的 nginx
+配置文件，然后 reload nginx，在文章后面会详细介绍。至于 <code>task.Queue</code> 我会单独写一篇文章说明内部实现。
 </p>
 
 <p>
-4、向 <code>syncQueue</code> 压入一个空的 Ingress 元素（=syncQueue=
-刚启动，这是第一个队列中的元素），将触发全量的同步 Ingress 。 注意：虽然
-<code>store.Run</code>
-之后，在这个时间段内有可能会有资源发生变更，但是变更之后的资源会记录在
-<code>updateCh</code> 中，而不是 =syncQueue=，并不会触发 nginx reload。
+4、向 <code>syncQueue</code> 压入一个空的 Ingress 元素（ <code>syncQueue</code> 刚启动，这是第一个队列中的元素），将触发全量的同步 Ingress 。
+注意：虽然 <code>store.Run</code> 之后，在这个时间段内有可能会有资源发生变更，但是变更之后的资源会记录在 <code>updateCh</code> 中，而不是 <code>syncQueue</code> ，
+并不会触发 nginx reload。
 </p>
 
 <p>
@@ -355,36 +347,29 @@ reload nginx，在文章后面会详细介绍。至于 <code>task.Queue</code>
 </div>
 
 <div id="outline-container-org80067b0" class="outline-2">
-<h2 id="服务运行"><a id="org80067b0"></a><span class="section-number-2">2</span> 服务运行</h2>
-<div class="outline-text-2" id="text-服务运行">
+<h2 id="org80067b0"><span class="section-number-2">2</span> 服务运行</h2>
+<div class="outline-text-2" id="text-2">
 <p>
-服务正常运行是不断从 K8s 接受资源变更事件，然后转换成 nginx 新配置，进而
-reload nginx 的过程。也就是上面 <code>for ... select</code> 中
-<code>case event :</code> &lt;-n.updateCh.Out()= 中所做的事情：从 <code>updateCh</code>
-中获取事件，然后添加到 <code>syncQueue=，因为 =syncQueue</code>
-已经在运行状态了，新添加的事件对象（资源）很快会被 <code>syncIngress</code>
-处理。让我们回顾一下整个过程（这是 ingress-nginx 的核心）：
+服务正常运行是不断从 K8s 接受资源变更事件，然后转换成 nginx 新配置，进而 reload nginx 的过程。也就是上面 <code>for ... select</code> 中
+<code>case event := &lt;-n.updateCh.Out()</code> 中所做的事情：从 <code>updateCh</code> 中获取事件，然后添加到 <code>syncQueue</code> ，因为 <code>syncQueue</code>
+已经在运行状态了，新添加的事件对象（资源）很快会被 <code>syncIngress</code> 处理。让我们回顾一下整个过程（这是 ingress-nginx 的核心）：
 </p>
 
 <ol class="org-ol">
-<li>以 <code>syncIngress</code> 函数为参数初始化 <code>syncQueue</code> &amp;&amp; 创建一个大小为 1024
-的环形 Channel <code>updateCh</code></li>
+<li>以 <code>syncIngress</code> 函数为参数初始化 <code>syncQueue</code> &amp;&amp; 创建一个大小为 1024 的环形 Channel <code>updateCh</code></li>
 <li>初始时向 <code>syncQueue</code> 添加一个空的 Ingress</li>
-<li>informer 监听 K8s 资源变化触发 <code>AddFunc=、=DeleteFunc=、=UpdateFunc</code>
-将变更的资源添加到 <code>updateCh</code></li>
-<li><code>for ... select</code> 不断的从 <code>updateCh</code> 中取出变更资源，然后添加到
-<code>syncQueue</code> 中</li>
+<li>informer 监听 K8s 资源变化触发 <code>AddFunc=、=DeleteFunc=、=UpdateFunc</code> 将变更的资源添加到 <code>updateCh</code></li>
+<li><code>for ... select</code> 不断的从 <code>updateCh</code> 中取出变更资源，然后添加到 <code>syncQueue</code> 中</li>
 <li><code>syncQueue</code> 不断从队列中弹出元素，然后调用 <code>syncIngress</code> 处理</li>
 </ol>
 </div>
 </div>
 
 <div id="outline-container-orgaab0863" class="outline-2">
-<h2 id="服务终止"><a id="orgaab0863"></a><span class="section-number-2">3</span> 服务终止</h2>
-<div class="outline-text-2" id="text-服务终止">
+<h2 id="orgaab0863"><span class="section-number-2">3</span> 服务终止</h2>
+<div class="outline-text-2" id="text-3">
 <p>
-上面的 <code>for ... select</code> 中的 <code>case &lt;-n.stopCh=，等 =stopCh</code>
-有数据时，for 循环 break，服务正常结束。
+上面的 <code>for ... select</code> 中的 <code>case &lt;-n.stopCh</code> ，等 <code>stopCh</code> 有数据时，for 循环 break，服务正常结束。
 </p>
 
 <p>
@@ -423,7 +408,7 @@ func handleSigterm(ngx *controller.NGINXController, exit exiter) {
 </pre>
 
 <p>
-接受任意的 <code>SIGTERM</code> 信号，然后调用 =ngx.Stop()=：
+接受任意的 <code>SIGTERM</code> 信号，然后调用 <code>ngx.Stop()</code> ：
 </p>
 
 <pre class="example">
@@ -457,15 +442,14 @@ mux.HandleFunc("/stop", func(w http.ResponseWriter, r *http.Request) {
 </pre>
 
 <p>
-服务的启动、运行、停止就介绍完了。下面介绍一下 <code>syncQueue</code> 的处理函数
-=syncIngress=。
+服务的启动、运行、停止就介绍完了。下面介绍一下 <code>syncQueue</code> 的处理函数 <code>syncIngress</code> 。
 </p>
 </div>
 </div>
 
 <div id="outline-container-orge08f5ec" class="outline-2">
-<h2 id="syncingress"><a id="orge08f5ec"></a><span class="section-number-2">4</span> syncIngress</h2>
-<div class="outline-text-2" id="text-syncingress">
+<h2 id="orge08f5ec"><span class="section-number-2">4</span> syncIngress</h2>
+<div class="outline-text-2" id="text-4">
 <pre class="example">
 // ingress/controller/controller.go
 func (n *NGINXController) syncIngress(interface{}) error {
@@ -533,9 +517,8 @@ func (n *NGINXController) syncIngress(interface{}) error {
 </pre>
 
 <p>
-1、=syncIngress= 的参数虽然为 <code>interface{}</code>
-，但是并没有使用参数，数据是从 <code>store.ListIngress()</code> 中获取的。在
-Informers 的事件回调处理函数 <code>AddFunc</code> 中有下面三行代码：
+1、=syncIngress= 的参数虽然为 <code>interface{}</code> ，但是并没有使用参数，数据是从 <code>store.ListIngress()</code> 中获取的。
+在 Informers 的事件回调处理函数 <code>AddFunc</code> 中有下面三行代码：
 </p>
 
 <pre class="example">
@@ -545,19 +528,16 @@ store.syncSecrets(ing)
 </pre>
 
 <p>
-估计是在 store 单独存储了一份 K8s ingress
-cache，在资源变更时同步更新缓存。所以在 <code>syncIngress</code> 每次都是拿到全部的
-Ingresses。也就是说 <code>syncQueue</code> 中添加元素只是为了触发 <code>syncQueue=，而
-=Enqueue</code> 的传入的数据是什么是无意义的。
+估计是在 store 单独存储了一份 K8s ingress cache，在资源变更时同步更新缓存。所以在 <code>syncIngress</code> 每次都是拿到全部的 Ingresses。
+也就是说 <code>syncQueue</code> 中添加元素只是为了触发 <code>syncQueue</code> ，而 <code>Enqueue</code> 的传入的数据是什么是无意义的。
 </p>
 
 <p>
-2、根据 ingress 列表生成 backend 列表和 server 列表。backend 对应的是
-NGINX 的 upstreams，而 server 对应的也是 NGINX 的 server。
+2、根据 ingress 列表生成 backend 列表和 server 列表。backend 对应的是 NGINX 的 upstreams，而 server 对应的也是 NGINX 的 server。
 </p>
 
 <p>
-3、=ingress.Configuration= 对应最终的 nginx 配置文件所需的数据。
+3、 <code>ingress.Configuration</code> 对应最终的 nginx 配置文件所需的数据。
 </p>
 
 <p>
@@ -565,16 +545,15 @@ NGINX 的 upstreams，而 server 对应的也是 NGINX 的 server。
 </p>
 
 <p>
-5、=onUpdate= 更新配置文件，更新流程为：
+5、 <code>onUpdate</code> 更新配置文件，更新流程为：
 </p>
 
 <ol class="org-ol">
-<li>将 configmap 形式的 configuration 转换成普通的 configuration
-对象（更贴合 nginx 配置形式的）</li>
+<li>将 configmap 形式的 configuration 转换成普通的 configuration 对象（更贴合 nginx 配置形式的）</li>
 <li>将配置写入自定义的配置模板（内存中）</li>
-<li>先写入一个临时文件，测试配置是否存在问题：=nginx -t -c tmpfile=</li>
+<li>先写入一个临时文件，测试配置是否存在问题： <code>nginx -t -c tmpfile</code></li>
 <li>写入配置文件 <code>"/etc/nginx/nginx.conf"</code></li>
-<li>reload nginx：=nginx -s reload -c /etc/nginx/nginx.conf=</li>
+<li>reload nginx： <code>nginx -s reload -c /etc/nginx/nginx.conf</code></li>
 </ol>
 
 <p>
@@ -584,13 +563,10 @@ NGINX 的 upstreams，而 server 对应的也是 NGINX 的 server。
 <hr />
 
 <p>
-这两篇文章简单讲解了 ingress-nginx
-的生命周期，不够深入也不够全面。ingress-nginx 细节很多，有很多代码都是与
-SSL 相关的，没费心思看。当初看 ingress-nginx 的初衷是研究如何监听 K8s
-资源变更事件的，看了源代码之后才知道它使用了 K8s client 的 informers
-组件来实现的，而 store 模块 cache 也是封装了
-=k8s.io/client-go/tools/cache=，它自己只是实现了自己的逻辑（ingress-&gt;nginx
-config），感兴趣大家可以去看看相关资料。
+这两篇文章简单讲解了 ingress-nginx 的生命周期，不够深入也不够全面。ingress-nginx 细节很多，有很多代码都是与 SSL 相关的，没费心思看。
+当初看 ingress-nginx 的初衷是研究如何监听 K8s 资源变更事件的，看了源代码之后才知道它使用了 K8s client 的 informers 组件来实现的，
+而 store 模块 cache 也是封装了 <code>k8s.io/client-go/tools/cache</code> ，它自己只是实现了自己的逻辑（ingress-&gt;nginx config），
+感兴趣大家可以去看看相关资料。
 </p>
 </div>
 </div>

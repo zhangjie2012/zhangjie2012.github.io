@@ -233,78 +233,67 @@ for the JavaScript code in this tag.
 <div id="content">
 <h1 class="title">Go 的异常处理：defer, panic, recover</h1>
 <p>
-Go 语言没有提供传统的 <code>try-catch</code>
-这样的异常处理机制，所有的错误基本上都是靠程序返回值判断，但是写程序难免会遇到类似忘记判断返回值越界访问，进而程序崩溃。
+Go 语言没有提供传统的 <code>try-catch</code> 这样的异常处理机制，所有的错误基本上都是靠程序返回值判断，
+但是写程序难免会遇到类似忘记判断返回值越界访问，进而程序崩溃。
 </p>
 
 <p>
-但是 Go 提供了 <code>panic</code> 机制，程序崩溃时会抛出 <code>panic=，在程序中可以通过
-=recover</code> 捕捉抛出的 <code>panic</code> 内容（还可以获取堆栈），=recover=
-之后程序会继续执行不会崩溃。
+但是 Go 提供了 <code>panic</code> 机制，程序崩溃时会抛出 <code>panic</code> ，在程序中可以通过 <code>recover</code> 捕捉抛出的 <code>panic</code> 内容（还可以获取堆栈），
+<code>recover</code> 之后程序会继续执行不会崩溃。
 </p>
 
 <p>
-如果程序中没有设置 <code>recover=，=panic</code> 会一层一层的传递直到 main
-函数（如果 main 没有处理，最后才崩溃）。
+如果程序中没有设置 <code>recover</code> ， <code>panic</code> 会一层一层的传递直到 main 函数（如果 main 没有处理，最后才崩溃）。
 </p>
 
 <p>
-这是一个非常实用的功能，试想一个 Web 服务器的某一条 HTTP
-处理崩溃了，导致了整个服务器崩溃显然不是我们想要的，我们希望一个 API
-请求失败丝毫不影响整个 Web
-服务器。当然也可以在服务器外部定时检查服务器进程是否存在，发现不存在的时候自动重启。但是像游戏服务器某个协议的处理
-Bug（升级装备、领取奖励）导致崩溃进而引发内存中的数据没有及时回写到存储
+这是一个非常实用的功能，试想一个 Web 服务器的某一条 HTTP 处理崩溃了，导致了整个服务器崩溃显然不是我们想要的，我们希望一个 API
+请求失败丝毫不影响整个 Web 服务器。
+当然也可以在服务器外部定时检查服务器进程是否存在，发现不存在的时候自动重启。但是像游戏服务器某个协议的处理 Bug（升级装备、领取奖励）导致崩溃进而引发内存中的数据没有及时回写到存储
 DB 中，而且即便是外部进程实时拉起服务器进程，服务初始化可能也有会耗时。
 </p>
 
 <p>
-Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go 的 <code>net/http</code>
-库中已经加上了 =panic=：
+Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go 的 <code>net/http</code> 库中已经加上了 =panic=：
 </p>
 
-<pre class="example">
-// go/net/http.go
-func (c *conn) serve(ctx context.Context) {
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">go/net/http.go</span>
+<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">c</span> *<span style="color: #6434A3;">conn</span><span style="color: #707183;">)</span> <span style="color: #006699;">serve</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">ctx</span> <span style="color: #6434A3;">context.Context</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">defer</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #0000FF;">if</span> <span style="color: #BA36A5;">err</span> := <span style="color: #006FE0;">recover</span><span style="color: #909183;">()</span>; err != <span style="color: #D0372D;">nil</span> &amp;&amp; err != ErrAbortHandler <span style="color: #909183;">{</span>
+            <span style="color: #0000FF;">const</span> <span style="color: #D0372D;">size</span> = 64 &lt;&lt; 10
+            <span style="color: #BA36A5;">buf</span> := <span style="color: #006FE0;">make</span><span style="color: #709870;">(</span><span style="color: #907373;">[]</span><span style="color: #6434A3;">byte</span>, size<span style="color: #709870;">)</span>
+            buf = buf<span style="color: #709870;">[</span>:runtime.<span style="color: #006699;">Stack</span><span style="color: #907373;">(</span>buf, <span style="color: #D0372D;">false</span><span style="color: #907373;">)</span><span style="color: #709870;">]</span>
+            c.server.<span style="color: #006699;">logf</span><span style="color: #709870;">(</span><span style="color: #008000;">"http: panic serving %v: %v\n%s"</span>, c.remoteAddr, err, buf<span style="color: #709870;">)</span>
+        <span style="color: #909183;">}</span>
+        <span style="color: #0000FF;">if</span> !c.<span style="color: #006699;">hijacked</span><span style="color: #909183;">()</span> <span style="color: #909183;">{</span>
+            c.<span style="color: #006FE0;">close</span><span style="color: #709870;">()</span>
+            c.<span style="color: #006699;">setState</span><span style="color: #709870;">(</span>c.rwc, StateClosed<span style="color: #709870;">)</span>
+        <span style="color: #909183;">}</span>
+    <span style="color: #7388D6;">}()</span>
 
-    defer func() {
-        if err := recover(); err != nil &amp;&amp; err != ErrAbortHandler {
-            const size = 64 &lt;&lt; 10
-            buf := make([]byte, size)
-            buf = buf[:runtime.Stack(buf, false)]
-            c.server.logf("http: panic serving %v: %v\n%s", c.remoteAddr, err, buf)
-        }
-        if !c.hijacked() {
-            c.close()
-            c.setState(c.rwc, StateClosed)
-        }
-    }()
-
-    // ...
-    for {
-        // 当 ServeHTTP(回掉业务中的 ServeHTTP) 出现崩溃时，会被前面的 recover() 捕获，并获取将堆栈信息输出到日志中
-        serverHandler{c.server}.ServeHTTP(w, w.req)
-    }
-}
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">...</span>
+    <span style="color: #0000FF;">for</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&#24403; ServeHTTP(&#22238;&#25481;&#19994;&#21153;&#20013;&#30340; ServeHTTP) &#20986;&#29616;&#23849;&#28291;&#26102;&#65292;&#20250;&#34987;&#21069;&#38754;&#30340; recover() &#25429;&#33719;&#65292;&#24182;&#33719;&#21462;&#23558;&#22534;&#26632;&#20449;&#24687;&#36755;&#20986;&#21040;&#26085;&#24535;&#20013;</span>
+        <span style="color: #6434A3;">serverHandler</span><span style="color: #909183;">{</span>c.server<span style="color: #909183;">}</span>.<span style="color: #006699;">ServeHTTP</span><span style="color: #909183;">(</span>w, w.req<span style="color: #909183;">)</span>
+    <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
-<code>recover()</code> 必须和 <code>defer</code>
-搭配只用，具体使用方法自行看文档，就不赘述了。使用时有几点要注意：
+<code>recover()</code> 必须和 <code>defer</code> 搭配只用，具体使用方法自行看文档，就不赘述了。使用时有几点要注意：
 </p>
 
 <ul class="org-ul">
 <li><code>panic</code> 会根据函数的调用顺序逐层传递；
-
 <ul class="org-ul">
-<li>被 <code>recover</code> 捕获之后，则定制传递，当前函数自动退出（defer
-本来也就是在函数执行完毕时才会调用），其他程序自动运行；</li>
+<li>被 <code>recover</code> 捕获之后，则定制传递，当前函数自动退出（defer 本来也就是在函数执行完毕时才会调用），其他程序自动运行；</li>
 <li>未被 <code>recover</code> 捕捉，一直会抛出到 <code>main</code> 函数，然后进程 crash；</li>
 </ul></li>
-
-<li><code>panic</code> _<sub>仅限于</sub>_<sub>当前协程</sub>（routine），子协程抛出
-=panic=，父协程无法捕获；</li>
-<li>虽然子协程 <code>panic</code> 父协程无法捕获，但子协程的 <code>panic</code> 会导致父协程
-crash（所以子协程最好捕获 <code>panic=），想要父协程获取子协程的 =panic</code>
+<li><code>panic</code> <span class="underline"><span class="underline">仅限于</span></span> 当前协程（routine），子协程抛出 <code>panic</code> ，父协程无法捕获；</li>
+<li>虽然子协程 <code>panic</code> 父协程无法捕获，但子协程的 <code>panic</code> 会导致父协程 crash（所以子协程最好捕获 <code>panic</code> ），想要父协程获取子协程的 <code>panic</code>
 信息，可以在子协程 <code>recover</code> 之后用 channel 传递出去；</li>
 </ul>
 
@@ -316,33 +305,30 @@ crash（所以子协程最好捕获 <code>panic=），想要父协程获取子�
 
 <ol class="org-ol">
 <li><p>
-<code>defer</code> 函数参数会在 <code>defer</code> 声明的时候求值（笔者：可以简单理解成 C
-语言中的宏）；
+<code>defer</code> 函数参数会在 <code>defer</code> 声明的时候求值（笔者：可以简单理解成 C 语言中的宏）；
 </p>
-
-<pre class="example">
-func a() {
-    i := 0
-    defer fmt.Println(i)
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">a</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+    <span style="color: #BA36A5;">i</span> := 0
+    <span style="color: #0000FF;">defer</span> fmt.<span style="color: #006699;">Println</span><span style="color: #7388D6;">(</span>i<span style="color: #7388D6;">)</span>
     i++
-    return
-}
-// i 的值是 0 而不是 1
-</pre></li>
-
+    <span style="color: #0000FF;">return</span>
+<span style="color: #707183;">}</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">i &#30340;&#20540;&#26159; 0 &#32780;&#19981;&#26159; 1</span>
+</pre>
+</div></li>
 <li><code>defer</code> 函数调用顺序的「后进先出」，即最先声明的最后调用；</li>
-
 <li><p>
 <code>defer</code> 函数可以读写函数的命名返回值；
 </p>
-
-<pre class="example">
-func c() (i int) {
-    defer func() { i++ }()
-    return 1
-}
-// 返回值中的 i 值为 2，而不是 1
-</pre></li>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">c</span><span style="color: #707183;">()</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">i</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">defer</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span> i++ <span style="color: #7388D6;">}()</span>
+    <span style="color: #0000FF;">return</span> 1
+<span style="color: #707183;">}</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&#36820;&#22238;&#20540;&#20013;&#30340; i &#20540;&#20026; 2&#65292;&#32780;&#19981;&#26159; 1</span>
+</pre>
+</div></li>
 </ol>
 </div>
 <div id="postamble" class="status">
