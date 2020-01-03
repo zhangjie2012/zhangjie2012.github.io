@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>2017~2019 个人总结</title>
+<title>K8s 部署策略</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -181,7 +181,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -231,196 +231,181 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">2017~2019 个人总结</h1>
+<h1 class="title">K8s 部署策略</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgdef9536">1. 职场</a>
-<ul>
-<li><a href="#org225f2c5">1.1. 换工作</a></li>
-<li><a href="#org0962fb3">1.2. 挖财</a></li>
-<li><a href="#org2fbe659">1.3. 技术</a></li>
-</ul>
-</li>
-<li><a href="#orgab9c94b">2. 阅读与写作</a></li>
-<li><a href="#org99bb22f">3. 家庭</a></li>
-<li><a href="#org6b1f786">4. 未来</a></li>
-<li><a href="#orge406278">5. 别人的 2019 年</a></li>
+<li><a href="#orgd2116ef">1. recreate - 重新创建</a></li>
+<li><a href="#org636325e">2. ramped(rolling-update or incremental) - 滚动更新</a></li>
+<li><a href="#org8951fd4">3. blue/green - 蓝绿发布</a></li>
+<li><a href="#org15c17b7">4. canary - 金丝雀发布</a></li>
+<li><a href="#org73832ad">5. (A/B testing using Istio) A/B 测试</a></li>
+<li><a href="#orgb21711d">6. shadow 影子发布</a></li>
 </ul>
 </div>
 </div>
 <p>
-从 2013 年开始就有了写个人总结的习惯，连续写了四年：
+via K8s 中的部署策略解释：
 </p>
 
 <ul class="org-ul">
-<li><a href="../2014/2013-personal-review.html">2013 个人总结</a></li>
-<li><a href="../2015/2014-personal-review.html">2014 个人总结</a></li>
-<li><a href="../2016/2015-personal-review.html">2015 个人总结</a></li>
-<li><a href="../2016/2016-personal-review.html">2016 个人总结</a></li>
-<li><a href="2018-personal-review.html">2018 个人总结</a></li>
+<li>git 地址： <a href="https://github.com/ContainerSolutions/k8s-deployment-strategies">ContainerSolutions/k8s-deployment-strategies</a></li>
+<li>文章：<a href="https://blog.container-solutions.com/kubernetes-deployment-strategies">Kubernetes deployment strategies</a></li>
 </ul>
 
 <p>
-最近 3 年都没怎么认真写，2018 年草草写了几句，负面的比较多，本来准备删了的，后来想想时好时坏都是当时的心境，这也是记录的目的。
-马上 2020 年就要来了，本文补一下这三年的空缺 ~
+<i>没有全部翻译，目的是为了了解几种发布策略术语，而不是实现层。</i>
 </p>
 
-<p>
-再此之前把之前写的总结都过了一遍。感触还是挺深的，像以前那样简单纯粹，敢打敢拼的时光已经不在了，
-2017 和 2018 是个过渡期，今年开始走向人生的下一段旅程。
-</p>
-
-<p>
-和以前一样，按照几个大方向分别 review 一下，然后写一写对未来的期望。
-</p>
-
-<div id="outline-container-orgdef9536" class="outline-2">
-<h2 id="orgdef9536"><span class="section-number-2">1</span> 职场</h2>
+<div id="outline-container-orgd2116ef" class="outline-2">
+<h2 id="orgd2116ef"><span class="section-number-2">1</span> recreate - 重新创建</h2>
 <div class="outline-text-2" id="text-1">
+
+<div class="figure">
+<p><img src="https://github.com/ContainerSolutions/k8s-deployment-strategies/blob/master/recreate/grafana-recreate.png" alt="grafana-recreate.png" />
+</p>
 </div>
-<div id="outline-container-org225f2c5" class="outline-3">
-<h3 id="org225f2c5"><span class="section-number-3">1.1</span> 换工作</h3>
-<div class="outline-text-3" id="text-1-1">
-<p>
-在 <a href="../../youth/in-hefei-s15.html">再见七行</a> 中说明了离开七行的原因，后来又在 <a href="../../youth/in-hangzhou-s0.html">在杭州-序</a> 中说明了后续面试和入职挖财的事情，这里不再赘述了。
-离开一个环境之后再看待之前的事情会更加客观一些。在 2018 年里，花了很多的时间在反思在七行的两三年时间里，
-哪些事情做对了，哪些事情做错了；甚至是离开七行来挖财是一个对的选择，还是错的选择。 <i>当然对错都是相对的。</i>
-</p>
 
 <p>
-过去 2017 之前的几年里，自己的不足有很多，究其根源是： <b>永远是一个技术人的心态来做事，来看待事物</b> 。
-在七行的时候本以为自己可以产品或者工程的角度来思考问题，在做事。现在来看自己还是太局限了，始终是一个技术人的思路。
-</p>
-
-<p>
-而最近两年里，我更多思考的是，当下或者未来该如何做，得到的结论是： <b>以目标/结果来驱动自己做事，不论过程</b> 。
-这两年职场上的纠结，都是自己内心之间的斗争，这也是诸多痛苦的源泉。
+服务全部停止，然后重新创建。也就是说服务是中断的。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org0962fb3" class="outline-3">
-<h3 id="org0962fb3"><span class="section-number-3">1.2</span> 挖财</h3>
-<div class="outline-text-3" id="text-1-2">
-<p>
-离开七行之后，我想着再也不用写前端了，没想到到挖财之后逐渐成了一个专职的前端，不愿但又无可奈何。
-在快乐的做事与能拿结果之间，以前总是会选择前者，而现在我要慢慢的选择后者。
-</p>
-
-<p>
-<b>不用在意自己做什么，而关心事情本身的意义。</b> 这也是我来挖财之后琢磨出来最重要的东西，其它的都不值一提。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org2fbe659" class="outline-3">
-<h3 id="org2fbe659"><span class="section-number-3">1.3</span> 技术</h3>
-<div class="outline-text-3" id="text-1-3">
-<p>
-在上周部门内部做了前端开发的分享（也就是 <a href="intro-frontend-dev.html">前端开发从入门到放弃</a> 和 <a href="intro-to-umi.html">基于 umi 构建中后台前端项目入门</a> 这两篇文章的内容）。
-这个过程中顺便把自己这么多年零零散散的前端开发做了一次全面的复盘。再努努力应该就可以说自己能写前端了。
-</p>
-
-<p>
-每个做技术的人，都有自己的舒适区，这种舒适区也是程序员偏执的源泉，每次跳开都会给自己找一堆借口，然后快速回到自己的舒适区继续待着。
-在入行不久就发现很多人喜欢给自己打标签，直至现在遇到的人大都如此，比如 Java，C++，Go，Linux，开发，运维，产品等。
-所以我很讨厌这一点，但后来发现自己也不自己觉得陷入了标签中，然后为自己的不擅长找借口。
-</p>
-
-<p>
-直到这次对前端的复盘，我才意识到一个人深入多个领域是有可能的。 <b>不应该去关注技术本身，而去关注技术所能带来的东西。</b>
-一旦有了这个思路的转变，就不会再去抗拒学习新的东西了。
-</p>
-
-<p>
-到现在，所有的技术对我来讲才变成了真正意义的工具化了，只是实现目标的手段。从入行就知道的道理，经过七八年的历练，才彻底的想明白。
-</p>
-
-<p>
-<b>从此以后，再无技术。</b>
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgab9c94b" class="outline-2">
-<h2 id="orgab9c94b"><span class="section-number-2">2</span> 阅读与写作</h2>
+<div id="outline-container-org636325e" class="outline-2">
+<h2 id="org636325e"><span class="section-number-2">2</span> ramped(rolling-update or incremental) - 滚动更新</h2>
 <div class="outline-text-2" id="text-2">
-<p>
-这 3 年读过的书，应该是不足前面 4 年的四分之一的，后来不想读书的原因在以前的文章里提过，不再赘述。
-现在想来是自己对于读书的功利性太强了，太着急了。追求物质金钱的东西应该目标明确，而精神领域的东西，本来就是一个很慢的过程。
-<b>这样不好。</b>
-</p>
 
-<p>
-这 3 年写的东西，并不比以前少，但是质量上差了许多。我记得 2013 左右的时候，写一篇技术文章最多花过八九个小时；
-这一点放到现在是做不到的，不会有这么多整块的时间。但是这些都是正常的，也是之前文章中所说的，写作能够带给我的东西，已经带来了。
-现在写东西不会去关注质或者量，只是一个记录，对自己有意义就行。
-</p>
-
-<p>
-另外，今年把 blog 和 wiki 等都通过 org-mode 整合到一起，然后丢到 github 了，以后不用在为博客工具和云托管商操心了，可真爽（Emacs 大发好）。
+<div class="figure">
+<p><img src="https://github.com/ContainerSolutions/k8s-deployment-strategies/blob/master/ramped/grafana-ramped.png" alt="grafana-ramped.png" />
 </p>
 </div>
-</div>
 
-<div id="outline-container-org99bb22f" class="outline-2">
-<h2 id="org99bb22f"><span class="section-number-2">3</span> 家庭</h2>
-<div class="outline-text-2" id="text-3">
 <p>
-订婚，买车，买房，结婚是这三年的主题，各种曲折只能说人生不易，但好在都过去了，而且越来越好。
+逐步更新，起一个服务（启动成功，并且可以正常对外提供服务 - ready 状态 - 健康检测），然后停止一个，以此类推，所以称之为滚动更新。
 </p>
 
 <p>
-前几天跟冯飞聊天，感叹人生的所有弯路都是必经之路，该面对的问题迟早都是需要面对的。前面的四五年，除了没挣到钱这个客观事实之外，
-其它的都是顺风顺水的：父母年轻且健康，家里也不需要我操心；每份工作也算是有领导赏识，自己想要做的大多也都做了；对于生活，自己年轻，一切都挺好。
+思路是这样的，但实际上为了增快发布时间，还可以：
 </p>
 
-<p>
-到了 30 岁左右的年龄，自己的角色不再那么单一：是父母的儿子，是妻子的丈夫，肩上的责任也越来越重。
-以前有人说，工作和家庭应该分开，现在觉得挺扯淡的，无论怎么分你都只有一个脑子，只有一份精力，同时只能思考一件事情。
-</p>
-
-<p>
-对我来说，最大的收获在于逐渐的认清了自己：工作、生活不可能兼顾，你不可能把所有的事情都做到让自己满意。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org6b1f786" class="outline-2">
-<h2 id="org6b1f786"><span class="section-number-2">4</span> 未来</h2>
-<div class="outline-text-2" id="text-4">
-<p>
-明年就 30 了，前些日子想明白的一事是：人的一生可能只能做几件事情。工作不可能一直换下去，换到满意为止；
-工作城市也不可能一直换下去，总要有一个归宿。很多梦想也不会再去想，这样挺好。
-</p>
-
-<p>
-<b>对于未来，不必想的太长远，不必想的太多，心态开放，不辜负每一天就好。</b>
-</p>
-
-<hr />
-</div>
-</div>
-
-<div id="outline-container-orge406278" class="outline-2">
-<h2 id="orge406278"><span class="section-number-2">5</span> 别人的 2019 年</h2>
-<div class="outline-text-2" id="text-5">
 <ul class="org-ul">
-<li><a href="https://overreacted.io/my-decade-in-review/">My Decade in Review</a> Dan Abramov 的 10 年经历，这哥们是 Redux 作者，貌似比我小 1 岁；
-不算什么传奇经历，倒是各种心酸的经历&#x2026; 2010 年高中毕业，没上大学，自学编程，2014 年之前都一直没有稳定的工作；
-没有 2014 年搭了 React 的顺风车，后来自己写了 Redux，2015 年后去了 Facebook，目前在 Facebook 做 React 技术栈相关的东西</li>
-<li><a href="http://www.yinwang.org/blog-cn/2019/12/31/2020-new-year">2020新年寄语</a> 王垠离开 Intel，十年挣扎路</li>
-<li><a href="https://mp.weixin.qq.com/s/xVjV3JmpUzkL0OARYLp5Fw">我的 2019 年个人总结</a>：Fenng，有一天有许多话要说出的人，常默然把许多话藏在内心</li>
-<li><a href="https://mp.weixin.qq.com/s/JLOU4YyiX685hcfa-L9a1A">悲观者往往正确，乐观者往往成功</a>：池建强</li>
+<li>并行发布：设置每次启停的个数，比如 10 个实例，以 3 个为单位发布；</li>
+<li>最大实例个数：除了当前的实例个数，最多还可以添加多少个实例（同时存在的）；</li>
+<li>最大不可用：滚动更新过程中最多的不可用实例个数；</li>
 </ul>
+
+
+<div class="figure">
+<p><img src="https://blog.container-solutions.com/hs-fs/hubfs/Imported_Blog_Media/kubernetes-deployment-strategy-ramped-1024x634-1.png?width=500&amp;name=kubernetes-deployment-strategy-ramped-1024x634-1.png" alt="kubernetes-deployment-strategy-ramped-1024x634-1.png?width=500&amp;name=kubernetes-deployment-strategy-ramped-1024x634-1.png" />
+</p>
+</div>
+
+<p>
+控制层面在实例，无法控制实际流量。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8951fd4" class="outline-2">
+<h2 id="org8951fd4"><span class="section-number-2">3</span> blue/green - 蓝绿发布</h2>
+<div class="outline-text-2" id="text-3">
+
+<div class="figure">
+<p><img src="https://github.com/ContainerSolutions/k8s-deployment-strategies/blob/master/blue-green/grafana-blue-green.png" alt="grafana-blue-green.png" />
+</p>
+</div>
+
+<p>
+新服务全部起来之后，把流量切过去，然后再停止旧服务。
+</p>
+
+
+<div class="figure">
+<p><img src="https://info.container-solutions.com/hubfs/Imported_Blog_Media/kubernetes-deployment-strategy-blue-green-1.png" alt="kubernetes-deployment-strategy-blue-green-1.png" />
+</p>
+</div>
+
+<p>
+很显然，蓝绿发布比较费资源。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org15c17b7" class="outline-2">
+<h2 id="org15c17b7"><span class="section-number-2">4</span> canary - 金丝雀发布</h2>
+<div class="outline-text-2" id="text-4">
+
+<div class="figure">
+<p><img src="https://github.com/ContainerSolutions/k8s-deployment-strategies/blob/master/canary/grafana-canary.png" alt="grafana-canary.png" />
+</p>
+</div>
+
+<p>
+新版本先给一部分用户用，稳定之后再全部部署。一般用于平台测试功能稳定性。
+</p>
+
+
+<div class="figure">
+<p><img src="https://info.container-solutions.com/hubfs/Imported_Blog_Media/kubernetes-deployment-strategy-canary-1.png" alt="kubernetes-deployment-strategy-canary-1.png" />
+</p>
+</div>
+
+<p>
+跟滚动更新很类似，但是控制的更细腻一些，而且目的也不同：个人理解，滚动更新主要是为了旧服务到新服务迁移更加平滑，让用户无感知；
+而金丝雀是为了测试产品功能。
+</p>
+
+<p>
+但是细粒度的流量控制，成本可能比较高。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org73832ad" class="outline-2">
+<h2 id="org73832ad"><span class="section-number-2">5</span> (A/B testing using Istio) A/B 测试</h2>
+<div class="outline-text-2" id="text-5">
+
+<div class="figure">
+<p><img src="https://github.com/ContainerSolutions/k8s-deployment-strategies/raw/master/ab-testing/grafana-ab-testing.png" alt="grafana-ab-testing.png" />
+</p>
+</div>
+
+<p>
+在特定情况下将一部分用户路由到新功能，这种控制一般在上层控制的，控制力度更加的小，平台层比较难做。
+但是个人觉得对于产品是非常有用的功能，比如按照城市地区发布功能等。
+</p>
+
+
+<div class="figure">
+<p><img src="https://info.container-solutions.com/hubfs/Imported_Blog_Media/kubernetes-deployment-strategy-a-b-testing-3.png" alt="kubernetes-deployment-strategy-a-b-testing-3.png" />
+</p>
+</div>
+
+<p>
+成本比较高。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb21711d" class="outline-2">
+<h2 id="orgb21711d"><span class="section-number-2">6</span> shadow 影子发布</h2>
+<div class="outline-text-2" id="text-6">
+
+<div class="figure">
+<p><img src="https://github.com/ContainerSolutions/k8s-deployment-strategies/raw/master/shadow/grafana-shadow.png" alt="grafana-shadow.png" />
+</p>
+</div>
+
+<p>
+新版本和旧版本共存，并且不会互相影响。把生产版本的流量同时打到测试版本，对生产无影响，有点像我们说的预发。
+</p>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Date: 2019-12-28 15:14:52</p>
+<p class="date">Date: 2020-01-03 10:37:34</p>
 <p class="author">Author: JerryZhang</p>
 <p class="validation"></p>
 </div>
