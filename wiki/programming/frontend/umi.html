@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>umi</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">umi</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgb6cf00c">1. Pro 时代</a>
+<ul>
+<li><a href="#orgb8dc0c1">1.1. 技术栈</a></li>
+<li><a href="#org2349df3">1.2. 如何评价 Pro 2.0</a></li>
+<li><a href="#org908f085">1.3. 从 0.x 升级到 V2</a></li>
+<li><a href="#org2cbff08">1.4. FAQ</a>
+<ul>
+<li><a href="#orge35f817">1.4.1. 部署时，文件名添加 hash 值</a></li>
+<li><a href="#orgafe0d48">1.4.2. npm run start 报错</a></li>
+</ul>
+</li>
+<li><a href="#orgeb2999e">1.5. v1 升级 v2 之后报错：An immer producer returned a new value <b>and</b> modified its draft.</a></li>
+</ul>
+</li>
+<li><a href="#org9400f6b">2. Umi</a>
+<ul>
+<li><a href="#orgb8c7a97">2.1. 作者(sorrycc)有关 umi 的文章</a></li>
+<li><a href="#org793ed92">2.2. Pro 和 UmiJS</a></li>
+<li><a href="#org898bc09">2.3. 如何评价 Pro 4.0</a></li>
+<li><a href="#org3756919">2.4. 再次评价 umi</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb6cf00c" class="outline-2">
+<h2 id="orgb6cf00c"><span class="section-number-2">1</span> Pro 时代</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<a href="https://pro.ant.design/docs/getting-started-cn">Ant Design Pro</a> 是一个前端的基于 React 脚手架（框架，开箱即用，提供了菜单和路由、数据处理等），
+设计是用于企业级中后台解决方案（内部系统之类的）。
+</p>
+</div>
+<div id="outline-container-orgb8dc0c1" class="outline-3">
+<h3 id="orgb8dc0c1"><span class="section-number-3">1.1</span> 技术栈</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li>ES2015+，主要使用 JavaScript（废话）</li>
+<li>React</li>
+<li><a href="https://umijs.org/zh/">UmiJS</a>：可插拔的企业级 react 应用框架， <code>1.0</code> 之前是使用 roadhog 的， <code>umi = roadhog + 路由</code> 。roadhog 封装了 webpack，简化 webpack 的配置</li>
+<li>dva：数据流</li>
+<li>antd：前端基于 React 的 UI 组件，类似 Bootstrap</li>
+</ul>
+
+<p>
+所以，Pro 是什么？就是把这些组件全部封装起来，然后提供了一些范例。比较适合我这种不关心也不想深入学习前端技术，只想作为技术手段来实现前端开发的人。对于，一个专业的前端开发者，我不认为 Pro 是一个很好选择，
+直接使用 React 原生的脚手架 create-react-app + webpack + antd 更好，或者使用 umi 也行。
+</p>
+
+<p>
+Pro 没做什么太多额外的事情，而且臃肿的例子，删都要删除好久。目前还没有更好的解决方案。可以看我提的 <a href="https://github.com/ant-design/ant-design-pro/issues/2250">issue</a>。
+</p>
+
+<p>
+Pro 缺陷也是优势，对于我这样的伪前端（也不想深入）的人，只需要学习一下 ES6 和 React，然后照葫芦画瓢就可以开始写前端了。
+</p>
+
+<p>
+<i>随着版本的升级，这里说的技术栈已经不准确了，类似 V2 之后逐渐都用 TypeScript 来实现，而不是 JS</i>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2349df3" class="outline-3">
+<h3 id="org2349df3"><span class="section-number-3">1.2</span> 如何评价 Pro 2.0</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+从 1.0 之前切换到 2.0，起初我是很抗拒的，因为 2.0 又加了很多乱七八糟的东西，改动比较大，菜单和路由合并了，这对于路由多的项目维护起来简直就是噩梦。
+</p>
+
+<p>
+再加上鉴权系统变得更加的复杂了，我对 Pro 的鉴权系统一直都持否定的态度，鸡肋，需要的满足不了，不需要的剥离很费劲。
+</p>
+
+<p>
+但是没办法啊，谁要自己前端菜呢，硬着头皮用了 2.0，砍无用的东西看了半天开才正式开始写（qwerty-client 就是这样）。用的时间长了，觉得 2.0 还是很不错的。直观上有几个地方值得夸赞：
+</p>
+
+<ol class="org-ol">
+<li>配置更统一了，全部都在 config 文件下（用 umi 替代了 roadhog 之后）</li>
+<li>默认支持按需加载，撒花</li>
+<li>model 支持 page model，即 page 私有的 model 只需要放在 page 自己的 models 文件夹下，无需像以前一样在 router 中注入，具体可以查看 umi 的文档</li>
+<li>默认配置 alias，添加 <code>@/</code> 别名到 <code>src</code> 目录，引用模块更加方便了</li>
+</ol>
+
+<p>
+当然国际化这种功能我是不关心的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org908f085" class="outline-3">
+<h3 id="org908f085"><span class="section-number-3">1.3</span> 从 0.x 升级到 V2</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+<span class="underline">2019-12-02 UPDATE</span>
+</p>
+
+<p>
+2018 刚开始使用 Pro 是 0.x 版本，后来不知道有没有使用 1.x 版本，忘记了；本身 Pro 就是由一堆的 package 组成的，所以具体的版本已经对应不上了。
+</p>
+
+<p>
+随着内容的增多，打包的速度越来越慢，在刚开始使用的时候还经常会出现 webpack 打包卡到 91% 的经典问题（网上很多人也反馈，后来通过更换电脑解决）。
+后来用 v2 写过一个博客系统，深感 v2 比 v1 无论从效率上还是代码组织上都略胜一筹，所以在今年的 11 月份准备长痛不如短痛，升级一下。
+</p>
+
+<p>
+如上面所说，v2 和 v4 的区别仅在于重新进行了抽象：Pro 变成了一个 UI template，而脚手架的能力下沉到了 umi。所以升级到 V2 就可以了，升级文档：
+<a href="https://v2-pro.ant.design/docs/upgrade-v2-cn">https://v2-pro.ant.design/docs/upgrade-v2-cn</a> 文档只是写了迁移流程，而原理性的东西没说。因此，没遇到问题还好，只要遇到问题就很头大。
+</p>
+
+<p>
+迁移的很快，但是测试起来之后，出现了很多小的问题（大部分是代码兼容性问题）。最麻烦的一个问题是，路由死循环。
+当可变 URL 和 redirect 放到一起的时候，就很容易出现死循环；因为 V2 的路由方式跟 V1 不一样了，不再允许使用 <code>&lt;Switch&gt;</code> ，很多代码的写法要重新适配。
+而且死循环问题在开发环境下很难复现，生产环境下基本上是必现的。后来逐渐的规避问题，也没能从根源上解决。
+</p>
+
+<p>
+我之前提过一个 issue： <a href="https://github.com/ant-design/ant-design-pro/issues/5548">https://github.com/ant-design/ant-design-pro/issues/5548</a> ，说是可能是 umi 的 bug，让我去 umi 再提 issue。
+但是 ant 系的开源项目，为了减少 issue，提 issue 的流程都特别麻烦，我也就没提了。
+</p>
+
+<p>
+今天再一次出现了路由死循环的问题，但是我打的包有问题，我同事打的包就没问题，做了很多尝试。后来通过删除 node<sub>modules</sub> 和 package-lock.json 解决。
+</p>
+
+<p>
+<span class="underline">总之：前端这一套东西真是让人心力俱疲。</span>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2cbff08" class="outline-3">
+<h3 id="org2cbff08"><span class="section-number-3">1.4</span> FAQ</h3>
+<div class="outline-text-3" id="text-1-4">
+</div>
+<div id="outline-container-orge35f817" class="outline-4">
+<h4 id="orge35f817"><span class="section-number-4">1.4.1</span> 部署时，文件名添加 hash 值</h4>
+<div class="outline-text-4" id="text-1-4-1">
+<p>
+2.0 之后， <code>npm run build</code> 生成的 css 和 js 文件名不再包含 hash 值，这样会导致即便 nginx 设置了 <code>index.html</code> 不缓存，因为 css 和 js 每个版本的名字都是一样的，导致新版本更新之后，用户只有强制刷新浏览器才能生效。
+</p>
+
+<p>
+解决办法是在 <code>/config/config.js</code> 中添加 <code>hash:true</code> ，这是 umi 的一个配置特性：
+</p>
+
+<p>
+<a href="https://umijs.org/zh/config/#hash">https://umijs.org/zh/config/#hash</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgafe0d48" class="outline-4">
+<h4 id="orgafe0d48"><span class="section-number-4">1.4.2</span> npm run start 报错</h4>
+<div class="outline-text-4" id="text-1-4-2">
+<p>
+<code>npm run start</code> 的时候，报错：
+</p>
+
+<blockquote>
+<p>
+Module build failed: Error: The 'decorators' plugin requires a
+'decoratorsBeforeExport' option, whose value must be a boolean. If you
+are migrating from Babylon/Babel 6 or want to use the old decorators
+proposal, you should use the 'decorators-legacy' plugin instead of
+'decorators'.
+</p>
+</blockquote>
+
+<p>
+解决的办法是用 <code>npm install</code> ，不要使用 cnpm 这种镜像。讨论在 <a href="https://github.com/ant-design/ant-design-pro/issues/2043">ant-design-pro issues#2043 </a>，好像也没有看到具体的原因，应该是依赖问题。
+</p>
+
+<p>
+之前用 npm 的时候也有类似的情况，一般是因为包依赖有问题，因为是镜像缘故，包的同步总会有先后顺序，卡到中间的时候就会出现依赖版本问题。
+</p>
+
+<p>
+其实不光是 npm，其它的镜像也会出这种情况，比如 Emacs 的源引发的问题：<a href="https://github.com/abo-abo/swiper/issues/2087">swiper issue#2087</a>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgeb2999e" class="outline-3">
+<h3 id="orgeb2999e"><span class="section-number-3">1.5</span> v1 升级 v2 之后报错：An immer producer returned a new value <b>and</b> modified its draft.</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+<a href="https://github.com/umijs/umi/issues/592">https://github.com/umijs/umi/issues/592</a>
+</p>
+
+<p>
+之前在 reducers 中使用了 state，但是升级之后不允许这么用了（好像是说简化写法，具体可以看 <a href="https://umijs.org/zh/guide/config.html#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">配置文件</a>）。一种 hack 的解决办法是上面 issue 中提到的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">stockList</span> = <span style="color: #707183;">[</span>...state.stockList<span style="color: #707183;">]</span>
+</pre>
+</div>
+
+<p>
+但是不知道这种方式的原理是什么。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9400f6b" class="outline-2">
+<h2 id="org9400f6b"><span class="section-number-2">2</span> Umi</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgb8c7a97" class="outline-3">
+<h3 id="orgb8c7a97"><span class="section-number-3">2.1</span> 作者(sorrycc)有关 umi 的文章</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li>2018-01-31 <a href="https://github.com/sorrycc/blog/issues/58">Hello! umi</a></li>
+<li>2018-02-26 <a href="https://github.com/sorrycc/blog/issues/64">发布 umi 1.0</a></li>
+<li>2018-09-03 <a href="https://github.com/sorrycc/blog/issues/74">发布 umi 2.0，可插拔的企业级 react 应用框架</a></li>
+<li>2019-09-02 <a href="https://github.com/sorrycc/blog/issues/86">Hello! Umi UI</a>  <i>费精力搞这玩意干啥..</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org793ed92" class="outline-3">
+<h3 id="org793ed92"><span class="section-number-3">2.2</span> Pro 和 UmiJS</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Pro 封装了 umi，umi 配置文件为 <code>.umirc.js</code> 或 <code>config/config.js</code> ，Pro 中使用 <code>config/config.js</code> ，但是进行了一定的改造。
+</p>
+
+<p>
+相关配置需求可以查看这两篇文档：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://pro.ant.design/docs/upgrade-v2-cn#%E6%B7%BB%E5%8A%A0%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-config/config.js">Pro：配置说明</a></li>
+<li><a href="https://umijs.org/zh/config/">UmiJS 所有配置项</a></li>
+</ul>
+
+<p>
+Pro <code>0.x</code> 版本和 <code>1.x</code> 版本 <code>npm run start</code> 进度卡到 <code>91%</code> 问题，可通过 <code>HARD_SOURCE=none npm start</code> 来解决，一些讨论见：<a href="https://github.com/ant-design/ant-design-pro/issues/1520">https://github.com/ant-design/ant-design-pro/issues/1520</a> 。
+</p>
+
+<p>
+<code>2.0</code> 之后似乎没有这个问题了，但是有个另外一个问题，每次修改了 less 文件之后，编译速度特别慢（less 每次都要全量编译，cpu 不好的话速度会很慢），解决办法是删掉 <code>/config/plugin.config.js</code> 文件。
+删掉之后影响的是换主题，但是换主题实际在使用中基本上没啥用。讨论见：<a href="https://github.com/ant-design/ant-design-pro/issues/2947">https://github.com/ant-design/ant-design-pro/issues/2947</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org898bc09" class="outline-3">
+<h3 id="org898bc09"><span class="section-number-3">2.3</span> 如何评价 Pro 4.0</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+六月份发布了 v4 版本，一直比较忙也没时间去研究。从 0.x 版本用到 2.0 版本，我对 Pro 的发展一直不抱有很乐观的态度（甚至有些消极），以前在 issue 上有过一些争论，以至于对研发团队产品规划略有不满。
+</p>
+
+<p>
+今天（2019-10-24）得空看了一下 v4 和 <a href="https://umijs.org/zh/guide/">UmiJS</a>，大有改观。涉及到我所关心的几个点列了一下：
+</p>
+
+<ul class="org-ul">
+<li>v4 变成了 umi.js 的一个模板，安装也比较纯粹，选模板一样选择 ant design pro 即可；以前更像是 clone 下来完整的代码然后继续开发，不像是一个工具；</li>
+<li>抽象出 <span class="underline">区块(Block)</span> 的概念，把以前的组件全部单独出去，可插拔（ <code>umi block list</code> ），框架不再臃肿，鉴权相关的也简单的许多， <i>早就该这么搞了，也是我以前感觉 Pro 定位不清晰的原因</i> ；</li>
+<li>layout 也抽象成了一个单独的组件：<a href="https://github.com/ant-design/ant-design-pro-layout"> ant-design-pro-layout</a>，这个有待商榷，这种是不是 antd 的责任？</li>
+<li>主打 Typescript，还好兼容 Javascript，一直没功夫学习 ts，学不动了</li>
+</ul>
+
+<p>
+如果不是为了省事，直接使用 umi 创建一个 App 写模板也挺好的，成本也不高。这一次更新给研发团队点赞!
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3756919" class="outline-3">
+<h3 id="org3756919"><span class="section-number-3">2.4</span> 再次评价 umi</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+以前写了断断续续的写了几年的前端（前后端一起写），从去年开始用 React，Pro 这一套东西也有近两年了，对前端的东西真的挺失望的。
+从来没有一项技术让我有了从入门到放弃的感觉，即便是当年学 C++ 的时候，也是越学越有信心。
+</p>
+
+<p>
+最新的项目用的是 V4，V4 有了比较大的提升，但是仍旧有一些基础的 Bug。前端的脚手架与前端的技术一样，更新实在太快了。
+即便是 Release 版本，因为本地的环境差异很大（npm 版本，各种依赖包的版本），也有参差不齐的开源项目，发布的正式版也总是有很多的问题。
+但如果不持续更新的话，隔几个版本就会出现不兼容的更新，再想升级就蛋疼了。
+</p>
+
+<p>
+在我眼里，前端的东西，就是如此的不堪，从 Javascript 语言问世这个问题就已经存在了，后面做的事情无论是 node.js 还是 TypeScript 都是在修修补补。
+都无法从根源上解决问题。但是没办法，我们需要他，他依旧是 Github 热度永远第一的语言。
+</p>
+
+<p>
+那怎么办呢？
+</p>
+
+<p>
+经过我自己躺过的坑，我建议对前端的核心技术还是需要深入了解一下，尽量用原生的框架，而不是像 Pro 这样的脚手架，他封装了太多的东西，
+而且每一层都有可能是不稳定因素，虽然他对于二流前端，的确可以快速的搭建一套系统出来，但是一但出了问题就很致命了，你根本就不知道发生了什么。
+我发现他竟然连 react-router 都封装了一层。
+</p>
+
+<p>
+何为原生呢？
+</p>
+
+<p>
+React 全家桶（react，react-router，redux 等）了解之后，使用官方的的 create-react-app 来创建应用，UI 库自己选型即可。这样的好处是遇到了问题
+网上都有足够的资料帮你解决，社区也很好。坦白说，阿里开源的 antd 系列，社区都不怎么好。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2020-01-06 14:58:32</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>
