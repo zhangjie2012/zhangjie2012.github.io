@@ -245,6 +245,7 @@ for the JavaScript code in this tag.
 <li><a href="#org62a5e67">2. Go module</a>
 <ul>
 <li><a href="#org671a7c1">2.1. 常见场景</a></li>
+<li><a href="#org84bc792">2.2. go mod 使用私有库</a></li>
 </ul>
 </li>
 </ul>
@@ -337,6 +338,32 @@ The commands are:
 <li>移出不常用的依赖 <code>go mod tidy</code></li>
 <li><code>go mod download</code> 下载依赖的 module 到本地缓存</li>
 </ul>
+</div>
+</div>
+
+<div id="outline-container-org84bc792" class="outline-3">
+<h3 id="org84bc792"><span class="section-number-3">2.2</span> go mod 使用私有库</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+不使用 go mod 私有库直接手动拷贝到 <code>$GOPATH/src</code> 下面就可以用了，使用 go mod 之后，依赖库的位置放在了 <code>$GOPATH/pkg/mod</code> 下面，并且还有 go.sum 校验，
+所以直接拷贝的方式不可用了，可以用下面的方法来解决。假设 git 仓库的地址为： <code>git.zhangjiee.com</code> 。
+</p>
+
+<ol class="org-ol">
+<li><code>go env -w GOPRIVATE=git.zhangjiee.com</code></li>
+<li><p>
+<code>.gitconfig</code> 中添加：
+</p>
+<pre class="example">
+[url "ssh://git@git.zhangjiee.com/"]
+    insteadOf = http://git.zhangjiee.com/
+</pre></li>
+<li><code>go get -u -v -insecure git.zhangjiee.com/group/project</code> 非 https 在 go get 时需要加上 <code>-insecure</code></li>
+</ol>
+
+<p>
+然后在 <code>$GOPATH/pkg/mod</code> 中就会出现 <code>git.zhangjiee.com/group/project@vx.y.z</code> 目录了，并且添加到了 go.mod 和 go.sum 文件中。
+</p>
 </div>
 </div>
 </div>
