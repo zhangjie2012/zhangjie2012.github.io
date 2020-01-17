@@ -236,55 +236,60 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5070326">1. 安装</a>
+<li><a href="#org5e1524f">1. 安装 Go 工具</a>
 <ul>
-<li><a href="#orgc173343">1.1. Linux，Mac OS X 或者 FreeBSD 安装</a></li>
-<li><a href="#org82c799c">1.2. 设置工作空间</a></li>
-<li><a href="#org729793d">1.3. 测试是否安装正确</a></li>
-<li><a href="#org10dd67d">1.4. GOROOT 和 GOPATH 环境变量</a></li>
+<li><a href="#orgbf417bd">1.1. Linux, macOS, and FreeBSD tarballs</a></li>
+<li><a href="#org57ab125">1.2. 检测是否安装成功</a></li>
 </ul>
 </li>
 <li><a href="#org765615e">2. 卸载</a></li>
-<li><a href="#orgd9874e2">3. 工具链</a></li>
+<li><a href="#org268eafc">3. 插件和 IDE</a></li>
 <li><a href="#org6b8df51">4. 跨平台编译</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5070326" class="outline-2">
-<h2 id="org5070326"><span class="section-number-2">1</span> 安装</h2>
+<div id="outline-container-org5e1524f" class="outline-2">
+<h2 id="org5e1524f"><span class="section-number-2">1</span> 安装 Go 工具</h2>
 <div class="outline-text-2" id="text-1">
+<p>
+<b>2020-01-17 11:04:18 Fri</b>
+</p>
+
+<p>
+基于 Go 1.13 更新，<a href="https://golang.org/doc/install">https://golang.org/doc/install</a>。
+</p>
 </div>
-<div id="outline-container-orgc173343" class="outline-3">
-<h3 id="orgc173343"><span class="section-number-3">1.1</span> Linux，Mac OS X 或者 FreeBSD 安装</h3>
+
+<div id="outline-container-orgbf417bd" class="outline-3">
+<h3 id="orgbf417bd"><span class="section-number-3">1.1</span> Linux, macOS, and FreeBSD tarballs</h3>
 <div class="outline-text-3" id="text-1-1">
-<ol class="org-ol">
-<li>前往<a href="https://golang.org/dl/">官网</a>，下载二进制包</li>
-<li>直接解压到 <code>/usr/local</code> 目录下： <code>tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar</code> （root 用户或者 sudo 执行）</li>
-<li>将 <code>/usr/local/go/bin</code> 添加 <code>PATH</code> 环境变量中，你可以将 <code>export PATH=$PATH:/usr/local/go/bin</code> 追加到 <code>/etc/profile</code> 或者 <code>~/.profile</code> 文件中</li>
-<li>执行 <code>go version</code> 看是否安装成功</li>
-</ol>
+<div class="org-src-container">
+<pre class="src src-shell">wget https://dl.google.com/go/go1.13.6.darwin-amd64.tar.gz --no-check-certificate
+sudo tar -C /usr/local -xzf go1.13.6.darwin-amd64.tar.gz
+</pre>
+</div>
+
+<p>
+将 <code>/usr/local/go/bin</code> 添加到系统 <code>PATH</code> 环境变量，在 <code>/etc/profile</code> 或者 <code>$HOME/.profile</code> 中添加
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:/usr/local/go/bin
+</pre>
+</div>
 </div>
 </div>
 
-<div id="outline-container-org82c799c" class="outline-3">
-<h3 id="org82c799c"><span class="section-number-3">1.2</span> 设置工作空间</h3>
+<div id="outline-container-org57ab125" class="outline-3">
+<h3 id="org57ab125"><span class="section-number-3">1.2</span> 检测是否安装成功</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
-默认的工作空间是 <code>$HOME/go</code> ，需要手动创建一下，如果要设置不同的工作目录，你需要设置GOPATH <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
+默认的工作目录是 <code>$HOME/go</code> ，如果是不同的目录需要 <a href="https://github.com/golang/go/wiki/SettingGOPATH">设置一下 GOPATH 环境变量</a>。
 </p>
 
 <p>
-<i>我记得早版本的 go 是不存在默认的工作空间一说的，现在更简单了</i>
-</p>
-</div>
-</div>
-
-<div id="outline-container-org729793d" class="outline-3">
-<h3 id="org729793d"><span class="section-number-3">1.3</span> 测试是否安装正确</h3>
-<div class="outline-text-3" id="text-1-3">
-<p>
-切换到工作目录下（不是必须，但是建议这么做），创建目录 <code>src/hello</code> ，新建文件 <code>hello.go</code> ，写下经典的 <code>hello, world</code> ：
+在工作目录下创建 <code>src/hello</code> 目录，然后创建 <code>hello.go</code> ：
 </p>
 
 <div class="org-src-container">
@@ -293,55 +298,17 @@ for the JavaScript code in this tag.
 <span style="color: #0000FF;">import</span> <span style="color: #008000;">"fmt"</span>
 
 <span style="color: #0000FF;">func</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-    fmt.<span style="color: #006699;">Println</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"hello, world"</span><span style="color: #7388D6;">)</span>
+    fmt.<span style="color: #006699;">Printf</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"hello, world\n"</span><span style="color: #7388D6;">)</span>
 <span style="color: #707183;">}</span>
 </pre>
 </div>
 
 <p>
-然后编译运行：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-go">$ cd $HOME/<span style="color: #0000FF;">go</span>/src/hello
-$ <span style="color: #0000FF;">go</span> run hello.<span style="color: #0000FF;">go</span>
-hello, world
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org10dd67d" class="outline-3">
-<h3 id="org10dd67d"><span class="section-number-3">1.4</span> GOROOT 和 GOPATH 环境变量</h3>
-<div class="outline-text-3" id="text-1-4">
-<p>
-GOPATH 是为了解决导入问题，用来显示 Go 代码的位置。GOPATH 必须按照规定的结构：
-</p>
-
-<ul class="org-ul">
-<li><code>src</code> 目录是用来放源代码，src 下的路径决定了导入路径和可执行文件的名称</li>
-<li><code>pkg</code> 目录用来存放已安装的软件包对象，每个目标的操作系统和架构对都有自己的 pkg 子目录（ <code>pkg/GOOS_GOARCH</code> ）</li>
-<li><code>bin</code> 目录用来放已经编译好的命令，比如 <code>gocode</code>, <code>godef</code> 等</li>
-</ul>
-
-<p>
-GOROOT：Go 的二进制分布在 <code>/usr/local/go</code> 下，但是 Go 工具有可能放在不同的位置下，这种情况下你可以将 GOROOT 指向不同的位置，注意 GOROOT 在需要自定义安装位置的时候才是必须要设置的，所以 GOROOT 是可选的。
+<code>go run hello.go</code> 看到 <code>hello, world</code> 表示安装成功。
 </p>
 
 <p>
-添加 GOPATH 和 GOROOT：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell"><span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">GOPATH</span>=$<span style="color: #BA36A5;">HOME</span>/go
-<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #BA36A5;">GOPATH</span>/bin
-<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">GOROOT</span>=$<span style="color: #BA36A5;">HOME</span>/go1.10
-<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #BA36A5;">GOROOT</span>/bin
-</pre>
-</div>
-
-<p>
-将上面代码添加到 <code>$HOME/.profile</code> 下。
+<b>注意</b> 如果存在旧版本的 Go 需要先卸载才行。
 </p>
 </div>
 </div>
@@ -352,77 +319,41 @@ GOROOT：Go 的二进制分布在 <code>/usr/local/go</code> 下，但是 Go 工
 <div class="outline-text-2" id="text-2">
 <ol class="org-ol">
 <li>删除 <code>/usr/local/go</code> 目录</li>
-<li>删除工作目录</li>
 <li>编辑 <code>/etc/profile</code> 或者 <code>$HOME/profile</code> 移除 <code>PATH</code> 环境变量中的 go bin 路径</li>
+<li>删除工作目录</li>
 </ol>
 </div>
 </div>
 
-<div id="outline-container-orgd9874e2" class="outline-2">
-<h2 id="orgd9874e2"><span class="section-number-2">3</span> 工具链</h2>
+<div id="outline-container-org268eafc" class="outline-2">
+<h2 id="org268eafc"><span class="section-number-2">3</span> 插件和 IDE</h2>
 <div class="outline-text-2" id="text-3">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<p>
+我使用 Emacs 写 Go 代码：
+</p>
 
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">名称</th>
-<th scope="col" class="org-left">说明</th>
-<th scope="col" class="org-left">安装</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">gopls</td>
-<td class="org-left">LSP server for Go</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/gopls</code></td>
-</tr>
-
-<tr>
-<td class="org-left">godef</td>
-<td class="org-left">find symbol information in Go source</td>
-<td class="org-left"><code>go get -u -v github.com/rogpeppe/godef</code></td>
-</tr>
-
-<tr>
-<td class="org-left">guru</td>
-<td class="org-left">a tool for answering questions about Go source code</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/guru</code></td>
-</tr>
-
-<tr>
-<td class="org-left">gorename</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/gorename</code></td>
-</tr>
-
-<tr>
-<td class="org-left">goimports</td>
-<td class="org-left">自动引入和删除包，这个牛逼了</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/goimports</code></td>
-</tr>
-
-<tr>
-<td class="org-left">godoc</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left"><code>go get -u -v golang.org/x/tools/cmd/godoc</code></td>
-</tr>
-</tbody>
-</table>
+<ul class="org-ul">
+<li><a href="https://github.com/dominikh/go-mode.el">go-mode</a> 是 go 的 mirror mode，语法高亮和一些简单的 IDE 功能，依赖 go-guru，go-rename</li>
+<li><a href="https://github.com/emacs-lsp/lsp-mode/">emacs-lsp/lsp-mode</a> 是 <a href="https://langserver.org/">LSP</a> 的 Emacs 实现。只是一个客户端，server 用的是 <a href="https://github.com/golang/tools/tree/master/gopls">gopls</a>，还依赖 goimports</li>
+</ul>
 
 <p>
-如果提示 <code>go: cannot use path@version syntax in GOPATH mode</code> ，需要添加: <code>GO111MODULE=on go get golang.org/x/tools/cmd/godoc</code> .
+安装：
 </p>
+
+<pre class="example">
+go get -u -v golang.org/x/tools/cmd/guru
+go get -u -v golang.org/x/tools/cmd/gorename
+go get -u -v golang.org/x/tools/gopls
+go get -u -v golang.org/x/tools/cmd/goimports
+</pre>
 
 <p>
 <i>部分工具需要 FQ 才能安装。</i>
+</p>
+
+<p>
+Emacs 配置见：<a href="https://github.com/zhangjie2012/_emacs.d/blob/master/lisp/init-lsp.el">https://github.com/zhangjie2012/_emacs.d/blob/master/lisp/init-lsp.el</a>
 </p>
 </div>
 </div>
@@ -452,17 +383,7 @@ GOROOT：Go 的二进制分布在 <code>/usr/local/go</code> 下，但是 Go 工
 </p>
 </div>
 </div>
-<div id="footnotes">
-<h2 class="footnotes">Footnotes: </h2>
-<div id="text-footnotes">
-
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
-<a href="https://github.com/golang/go/wiki/SettingGOPATH">https://github.com/golang/go/wiki/SettingGOPATH</a>
-</p></div></div>
-
-
 </div>
-</div></div>
 <div id="postamble" class="status">
 <p class="date">Date: 2017-12-07 09:41:24</p>
 <p class="author">Author: JerryZhang</p>

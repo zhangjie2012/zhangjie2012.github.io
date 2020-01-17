@@ -236,26 +236,31 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgcecd282">1. govender</a>
+<li><a href="#org7e1f23d">1. govender</a>
 <ul>
-<li><a href="#orgbe163ad">1.1. 创建项目</a></li>
-<li><a href="#org5da296c">1.2. 常规使用</a></li>
+<li><a href="#org31e0779">1.1. 创建项目</a></li>
+<li><a href="#org2e93a80">1.2. 常规使用</a></li>
+</ul>
+</li>
+<li><a href="#org62a5e67">2. Go module</a>
+<ul>
+<li><a href="#org671a7c1">2.1. 常见场景</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgcecd282" class="outline-2">
-<h2 id="orgcecd282"><span class="section-number-2">1</span> govender</h2>
+<div id="outline-container-org7e1f23d" class="outline-2">
+<h2 id="org7e1f23d"><span class="section-number-2">1</span> govender</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 govendor: <a href="https://github.com/kardianos/govendor">https://github.com/kardianos/govendor</a>，安装： <code>go get -u github.com/kardianos/govendor</code> 。
 </p>
 </div>
 
-<div id="outline-container-orgbe163ad" class="outline-3">
-<h3 id="orgbe163ad"><span class="section-number-3">1.1</span> 创建项目</h3>
+<div id="outline-container-org31e0779" class="outline-3">
+<h3 id="org31e0779"><span class="section-number-3">1.1</span> 创建项目</h3>
 <div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
 <li>项目初始化： <code>govendor init</code></li>
@@ -265,13 +270,72 @@ govendor: <a href="https://github.com/kardianos/govendor">https://github.com/kar
 </div>
 </div>
 
-<div id="outline-container-org5da296c" class="outline-3">
-<h3 id="org5da296c"><span class="section-number-3">1.2</span> 常规使用</h3>
+<div id="outline-container-org2e93a80" class="outline-3">
+<h3 id="org2e93a80"><span class="section-number-3">1.2</span> 常规使用</h3>
 <div class="outline-text-3" id="text-1-2">
 <ul class="org-ul">
 <li>git pull 下来项目后，本地同步安装 package： <code>govendor sync -v</code></li>
 <li>查看 package 被哪里引用： <code>govendor list -v package</code></li>
 <li>govendor 其实并不那么好用（不然 go 的 package 管理也不会这么混乱了），升级和删除 package 等，暴力解法是：删掉 vendor 目录，重新走一遍初始化</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org62a5e67" class="outline-2">
+<h2 id="org62a5e67"><span class="section-number-2">2</span> Go module</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<b>2020-01-17 14:14:44 Fri update</b>
+</p>
+
+<p>
+官方的几篇介绍文章：
+</p>
+
+<ol class="org-ol">
+<li><a href="https://blog.golang.org/using-go-modules">Using Go Modules</a></li>
+<li><a href="https://blog.golang.org/migrating-to-go-modules">Migrating to Go Modules</a></li>
+<li><a href="https://blog.golang.org/publishing-go-modules">Publishing Go Modules</a></li>
+<li><a href="https://blog.golang.org/v2-go-modules">Go Modules: v2 and Beyond</a></li>
+</ol>
+
+<p>
+Go 1.11 之后官方支持包管理工具 <code>go mod</code> 。
+</p>
+
+<pre class="example">
+Usage:
+
+    go mod &lt;command&gt; [arguments]
+
+The commands are:
+
+    download    download modules to local cache
+    edit        edit go.mod from tools or scripts
+    graph       print module requirement graph
+    init        initialize new module in current directory
+    tidy        add missing and remove unused modules
+    vendor      make vendored copy of dependencies
+    verify      verify dependencies have expected content
+    why         explain why packages or modules are needed
+</pre>
+</div>
+
+<div id="outline-container-org671a7c1" class="outline-3">
+<h3 id="org671a7c1"><span class="section-number-3">2.1</span> 常见场景</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li>初始化： <code>go mod init</code> 会生成 go.mod 文件；如果在 <code>GOPATH</code> 之外的项目， <code>go mod init</code> 需要指定仓库名称</li>
+<li>添加依赖：如果 Go 发现有新的 package 引入，在执行 <code>go build</code> 或者 <code>go test</code> 会自动 finding-&gt;downloading-&gt;extracting，然后将 package 名称和版本写入到 go.mod 文件中。
+引入一个 package，package 可能还依赖其它的 package，go.mod 只记录根依赖，你可以通过 <code>go list -m all</code> 来查看所有的依赖；
+除了 go.mod 之外，还生成了一个 go.sum 文件用来做 hash 校验；
+<b>go.mod 和 go.sum 都应该放到版本管理工具中</b></li>
+<li>升级依赖， <code>go get</code> 包之后，go.mod 会自动升级到最新版本；
+<ul class="org-ul">
+<li><code>go list -m -versions</code> 可以查看包的版本</li>
+</ul></li>
+<li>移出不常用的依赖 <code>go mod tidy</code></li>
+<li><code>go mod download</code> 下载依赖的 module 到本地缓存</li>
 </ul>
 </div>
 </div>
