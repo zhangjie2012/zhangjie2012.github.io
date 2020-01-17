@@ -269,7 +269,7 @@ for the JavaScript code in this tag.
 <h3 id="orge39ff44"><span class="section-number-3">2.1</span> by <a href="https://stackoverflow.com/users/356788/ken-cochrane">Ken Cochrane</a></h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
-Docker 最初使用的是 <a href="https://linuxcontainers.org/">LinuX Containers</a>（LXC），但是后来切换到了 <a href="https://github.com/opencontainers/runc">runC</a>（之前称为 <span class="underline">libcontainer</span> ），它可以把同一个操作系统做为运行主机。这就允许它共享宿主机操作系统的资源。此外，它使用分层文件系统（<a href="http://aufs.sourceforge.net/">AuFS</a>）并管理网络。
+Docker 最初使用的是 <a href="https://linuxcontainers.org/">LinuX Containers</a>（LXC），但是后来切换到了 <a href="https://github.com/opencontainers/runc">runC</a>（之前称为 <code>libcontainer</code> ），它可以把同一个操作系统做为运行主机。这就允许它共享宿主机操作系统的资源。此外，它使用分层文件系统（<a href="http://aufs.sourceforge.net/">AuFS</a>）并管理网络。
 </p>
 
 <p>
@@ -282,7 +282,7 @@ AuFS 是一个分层的文件系统，你可以将只读部分和写入部分合
 </p>
 
 <p>
-完整的虚拟化系统可能或者给它分配的资源，实现最小的共享。为了实现尽可能多的隔离，就会变得很重量级（需要更多的资源）。使用 Docker ，隔离少，但是很轻量级（需要更少的资源消耗）。
+完整的虚拟化系统可能或者给它分配的资源，实现最小的共享。为了实现尽可能多的隔离，就会变得很重量级（需要更多的资源）。使用 Docker，隔离少，但是很轻量级（需要更少的资源消耗）。
 所以，你可以在主机上轻松运行上千个容器，都不会抖动。假如使用的 Xen，除非你有一个巨大的主机（才能实现相同的量级），但我认为这是不可能实现的。
 </p>
 
@@ -309,7 +309,7 @@ AuFS 是一个分层的文件系统，你可以将只读部分和写入部分合
 </p>
 
 <p>
-Docker 可以将操作系统的快照放到共享镜像中，并且更容易的部署在 Docker 主机上。在本地、开发环境、质检环境、生产环境中，都有相同的镜像。当然你也可以使用其他的工具，但不是那么容易或者快速。
+Docker 可以将操作系统的快照放到共享镜像中，并且更容易的部署在 Docker 主机上。在本地开发环境、质检环境、生产环境中，都有相同的镜像。当然你也可以使用其他的工具，但不是那么容易或者快速。
 </p>
 
 <p>
@@ -386,7 +386,7 @@ Docker 可以将操作系统的快照放到共享镜像中，并且更容易的�
 <div class="outline-text-3" id="text-2-3">
 <p>
 Docker <del>并不是</del> 一项虚拟化技术。它依赖于实际实现基于容器的虚拟化或者操作系统级别的虚拟化工具。早先使用 LXC 驱动，后来迁移到了 libcontainer 现在改名为为 runC。
-Docker 主要专注于应用程序容器化的自动部署。应用程序容器旨在打包和运行单个服务，而系统容器设计是用于运行多个进程，向虚拟机。所以，Docker 可以看作是容器化系统上的容器管理或者应用部署工具。
+Docker 主要专注于应用程序容器化的自动部署。应用程序容器旨在打包和运行单个服务，而系统容器设计是用于运行多个进程，像虚拟机。所以，Docker 可以看作是容器化系统上的容器管理或者应用部署工具。
 </p>
 
 <p>
@@ -454,9 +454,11 @@ Hyper-V 处理创建客户虚拟机操作的虚拟环境，它监管客户系统
 半虚拟化也称之为 Type 1 虚拟机管理程序，直接在硬件上运行，或者「裸金属」，并直接向其上运行的虚拟机提供虚拟化服务。它帮助操作系统，虚拟化硬件，和真正的硬件协作以实现最佳性能。这些管理程序通常占用很小的空间，并且自身不需要大量的资源。
 </p>
 
-<p>
-![](<img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/oPO6Um.png" alt="oPO6Um.png" />)
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/oPO6Um.png" alt="oPO6Um.png" />
 </p>
+</div>
 
 <p>
 这种类型的例子包括 Xen，KVM，etc。
@@ -514,11 +516,11 @@ Linux 控制组（cgroups）子系统，是另外一个容器虚拟化的主要�
 </p>
 
 <p>
-与虚拟机镜像相比，容器（Docker 或者 LXC ）镜像大小很小，因此容器镜像很容易分发。
+与虚拟机镜像相比，容器（Docker 或者 LXC）镜像大小很小，因此容器镜像很容易分发。
 </p>
 
 <p>
-容器中的资源管理是通过 cgroups 实现的，cgroups 不允许容器消耗比实际分配给它们的更多资源。但是，到目前为止，主机的所有资源在容器中都是可见的，但是不能使用。过在容器和主机上同时运行 <code>top</code> 或者 <code>htop</code> 输出的内容很类似。
+容器中的资源管理是通过 cgroups 实现的，cgroups 不允许容器消耗比实际分配给它们的更多资源。但是，到目前为止，主机的所有资源在容器中都是可见的，但是不能使用。如果在容器和主机上同时运行 <code>top</code> 或者 <code>htop</code> 输出的内容很类似。
 </p>
 
 <p>
@@ -564,7 +566,7 @@ Linux linuxkit-025000000001 4.9.93-linuxkit-aufs #1 SMP Wed Jun 6 16:86_64 Linux
 </p>
 
 <p>
-hypervisor.framework 有很多的限制。因为 Docker 没有在 Mac 上暴露 <code>docker0</code> 网络接口。因此，你无法在主机访问容器。到目前为止，~docker0~ 仅可以在 VM 内使用。
+hypervisor.framework 有很多的限制。因为 Docker 没有在 Mac 上暴露 <code>docker0</code> 网络接口。因此，你无法在主机访问容器。到目前为止， <code>docker0</code> 仅可以在 VM 内使用。
 </p>
 
 <p>
