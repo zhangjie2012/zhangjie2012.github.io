@@ -249,45 +249,81 @@ for the JavaScript code in this tag.
 帖子内容：
 </p>
 
+<blockquote>
 <p>
 Dinah:
 </p>
 
 <p>
-Joel 在 <a href="http://blog.stackoverflow.com/2008/12/podcast-34/">Stack
-Overflow podcast
-#34</a>中指出，在<a href="http://www.amazon.com/dp/0131103628/?tag=stackoverfl08-20">C程序设计语言</a>(aka:
-K&amp;R)中，都提到了在 C 数组的一个性质：a[5] = 5[a]。
+Joel 在 <a href="http://blog.stackoverflow.com/2008/12/podcast-34/">Stack Overflow podcast #34 </a>中指出，在<a href="http://www.amazon.com/dp/0131103628/?tag=stackoverfl08-20">C程序设计语言</a>(aka: K&amp;R)中，都提到了在 C 数组的一个性质： <code>a[5] = 5[a]</code> 。
 </p>
 
 <p>
-Joel 解释说那是指针运算，但是我仍旧不理解，为什么 a[5] == 5[a] ？
+Joel 解释说那是指针运算，但是我仍旧不理解，为什么 <code>a[5] == 5[a]</code> ？
 </p>
+</blockquote>
 
 <hr />
 
-<ul class="org-ul">
-<li>Mehrdad Afshari: 因为 a[5] 相当于 =*(a+5)=，5[a]
-相当于=*(5+a)=。用小学数学我们就可以判断它们是相等的。这是一种数组作为指针的直接表现方式(This
-is the direct artifact of arrays behaving as
-pointers)。"a"是一个内存地址。"a[5]"是距离 a 5
-个长度元素的值。元素的地址是 "a+5"。这和从内存地址开始 5
-个元素的位置开始偏移 a 个地址是一样的，地址空间是(5+a)。</li>
-<li>John MacIntyre: 我想知道是不是和 /(5/sizeof(a)) +
-a)一样，要是这样的话，就很好解释了。</li>
-<li>Mehrdad Afshar: 是的，我没有提到 sizeof
-的原因是那样可以很简单把问题解释清楚，加上时候会变得复杂。(I was going
-to mention the size. but thought I would complicate just things to get
-the core idea.)</li>
-<li>Johannes Schaub - litb : John，不需要使用
-sizeof，系统在偏移的时候，自动按照 sizeof 的大小的进行递增的。</li>
-<li>Mehrdad Afshari: @Dinah，站在C编译器的角度上说，你是对的。不需要考虑
-sizeof，我提到的这些表达式也是类似的（不用考虑sizeof）。然而编译器在生成机器码的时候，会考虑
-sizeof 的。如果 a 是一个 int 数组，a[5] 编译器将会使用 mov eax,
-[ebx+20] 这样的汇编代码来实现，而不是 [ebx+5]。</li>
-<li>David Thornley：因为数组的存取方式被定义成指针（的存取方式），a[i]
-实现为 *(a+i)，它们是可互换的。</li>
-</ul>
+<p>
+<b>Mehrdad Afshari</b>
+</p>
+
+<p>
+因为 <code>a[5]</code> 相当于 <code>*(a+5)</code> ， <code>5[a]</code> 相当于 <code>*(5+a)</code> 。用小学数学我们就可以判断它们是相等的。
+</p>
+
+<p>
+这是一种数组作为指针的直接表现方式(This is the direct artifact of arrays behaving as pointers)。
+"a"是一个内存地址。"a[5]"是距离 a 5 个长度元素的值。元素的地址是 "a+5"。这和从内存地址开始 5 个元素的位置开始偏移 a 个地址是一样的，
+地址空间是(5+a)。
+</p>
+
+<p>
+<b>John MacIntyre</b>
+</p>
+
+<p>
+我想知道是不是和 /(5/sizeof(a)) + a)一样，要是这样的话，就很好解释了。
+</p>
+
+<p>
+<b>Mehrdad Afshar</b>
+</p>
+
+<p>
+是的，我没有提到 sizeof 的原因是那样可以很简单把问题解释清楚，加上时候会变得复杂。
+</p>
+
+<p>
+(I was going to mention the size. but thought I would complicate just things to get the core idea.)
+<b>Johannes Schaub - litb</b>
+</p>
+
+<p>
+John，不需要使用 sizeof，系统在偏移的时候，自动按照 sizeof 的大小的进行递增的。
+</p>
+
+<p>
+<b>Mehrdad Afshari</b>
+</p>
+
+<p>
+@Dinah，站在C编译器的角度上说，你是对的。
+</p>
+
+<p>
+不需要考虑 <code>sizeof</code> ，我提到的这些表达式也是类似的（不用考虑 sizeof）。然而编译器在生成机器码的时候，会考虑 sizeof 的。
+如果 a 是一个 int 数组， <code>a[5]</code> 编译器将会使用 <code>mov eax</code> , <code>[ebx+20]</code> 这样的汇编代码来实现，而不是 <code>[ebx+5]</code> 。
+</p>
+
+<p>
+<b>David Thornley</b>
+</p>
+
+<p>
+因为数组的存取方式被定义成指针（的存取方式）， <code>a[i]</code> 实现为 <code>*(a+i)</code> ，它们是可互换的。
+</p>
 
 <hr />
 

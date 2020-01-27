@@ -245,14 +245,18 @@ for the JavaScript code in this tag.
 水平有限，如有翻译不当，欢迎探讨、批评与指正。
 </p>
 
+<hr />
+
 <p>
 帖子内容：
 </p>
 
+<blockquote>
 <p>
-C++
-切分字符串的最优雅的方式是什么？我们假定字符串中每个单词分隔符是空格。(备注：我对C的字符串函数或者那种字符处理/存取方式不是很感兴趣。因此，请优先选择优雅而不是效率)
+C++ 切分字符串的最优雅的方式是什么？我们假定字符串中每个单词分隔符是空格。
+(备注：我对C的字符串函数或者那种字符处理/存取方式不是很感兴趣。因此，请优先选择优雅而不是效率)
 </p>
+</blockquote>
 
 <hr />
 
@@ -260,60 +264,62 @@ C++
 我现在能想到的最好的方式是：
 </p>
 
-<pre class="example">
-#include &lt;iostream&gt;
-#include &lt;sstream&gt;
-#include &lt;string&gt;
-using namespace std;
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">iostream</span><span style="color: #707183;">&gt;</span>
+<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">sstream</span><span style="color: #707183;">&gt;</span>
+<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">string</span><span style="color: #707183;">&gt;</span>
+<span style="color: #0000FF;">using</span> <span style="color: #0000FF;">namespace</span> <span style="color: #D0372D;">std</span>;
 
-int main()
-{
-    string s("Somewhere down the road");
-    istringstream iss(s);
+<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
+<span style="color: #707183;">{</span>
+    <span style="color: #6434A3;">string</span> <span style="color: #BA36A5;">s</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"Somewhere down the road"</span><span style="color: #7388D6;">)</span>;
+    <span style="color: #6434A3;">istringstream</span> <span style="color: #BA36A5;">iss</span><span style="color: #7388D6;">(</span>s<span style="color: #7388D6;">)</span>;
 
-    do
-    {
-        string sub;
+    <span style="color: #0000FF;">do</span>
+    <span style="color: #7388D6;">{</span>
+        <span style="color: #6434A3;">string</span> <span style="color: #BA36A5;">sub</span>;
         iss &gt;&gt; sub;
-        cout &lt;&lt; "Substring: " &lt;&lt; sub &lt;&lt; endl;
-    } while (iss);
+        cout &lt;&lt; <span style="color: #008000;">"Substring: "</span> &lt;&lt; sub &lt;&lt; endl;
+    <span style="color: #7388D6;">}</span> <span style="color: #0000FF;">while</span> <span style="color: #7388D6;">(</span>iss<span style="color: #7388D6;">)</span>;
 
-    return 0;
-}
+    <span style="color: #0000FF;">return</span> 0;
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
-另一种方式去萃取输入字符串的分隔符，使用标准库函数很容易实现。下面是使用
-STL 的设计方案（健壮并且优雅）：
+另一种方式去萃取输入字符串的分隔符，使用标准库函数很容易实现。下面是使用 STL 的设计方案（健壮并且优雅）：
 </p>
 
-<pre class="example">
-#include &lt;iostream&gt;
-#include &lt;string&gt;
-#include &lt;sstream&gt;
-#include &lt;algorithm&gt;
-#include &lt;iterator&gt;
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">iostream</span><span style="color: #707183;">&gt;</span>
+<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">string</span><span style="color: #707183;">&gt;</span>
+<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">sstream</span><span style="color: #707183;">&gt;</span>
+<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">algorithm</span><span style="color: #707183;">&gt;</span>
+<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">iterator</span><span style="color: #707183;">&gt;</span>
 
-int main() {
-    using namespace std;
-    string sentence = "Something in the way she moves...";
-    istringstream iss(sentence);
-    copy(istream_iterator&lt;string&gt;(iss),
-             istream_iterator&lt;string&gt;(),
-             ostream_iterator&lt;string&gt;(cout, "\n"));
-}
+<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">using</span> <span style="color: #0000FF;">namespace</span> <span style="color: #D0372D;">std</span>;
+    <span style="color: #6434A3;">string</span> <span style="color: #BA36A5;">sentence</span> = <span style="color: #008000;">"Something in the way she moves..."</span>;
+    <span style="color: #6434A3;">istringstream</span> <span style="color: #BA36A5;">iss</span><span style="color: #7388D6;">(</span>sentence<span style="color: #7388D6;">)</span>;
+    copy<span style="color: #7388D6;">(</span>istream_iterator<span style="color: #909183;">&lt;</span><span style="color: #6434A3;">string</span><span style="color: #909183;">&gt;(</span>iss<span style="color: #909183;">)</span>,
+             istream_iterator<span style="color: #909183;">&lt;</span><span style="color: #6434A3;">string</span><span style="color: #909183;">&gt;()</span>,
+             ostream_iterator<span style="color: #909183;">&lt;</span><span style="color: #6434A3;">string</span><span style="color: #909183;">&gt;(</span>cout, <span style="color: #008000;">"\n"</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span>;
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
 如果想要把分割后的字符串放到一个容器中，而不是控制台的话，使用相同的泛型算法即可。
 </p>
 
-<pre class="example">
-vector tokens;
-    copy(istream_iterator(iss),
-         istream_iterator(),
-         back_inserter &gt;(tokens));[/c]
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">vector</span> <span style="color: #BA36A5;">tokens</span>;
+    copy<span style="color: #707183;">(</span>istream_iterator<span style="color: #7388D6;">(</span>iss<span style="color: #7388D6;">)</span>,
+         istream_iterator<span style="color: #7388D6;">()</span>,
+         back_inserter &gt;<span style="color: #7388D6;">(</span>tokens<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>;<span style="color: #707183;">[</span>/c<span style="color: #707183;">]</span>
 </pre>
+</div>
 
 <p>
 评：这种方案只能分割空格，没有伸缩性。
@@ -325,16 +331,15 @@ vector tokens;
 使用 boost 库：
 </p>
 
-<pre class="example">
-std::vector strs;
-boost::split(strs, "string to split", boost::is_any_of("\t "));
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">vector</span> <span style="color: #BA36A5;">strs</span>;
+<span style="color: #D0372D;">boost</span>::split<span style="color: #707183;">(</span>strs, <span style="color: #008000;">"string to split"</span>, <span style="color: #D0372D;">boost</span>::is_any_of<span style="color: #7388D6;">(</span><span style="color: #008000;">"\t "</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>;
 </pre>
+</div>
 
 <p>
-我打赌这个要比使用 stringstream
-快的多。并且这是一个泛型模板方法，它可以用来分割任意类型的字符串(wchar,etc.
-or
-UTF-8)，使用任意的分隔符。具体请看<a href="http://www.boost.org/doc/libs/1_36_0/doc/html/string_algo/usage.html">文档</a>。
+我打赌这个要比使用 stringstream 快的多。并且这是一个泛型模板方法，它可以用来分割任意类型的字符串(wchar,etc. or UTF-8)，使用任意的分隔符。
+具体请看<a href="http://www.boost.org/doc/libs/1_36_0/doc/html/string_algo/usage.html">文档</a>。
 </p>
 
 <p>
@@ -344,90 +349,93 @@ UTF-8)，使用任意的分隔符。具体请看<a href="http://www.boost.org/do
 <hr />
 
 <p>
-把 delim 作为作为分隔符，第一个函数把结果放到一个已经存在构造好了的
-vector 中，第二个函数返回一个新的 vector。
+把 delim 作为作为分隔符，第一个函数把结果放到一个已经存在构造好了的 vector 中，第二个函数返回一个新的 vector。
 </p>
 
-<pre class="example">
-std::vector &amp;split(const std::string &amp;s, char delim, std::vector &amp;elems) {
-    std::stringstream ss(s);
-    std::string item;
-    while(std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">vector</span> &amp;<span style="color: #006699;">split</span><span style="color: #707183;">(</span><span style="color: #0000FF;">const</span> <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">string</span> &amp;<span style="color: #BA36A5;">s</span>, <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">delim</span>, <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">vector</span> &amp;<span style="color: #BA36A5;">elems</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">stringstream</span> <span style="color: #BA36A5;">ss</span><span style="color: #7388D6;">(</span>s<span style="color: #7388D6;">)</span>;
+    <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">string</span> <span style="color: #BA36A5;">item</span>;
+    <span style="color: #0000FF;">while</span><span style="color: #7388D6;">(</span><span style="color: #D0372D;">std</span>::getline<span style="color: #909183;">(</span>ss, item, delim<span style="color: #909183;">)</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
+        elems.push_back<span style="color: #909183;">(</span>item<span style="color: #909183;">)</span>;
+    <span style="color: #7388D6;">}</span>
+    <span style="color: #0000FF;">return</span> elems;
+<span style="color: #707183;">}</span>
 
-std::vector split(const std::string &amp;s, char delim) {
-    std::vector elems;
-    return split(s, delim, elems);
+<span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">vector</span> <span style="color: #006699;">split</span><span style="color: #707183;">(</span><span style="color: #0000FF;">const</span> <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">string</span> &amp;<span style="color: #BA36A5;">s</span>, <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">delim</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">vector</span> <span style="color: #BA36A5;">elems</span>;
+    <span style="color: #0000FF;">return</span> split<span style="color: #7388D6;">(</span>s, delim, elems<span style="color: #7388D6;">)</span>;
 
-}
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
 注意：这种方法不能跳过空的符号，比如下面有四个数据项，其中的一个是空的。
 </p>
 
-<pre class="example">
-std::vector x = split("one:two::three", ':');
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">vector</span> <span style="color: #BA36A5;">x</span> = split<span style="color: #707183;">(</span><span style="color: #008000;">"one:two::three"</span>, <span style="color: #008000;">':'</span><span style="color: #707183;">)</span>;
 </pre>
+</div>
 
 <hr />
 
-<pre class="example">
-template &lt; class ContainerT &gt;
-void tokenize(const std::string&amp; str, ContainerT&amp; tokens,
-              const std::string&amp; delimiters = " ", const bool trimEmpty = false)
-{
-   std::string::size_type pos, lastPos = 0;
-   while(true)
-   {
-      pos = str.find_first_of(delimiters, lastPos);
-      if(pos == std::string::npos)
-      {
-         pos = str.length();
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #0000FF;">template</span> <span style="color: #707183;">&lt;</span> <span style="color: #0000FF;">class</span> <span style="color: #6434A3;">ContainerT</span> <span style="color: #707183;">&gt;</span>
+<span style="color: #6434A3;">void</span> <span style="color: #006699;">tokenize</span><span style="color: #707183;">(</span><span style="color: #0000FF;">const</span> <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">string</span>&amp; <span style="color: #BA36A5;">str</span>, <span style="color: #6434A3;">ContainerT</span>&amp; <span style="color: #BA36A5;">tokens</span>,
+              <span style="color: #0000FF;">const</span> <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">string</span>&amp; <span style="color: #BA36A5;">delimiters</span> = <span style="color: #008000;">" "</span>, <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">bool</span> <span style="color: #BA36A5;">trimEmpty</span> = <span style="color: #D0372D;">false</span><span style="color: #707183;">)</span>
+<span style="color: #707183;">{</span>
+   <span style="color: #D0372D;">std</span>::<span style="color: #D0372D;">string</span>::<span style="color: #6434A3;">size_type</span> <span style="color: #BA36A5;">pos</span>, <span style="color: #BA36A5;">lastPos</span> = 0;
+   <span style="color: #0000FF;">while</span><span style="color: #7388D6;">(</span><span style="color: #D0372D;">true</span><span style="color: #7388D6;">)</span>
+   <span style="color: #7388D6;">{</span>
+      pos = str.find_first_of<span style="color: #909183;">(</span>delimiters, lastPos<span style="color: #909183;">)</span>;
+      <span style="color: #0000FF;">if</span><span style="color: #909183;">(</span>pos == <span style="color: #D0372D;">std</span>::<span style="color: #D0372D;">string</span>::npos<span style="color: #909183;">)</span>
+      <span style="color: #909183;">{</span>
+         pos = str.length<span style="color: #709870;">()</span>;
 
-         if(pos != lastPos || !trimEmpty)
-            tokens.push_back(ContainerT::value_type(str.data()+lastPos,
-                  (ContainerT::value_type::size_type)pos-lastPos ));
+         <span style="color: #0000FF;">if</span><span style="color: #709870;">(</span>pos != lastPos || !trimEmpty<span style="color: #709870;">)</span>
+            tokens.push_back<span style="color: #709870;">(</span><span style="color: #D0372D;">ContainerT</span>::value_type<span style="color: #907373;">(</span>str.data<span style="color: #6276BA;">()</span>+lastPos,
+                  <span style="color: #6276BA;">(</span><span style="color: #D0372D;">ContainerT</span>::<span style="color: #D0372D;">value_type</span>::<span style="color: #6434A3;">size_type</span><span style="color: #6276BA;">)</span>pos-lastPos <span style="color: #907373;">)</span><span style="color: #709870;">)</span>;
 
-         break;
-      }
-      else
-      {
-         if(pos != lastPos || !trimEmpty)
-            tokens.push_back(ContainerT::value_type(str.data()+lastPos,
-                  (ContainerT::value_type::size_type)pos-lastPos ));
-      }
+         <span style="color: #0000FF;">break</span>;
+      <span style="color: #909183;">}</span>
+      <span style="color: #0000FF;">else</span>
+      <span style="color: #909183;">{</span>
+         <span style="color: #0000FF;">if</span><span style="color: #709870;">(</span>pos != lastPos || !trimEmpty<span style="color: #709870;">)</span>
+            tokens.push_back<span style="color: #709870;">(</span><span style="color: #D0372D;">ContainerT</span>::value_type<span style="color: #907373;">(</span>str.data<span style="color: #6276BA;">()</span>+lastPos,
+                  <span style="color: #6276BA;">(</span><span style="color: #D0372D;">ContainerT</span>::<span style="color: #D0372D;">value_type</span>::<span style="color: #6434A3;">size_type</span><span style="color: #6276BA;">)</span>pos-lastPos <span style="color: #907373;">)</span><span style="color: #709870;">)</span>;
+      <span style="color: #909183;">}</span>
 
       lastPos = pos + 1;
-   }
-};
+   <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>;
 </pre>
+</div>
 
 <hr />
 
-<pre class="example">
-#include &lt;vector&gt;
-#include &lt;string&gt;
-#include &lt;sstream&gt;
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">vector</span><span style="color: #707183;">&gt;</span>
+<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">string</span><span style="color: #707183;">&gt;</span>
+<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">sstream</span><span style="color: #707183;">&gt;</span>
 
-using namespace std;
+<span style="color: #0000FF;">using</span> <span style="color: #0000FF;">namespace</span> <span style="color: #D0372D;">std</span>;
 
-int main()
-{
-    string str("Split me by whitespaces");
-    string buf; // Have a buffer string
-    stringstream ss(str); // Insert the string into a stream
+<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
+<span style="color: #707183;">{</span>
+    <span style="color: #6434A3;">string</span> <span style="color: #BA36A5;">str</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"Split me by whitespaces"</span><span style="color: #7388D6;">)</span>;
+    <span style="color: #6434A3;">string</span> <span style="color: #BA36A5;">buf</span>; <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Have a buffer string</span>
+    <span style="color: #6434A3;">stringstream</span> <span style="color: #BA36A5;">ss</span><span style="color: #7388D6;">(</span>str<span style="color: #7388D6;">)</span>; <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Insert the string into a stream</span>
 
-    vector&lt;string&gt; tokens; // Create vector to hold our words
+    <span style="color: #6434A3;">vector</span><span style="color: #7388D6;">&lt;</span><span style="color: #6434A3;">string</span><span style="color: #7388D6;">&gt;</span> <span style="color: #BA36A5;">tokens</span>; <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Create vector to hold our words</span>
 
-    while (ss &gt;&gt; buf)
-        tokens.push_back(buf);
+    <span style="color: #0000FF;">while</span> <span style="color: #7388D6;">(</span>ss &gt;&gt; buf<span style="color: #7388D6;">)</span>
+        tokens.push_back<span style="color: #7388D6;">(</span>buf<span style="color: #7388D6;">)</span>;
 
-}
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <hr />
 
@@ -437,8 +445,8 @@ int main()
 
 <ul class="org-ul">
 <li>文中的优雅也就是我们平时所说的代码美感。</li>
-<li>本来打算把所有的英文都翻译过来的，后来发现很多实在是难以拿捏。所以后面就直接贴了代码，其实对于我们经常看代码的人，代码也许要比文字直观的多。上文代码我在
-vs2010 上验证无误。</li>
+<li>本来打算把所有的英文都翻译过来的，后来发现很多实在是难以拿捏。所以后面就直接贴了代码，其实对于我们经常看代码的人，代码也许要比文字直观的多。
+上文代码我在 vs2010 上验证无误。</li>
 </ul>
 </div>
 <div id="postamble" class="status">
