@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>sprintf\<sub>s</sub> 和 swprintf\<sub>s</sub> 在 Release 和 Debug 不同模式表现不同</title>
+<title><code>sprintf_s</code> 和 <code>swprintf_s</code> 在 Release 和 Debug 不同模式表现不同</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -231,20 +231,17 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">sprintf\<sub>s</sub> 和 swprintf\<sub>s</sub> 在 Release 和 Debug 不同模式表现不同</h1>
-<p>
-int sprintf<sub>s</sub>( char /buffer, size<sub>t</sub> sizeOfBuffer, const char /format [,
-argument] &#x2026; ); int swprintf<sub>s</sub>( wchar<sub>t</sub> /buffer, size<sub>t</sub> sizeOfBuffer,
-const wchar<sub>t</sub> /format [, argument]&#x2026; );
-</p>
+<h1 class="title"><code>sprintf_s</code> 和 <code>swprintf_s</code> 在 Release 和 Debug 不同模式表现不同</h1>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">int</span> <span style="color: #006699;">sprintf_s</span><span style="color: #707183;">(</span> <span style="color: #6434A3;">char</span> /buffer, <span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">sizeOfBuffer</span>, <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">char</span> /format <span style="color: #7388D6;">[</span>, argument<span style="color: #7388D6;">]</span> ... <span style="color: #707183;">)</span>;
+<span style="color: #6434A3;">int</span> <span style="color: #006699;">swprintf_s</span><span style="color: #707183;">(</span> <span style="color: #6434A3;">wchar_t</span> /buffer, <span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">sizeOfBuffer</span>, <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">wchar_t</span> /format <span style="color: #7388D6;">[</span>, argument<span style="color: #7388D6;">]</span>... <span style="color: #707183;">)</span>;
+</pre>
+</div>
 
 <p>
-msdn对第二个参数的解释仅仅是"Maximum number of characters to
-store."即，可存储的最大字符个数。按照常规(至少我)的理解是这样去理解这个参数的:
-当输入的字符个数大于 sizeOfBuffer 时，会进行截断等限制，用以保证不会让
-buffer 溢出；当输入的个数小于或者等于 sizeOfBuffer
-时，正常赋值即可，sprintf 和 sprintf<sub>s</sub> 的区别仅在于加了一个 sizeOfBuffer
-的判断。
+msdn 对第二个参数的解释仅仅是"Maximum number of characters to store."
+即，可存储的最大字符个数。按照常规(至少我)的理解是这样去理解这个参数的: 当输入的字符个数大于 sizeOfBuffer 时，会进行截断等限制，
+用以保证不会让 buffer 溢出；当输入的个数小于或者等于 sizeOfBuffer 时，正常赋值即可，sprintf 和 sprintf<sub>s</sub> 的区别仅在于加了一个 sizeOfBuffer 的判断。
 </p>
 
 <p>
@@ -262,30 +259,31 @@ parameter handler is invoked.
 </blockquote>
 
 <p>
-可是实际上，在 Debug 和 Release 下 sprintf<sub>s</sub> 表现形式不同：
+可是实际上，在 Debug 和 Release 下 <code>sprintf_s</code> 表现形式不同：
 </p>
 
 <p>
 Debug 模式：
 </p>
 
-<pre class="example">
-#include &lt;iostream&gt;
-#include &lt;cstdio&gt;
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">iostream</span><span style="color: #707183;">&gt;</span>
+<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">cstdio</span><span style="color: #707183;">&gt;</span>
 
-int main()
-{
-    const int buf_size = 32;
+<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
+<span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">buf_size</span> = 32;
 
-    char buf1[buf_size];
-    memset(buf1, 0, buf_size);
-    char buf2[buf_size];
-    memset(buf2, 1, buf_size);
-    // breakpoint1
-    sprintf_s(buf2, buf_size*2, "%s", "hello, world!");
-    // breakpoint2
-}
+    <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">buf1</span><span style="color: #7388D6;">[</span>buf_size<span style="color: #7388D6;">]</span>;
+    memset<span style="color: #7388D6;">(</span>buf1, 0, buf_size<span style="color: #7388D6;">)</span>;
+    <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">buf2</span><span style="color: #7388D6;">[</span>buf_size<span style="color: #7388D6;">]</span>;
+    memset<span style="color: #7388D6;">(</span>buf2, 1, buf_size<span style="color: #7388D6;">)</span>;
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">breakpoint1</span>
+    sprintf_s<span style="color: #7388D6;">(</span>buf2, buf_size*2, <span style="color: #008000;">"%s"</span>, <span style="color: #008000;">"hello, world!"</span><span style="color: #7388D6;">)</span>;
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">breakpoint2</span>
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
 在 sprintf<sub>s</sub> 上下插入一个端点，如上代码注释，breakpoint1 时内存块：
@@ -321,32 +319,32 @@ breakpoint2 时内存块：
 </pre>
 
 <p>
-可以看出由于 sizeOfBuffer 传入值大于
-buf<sub>size</sub>，导致了越界，覆盖了高地址的内存块（修改了 buf1 的值）。
+可以看出由于 sizeOfBuffer 传入值大于 buf<sub>size</sub>，导致了越界，覆盖了高地址的内存块（修改了 buf1 的值）。
 </p>
 
 <p>
 Release 验证代码：
 </p>
 
-<pre class="example">
-#include &lt;iostream&gt;
-#include &lt;cstdio&gt;
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">iostream</span><span style="color: #707183;">&gt;</span>
+<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">cstdio</span><span style="color: #707183;">&gt;</span>
 
-int main()
-{
-    const int buf_size = 32;
+<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
+<span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">buf_size</span> = 32;
 
-    char buf1[buf_size];
-    memset(buf1, 0, buf_size);
-    std::cout &lt;&lt; buf1 &lt;&lt; std::endl;
-    char buf2[buf_size];
-    memset(buf2, 1, buf_size);
+    <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">buf1</span><span style="color: #7388D6;">[</span>buf_size<span style="color: #7388D6;">]</span>;
+    memset<span style="color: #7388D6;">(</span>buf1, 0, buf_size<span style="color: #7388D6;">)</span>;
+    <span style="color: #D0372D;">std</span>::cout &lt;&lt; buf1 &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">buf2</span><span style="color: #7388D6;">[</span>buf_size<span style="color: #7388D6;">]</span>;
+    memset<span style="color: #7388D6;">(</span>buf2, 1, buf_size<span style="color: #7388D6;">)</span>;
 
-    int ret_size = sprintf_s(buf2, buf_size*4, "%s", "hello, world!");
-    std::cout &lt;&lt; ret_size &lt;&lt; std::endl;
-}
+    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">ret_size</span> = sprintf_s<span style="color: #7388D6;">(</span>buf2, buf_size*4, <span style="color: #008000;">"%s"</span>, <span style="color: #008000;">"hello, world!"</span><span style="color: #7388D6;">)</span>;
+    <span style="color: #D0372D;">std</span>::cout &lt;&lt; ret_size &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
 运行到最后的内存块：
@@ -364,8 +362,7 @@ int main()
 </pre>
 
 <p>
-尽管我刻意的修改了几次 sprintf<sub>s</sub> 的 sizeOfBuffer
-传入值，但是它始终没有越界。
+尽管我刻意的修改了几次 sprintf<sub>s</sub> 的 sizeOfBuffer 传入值，但是它始终没有越界。
 </p>
 
 <p>
@@ -373,44 +370,39 @@ int main()
 </p>
 
 <ul class="org-ul">
-<li>在 Debug 模式下 sprintf<sub>s</sub> 是这样干的，它做的第一件事情是给 buffer
-的空间长度扩展为 sizeOfBuffer ，不论实际上是否需要 sizeOfBuffer
-长度的空间，也不考虑 buffer 自身的内存大小，然后进行后面的赋值操作。
-这样带来的一个问题就是假如 sizeOfBuffer 的实际值大于 buffer
-自身的内存大小，就会覆盖掉不属于自己内存块，进而引发 bug。</li>
-<li>在 Release
-模式下，按照我们所想的那样执行（从表象看：范围检查，不会进行内存扩充操作）。</li>
+<li>在 Debug 模式下 sprintf<sub>s</sub> 是这样干的，它做的第一件事情是给 buffer 的空间长度扩展为 sizeOfBuffer，
+不论实际上是否需要 sizeOfBuffer 长度的空间，也不考虑 buffer 自身的内存大小，然后进行后面的赋值操作。
+这样带来的一个问题就是假如 sizeOfBuffer 的实际值大于 buffer 自身的内存大小，就会覆盖掉不属于自己内存块，进而引发 bug。</li>
+<li>在 Release 模式下，按照我们所想的那样执行（从表象看：范围检查，不会进行内存扩充操作）。</li>
 </ul>
 
 <p>
-我进行了源码分析，结果追踪到 <code>_vsnprintf_s_l</code>
-这个方法以后，就找不到源码了，所以最终也没有看到微软对于 <code>sprintf_s</code>
-的实现方式（网上也没有搜到具体的源码实现）。我感觉造成这种不同有两种可能，一种是针对
-DEBUG 和 RELEASE 分别对应两个实现版本；第二种是在 Release
+我进行了源码分析，结果追踪到 <code>_vsnprintf_s_l</code> 这个方法以后，就找不到源码了，所以最终也没有看到微软对于 <code>sprintf_s</code> 的实现方式
+（网上也没有搜到具体的源码实现）。我感觉造成这种不同有两种可能，一种是针对 DEBUG 和 RELEASE 分别对应两个实现版本；第二种是在 Release
 模式下，编译器对代码安全检查和优化，而 Debug 模式下故意将问题暴漏出来。
 </p>
 
 <hr />
 
 <p>
-<a href="http://msdn.microsoft.com/en-us/library/ce3zzk1kv=vs.80">sprintf<sub>s</sub>,
-swprintf<sub>s</sub> MSDN的解释</a>
+<a href="http://msdn.microsoft.com/en-us/library/ce3zzk1kv=vs.80">sprintf<sub>s</sub>, swprintf<sub>s</sub> MSDN的解释</a>
 </p>
 
-<pre class="example">
-int sprintf_s(
-   char *buffer,
-   size_t sizeOfBuffer,
-   const char *format [,
-      argument] ...
-);
-int swprintf_s(
-   wchar_t *buffer,
-   size_t sizeOfBuffer,
-   const wchar_t *format [,
-      argument]...
-);
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">int</span> <span style="color: #006699;">sprintf_s</span><span style="color: #707183;">(</span>
+   <span style="color: #6434A3;">char</span> *<span style="color: #BA36A5;">buffer</span>,
+   <span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">sizeOfBuffer</span>,
+   <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">char</span> *<span style="color: #BA36A5;">format</span> <span style="color: #7388D6;">[</span>,
+      argument<span style="color: #7388D6;">]</span> ...
+<span style="color: #707183;">)</span>;
+<span style="color: #6434A3;">int</span> <span style="color: #006699;">swprintf_s</span><span style="color: #707183;">(</span>
+   <span style="color: #6434A3;">wchar_t</span> *<span style="color: #BA36A5;">buffer</span>,
+   <span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">sizeOfBuffer</span>,
+   <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">wchar_t</span> *<span style="color: #BA36A5;">format</span> <span style="color: #7388D6;">[</span>,
+      argument<span style="color: #7388D6;">]</span>...
+<span style="color: #707183;">)</span>;
 </pre>
+</div>
 
 <p>
 Parameters

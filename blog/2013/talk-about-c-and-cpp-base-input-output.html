@@ -236,12 +236,12 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#流的分类">1. 1.流的分类</a></li>
-<li><a href="#文件打开失败">2. 2.文件打开失败</a></li>
-<li><a href="#文件无内容">3. 3. 文件无内容</a></li>
-<li><a href="#feof">4. 4. feof</a></li>
-<li><a href="#字符串截断符-0">5. 5. 字符串截断符 '\0'</a></li>
-<li><a href="#getchargetch">6. 6. getchar/getch</a></li>
+<li><a href="#流的分类">1. 流的分类</a></li>
+<li><a href="#文件打开失败">2. 文件打开失败</a></li>
+<li><a href="#文件无内容">3. 文件无内容</a></li>
+<li><a href="#feof">4. feof</a></li>
+<li><a href="#字符串截断符-0">5. 字符串截断符 '\0'</a></li>
+<li><a href="#getchargetch">6. getchar/getch</a></li>
 <li><a href="#最后基本的格式化标准">7. 最后，基本的格式化标准</a></li>
 </ul>
 </div>
@@ -251,21 +251,18 @@ for the JavaScript code in this tag.
 </p>
 
 <p>
-记录是这样的："把scanf/getchar/getch/gets这些讲一讲 by Tanky"，
-具体原因记不清了，大体是<a href="http://www.wutianqi.com/">TankyWoo</a>说好多 ACM
-新手在输入输出这块问题还是比较多，所以希望我有时间总结一下，写一写。没想到拖了这么长时间，实在惭愧。
+记录是这样的："把scanf/getchar/getch/gets这些讲一讲 by Tanky"， 具体原因记不清了，大体是 TankyWoo 说好多 ACM 新手在输入输出这块问题还是比较多，
+所以希望我有时间总结一下，写一写。没想到拖了这么长时间，实在惭愧。
 </p>
 
 <p>
-所以，本文的读者定位在初级/中级 ACMer 对语言的基本需求，我基本上没有 AC
-过，但是作为一个过来人，我大体知道输入输出这一块会卡在什么地方。
+所以，本文的读者定位在初级/中级 ACMer 对语言的基本需求，我基本上没有 AC 过，但是作为一个过来人，我大体知道输入输出这一块会卡在什么地方。
 </p>
 
 <p>
-以前写过类似总结性的笔记：<a href="http://www.cnblogs.com/chinazhangjie/archive/2010/08/19/1803057.html">C/C++输入输出流总结</a>，C/C++表面上给程序员提供了丰富的输入输出接口，正如文章中所介绍的一大堆函数。但是，实际上，开发过程中用到的很少。对比
-C，C++ 提供的不同输入输出函数，个人倾向于使用 C 语言的 fopen, fprintf,
-&#x2026; 而不是 C++ 的 fstream 类。C 语言所提供的接口更灵活好用，而 C++ 的
-"&gt;&gt;" "&lt;&lt;" 让本来很简单的语句变的不清晰和复杂。比如：
+以前写过类似总结性的笔记：<a href="http://www.cnblogs.com/chinazhangjie/archive/2010/08/19/1803057.html">C/C++输入输出流总结</a>，C/C++表面上给程序员提供了丰富的输入输出接口，正如文章中所介绍的一大堆函数。
+但是，实际上，开发过程中用到的很少。对比 C，C++ 提供的不同输入输出函数，个人倾向于使用 C 语言的 fopen, fprintf, &#x2026; 而不是 C++ 的 fstream 类。
+C 语言所提供的接口更灵活好用，而 C++ 的 "&gt;&gt;" "&lt;&lt;" 让本来很简单的语句变的不清晰和复杂。比如：
 </p>
 
 <pre class="example">
@@ -274,15 +271,12 @@ out &lt;&lt; "This is a int" &lt;&lt; int &lt;&lt; ", this is a float " &lt;&lt;
 </pre>
 
 <p>
-通过 fprintf 我一口气就可以读出来，我要输出的字符串是什么，而 out
-不行。我一直觉得 C++ 的输出输出是非常鸡肋的，限制性多又难以理解，尤其是
-flags 的开启与关闭。再如类似 width 和 precision，我更喜欢用 C 语言的
-0.3f% 做格式化控制。
+通过 fprintf 我一口气就可以读出来，我要输出的字符串是什么，而 out 不行。我一直觉得 C++ 的输出输出是非常鸡肋的，限制性多又难以理解，
+尤其是 flags 的开启与关闭。再如类似 width 和 precision，我更喜欢用 C 语言的 0.3f% 做格式化控制。
 </p>
 
 <p>
-C++ 控制输入输出相对牛逼的一点是有 stringstream
-类，功能强大，相对也比较好用。只是，略复杂。
+C++ 控制输入输出相对牛逼的一点是有 stringstream 类，功能强大，相对也比较好用。只是，略复杂。
 </p>
 
 <p>
@@ -290,23 +284,27 @@ ok，不再吐槽，回到正题。
 </p>
 
 <p>
-如果挨个函数去解释的话，不知道这篇文章要写多长，也没有意义。最好的学习网站:
-<a href="http://www.cplusplus.com/">www.cplusplus.com</a>，很好的支持和跟进新标准。编译器推荐<a href="http://gcc.gnu.org/">gcc</a>，IDE推荐<a href="http://www.codeblocks.org/">CodeBlocks</a>，IDE的选择可以看
-<a href="http://www.perfect-is-shit.com/programming%20language/2013/05/14/top-10-best-c-compilers-html/">10个最佳的C/C++编译器和IDEs</a>，Eclipse也挺好，但是太大了，不推荐。
-/不要觉得这些东西不重要，选择最标准支持的好的编译器和一个易于调试的IDE，对于一个新手来说是至关重要的/。千万不要再用VC6.0了，标准支持太差。为什么不推荐
-vs2010/vs2012？ 不免费，重量级，微软太喜欢给程序员强加东西了。
+如果挨个函数去解释的话，不知道这篇文章要写多长，也没有意义。最好的学习网站: <a href="http://www.cplusplus.com/">www.cplusplus.com</a>，很好的支持和跟进新标准。
+编译器推荐<a href="http://gcc.gnu.org/">gcc</a>，IDE推荐<a href="http://www.codeblocks.org/">CodeBlocks</a>，IDE 的选择可以看 <a href="http://www.perfect-is-shit.com/programming%20language/2013/05/14/top-10-best-c-compilers-html/">10个最佳的C/C++编译器和IDEs</a>，Eclipse也挺好，但是太大了，不推荐。
+</p>
+
+<p>
+<i>不要觉得这些东西不重要，选择最标准支持的好的编译器和一个易于调试的IDE，对于一个新手来说是至关重要的。</i>
+</p>
+
+<p>
+千万不要再用 VC6.0了，标准支持太差。为什么不推荐 vs2010/vs2012？ 不免费，重量级，微软太喜欢给程序员强加东西了。
 </p>
 
 <p>
 下面说一下，我个人认为输出输出这块的迷惑点：
 </p>
 
-<div id="outline-container-org9c9a5c7" class="outline-2">
-<h2 id="流的分类"><a id="org9c9a5c7"></a><span class="section-number-2">1</span> 1.流的分类</h2>
+<div id="outline-container-orgf20c826" class="outline-2">
+<h2 id="流的分类"><a id="orgf20c826"></a><span class="section-number-2">1</span> 流的分类</h2>
 <div class="outline-text-2" id="text-流的分类">
 <p>
-当年，这是相当迷惑我的一个地方。也就是所谓的"二进制流"和"文本流"，即"text
-file" or "binary file"，代码上的区别就是打开文件时的参数有没有'b'。
+当年，这是相当迷惑我的一个地方。也就是所谓的"二进制流"和"文本流"，即"text file" or "binary file"，代码上的区别就是打开文件时的参数有没有'b'。
 </p>
 
 <p>
@@ -351,17 +349,16 @@ it.
 </div>
 </div>
 
-<div id="outline-container-org932c233" class="outline-2">
-<h2 id="文件打开失败"><a id="org932c233"></a><span class="section-number-2">2</span> 2.文件打开失败</h2>
+<div id="outline-container-orga2d5409" class="outline-2">
+<h2 id="文件打开失败"><a id="orga2d5409"></a><span class="section-number-2">2</span> 文件打开失败</h2>
 <div class="outline-text-2" id="text-文件打开失败">
 <p>
 相信很多人会遇到这个问题，一般三个原因：
 </p>
 
 <ol class="org-ol">
-<li>相对/绝对路径，这应该是最多数的情况了。绝对路径是相对盘符/根目录的，比如
-<code>C:\\program files</code>,
-=/usr/bin/=，相对路径是相对工程和可执行文件的，取决于你真实运行的起始端；</li>
+<li>相对/绝对路径，这应该是最多数的情况了。绝对路径是相对盘符/根目录的，比如 <code>C:\\program files</code>, <code>/usr/bin/</code> ，
+相对路径是相对工程和可执行文件的，取决于你真实运行的起始端；</li>
 <li>文件正在被占用，同一个程序，运行了两次；</li>
 <li>权限，如果在 Unix-like 系统下，如果文件打开失败，首先去找这个原因；</li>
 <li>路径中的转义字符，"\"、"/"、路径中的空格都是常见问题，遇到的多了就知道了；</li>
@@ -373,20 +370,18 @@ it.
 </div>
 </div>
 
-<div id="outline-container-orgce1cc69" class="outline-2">
-<h2 id="文件无内容"><a id="orgce1cc69"></a><span class="section-number-2">3</span> 3. 文件无内容</h2>
+<div id="outline-container-orgf7ef208" class="outline-2">
+<h2 id="文件无内容"><a id="orgf7ef208"></a><span class="section-number-2">3</span> 文件无内容</h2>
 <div class="outline-text-2" id="text-文件无内容">
 <p>
-文件打开成功，也写入了内容，程序关闭后无内容。原因是可能没有
-fclose。如果想在程序运行的时候实时的看到文件内容的变化，可以写入一次调用一次
-fflush()，调试程序可以这么用。但是，工程中就不要频繁的 fflush
-了，会影响运行效率。
+文件打开成功，也写入了内容，程序关闭后无内容。原因是可能没有 fclose。如果想在程序运行的时候实时的看到文件内容的变化，可以写入一次调用一次
+fflush()，调试程序可以这么用。但是，工程中就不要频繁的 fflush 了，会影响运行效率。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd51e498" class="outline-2">
-<h2 id="feof"><a id="orgd51e498"></a><span class="section-number-2">4</span> 4. feof</h2>
+<div id="outline-container-org1adfa2b" class="outline-2">
+<h2 id="feof"><a id="org1adfa2b"></a><span class="section-number-2">4</span> feof</h2>
 <div class="outline-text-2" id="text-feof">
 <p>
 这块出问题比较多，但是只要仔细的看文档，就不会有问题了。很容易记反！
@@ -402,28 +397,35 @@ returned.
 </div>
 </div>
 
-<div id="outline-container-orgc5c7439" class="outline-2">
-<h2 id="字符串截断符-0"><a id="orgc5c7439"></a><span class="section-number-2">5</span> 5. 字符串截断符 '\0'</h2>
+<div id="outline-container-orgbd8d43f" class="outline-2">
+<h2 id="字符串截断符-0"><a id="orgbd8d43f"></a><span class="section-number-2">5</span> 字符串截断符 '\0'</h2>
 <div class="outline-text-2" id="text-字符串截断符-0">
 <p>
-看看我遇到过的坑吧：
-<a href="http://www.perfect-is-shit.com/programming%20language/2012/03/30/cpp-little-story-about-string-terminator/">C++|'\0'引发的小故事</a>
+看看我遇到过的坑吧：<a href="http://www.perfect-is-shit.com/programming%20language/2012/03/30/cpp-little-story-about-string-terminator/">C++|'\0'引发的小故事</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgfb2a581" class="outline-2">
-<h2 id="getchargetch"><a id="orgfb2a581"></a><span class="section-number-2">6</span> 6. getchar/getch</h2>
+<div id="outline-container-org210c228" class="outline-2">
+<h2 id="getchargetch"><a id="org210c228"></a><span class="section-number-2">6</span> getchar/getch</h2>
 <div class="outline-text-2" id="text-getchargetch">
 <p>
-getchar() 两个注意点： 1. 读取一个字符并回现，但是只有接收到 回车
-才会函数返回； 2. 返回值是 int 而不是 char；
+getchar() 两个注意点：
 </p>
 
+<ol class="org-ol">
+<li>读取一个字符并回现，但是只有接收到回车才会函数返回；</li>
+<li>返回值是 int 而不是 char；</li>
+</ol>
+
 <p>
-getch() 两个注意点： 1. 不是标准C函数，不建议使用； 2.
-读取一个字符不回现，印象中会立刻返回，不用等到接收到 回车；
+getch() 两个注意点：
 </p>
+
+<ol class="org-ol">
+<li>不是标准C函数，不建议使用；</li>
+<li>读取一个字符不回现，印象中会立刻返回，不用等到接收到回车；</li>
+</ol>
 </div>
 </div>
 
@@ -431,13 +433,12 @@ getch() 两个注意点： 1. 不是标准C函数，不建议使用； 2.
 <h2 id="最后基本的格式化标准"><a id="org3636156"></a><span class="section-number-2">7</span> 最后，基本的格式化标准</h2>
 <div class="outline-text-2" id="text-最后基本的格式化标准">
 <p>
-这是所有的基础，你需要知道 %d 表示的整形，%f
-表示的是浮点型，%s是字符串，且只以'\0'作为结束符等。类型不匹配也是经常出现的一个问题，在C中有的时候参数不匹配，编译不会报错，但是运行就直接崩掉了。
+这是所有的基础，你需要知道 %d 表示的整形，%f 表示的是浮点型，%s是字符串，且只以'\0'作为结束符等。类型不匹配也是经常出现的一个问题，
+在 C 中有的时候参数不匹配，编译不会报错，但是运行就直接崩掉了。
 </p>
 
 <p>
-文件输入输出和控制台输入输出基本相同，fprintf 和 printf
-对应等等，可以理解成控制台也是一个特殊的文件。
+文件输入输出和控制台输入输出基本相同，fprintf 和 printf 对应等等，可以理解成控制台也是一个特殊的文件。
 </p>
 
 <p>
@@ -445,18 +446,15 @@ getch() 两个注意点： 1. 不是标准C函数，不建议使用； 2.
 </p>
 
 <ul class="org-ul">
-<li><a href="http://www.perfect-is-shit.com/programming%20language/2013/03/24/sprintf_s-and-swprintf_s-differ-in-release-and-debu/">sprintf<sub>s和swprintf</sub><sub>s在Release和Debug不同模式表现不同</sub></a>
-微软的 '<sub>s</sub>' 就是真的安全了吗？</li>
-<li><a href="http://www.perfect-is-shit.com/programming%20language/2013/01/18/deep-into-while-cin/">C++
-深入探究 while(cin)</a> 你知道 C++ 背着你做了哪些事吗？</li>
-<li><a href="http://www.perfect-is-shit.com/programming%20language/2012/10/07/cpp-setf/">C++
-setf 方法</a> 揭秘所谓的 flags，不过是一些标志位而已！</li>
-<li><a href="http://www.perfect-is-shit.com/programming%20language/2012/08/17/deep-explore-c-va-arg/">深度探索C语言函数可变长参数</a>
-fprintf, fscanf 为什么可以变长参数 ？</li>
+<li><a href="http://www.perfect-is-shit.com/programming%20language/2013/03/24/sprintf_s-and-swprintf_s-differ-in-release-and-debu/">sprintf<sub>s和swprintf</sub><sub>s在Release和Debug不同模式表现不同</sub></a> 微软的 '<sub>s</sub>' 就是真的安全了吗？</li>
+<li><a href="http://www.perfect-is-shit.com/programming%20language/2013/01/18/deep-into-while-cin/">C++ 深入探究 while(cin)</a> 你知道 C++ 背着你做了哪些事吗？</li>
+<li><a href="http://www.perfect-is-shit.com/programming%20language/2012/10/07/cpp-setf/">C++ setf 方法</a> 揭秘所谓的 flags，不过是一些标志位而已！</li>
+<li><a href="http://www.perfect-is-shit.com/programming%20language/2012/08/17/deep-explore-c-va-arg/">深度探索C语言函数可变长参数</a> fprintf, fscanf 为什么可以变长参数 ？</li>
 </ul>
 
 <p>
-总感觉一写起来都有很多零碎的东西可以说。但是真正想说的是，遇到问题要勤于思考，勤于查阅，解决之后要勤于总结。即便C语言只是你的AC工具，我依旧建议你这么做。毕竟解决问题能力的培养才是重要的。
+总感觉一写起来都有很多零碎的东西可以说。但是真正想说的是，遇到问题要勤于思考，勤于查阅，解决之后要勤于总结。即便 C 语言只是你的 AC 工具，
+我依旧建议你这么做。毕竟解决问题能力的培养才是重要的。
 </p>
 </div>
 </div>

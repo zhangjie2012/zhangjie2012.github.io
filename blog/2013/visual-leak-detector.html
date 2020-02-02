@@ -244,16 +244,18 @@ for the JavaScript code in this tag.
 </div>
 </div>
 <p>
-这几天在用VLD(Visual Leak
-Detector)来检查内存泄露，感觉很好、很强大，所以推荐给大家。
+这几天在用 VLD(Visual Leak Detector)来检查内存泄露，感觉很好、很强大，所以推荐给大家。
 </p>
 
 <p>
-下面的博文不会面面俱到，这也不是我的目的。我的目的是再看了这篇文章以后，不用看文档就可以实际的解决你的问题。当然，有时间、有精力的话推荐你去看这两篇文档：<a href="http://www.codeproject.com/Articles/9815/Visual-Leak-Detector-Enhanced-Memory-Leak-Detectio">Visual
-Leak Detector - Enhanced Memory Leak Detection for Visual C++</a>,
-<a href="http://vld.codeplex.com/">Visual Leak Detector for Visual C++
-2008/2010/2012</a>。
+下面的博文不会面面俱到，这也不是我的目的。我的目的是再看了这篇文章以后，不用看文档就可以实际的解决你的问题。
+当然，有时间、有精力的话推荐你去看这两篇文档：
 </p>
+
+<ol class="org-ol">
+<li><a href="http://www.codeproject.com/Articles/9815/Visual-Leak-Detector-Enhanced-Memory-Leak-Detectio">Visual Leak Detector - Enhanced Memory Leak Detection for Visual C++</a></li>
+<li><a href="http://vld.codeplex.com/">Visual Leak Detector for Visual C++ 2008/2010/2012</a>。</li>
+</ol>
 
 <hr />
 
@@ -261,9 +263,8 @@ Leak Detector - Enhanced Memory Leak Detection for Visual C++</a>,
 <h2 id="vld是什么"><a id="orgb55caa8"></a><span class="section-number-2">1</span> VLD是什么</h2>
 <div class="outline-text-2" id="text-vld是什么">
 <p>
-VLD 是专门是用来在 Visual C++ 2008/2010/2012 下开发的 C++
-项目检测内存泄露的一个工具，我觉得它更像一个库。从<a href="http://vld.codeplex.com/releases/view/82311">这里</a>下载安装包(1M大小)。傻瓜式安装，不解释了。注意：VLD
-只对 Debug 模式有效，对 Release 模式没什么影响。
+VLD 是专门是用来在 Visual C++ 2008/2010/2012 下开发的 C++ 项目检测内存泄露的一个工具，我觉得它更像一个库。
+从<a href="http://vld.codeplex.com/releases/view/82311">这里</a>下载安装包(1M大小)。傻瓜式安装，不解释了。注意：VLD 只对 Debug 模式有效，对 Release 模式没什么影响。
 </p>
 </div>
 </div>
@@ -272,11 +273,9 @@ VLD 是专门是用来在 Visual C++ 2008/2010/2012 下开发的 C++
 <h2 id="vld-的使用"><a id="org1f58655"></a><span class="section-number-2">2</span> VLD 的使用</h2>
 <div class="outline-text-2" id="text-vld-的使用">
 <ol class="org-ol">
-<li>将 VLD include 和 lib
-路径加到你的工程中配置中（项目属性-&gt;VC++目录-&gt;包含文件/库目录）</li>
-<li>将 vld.h include
-到你的工程中的一个源文件中（任选一个即可），假如你的工程中使用了 DL
-L，请在 DLL 的源文件中也加入 vld.h （任选一个源文件），重新编译。</li>
+<li>将 VLD include 和 lib 路径加到你的工程中配置中（项目属性-&gt;VC++目录-&gt;包含文件/库目录）</li>
+<li>将 vld.h include 到你的工程中的一个源文件中（任选一个即可），假如你的工程中使用了 DLL，
+请在 DLL 的源文件中也加入 vld.h （任选一个源文件），重新编译。</li>
 <li>用 Debug 模式编译。</li>
 </ol>
 </div>
@@ -286,9 +285,8 @@ L，请在 DLL 的源文件中也加入 vld.h （任选一个源文件），重�
 <h2 id="vld的配置文件"><a id="org255564c"></a><span class="section-number-2">3</span> VLD的配置文件</h2>
 <div class="outline-text-2" id="text-vld的配置文件">
 <p>
-配置文件在安装目录下(vld.ini)，修改配置文件将会影响所有使用到 VLD
-的工程。另外一种做法。将 vld.ini 复制到你的工程目录下(VS2010 C++工程放到
-*.vcxproj 同级目录)，然后修改，只会影响你的所在工程配置。
+配置文件在安装目录下(vld.ini)，修改配置文件将会影响所有使用到 VLD 的工程。另外一种做法。将 vld.ini 复制到你的工程目录下(VS2010 C++
+工程放到 *.vcxproj 同级目录)，然后修改，只会影响你的所在工程配置。
 </p>
 
 <p>
@@ -296,21 +294,14 @@ vld.ini 配置有几个选项，我只说一下我感觉很有用的：
 </p>
 
 <ul class="org-ul">
-<li>VLD:
-选择VLD的打开与关闭。在Debug模式下运行，关闭以后会有一行VLD关闭的提示信息。默认为
-on。</li>
-<li>gregateDuplicates: 这个非常有用，设置为 yes
-时，相同地方产生内存泄漏只输出一次，但是会统计发生的次数。默认是 no 。</li>
+<li>VLD: 选择VLD的打开与关闭。在Debug模式下运行，关闭以后会有一行VLD关闭的提示信息。默认为 on。</li>
+<li>gregateDuplicates: 这个非常有用，设置为 yes 时，相同地方产生内存泄漏只输出一次，但是会统计发生的次数。默认是 no 。</li>
 <li>MaxDataDump: 输出的dump数据个数，默认为 256。</li>
-<li>MaxTraceFrames:
-官方文档解释的非常复杂，我的理解就是输出的调用栈的层数。默认是 64。</li>
-<li>ReportEncoding report: 文件的编码格式，可选有 ascii, unicode，默认是
-ascii 。</li>
+<li>MaxTraceFrames: 官方文档解释的非常复杂，我的理解就是输出的调用栈的层数。默认是 64。</li>
+<li>ReportEncoding report: 文件的编码格式，可选有 ascii, unicode，默认是 ascii 。</li>
 <li>ReportFile: report 文件的路径。默认是 <code>".\memory_leak_report.txt"</code></li>
-<li>ReportTo: 这个也是一个很有用的参数，可选有 debugger, file,
-both，debugger 表示输出到 debug模式下的输出窗口；file
-表示只输出到文件中； both顾名思义，全都都输出。默认是 debugger
-。具体用那个参数，看你的内存泄漏出现的多少了，自己衡量吧。</li>
+<li>ReportTo: 这个也是一个很有用的参数，可选有 debugger, file, both，debugger 表示输出到 debug模式下的输出窗口；file 表示只输出到文件中；
+both 顾名思义，全都都输出。默认是 debugger 。具体用那个参数，看你的内存泄漏出现的多少了，自己衡量吧。</li>
 </ul>
 </div>
 </div>
@@ -382,20 +373,16 @@ Visual Leak Detector is now exiting.
 
 <ol class="org-ol">
 <li>Block 那一行说明了泄露大小；</li>
-<li>leakHash 那一行说明了同样地方出现泄露的次数(我的 vld.ini
-AggregateDuplicates = yes);</li>
+<li>leakHash 那一行说明了同样地方出现泄露的次数(我的 vld.ini AggregateDuplicates = yes);</li>
 <li>Call Stack 调用堆栈这一块是最重要的，定位问题出现的模块(位置)；</li>
 <li>Data 表示泄露的数据块中的数据，小工程比较有用。大工程数据看不来的。</li>
 </ol>
 
 <p>
-所有的数据都输出到一个文件中，小工程还可以忍受，大工程成千上万个位置，肉眼根本无法辨识。所以我希望可以按照优先级来排序。由此，我自己用
-C++ 写了一个小工具，实现了将 report
-中的数据按照优先级进行排序（次数，单个内存泄露多少，该位置总共泄露多少）。排完序之后，我就可以优先处理内存泄漏比较严重的模块。没有写用户界面，连
-dos
-界面都没有，我感觉加一个界面需要的时候要快比我写核心代码耗时都要长，有些丑陋，不过很实用。源码挂到我的
-<a href="https://github.com/duzhuoyizui/MemLeakReportAnalyse_TOOL">github</a>
-上了，感兴趣可以去看看。
+所有的数据都输出到一个文件中，小工程还可以忍受，大工程成千上万个位置，肉眼根本无法辨识。所以我希望可以按照优先级来排序。由此，我自己用 C++
+写了一个小工具，实现了将 report 中的数据按照优先级进行排序（次数，单个内存泄露多少，该位置总共泄露多少）。
+排完序之后，我就可以优先处理内存泄漏比较严重的模块。没有写用户界面，连 dos 界面都没有，我感觉加一个界面需要的时候要快比我写核心代码耗时都要长，
+有些丑陋，不过很实用。源码挂到我的 <a href="https://github.com/duzhuoyizui/MemLeakReportAnalyse_TOOL">github</a> 上了，感兴趣可以去看看。
 </p>
 </div>
 </div>

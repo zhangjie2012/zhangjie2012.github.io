@@ -254,10 +254,8 @@ for the JavaScript code in this tag.
 <h2 id="缘由"><a id="orgd239a8e"></a><span class="section-number-2">1</span> 缘由</h2>
 <div class="outline-text-2" id="text-缘由">
 <p>
-从一开始搞 <code>C/C++</code> 的时候，一直在时不时的探究
-<code>new/delete &amp;&amp; malloc/free</code>
-几者之间的关系。没有一本书确切的，深入的探讨它们的具体机制。只是零星的从一些书，一些博客中有所涉及。比如：《Effective
-C++》。本想题目标为"深入浅出 xxx"，后来想了一下有些夸大了，嘻嘻。
+从一开始搞 <code>C/C++</code> 的时候，一直在时不时的探究 <code>new/delete &amp;&amp; malloc/free</code> 几者之间的关系。没有一本书确切的，深入的探讨它们的具体机制。
+只是零星的从一些书，一些博客中有所涉及。比如：《Effective C++》。本想题目标为"深入浅出 xxx"，后来想了一下有些夸大了，嘻嘻。
 </p>
 
 <p>
@@ -269,10 +267,10 @@ C++》。本想题目标为"深入浅出 xxx"，后来想了一下有些夸大�
 </p>
 
 <p>
-在公司代码中遇到过 <code>new[] -&gt; delete</code>
-这样的用法(也包括=std::auto<sub>ptr</sub>=传入数组指针)。大家认为对于内置类型这样用没有问题，也不会导致内存泄漏。我对此表示怀疑，并且进行了探究(查资料，发帖提问)。兴许不会导致内存泄漏，但是这样用是不合法的，可能会导致未定义的行为。我个人觉得这个问题比较关键(很简单的问题，大家可能没有意识到)，于是在公司内部的
-redmine 上发帖阐述，目的其实特别简单，就是那样不太好，建议
-<code>new[]&lt;-&gt;delete[]</code> 配对使用，而且也没有多少工作量。
+在公司代码中遇到过 <code>new[] -&gt; delete</code> 这样的用法(也包括 <code>std::auto_ptr</code> 传入数组指针)。大家认为对于内置类型这样用没有问题，也不会导致内存泄漏。
+我对此表示怀疑，并且进行了探究(查资料，发帖提问)。兴许不会导致内存泄漏，但是这样用是不合法的，可能会导致未定义的行为。
+我个人觉得这个问题比较关键(很简单的问题，大家可能没有意识到)，于是在公司内部的 redmine 上发帖阐述，目的其实特别简单，就是那样不太好，
+建议 <code>new[]&lt;-&gt;delete[]</code> 配对使用，而且也没有多少工作量。
 </p>
 
 <p>
@@ -285,7 +283,8 @@ redmine 上发帖阐述，目的其实特别简单，就是那样不太好，建
 
 <blockquote>
 <p>
-用=new[]=申请，如果用=delete=而不用=delete[]=释放的话，行为可能不止是泄露（可能的一种），我记得行为是不确定（泄露，崩溃，越界，其他乱七八糟的问题）。
+用 <code>new[]</code> 申请，如果用 <code>delete</code> 而不用 <code>delete[]</code> 释放的话，行为可能不止是泄露（可能的一种），我记得行为是不确定
+（泄露，崩溃，越界，其他乱七八糟的问题）。
 </p>
 
 <p>
@@ -325,15 +324,21 @@ for invoking the destructor(s) of the allocated objects.
 
 <blockquote>
 <p>
-如果对于int/char（自身不会再进一步申请资源，管理资源）这类的内置类型，new[]和delete匹配使用是可以的，我没有去找直接的证据（stdc++之类的实现证据），但是示例代码证明不存在资源泄露。想一想c中malloc和free匹配使用时，它们从来就没有考虑过释放的资源是数组还是单个对象，不是吗？。我所见过的自行设计内存管理的软件代码是在申请实际大小内存之外再额外加上一个整数大小的空间(一般就在返回指针地址的前面四个字节)，记录这个申请是多大的内存。释放时根据这个size将内存返还到内存管理链表中。
+如果对于 int/char（自身不会再进一步申请资源，管理资源）这类的内置类型，new[] 和 delete 匹配使用是可以的，
+我没有去找直接的证据（stdc++之类的实现证据），但是示例代码证明不存在资源泄露。想一想 c 中 malloc 和 free 匹配使用时，
+它们从来就没有考虑过释放的资源是数组还是单个对象，不是吗？。我所见过的自行设计内存管理的软件代码是在申请实际大小内存之外再额外
+加上一个整数大小的空间(一般就在返回指针地址的前面四个字节)，记录这个申请是多大的内存。释放时根据这个size将内存返还到内存管理链表中。
 </p>
 
 <p>
-new/delete对比malloc/free，有多一项的任务就是在申请（释放）内存后（前）构建（销毁）对象，在构建/销毁函数中往往涉及进一步申请/释放资源。如果对这类对象的内存管理，不能做到匹配调用，则不能保证对象自身管理的资源是否正确使用，我想所谓的不确定行为就表现在这里。至于调用构建函数前和销毁函数后，那块内存就是一块内存（荒草地），根据其大小申请内存或者释放即可。
+<code>new/delete</code> 对比 <code>malloc/free</code> ，有多一项的任务就是在申请（释放）内存后（前）构建（销毁）对象，在构建/销毁函数中往往涉及进一步申请/释放资源。
+如果对这类对象的内存管理，不能做到匹配调用，则不能保证对象自身管理的资源是否正确使用，我想所谓的不确定行为就表现在这里。
+至于调用构建函数前和销毁函数后，那块内存就是一块内存（荒草地），根据其大小申请内存或者释放即可。
 </p>
 
 <p>
-我所见到的静态工具检查出来的不匹配，多是int/char之类动态申请的数组，我们想办法让它们匹配使用就是了。这样做最直接的好处就是真的问题不会掩盖在那些伪问题里面，对我们代码质量的提高是有好处的。
+我所见到的静态工具检查出来的不匹配，多是 int/char 之类动态申请的数组，我们想办法让它们匹配使用就是了。
+这样做最直接的好处就是真的问题不会掩盖在那些伪问题里面，对我们代码质量的提高是有好处的。
 </p>
 </blockquote>
 
@@ -345,54 +350,55 @@ new/delete对比malloc/free，有多一项的任务就是在申请（释放）�
 请看代码：
 </p>
 
-<pre class="example">
-class data_stream
-{
-public:
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #0000FF;">class</span> <span style="color: #6434A3;">data_stream</span>
+<span style="color: #707183;">{</span>
+<span style="color: #0000FF;">public</span>:
 
-     data_stream() {
-         c_ = 'a';
+     <span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+         c_ = <span style="color: #008000;">'a'</span>;
          i_ = 0;
          f_ = 0.0f;
          d_ = 0.0;
-     }
+     <span style="color: #7388D6;">}</span>
 
-     ~data_stream() {
-     }
+     ~<span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+     <span style="color: #7388D6;">}</span>
 
- private:
-     char c_;
-     int i_;
-     float f_;
-     double d_;
- };
+ <span style="color: #0000FF;">private</span>:
+     <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">c_</span>;
+     <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i_</span>;
+     <span style="color: #6434A3;">float</span> <span style="color: #BA36A5;">f_</span>;
+     <span style="color: #6434A3;">double</span> <span style="color: #BA36A5;">d_</span>;
+ <span style="color: #707183;">}</span>;
 
- class stream_buffer
- {
- public:
-     stream_buffer(char * buffer) {
+ <span style="color: #0000FF;">class</span> <span style="color: #6434A3;">stream_buffer</span>
+ <span style="color: #707183;">{</span>
+ <span style="color: #0000FF;">public</span>:
+     <span style="color: #006699;">stream_buffer</span><span style="color: #7388D6;">(</span><span style="color: #6434A3;">char</span> * <span style="color: #BA36A5;">buffer</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
          buffer_ = buffer;
-     }
+     <span style="color: #7388D6;">}</span>
 
-     ~stream_buffer() {
-         if (buffer_) {
-             delete [] buffer_;
-         }
-     }
+     ~<span style="color: #006699;">stream_buffer</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+         <span style="color: #0000FF;">if</span> <span style="color: #909183;">(</span>buffer_<span style="color: #909183;">)</span> <span style="color: #909183;">{</span>
+             <span style="color: #0000FF;">delete</span> <span style="color: #709870;">[]</span> buffer_;
+         <span style="color: #909183;">}</span>
+     <span style="color: #7388D6;">}</span>
 
- private:
-     char *buffer_;
- };
+ <span style="color: #0000FF;">private</span>:
+     <span style="color: #6434A3;">char</span> *<span style="color: #BA36A5;">buffer_</span>;
+ <span style="color: #707183;">}</span>;
 
 
- int main()
- {
-     data_stream *ds = new data_stream();
-     stream_buffer sb(reinterpret_cast&lt;char*&gt;(ds));
+ <span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
+ <span style="color: #707183;">{</span>
+     <span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">data_stream</span><span style="color: #7388D6;">()</span>;
+     <span style="color: #6434A3;">stream_buffer</span> <span style="color: #BA36A5;">sb</span><span style="color: #7388D6;">(</span><span style="color: #0000FF;">reinterpret_cast</span><span style="color: #909183;">&lt;</span><span style="color: #6434A3;">char</span>*<span style="color: #909183;">&gt;(</span>ds<span style="color: #909183;">)</span><span style="color: #7388D6;">)</span>;
 
-     return 0;
- }
+     <span style="color: #0000FF;">return</span> 0;
+ <span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
 两个问题：
@@ -421,50 +427,50 @@ public:
 </ol>
 
 <p>
-delete 与之相似，先调用该对象的析构函数，然后调用 free 来释放 size
-大小的内存块。于是我们可以这样使用：
+delete 与之相似，先调用该对象的析构函数，然后调用 free 来释放 size 大小的内存块。于是我们可以这样使用：
 </p>
 
-<pre class="example">
-void* operator new(size_t size) throw(std::bad_alloc) {
-    std::cout &lt;&lt; "in operator new | alloc size: " &lt;&lt; size &lt;&lt; std::endl;
-    void * p = malloc(size);
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">void</span>* <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">new</span><span style="color: #707183;">(</span><span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">size</span><span style="color: #707183;">)</span> <span style="color: #0000FF;">throw</span><span style="color: #707183;">(</span><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">bad_alloc</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in operator new | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #6434A3;">void</span> * <span style="color: #BA36A5;">p</span> = malloc<span style="color: #7388D6;">(</span>size<span style="color: #7388D6;">)</span>;
 
-    return p;
-}
+    <span style="color: #0000FF;">return</span> p;
+<span style="color: #707183;">}</span>
 
-void operator delete(void *pointer)
-{
-    std::cout &lt;&lt; "operator delete " &lt;&lt; std::endl;
-    free(pointer);
-}
+<span style="color: #6434A3;">void</span> <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">delete</span><span style="color: #707183;">(</span><span style="color: #6434A3;">void</span> *<span style="color: #BA36A5;">pointer</span><span style="color: #707183;">)</span>
+<span style="color: #707183;">{</span>
+    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"operator delete "</span> &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
+    free<span style="color: #7388D6;">(</span>pointer<span style="color: #7388D6;">)</span>;
+<span style="color: #707183;">}</span>
 
-class data_stream
-{
-public:
-    data_stream() {
-        std::cout &lt;&lt; "in data_stream ctor" &lt;&lt;  std::endl;
-    }
+<span style="color: #0000FF;">class</span> <span style="color: #6434A3;">data_stream</span>
+<span style="color: #707183;">{</span>
+<span style="color: #0000FF;">public</span>:
+    <span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream ctor"</span> &lt;&lt;  <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #7388D6;">}</span>
 
-    ~data_stream() {
-        std::cout &lt;&lt; "in data_stream dtor " &lt;&lt; std::endl;
-    }
+    ~<span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream dtor "</span> &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #7388D6;">}</span>
 
-private:
-    char c_;
-    int i_;
-    float f_;
-    double d_;
-};
+<span style="color: #0000FF;">private</span>:
+    <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">c_</span>;
+    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i_</span>;
+    <span style="color: #6434A3;">float</span> <span style="color: #BA36A5;">f_</span>;
+    <span style="color: #6434A3;">double</span> <span style="color: #BA36A5;">d_</span>;
+<span style="color: #707183;">}</span>;
 
-int main()
-{
-    data_stream *ds = new data_stream();
-    delete ds;
+<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
+<span style="color: #707183;">{</span>
+    <span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">data_stream</span><span style="color: #7388D6;">()</span>;
+    <span style="color: #0000FF;">delete</span> ds;
 
-    return 0;
-}
+    <span style="color: #0000FF;">return</span> 0;
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
 输出为：
@@ -481,21 +487,23 @@ operator delete
 我们还可以这么用：
 </p>
 
-<pre class="example">
-void *p = malloc(sizeof(data_stream));
-data_stream *ds  = new(p) data_stream();
-delete ds;
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">void</span> *<span style="color: #BA36A5;">p</span> = malloc<span style="color: #707183;">(</span><span style="color: #0000FF;">sizeof</span><span style="color: #7388D6;">(</span>data_stream<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>;
+<span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds</span>  = <span style="color: #0000FF;">new</span><span style="color: #707183;">(</span>p<span style="color: #707183;">)</span> <span style="color: #6434A3;">data_stream</span><span style="color: #707183;">()</span>;
+<span style="color: #0000FF;">delete</span> ds;
 </pre>
+</div>
 
 <p>
 又或者直接用栈内存：
 </p>
 
-<pre class="example">
-char buff[sizeof(data_stream)];
-data_stream *ds = new(buff) data_stream();
-ds-&gt;~data_stream();
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">buff</span><span style="color: #707183;">[</span><span style="color: #0000FF;">sizeof</span><span style="color: #7388D6;">(</span>data_stream<span style="color: #7388D6;">)</span><span style="color: #707183;">]</span>;
+<span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds</span> = <span style="color: #0000FF;">new</span><span style="color: #707183;">(</span>buff<span style="color: #707183;">)</span> <span style="color: #6434A3;">data_stream</span><span style="color: #707183;">()</span>;
+ds-&gt;~data_stream<span style="color: #707183;">()</span>;
 </pre>
+</div>
 
 <p>
 <code>new[]/delete[]</code> 流程:
@@ -509,62 +517,62 @@ ds-&gt;~data_stream();
 </ol>
 
 <p>
-delete[] 与之相似，先分别调用每个数组对象的析构函数，然后用 free
-释放大小为 size 的内存块。
+delete[] 与之相似，先分别调用每个数组对象的析构函数，然后用 free 释放大小为 size 的内存块。
 </p>
 
 <p>
 验证例子：
 </p>
 
-<pre class="example">
-void* operator new(size_t size) throw(std::bad_alloc) {
-    std::cout &lt;&lt; "in operator new | alloc size: " &lt;&lt; size &lt;&lt; std::endl;
-    void * p = malloc(size);
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">void</span>* <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">new</span><span style="color: #707183;">(</span><span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">size</span><span style="color: #707183;">)</span> <span style="color: #0000FF;">throw</span><span style="color: #707183;">(</span><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">bad_alloc</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in operator new | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #6434A3;">void</span> * <span style="color: #BA36A5;">p</span> = malloc<span style="color: #7388D6;">(</span>size<span style="color: #7388D6;">)</span>;
 
-    return p;
-}
+    <span style="color: #0000FF;">return</span> p;
+<span style="color: #707183;">}</span>
 
-void* operator new[](size_t size) throw(std::bad_alloc) {
-    std::cout &lt;&lt; "in operator new[] | alloc size: &lt;&lt; size &lt;&lt; std::endl;
-    void * p = malloc(size);
+<span style="color: #6434A3;">void</span>* <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">new</span><span style="color: #707183;">[](</span><span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">size</span><span style="color: #707183;">)</span> <span style="color: #0000FF;">throw</span><span style="color: #707183;">(</span><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">bad_alloc</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #ff0000; font-weight: bold;">"</span><span style="color: #008000;">in operator new[] | alloc size: &lt;&lt; size &lt;&lt; std::endl;</span>
+<span style="color: #008000;">    void * p = malloc(size);</span>
 
-    return p;
-}
+<span style="color: #008000;">    return p;</span>
+<span style="color: #008000;">}</span>
 
-void operator delete(void *pointer)
-{
-    std::cout &lt;&lt; "operator delete " &lt;&lt;  std::endl;
-    free(pointer);
-}
+<span style="color: #008000;">void operator delete(void *pointer)</span>
+<span style="color: #008000;">{</span>
+<span style="color: #008000;">    std::cout &lt;&lt; "</span><span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">delete</span> <span style="color: #ff0000; font-weight: bold;">"</span><span style="color: #008000;"> &lt;&lt;  std::endl;</span>
+<span style="color: #008000;">    free(pointer);</span>
+<span style="color: #008000;">}</span>
 
-void operator delete[](void *pointer)
-{
-    std::cout &lt;&lt; "operator delete[] " &lt;&lt; std::endl;
-    free(pointer);
-}
+<span style="color: #008000;">void operator delete[](void *pointer)</span>
+<span style="color: #008000;">{</span>
+<span style="color: #008000;">    std::cout &lt;&lt; "</span><span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">delete</span><span style="color: #7388D6;">[]</span> <span style="color: #ff0000; font-weight: bold;">"</span><span style="color: #008000;"> &lt;&lt; std::endl;</span>
+<span style="color: #008000;">    free(pointer);</span>
+<span style="color: #008000;">}</span>
 
-class data_stream
-{
-public:
-    data_stream() {
-        std::cout &lt;&lt; "in data_stream ctor" &lt;&lt;  std::endl;
-    }
+<span style="color: #008000;">class data_stream</span>
+<span style="color: #008000;">{</span>
+<span style="color: #008000;">public:</span>
+<span style="color: #008000;">    data_stream() {</span>
+<span style="color: #008000;">        std::cout &lt;&lt; "</span>in data_stream ctor<span style="color: #ff0000; font-weight: bold;">"</span><span style="color: #008000;"> &lt;&lt;  std::endl;</span>
+<span style="color: #008000;">    }</span>
 
-    ~data_stream() {
-        std::cout  &lt;&lt; "in data_stream dtor" &lt;&lt; std::endl;
-    }
-};
+<span style="color: #008000;">    ~data_stream() {</span>
+<span style="color: #008000;">        std::cout  &lt;&lt; "</span>in data_stream dtor<span style="color: #ff0000; font-weight: bold;">"</span><span style="color: #008000;"> &lt;&lt; std::endl;</span>
+<span style="color: #008000;">    }</span>
+<span style="color: #008000;">};</span>
 
-int main()
-{
-    data_stream *ds_array = new data_stream[3];
+<span style="color: #008000;">int main()</span>
+<span style="color: #008000;">{</span>
+<span style="color: #008000;">    data_stream *ds_array = new data_stream[3];</span>
 
-    delete[] ds_array;
+<span style="color: #008000;">    delete[] ds_array;</span>
 
-    return 0;
-}
+<span style="color: #008000;">    return 0;</span>
+<span style="color: #008000;">}</span>
 </pre>
+</div>
 
 <p>
 输出：
@@ -585,11 +593,12 @@ operator delete[]
 一旦我们这样调用时：
 </p>
 
-<pre class="example">
-data_stream *ds_array = new data_stream[3];
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds_array</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">data_stream</span><span style="color: #707183;">[</span>3<span style="color: #707183;">]</span>;
 
-delete ds_array;
+<span style="color: #0000FF;">delete</span> ds_array;
 </pre>
+</div>
 
 <p>
 输出：
@@ -612,10 +621,11 @@ operator delete
 可是当我们使用内置类型(build-in)的时候：
 </p>
 
-<pre class="example">
-int *int_array = new int[3];
-delete int_array;
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">int</span> *<span style="color: #BA36A5;">int_array</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">[</span>3<span style="color: #707183;">]</span>;
+<span style="color: #0000FF;">delete</span> int_array;
 </pre>
+</div>
 
 <p>
 输出：
@@ -636,16 +646,13 @@ operator delete
 
 <ul class="org-ul">
 <li>new(new[]) 和 delete(delete[]) 实质上都是调用 malloc 和 free。</li>
-<li>malloc 的时候我们传入了大小，free
-的时候并没有告诉编译器我需要释放的内存大小，编译器如何知道它应该释放多少空间呢？</li>
-<li>为什么内置类型 =new[]-&gt;delete=没问题，而类对象发生了崩溃呢？</li>
+<li>malloc 的时候我们传入了大小，free 的时候并没有告诉编译器我需要释放的内存大小，编译器如何知道它应该释放多少空间呢？</li>
+<li>为什么内置类型 =new[]-&gt;delete =没问题，而类对象发生了崩溃呢？</li>
 </ul>
 
 <p>
-我想到了寒辉曾经跟我说的，编译器一定在某个地方记录了内存申请的大小，new
-和 delete
-只是多了一个调用析构函数的步骤。但是，编译器记录的不仅仅是这些，否则，怎么解释
-<code>new[]-&gt;delete</code> 对于类对象崩溃呢？大不了就内存泄漏啊！
+我想到了寒辉曾经跟我说的，编译器一定在某个地方记录了内存申请的大小，new 和 delete 只是多了一个调用析构函数的步骤。
+但是，编译器记录的不仅仅是这些，否则，怎么解释 <code>new[]-&gt;delete</code> 对于类对象崩溃呢？大不了就内存泄漏啊！
 </p>
 </div>
 </div>
@@ -661,57 +668,59 @@ operator delete
 编译器把可用内存分成了块，然后用一个双线链表把所有的块连接起来(malloc中调用编译器提供的内存分配函数)。
 </p>
 
-<pre class="example">
-#define nNoMansLandSize 4
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #808080;">#define</span> <span style="color: #BA36A5;">nNoMansLandSize</span> 4
 
-typedef struct _CrtMemBlockHeader
-{
-        struct _CrtMemBlockHeader * pBlockHeaderNext;
-        struct _CrtMemBlockHeader * pBlockHeaderPrev;
-        char *                      szFileName;
-        int                         nLine;
-#ifdef _WIN64
-        /* These items are reversed on Win64 to eliminate gaps in the struct
-         * and ensure that sizeof(struct)%16 == 0, so 16-byte alignment is
-         * maintained in the debug heap.
-         */
-        int                         nBlockUse;
-        size_t                      nDataSize;
-#else  /* _WIN64 */
-        size_t                      nDataSize;
-        int                         nBlockUse;
-#endif  /* _WIN64 */
-        long                        lRequest;
-        unsigned char               gap[nNoMansLandSize];
-        /* followed by:
-         *  unsigned char           data[nDataSize];
-         *  unsigned char           anotherGap[nNoMansLandSize];
-         */
-} _CrtMemBlockHeader;
+<span style="color: #0000FF;">typedef</span> <span style="color: #0000FF;">struct</span> <span style="color: #6434A3;">_CrtMemBlockHeader</span>
+<span style="color: #707183;">{</span>
+        <span style="color: #0000FF;">struct</span> <span style="color: #6434A3;">_CrtMemBlockHeader</span> * <span style="color: #BA36A5;">pBlockHeaderNext</span>;
+        <span style="color: #0000FF;">struct</span> <span style="color: #6434A3;">_CrtMemBlockHeader</span> * <span style="color: #BA36A5;">pBlockHeaderPrev</span>;
+        <span style="color: #6434A3;">char</span> *                      <span style="color: #BA36A5;">szFileName</span>;
+        <span style="color: #6434A3;">int</span>                         <span style="color: #BA36A5;">nLine</span>;
+<span style="color: #808080;">#ifdef</span> _WIN64
+        <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">These items are reversed on Win64 to eliminate gaps in the struct</span>
+<span style="color: #8D8D84; font-style: italic;">         * and ensure that sizeof(struct)%16 == 0, so 16-byte alignment is</span>
+<span style="color: #8D8D84; font-style: italic;">         * maintained in the debug heap.</span>
+<span style="color: #8D8D84; font-style: italic;">         */</span>
+        <span style="color: #6434A3;">int</span>                         <span style="color: #BA36A5;">nBlockUse</span>;
+        <span style="color: #6434A3;">size_t</span>                      <span style="color: #BA36A5;">nDataSize</span>;
+<span style="color: #808080;">#else</span>  <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">_WIN64 */</span>
+        <span style="color: #6434A3;">size_t</span>                      <span style="color: #BA36A5;">nDataSize</span>;
+        <span style="color: #6434A3;">int</span>                         <span style="color: #BA36A5;">nBlockUse</span>;
+<span style="color: #808080;">#endif</span>  <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">_WIN64 */</span>
+        <span style="color: #6434A3;">long</span>                        <span style="color: #BA36A5;">lRequest</span>;
+        <span style="color: #6434A3;">unsigned</span> <span style="color: #6434A3;">char</span>               <span style="color: #BA36A5;">gap</span><span style="color: #7388D6;">[</span>nNoMansLandSize<span style="color: #7388D6;">]</span>;
+        <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">followed by:</span>
+<span style="color: #8D8D84; font-style: italic;">         *  unsigned char           data[nDataSize];</span>
+<span style="color: #8D8D84; font-style: italic;">         *  unsigned char           anotherGap[nNoMansLandSize];</span>
+<span style="color: #8D8D84; font-style: italic;">         */</span>
+<span style="color: #707183;">}</span> <span style="color: #6434A3;">_CrtMemBlockHeader</span>;
 
 -----------------
 
 Type of block:
 
-#define _FREE_BLOCK      0
-#define _NORMAL_BLOCK    1
-#define _CRT_BLOCK       2
-#define _IGNORE_BLOCK    3
-#define _CLIENT_BLOCK    4
-#define _MAX_BLOCKS      5
+<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_FREE_BLOCK</span>      0
+<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_NORMAL_BLOCK</span>    1
+<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_CRT_BLOCK</span>       2
+<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_IGNORE_BLOCK</span>    3
+<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_CLIENT_BLOCK</span>    4
+<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_MAX_BLOCKS</span>      5
 </pre>
+</div>
 </div>
 
 <div id="outline-container-org914241b" class="outline-3">
 <h3 id="内置类型"><a id="org914241b"></a><span class="section-number-3">3.1</span> 内置类型</h3>
 <div class="outline-text-3" id="text-内置类型">
-<pre class="example">
-int *int_array = new int[16];
-delete [] int_array;
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">int</span> *<span style="color: #BA36A5;">int_array</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">[</span>16<span style="color: #707183;">]</span>;
+<span style="color: #0000FF;">delete</span> <span style="color: #707183;">[]</span> int_array;
 </pre>
+</div>
 
 <p>
-我测试的时候： <code>int_array</code> 首地址为 =0x004E4DF8=。所在的内存块为：
+我测试的时候： <code>int_array</code> 首地址为 <code>0x004E4DF8</code> 。所在的内存块为：
 </p>
 
 <pre class="example">
@@ -731,7 +740,8 @@ delete [] int_array;
 </pre>
 
 <p>
-这也就解释了为什么编译器会知道我们申请了多大空间，释放空间的时候，我们只需要提供释放内存的首地址，编译器可以推算出我们申请了多大的空间，进而进行了释放(所谓释放就是链表节点删除，当然还有一些重置操作)。
+这也就解释了为什么编译器会知道我们申请了多大空间，释放空间的时候，我们只需要提供释放内存的首地址，编译器可以推算出我们申请了多大的空间，
+进而进行了释放(所谓释放就是链表节点删除，当然还有一些重置操作)。
 </p>
 </div>
 </div>
@@ -739,26 +749,27 @@ delete [] int_array;
 <div id="outline-container-org87ac40c" class="outline-3">
 <h3 id="单个类对象"><a id="org87ac40c"></a><span class="section-number-3">3.2</span> 单个类对象</h3>
 <div class="outline-text-3" id="text-单个类对象">
-<pre class="example">
-class data_stream
-{
-public:
-    data_stream() {
-        std::cout &lt;&lt; "in data_stream ctor" &lt;&lt;  std::endl;
-    }
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #0000FF;">class</span> <span style="color: #6434A3;">data_stream</span>
+<span style="color: #707183;">{</span>
+<span style="color: #0000FF;">public</span>:
+    <span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream ctor"</span> &lt;&lt;  <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #7388D6;">}</span>
 
-    ~data_stream() {
-        std::cout &lt;&lt; "in data_stream dtor" &lt;&lt; std::endl;
-    }
-private:
-    int i;
-    float f;
-    double d;
-};
+    ~<span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream dtor"</span> &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #7388D6;">}</span>
+<span style="color: #0000FF;">private</span>:
+    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span>;
+    <span style="color: #6434A3;">float</span> <span style="color: #BA36A5;">f</span>;
+    <span style="color: #6434A3;">double</span> <span style="color: #BA36A5;">d</span>;
+<span style="color: #707183;">}</span>;
 
-data_stream *ds_array = new data_stream();
-delete ds_array;
+<span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds_array</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">data_stream</span><span style="color: #707183;">()</span>;
+<span style="color: #0000FF;">delete</span> ds_array;
 </pre>
+</div>
 
 <p>
 分析：
@@ -775,31 +786,32 @@ delete ds_array;
 <div id="outline-container-org8c7dcd5" class="outline-3">
 <h3 id="类对象数组"><a id="org8c7dcd5"></a><span class="section-number-3">3.3</span> 类对象数组</h3>
 <div class="outline-text-3" id="text-类对象数组">
-<pre class="example">
-void* operator new[](size_t size) throw(std::bad_alloc) {
-    std::cout &lt;&lt; "in operator new[] | alloc size: " &lt;&lt; size &lt;&lt; std::endl;
-    void * p = malloc(size);
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">void</span>* <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">new</span><span style="color: #707183;">[](</span><span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">size</span><span style="color: #707183;">)</span> <span style="color: #0000FF;">throw</span><span style="color: #707183;">(</span><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">bad_alloc</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in operator new[] | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #6434A3;">void</span> * <span style="color: #BA36A5;">p</span> = malloc<span style="color: #7388D6;">(</span>size<span style="color: #7388D6;">)</span>;
 
-    return p;
-}
+    <span style="color: #0000FF;">return</span> p;
+<span style="color: #707183;">}</span>
 
-class data_stream
-{
-public:
-    data_stream() {
-        std::cout &lt;&lt; "in data_stream ctor" &lt;&lt; std::endl;
-    }
+<span style="color: #0000FF;">class</span> <span style="color: #6434A3;">data_stream</span>
+<span style="color: #707183;">{</span>
+<span style="color: #0000FF;">public</span>:
+    <span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream ctor"</span> &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #7388D6;">}</span>
 
-    ~data_stream() {
-        std::cout &lt;&lt; "in data_stream dtor" &lt;&lt; std::endl;
-    }
-private:
-    int i;
-};
+    ~<span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream dtor"</span> &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #7388D6;">}</span>
+<span style="color: #0000FF;">private</span>:
+    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span>;
+<span style="color: #707183;">}</span>;
 
-data_stream *ds_array = new data_stream[4];
-delete []ds_array;
+<span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds_array</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">data_stream</span><span style="color: #707183;">[</span>4<span style="color: #707183;">]</span>;
+<span style="color: #0000FF;">delete</span> <span style="color: #707183;">[]</span>ds_array;
 </pre>
+</div>
 
 <p>
 类对象数组和普通的类对象有所差别，我分两步进行分析：
@@ -810,7 +822,7 @@ delete []ds_array;
 </p>
 
 <p>
-从=p=的地址开始：
+从 <code>p</code> 的地址开始：
 </p>
 
 <pre class="example">
@@ -838,26 +850,21 @@ delete []ds_array;
 </pre>
 
 <p>
-注意，原因来了！=ds<sub>array</sub>= 的地址是 <code>0x00204DFC</code> 而不是 <code>operator new[]</code>
-中返回的内存地址
-=0x00204DF8=。只是向后偏移了4个字节。多余的四个字节用来存储数组的长度。
+注意，原因来了！ <code>ds_array</code> 的地址是 <code>0x00204DFC</code> 而不是 <code>operator new[]</code> 中返回的内存地址 <code>0x00204DF8</code> 。
+只是向后偏移了 4 个字节。多余的四个字节用来存储数组的长度。
 </p>
 
 <p>
-推测(无事实依据)：申请完内存后，是编译器把数组的大小放到前四个字节，并向后偏移了4个字节，进行我们所看到的指针(<code>data_stream</code>)赋值。这个偏移操作
-malloc
-并不知道(对赋值操作反汇编以后，你可以看到执行构造函数时的地址偏移，以及赋值时的偏移。)，malloc
-所知道的内存是包括这四个字节的，也就是他申请了 20 个字节，到时候释放 20
-个字节。而当调用 <code>delete[]</code> 的时候，先把指针偏移回去，回到 <code>free</code>
-所能理解的格式。这样数组的大小对于 <code>malloc/free</code> 就是黑盒操作。
+推测(无事实依据)：申请完内存后，是编译器把数组的大小放到前四个字节，并向后偏移了 4 个字节，进行我们所看到的指针(<code>data_stream</code>)赋值。
+这个偏移操作 malloc 并不知道(对赋值操作反汇编以后，你可以看到执行构造函数时的地址偏移，以及赋值时的偏移。)，malloc 所知道的内存是包括这四个字节的，
+也就是他申请了 20 个字节，到时候释放 20 个字节。而当调用 <code>delete[]</code> 的时候，先把指针偏移回去，回到 <code>free</code> 所能理解的格式。
+这样数组的大小对于 <code>malloc/free</code> 就是黑盒操作。
 </p>
 
 <p>
-好了，现在我们来解释 <code>new[]-&gt;delete</code>
-一个对象数组为什么是会崩溃。=new[]/delete[]=
-会有一个向前/向后偏移四个字节的操作，当 new[] 之后，用 delete
-并没有进行指针的偏移，直接把对应数据进行类型转换成=<sub>CrtMemBlockHeader</sub>=，因此转换之后的=<sub>CrtMemBlockHeader</sub>=变量都是无效的，进而
-<code>free</code> 内存崩溃。
+好了，现在我们来解释 <code>new[]-&gt;delete</code> 一个对象数组为什么是会崩溃。 <code>new[]/delete[]</code> 会有一个向前/向后偏移四个字节的操作，当 <code>new[]</code> 之后，
+用 delete 并没有进行指针的偏移，直接把对应数据进行类型转换成 <code>_CrtMemBlockHeader</code> ，因此转换之后的 <code>_CrtMemBlockHeader</code> 变量都是无效的，
+进而 <code>free</code> 内存崩溃。
 </p>
 </div>
 </div>
@@ -867,20 +874,17 @@ malloc
 <h2 id="总结"><a id="org4ac7f59"></a><span class="section-number-2">4</span> 总结</h2>
 <div class="outline-text-2" id="text-总结">
 <ol class="org-ol">
-<li>对于内置类型，=new[]-&gt;= 怎么对应都不会有问题， <code>free</code>
-只需要一个首地址，通过指针偏移可以获取到下一个内存块和上一个内存的地址，把这个内存块从链表中删除就
-ok 了。</li>
-<li>对于类对象数组，赋值过程中编译器做了一些 free
-层面不知道的偏移，所以一旦 <code>new[]</code> 和 <code>delete[]</code> 不对应，会发生崩溃。</li>
+<li>对于内置类型，=new[]-&gt;= 怎么对应都不会有问题， <code>free</code> 只需要一个首地址，通过指针偏移可以获取到下一个内存块和上一个内存的地址，
+把这个内存块从链表中删除就 ok 了。</li>
+<li>对于类对象数组，赋值过程中编译器做了一些 free 层面不知道的偏移，所以一旦 <code>new[]</code> 和 <code>delete[]</code> 不对应，会发生崩溃。</li>
 </ol>
 
 <p>
-这只是从技术层面去分析机制，不代表分析没问题就可以滥用，况且这只是针对
-VS2010，不同的编译器应该会有不同的实现方式。
+这只是从技术层面去分析机制，不代表分析没问题就可以滥用，况且这只是针对 VS2010，不同的编译器应该会有不同的实现方式。
 </p>
 
 <p>
-为了保证跨平台不会出问题，强烈建议大家还是老老实实的去找好对应关系=malloc-&gt;free=,=new-&gt;delete=,=new[]-&gt;delete[]=。遵循标准来，不要投机取巧。
+为了保证跨平台不会出问题，强烈建议大家还是老老实实的去找好对应关系 <code>malloc-&gt;free</code>, <code>new-&gt;delete</code>, <code>new[]-&gt;delete[]</code> 。遵循标准来，不要投机取巧。
 </p>
 
 <p>
@@ -888,12 +892,8 @@ btw:
 </p>
 
 <ol class="org-ol">
-<li>其实，分析过程是有漏洞的，我发现内存块与 <code>_CrtMemBlockHeader</code>
-不能完全对应上，原因没有深究.</li>
-<li>推荐
-<a href="http://www.codeguru.com/cpp/w-p/win32/tutorials/article.php/c9535/Inside-CRT-Debug-Heap-Management.htm">inside
-CRT: Debug Heap Management</a>，经常用 VS
-调试的童鞋看了之后会非常有感触的，灰常奈斯一个帖子。</li>
+<li>其实，分析过程是有漏洞的，我发现内存块与 <code>_CrtMemBlockHeader</code> 不能完全对应上，原因没有深究.</li>
+<li>推荐 <a href="http://www.codeguru.com/cpp/w-p/win32/tutorials/article.php/c9535/Inside-CRT-Debug-Heap-Management.htm">inside CRT: Debug Heap Management</a>，经常用 VS 调试的童鞋看了之后会非常有感触的，灰常奈斯一个帖子。</li>
 </ol>
 </div>
 </div>

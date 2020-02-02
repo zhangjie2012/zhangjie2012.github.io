@@ -236,92 +236,88 @@ for the JavaScript code in this tag.
 看如下代码：
 </p>
 
-<pre class="example">
-class GamePlayer {
-    private:
-        static const int NumTurns = 5; // 常量声明式
-        int scores[NumTurns];          // 使用该常量
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #0000FF;">class</span> <span style="color: #6434A3;">GamePlayer</span> <span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">private</span>:
+        <span style="color: #0000FF;">static</span> <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">NumTurns</span> = 5; <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&#24120;&#37327;&#22768;&#26126;&#24335;</span>
+        <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">scores</span><span style="color: #7388D6;">[</span>NumTurns<span style="color: #7388D6;">]</span>;          <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&#20351;&#29992;&#35813;&#24120;&#37327;</span>
         ...
-}
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
-然而你所看到的是 NumTurns 的声明式而非定义式。通常 C++
-要求你对你所使用的任何东西提供一个定义式，但如果它是一个 class
-专属常量又是static且为整数类型（intergral
-type，例如ints,chars,bools），则需特殊处理。只要不取他们的地址，你可以声明并使用它们而无须提供定义式。但如果你取某个
-class
-专属常量的地址，或纵使你不取其地址而你的编译器却（不正确地）坚持要看到一个定义式，你就必须另外提供定义式如下：
+然而你所看到的是 NumTurns 的声明式而非定义式。通常 C++ 要求你对你所使用的任何东西提供一个定义式，
+但如果它是一个 class 专属常量又是 static 且为整数类型（intergral type，例如 ints,chars,bools），则需特殊处理。只要不取他们的地址，
+你可以声明并使用它们而无须提供定义式。但如果你取某个 class 专属常量的地址，或纵使你不取其地址而你的编译器却（不正确地）坚持要看到一个定义式，
+你就必须另外提供定义式如下：
 </p>
 
-<pre class="example">
-const int GamePlayer::NumTurns; // NumTurns 的定义；
-                                // 下面告诉你为什么给予数值[/code]
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #0000FF;">const</span> <span style="color: #6434A3;">int</span> <span style="color: #D0372D;">GamePlayer</span>::<span style="color: #BA36A5;">NumTurns</span>; <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">NumTurns &#30340;&#23450;&#20041;&#65307;</span>
+                                <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&#19979;&#38754;&#21578;&#35785;&#20320;&#20026;&#20160;&#20040;&#32473;&#20104;&#25968;&#20540;</span>
 </pre>
+</div>
 
 <p>
-请把这个式子放进一个实现文件而非头文件。由于class常量已在声明时获得初值，因此定义时不可以再设初值。
+请把这个式子放进一个实现文件而非头文件。由于 class 常量已在声明时获得初值，因此定义时不可以再设初值。
 </p>
 
 <p>
--&#x2013;&#x2014;以上所有来自《Effective C++》第三版 P14
+以上所有来自《Effective C++》第三版 P14
 </p>
 
 <hr />
 
 <p>
-我不理解的是*不取其地址的时候，可以访问NumTurns?*，于是我代码进行验证：
+我不理解的是 <b>不取其地址的时候，可以访问 NumTurns ?</b> ，于是我代码进行验证：
 </p>
 
-<pre class="example">
-#include &lt;iostream&gt;
-class GamePlayer {
-public:
-    static const int NumTurns = 5; // 常量声明式
-};
-const int GamePlayer::NumTurns;
-int main()
-{
-    std::cout &amp;lt;&amp;lt; GamePlayer::NumTurns &amp;lt;&amp;lt; std::endl;
-    // 如果没有加上 const int GamePlayer::NumTurns; 对 NumTurns 进行定义，下面这样语句会报错：
-    //   undefined reference to `GamePlayer::NumTurns
-    std::cout &amp;lt;&amp;lt; &amp;amp;(GamePlayer::NumTurns) &amp;lt;&amp;lt; std::endl;
-    return 0;
-}
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">iostream</span><span style="color: #707183;">&gt;</span>
+<span style="color: #0000FF;">class</span> <span style="color: #6434A3;">GamePlayer</span> <span style="color: #707183;">{</span>
+<span style="color: #0000FF;">public</span>:
+    <span style="color: #0000FF;">static</span> <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">NumTurns</span> = 5; <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&#24120;&#37327;&#22768;&#26126;&#24335;</span>
+<span style="color: #707183;">}</span>;
+<span style="color: #0000FF;">const</span> <span style="color: #6434A3;">int</span> <span style="color: #D0372D;">GamePlayer</span>::<span style="color: #BA36A5;">NumTurns</span>;
+<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
+<span style="color: #707183;">{</span>
+    <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">cout</span> &amp;<span style="color: #BA36A5;">lt</span>;&amp;lt; <span style="color: #D0372D;">GamePlayer</span>::<span style="color: #6434A3;">NumTurns</span> &amp;<span style="color: #BA36A5;">lt</span>;&amp;lt; <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&#22914;&#26524;&#27809;&#26377;&#21152;&#19978; const int GamePlayer::NumTurns; &#23545; NumTurns &#36827;&#34892;&#23450;&#20041;&#65292;&#19979;&#38754;&#36825;&#26679;&#35821;&#21477;&#20250;&#25253;&#38169;&#65306;</span>
+    <span style="color: #8D8D84;">//   </span><span style="color: #8D8D84; font-style: italic;">undefined reference to `GamePlayer::NumTurns</span>
+    <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">cout</span> &amp;<span style="color: #BA36A5;">lt</span>;&amp;lt; &amp;amp;<span style="color: #7388D6;">(</span><span style="color: #D0372D;">GamePlayer</span>::<span style="color: #6434A3;">NumTurns</span><span style="color: #7388D6;">)</span> &amp;lt;&amp;lt; <span style="color: #D0372D;">std</span>::endl;
+    <span style="color: #0000FF;">return</span> 0;
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
-代码的验证结果和书中说的是一致的。那么问题就来了，NumTurns
-没有定义的时候可以访问，却无地址，那它存储在什么地方呢？
+代码的验证结果和书中说的是一致的。那么问题就来了，NumTurns 没有定义的时候可以访问，却无地址，那它存储在什么地方呢？
 </p>
 
 <ul class="org-ul">
-<li>调试的时候会发现 GamePlayer::NumTurns 没有定义的时候，Watch 窗口找不到
-GamePlayer::NumTurn s这个符号，而有定义了之后，Watch 窗口可以找到
-GamePlayer::NumTurns 这个符号并且值为 5。</li>
+<li>调试的时候会发现 <code>GamePlayer::NumTurns</code> 没有定义的时候，Watch 窗口找不到 <code>GamePlayer::NumTurn</code> s 这个符号，而有定义了之后，
+Watch 窗口可以找到 <code>GamePlayer::NumTurns</code> 这个符号并且值为 5。</li>
 <li>对两次的代码进行反汇编，发现他们的反汇编代码是完全相同的。</li>
 </ul>
 
 <p>
-于是我猜测，难道未定义时，编译器会把它当成宏来处理？只是进行了符号替换操作（我指的是狭义的工作方式，并不是指在预处理时候进行的替换），要不然怎么会没有地址呢？我网上查的时候看到一个CSDN的<a href="http://bbs.csdn.net/topics/340089467">帖子</a>内容挺好的。我将感觉能解释的通的几个点罗列了一下：
+于是我猜测，难道未定义时，编译器会把它当成宏来处理？只是进行了符号替换操作（我指的是狭义的工作方式，并不是指在预处理时候进行的替换），
+要不然怎么会没有地址呢？我网上查的时候看到一个CSDN的<a href="http://bbs.csdn.net/topics/340089467">帖子</a>内容挺好的。我将感觉能解释的通的几个点罗列了一下：
 </p>
 
 <ul class="org-ul">
-<li>const定义常量从汇编的角度来看，只是给出了对应的内存地址，而不是象#define一样给出的是立即数，所以，const定义的常量在程序运行过程中只有一份拷贝，而#define定义的常量在内存中有若干个拷贝。</li>
-<li>编译器通常不为普通 cons
-t常量分配存储空间，而是将它们保存在符号表中，这使得它成为一个编译期间的常量，没有了存储与读内存的操作，使得它的效率也很高。</li>
-<li>C++ 中的 const 默认为内部连接，也就是说，const 仅在 const
-被定义过的文件里才是可见的，而在连接时不能被其他编译单元看到。当定义一个
-const 时，必须赋一个值给它，除非用 extern 作出了清楚的说明。</li>
-<li>通常 C++ 编译器并不为 const
-创建存储空间，相反它把这个定义保存在它的符号表里。但是 extern
-强制进行了存储空间分配（另外还有一些情况，如取一个 const
-的地址，也要进行存储空间分配），由于 extern
-意味着使用外部连接，因此必须分配存储空间，这也就是说有几个不同的编译单元应当能够引用它，所以它必须存储空间。[C++编程思想]</li>
-<li>const int
-i=10;//这个类似宏替换，也就是说，它优化之后可能是放一个符号表里面。所有使用i的地方都用
-10 代替，但是当你对 i
-取址后，没办法，编译器必须为i在常量区找个地方安身。</li>
+<li>const定义常量从汇编的角度来看，只是给出了对应的内存地址，而不是像 <code>#define</code> 一样给出的是立即数，
+所以，const 定义的常量在程序运行过程中只有一份拷贝，而#define定义的常量在内存中有若干个拷贝。</li>
+<li>编译器通常不为普通 const 常量分配存储空间，而是将它们保存在符号表中，这使得它成为一个编译期间的常量，没有了存储与读内存的操作，
+使得它的效率也很高。</li>
+<li>C++ 中的 const 默认为内部连接，也就是说，const 仅在 const 被定义过的文件里才是可见的，而在连接时不能被其他编译单元看到。
+当定义一个 const 时，必须赋一个值给它，除非用 extern 作出了清楚的说明。</li>
+<li>通常 C++ 编译器并不为 const 创建存储空间，相反它把这个定义保存在它的符号表里。但是 extern 强制进行了存储空间分配
+（另外还有一些情况，如取一个 const 的地址，也要进行存储空间分配），由于 extern 意味着使用外部连接，因此必须分配存储空间，
+这也就是说有几个不同的编译单元应当能够引用它，所以它必须存储空间。[C++编程思想]</li>
+<li>const inti=10; // 这个类似宏替换，也就是说，它优化之后可能是放一个符号表里面。所有使用i的地方都用 10 代替，但是当你对 i 取址后，
+没办法，编译器必须为i在常量区找个地方安身。</li>
 </ul>
 
 <hr />
@@ -338,8 +334,7 @@ i=10;//这个类似宏替换，也就是说，它优化之后可能是放一个�
 <li><a href="http://baike.baidu.com/view/3721621.htm">C++常量折叠</a></li>
 <li><a href="http://wangoldfive.blog.163.com/blog/static/211254114201282714734940/">C++常量折叠</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Constant_folding">Constant folding</a></li>
-<li><a href="http://c.ittoolbox.com/groups/technical-functional/cpp-l/constant-folding-in-c-1010124">Constant
-folding in C++</a></li>
+<li><a href="http://c.ittoolbox.com/groups/technical-functional/cpp-l/constant-folding-in-c-1010124">Constant folding in C++</a></li>
 </ul>
 </div>
 <div id="postamble" class="status">

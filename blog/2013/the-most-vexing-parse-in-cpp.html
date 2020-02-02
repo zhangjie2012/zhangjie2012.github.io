@@ -233,78 +233,77 @@ for the JavaScript code in this tag.
 <div id="content">
 <h1 class="title">the most vexing parse</h1>
 <p>
-前几天群里遇到一个问题，后来经过在sof<a href="http://stackoverflow.com/questions/20207960/left-operand-has-type-stdstringstream-cdecl-stdstring">提问</a>之后，才知道了这是C++一个"坑"。英文叫"the
-most vexing parse"，翻译过来就是"最蛋疼的解析"。
+前几天群里遇到一个问题，后来经过在 StackOverflow <a href="http://stackoverflow.com/questions/20207960/left-operand-has-type-stdstringstream-cdecl-stdstring">提问</a> 之后，才知道了这是 C++ 一个"坑"。英文叫"the most vexing parse"，翻译过来就是"最蛋疼的解析"。
 </p>
 
 <hr />
 
 <p>
-"the most vexing parse" 实际上指的是C++语法上的一种二义性，举例来说，
+"the most vexing parse" 实际上指的是 C++ 语法上的一种二义性，举例来说，
 </p>
 
-<pre class="example">
-class Timer
-{
-public:
-    Timer();
-};
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #0000FF;">class</span> <span style="color: #6434A3;">Timer</span>
+<span style="color: #707183;">{</span>
+<span style="color: #0000FF;">public</span>:
+    <span style="color: #006699;">Timer</span><span style="color: #7388D6;">()</span>;
+<span style="color: #707183;">}</span>;
 
-class TimerKeeper
-{
-public:
-    TimerKeeper(const Timer&amp; t);
+<span style="color: #0000FF;">class</span> <span style="color: #6434A3;">TimerKeeper</span>
+<span style="color: #707183;">{</span>
+<span style="color: #0000FF;">public</span>:
+    <span style="color: #006699;">TimerKeeper</span><span style="color: #7388D6;">(</span><span style="color: #0000FF;">const</span> <span style="color: #6434A3;">Timer</span>&amp; <span style="color: #BA36A5;">t</span><span style="color: #7388D6;">)</span>;
 
-    int get_time();
-};
+    <span style="color: #6434A3;">int</span> <span style="color: #006699;">get_time</span><span style="color: #7388D6;">()</span>;
+<span style="color: #707183;">}</span>;
 
-int main(int argc, char *argv[])
-{
-    TimerKeeper time_keeper( (Timer()) );
+<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">argc</span>, <span style="color: #6434A3;">char</span> *<span style="color: #BA36A5;">argv</span><span style="color: #7388D6;">[]</span><span style="color: #707183;">)</span>
+<span style="color: #707183;">{</span>
+    <span style="color: #6434A3;">TimerKeeper</span> <span style="color: #BA36A5;">time_keeper</span><span style="color: #7388D6;">(</span> <span style="color: #909183;">(</span>Timer<span style="color: #709870;">()</span><span style="color: #909183;">)</span> <span style="color: #7388D6;">)</span>;
 
-    return time_keeper.get_time();
-}
+    <span style="color: #0000FF;">return</span> time_keeper.get_time<span style="color: #7388D6;">()</span>;
+<span style="color: #707183;">}</span>
 
 
 $ g++ -c test.cpp
-test.cpp: In function ‘int main(int, char**)’:
-test.cpp:21:24: error: request for member ‘get_time’ in ‘time_keeper’,
-   which is of non-class type ‘TimerKeeper(Timer (*)())’
+test.cpp: In function &#8216;<span style="color: #6434A3;">int</span> main<span style="color: #707183;">(</span><span style="color: #6434A3;">int</span>, <span style="color: #6434A3;">char</span>**<span style="color: #707183;">)</span>&#8217;:
+test.cpp:21:24: error: request <span style="color: #0000FF;">for</span> member &#8216;get_time&#8217; in &#8216;time_keeper&#8217;,
+   which is <span style="color: #6434A3;">of</span> <span style="color: #006699;">non</span>-<span style="color: #0000FF;">class</span> type &#8216;TimerKeeper<span style="color: #707183;">(</span><span style="color: #6434A3;">Timer</span> <span style="color: #7388D6;">(</span>*<span style="color: #7388D6;">)()</span><span style="color: #707183;">)</span>&#8217;
 </pre>
+</div>
 
 <p>
-其实我们的本意是要用一个 <code>Timer</code> 的匿名对象来构造一个 <code>TimerKeeper</code>
-的对象，但是编译器把那一行当成了一个函数声明，所以报的错为 <code>time_keeper</code>
-不是一个类类型，而是一个返回值为
-<code>TimerKeeper</code>,传入是一个返回值是=Timer=，没有输入参数的匿名参数。
+其实我们的本意是要用一个 <code>Timer</code> 的匿名对象来构造一个 <code>TimerKeeper</code> 的对象，但是编译器把那一行当成了一个函数声明，
+所以报的错为 <code>time_keeper</code> 不是一个类类型，而是一个返回值为 <code>TimerKeeper</code>,传入是一个返回值是 <code>Timer</code> ，没有输入参数的匿名参数。
 </p>
 
 <p>
 一种解决办法是为参数外层加上一个括号，强制让编译器以为这是一个变量定义：
 </p>
 
-<pre class="example">
-TimerKeeper time_keeper( (Timer()) );
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">TimerKeeper</span> <span style="color: #BA36A5;">time_keeper</span><span style="color: #707183;">(</span> <span style="color: #7388D6;">(</span><span style="color: #6434A3;">Timer</span><span style="color: #909183;">()</span><span style="color: #7388D6;">)</span> <span style="color: #707183;">)</span>;
 </pre>
+</div>
 
 <p>
-C++11 为我们提供了统一的初始化方式(使用={}=)，可以用来解决此类问题，如：
+C++11 为我们提供了统一的初始化方式(使用 <code>{}</code> )，可以用来解决此类问题，如：
 </p>
 
-<pre class="example">
-TimerKeepper time_keeper{ Timer{} };
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6434A3;">TimerKeepper</span> <span style="color: #BA36A5;">time_keeper</span><span style="color: #707183;">{</span> Timer<span style="color: #7388D6;">{}</span> <span style="color: #707183;">}</span>;
 </pre>
+</div>
 
 <p>
-以上大部分译自： <a href="en.wikipedia.org/wiki/Most_vexing_parse">Most
-vexing parse</a>
+以上大部分译自： <a href="en.wikipedia.org/wiki/Most_vexing_parse">Most vexing parse</a>
 </p>
 
 <hr />
 
 <p>
-其实在此之前曾经遇到过为什么不可以显示调用类的无参构造函数呢，比如
-=ClassObj obj()=，以前搞明白了编译器把这一行代码认为是一个函数声明了。再次遇到类似的问题还是卡了很长时间。
+其实在此之前曾经遇到过为什么不可以显示调用类的无参构造函数呢，比如 <code>ClassObj obj()</code> ，以前搞明白了编译器把这一行代码认为是一个函数声明了。
+再次遇到类似的问题还是卡了很长时间。
 </p>
 
 <p>

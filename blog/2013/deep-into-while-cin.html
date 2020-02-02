@@ -242,10 +242,8 @@ while(cin &gt;&gt; str)
 </pre>
 
 <p>
-我从来没有写过这样的代码，原因是不好理解，我喜欢把 while
-条件写的很简单。对他的这个问题，我的理解是这样的：要跳出这个 while
-循环的唯一情况就是：while(0)，那么问题就转移到 cin
-的返回值是什么，什么情况才会出现 0 ？
+我从来没有写过这样的代码，原因是不好理解，我喜欢把 while 条件写的很简单。对他的这个问题，我的理解是这样的：要跳出这个 while
+循环的唯一情况就是：while(0)，那么问题就转移到 cin 的返回值是什么，什么情况才会出现 0 ？
 </p>
 
 <p>
@@ -253,10 +251,8 @@ while(cin &gt;&gt; str)
 </p>
 
 <p>
-"std::cin 是一个变量，变量类型是std::istream, &gt;&gt; 的返回值是一个istream
-&amp;，也就是 cin 变量本身，因此 while 是一个死循环。这和 C++
-n的结束字符是什么没有关系，你问题的切入点错了。"我当时认为 cin
-返回值是一个引用，那就在任何情况下都不可能是 0，也就是说这是一个死循环。
+"std::cin 是一个变量，变量类型是std::istream, &gt;&gt; 的返回值是一个istream &amp;，也就是 cin 变量本身，因此 while 是一个死循环。这和 C++ n
+的结束字符是什么没有关系，你问题的切入点错了。" 我当时认为 cin 返回值是一个引用，那就在任何情况下都不可能是 0，也就是说这是一个死循环。
 </p>
 
 <p>
@@ -284,33 +280,28 @@ int main ()
 </pre>
 
 <p>
-我运行（Win 7 + Codeblocks 10.05，以下分析环境这个）之后，发现 ctrl+z
-是可以结束的。到这里他的问题也就结束了，ctrl+z是可以结束的，不知道他是什么环境下
-ctrl+z
-不能结束。随即我就想到他不会是把"ctrl+z"当成字符串输入了吧？我想我应该是没猜错的，因为我也曾经那么干过。
+我运行（Win 7 + Codeblocks 10.05，以下分析环境这个）之后，发现 ctrl+z 是可以结束的。到这里他的问题也就结束了，ctrl+z是可以结束的，
+不知道他是什么环境下 ctrl+z 不能结束。随即我就想到他不会是把"ctrl+z"当成字符串输入了吧？我想我应该是没猜错的，因为我也曾经那么干过。
 </p>
 
 <hr />
 
 <p>
-好吧，我们抛开这个帖子来看待这个问题，"cin
-&gt;&gt;"的返回值到底是什么？什么情况下返回0？
+好吧，我们抛开这个帖子来看待这个问题，"cin &gt;&gt;"的返回值到底是什么？什么情况下返回0？
 </p>
 
 <p>
-cin 是一个全局变量，变量类型是 istream。我开始想着把 cin &gt;&gt;
-的返回值保存下来，进行分析，后来发现 istream
-的拷贝构造函数是私有的。我查了一些资料，网上有些说法："当流遇到文件结束符(EOF)，被标记错误&#x2026;&#x2026;"，有一些理解了，但是很不爽，因为不是很透彻。
+cin 是一个全局变量，变量类型是 istream。我开始想着把 cin &gt;&gt; 的返回值保存下来，进行分析，后来发现 istream 的拷贝构造函数是私有的。
+我查了一些资料，网上有些说法："当流遇到文件结束符(EOF)，被标记错误&#x2026;&#x2026;"，有一些理解了，但是很不爽，因为不是很透彻。
 </p>
 
 <p>
-每当遇到这种情况，我通常使用的法宝是："分析源码-&#x2013;&#x2014;源码面前一览无遗。"（注意：istream
-是模板，所以代码中众多的 template
+每当遇到这种情况，我通常使用的法宝是："分析源码-&#x2013;&#x2014;源码面前一览无遗。"（注意：istream 是模板，所以代码中众多的 template
 声明我都直接删了，我们当成伪代码看就行了）
 </p>
 
 <p>
-找=istream &gt;&gt;=的声明：
+找 <code>istream &gt;&gt;</code> 的声明：
 </p>
 
 <pre class="example">
@@ -378,15 +369,13 @@ basic_istream&lt;_CharT, _Traits&gt;&amp; _M_extract(_ValueT &amp; __v)
 </pre>
 
 <p>
-这个函数涉及到了 <code>sentry</code>
-，我看了一下这个类，代码比较长，就不贴代码了，我觉得不必要关心它了。=<sub>M</sub><sub>extract</sub>=
-可以看出，它做的操作就是："读入数据，捕捉异常，设置state"。
+这个函数涉及到了 <code>sentry</code> ，我看了一下这个类，代码比较长，就不贴代码了，我觉得不必要关心它了。 <code>_M_extract</code> 可以看出，
+它做的操作就是："读入数据，捕捉异常，设置state"。
 </p>
 
 <p>
-回到 <code>operator&gt;&gt;</code> 继续往下分析。if
-内部很好分析，就是简单的判断和赋值。那么问题点一定是在
-=!this-&gt;fail()=，即fail返回false 时进入if。找到它的源码：
+回到 <code>operator&gt;&gt;</code> 继续往下分析。if 内部很好分析，就是简单的判断和赋值。那么问题点一定是在 <code>!this-&gt;fail()</code> ，即 fail 返回 false 时进入 if。
+找到它的源码：
 </p>
 
 <pre class="example">
@@ -408,11 +397,9 @@ iostate rdstate() const
 </pre>
 
 <p>
-badbit，failbit，=<sub>M</sub><sub>streambuf</sub><sub>state</sub>=
-是什么含义对我们来说，完全不重要。需要找到的是能影响 operator &gt;&gt;
-返回值(return /this;)的操作，也就是在什么情况下会改 /this
-的值。我回头看了一下几个函数（<sub>M</sub><sub>setstate</sub>、setstate），都是一些简单的赋值操作并没有影响
-*this 的值。也就是我们分析了半天都白费了？
+badbit，failbit， <code>_M_streambuf_state</code> 是什么含义对我们来说，完全不重要。需要找到的是能影响 operator &gt;&gt; 返回值 (return this;) 的操作，
+也就是在什么情况下会改 this 的值。我回头看了一下几个函数（<sub>M</sub><sub>setstate</sub>、setstate），都是一些简单的赋值操作并没有影响 <code>*this</code> 的值。
+也就是我们分析了半天都白费了？
 </p>
 
 <p>
@@ -431,11 +418,8 @@ operator void*() const
 </pre>
 
 <p>
-也就是说如果 <code>this-&gt;fail()</code> 返回 true,这个函数则返回
-0。原来问题点的核心在这里，当时提供这个方案就是为了
-while(cin&gt;&gt;str)这种判断。现在的问题在于，什么情况下会调用这个函数？在执行
-<code>while (cin &gt;&gt; str)</code>
-时进行了=(void*)=这个转换吗，要验证很简单，看下面这个例子：
+也就是说如果 <code>this-&gt;fail()</code> 返回 true,这个函数则返回 0。原来问题点的核心在这里，当时提供这个方案就是为了 <code>while(cin&gt;&gt;str)</code> 这种判断。
+现在的问题在于，什么情况下会调用这个函数？在执行 <code>while (cin &gt;&gt; str)</code> 时进行了 <code>(void*)</code> 这个转换吗，要验证很简单，看下面这个例子：
 </p>
 
 <pre class="example">
@@ -486,15 +470,12 @@ while(cin &gt;&gt; str)
 </pre>
 
 <p>
-while 判断时，会调用了 <code>operator void*()</code> 这个函数，是否返回 0 取决于
-fail
-这个函数。当在缓冲区读入数据的时候，如果出现异常，这些异常通过一些变量记录下来，而这些变量会左右
-fail 的返回值。
+while 判断时，会调用了 <code>operator void*()</code> 这个函数，是否返回 0 取决于 fail 这个函数。
+当在缓冲区读入数据的时候，如果出现异常，这些异常通过一些变量记录下来，而这些变量会左右 fail 的返回值。
 </p>
 
 <p>
-<span class="underline">CTRL+Z -&gt; 引发异常 -&gt; 记录异常 -&gt; fail() 返回true-&gt; operator void*()
-返回 0 -&gt; while结束</span>
+<span class="underline">CTRL+Z -&gt; 引发异常 -&gt; 记录异常 -&gt; fail() 返回true-&gt; operator void*() 返回 0 -&gt; while结束</span>
 </p>
 
 <p>
@@ -525,10 +506,8 @@ set.（可以看出和我的理解是一致的）
 
 <ol class="org-ol">
 <li>源码分析方式是一种最透彻的方法，但是分析的时候一定要抓住问题的核心，当然耐心是必须的。</li>
-<li>通过这次分析的经历，也感觉自己水平在不断的下降，看到结论让我想起一个贴子：<a href="http://www.cppleyuan.com/viewthread.php?tid=2617%EF%BC%8C%E6%88%91%E5%BD%93%E6%97%B6%E7%9A%84%E5%9B%9E%E5%A4%8D%E6%98%AF%EF%BC%9A%22windows%E4%B8%8B%E6%98%AF">http://www.cppleyuan.com/viewthread.php?tid=2617，我当时的回复是："windows下是</a>
-ctrl +z吧
-为什么这么用，我有一种猜测仅供参考：cin重载了bool类型转换，可以根据
-cin
+<li>通过这次分析的经历，也感觉自己水平在不断的下降，看到结论让我想起一个贴子：<a href="http://www.cppleyuan.com/viewthread.php?tid=2617">http://www.cppleyuan.com/viewthread.php?tid=2617</a> ，
+我当时的回复是："windows下是 ctrl +z吧 为什么这么用，我有一种猜测仅供参考：cin重载了bool类型转换，可以根据 cin
 的状态来判断是否结束，如果结束返回false，未结束返回true。"那是两年前，我瞬间就可以推测到这么多。可惜现在第一感觉都想不到。</li>
 </ol>
 </div>
