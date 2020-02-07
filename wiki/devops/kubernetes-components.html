@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-02-07 Fri 13:34 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>JerryZhang</title>
+<title>Kubernetes 组件</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -180,7 +181,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -230,49 +231,182 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">JerryZhang</h1>
-
-<div id="outline-container-orgc7e0a4e" class="outline-2">
-<h2 id="orgc7e0a4e">Entry</h2>
-<div class="outline-text-2" id="text-orgc7e0a4e">
-<dl class="org-dl">
-<dt><a href="blog/index.html">Blog</a></dt><dd>网络日志，偏技术和思考，知识放 Wiki，非技术的都放在了 Youth 里</dd>
-<dt><a href="wiki/index.html">Wiki</a></dt><dd>知识点整理</dd>
-<dt><a href="reading/read-books.html">Read</a>、<a href="reading/unread-books.html">Unreading</a></dt><dd>读过的和打算读的书，包括电子书</dd>
-<dt><a href="reading/links.html">Links</a></dt><dd>各种资源链接收集：博客、DevoOps、设计、技术学习，搬运工</dd>
-<dt><a href="other/resume.html">Resume</a></dt><dd>简历</dd>
-</dl>
-</div>
-</div>
-
-<div id="outline-container-org320c311" class="outline-2">
-<h2 id="org320c311">Remember</h2>
-<div class="outline-text-2" id="text-org320c311">
-<dl class="org-dl">
-<dt><a href="youth/index.html">Youth</a></dt><dd>永远年轻，永远热泪盈眶；从大学开始到现在的人生经历和感悟</dd>
-<dt><a href="other/duomi.html">音乐回忆</a></dt><dd>2014-06 之前在多米上听的歌，写脚本抓的</dd>
-<dt><a href="other/once.html">曾经发表在 ONCE 上的一些话</a></dt><dd>以前做的一个网站，后来关了</dd>
-</dl>
-</div>
-</div>
-
-<div id="outline-container-org9946ffd" class="outline-2">
-<h2 id="org9946ffd">Social Links</h2>
-<div class="outline-text-2" id="text-org9946ffd">
-<ul class="org-ul">
-<li><a href="https://github.com/zhangjie2012">Github</a></li>
-<li><a href="https://www.zhihu.com/people/zhang-jie-86-68/activities">知乎</a></li>
-<li><a href="https://weibo.com/engineerzhangjie">微博</a></li>
-<li><a href="https://twitter.com/duzhuoyizui">Twitter</a></li>
+<h1 class="title">Kubernetes 组件</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5a254e9">1. Master 组件</a>
+<ul>
+<li><a href="#orgc46e4a7">1.1. kube-apiserver</a></li>
+<li><a href="#org8b8ec9e">1.2. etcd</a></li>
+<li><a href="#org9e6d40b">1.3. kube-scheduler</a></li>
+<li><a href="#org954bfd5">1.4. kube-controller-manager</a></li>
 </ul>
+</li>
+<li><a href="#orge4fa3fc">2. Node 组件</a>
+<ul>
+<li><a href="#org43f92fb">2.1. kubelet</a></li>
+<li><a href="#org3b81cfe">2.2. kube-proxy</a></li>
+<li><a href="#orge63183d">2.3. 容器运行时（Container Runtime）</a></li>
+</ul>
+</li>
+<li><a href="#orgedcc63c">3. 插件（Addons）</a>
+<ul>
+<li><a href="#org00acb97">3.1. DNS</a></li>
+<li><a href="#orgd9e439c">3.2. 用户界面（Dashboard）</a></li>
+<li><a href="#org57ebbab">3.3. 容器资源监控</a></li>
+<li><a href="#org7e0ace1">3.4. 集群层面日志</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 
-<hr />
-
+<div id="outline-container-org5a254e9" class="outline-2">
+<h2 id="org5a254e9"><span class="section-number-2">1</span> Master 组件</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgc46e4a7" class="outline-3">
+<h3 id="orgc46e4a7"><span class="section-number-3">1.1</span> kube-apiserver</h3>
+<div class="outline-text-3" id="text-1-1">
 <p>
-<a href="gtd/index.html">GTD</a> | <a href="weekly/index.html">碎碎念</a> | <a href="blog/2011/about-blog.html">关于博客</a> | <a href="other/emacs-news.html">Emacs News</a> | <a href="mailto:me@zhangjie.com">邮箱</a> | <a href="sitemap.html">sitemap</a>
+Kubernetes 控制前端，所有的组件都是通过 APIserver 来交互的。
 </p>
 </div>
 </div>
+
+<div id="outline-container-org8b8ec9e" class="outline-3">
+<h3 id="org8b8ec9e"><span class="section-number-3">1.2</span> etcd</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+兼具一致性的高可用的分布式 KV 数据库。集群中的所有数据都是存储在 etcd 中。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9e6d40b" class="outline-3">
+<h3 id="org9e6d40b"><span class="section-number-3">1.3</span> kube-scheduler</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+负责 Pod 的调度，监听未指定运行节点的 Pod，根据调度策略为 Pod 选择一个节点。调度策略考虑因素：
+</p>
+
+<ul class="org-ul">
+<li>Pod(s) 自身资源需求</li>
+<li>硬件/软件/策略约束</li>
+<li>亲和性和反亲和性</li>
+<li>数据位置</li>
+<li>工作负载间的干扰和最后时限</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org954bfd5" class="outline-3">
+<h3 id="org954bfd5"><span class="section-number-3">1.4</span> kube-controller-manager</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+Kubernetes 有很多的独立的控制器，逻辑上应该是独立的进程，但是为了降低复杂度，全部编译成了一个可执行文件中，在同一个进程中运行。
+包括：
+</p>
+
+<ul class="org-ul">
+<li>节点控制器（Node Controller）：负责在节点出现故障时进行通知和响应。</li>
+<li>副本控制器（Replication Controller）：负责为系统中的每个副本控制器对象维护正确数量的 Pod。</li>
+<li>端点控制器（Endpoints Controller）: 填充端点(Endpoints)对象(即加入 Service 与 Pod)。</li>
+<li>服务帐户和令牌控制器（Service Account &amp; Token Controllers）: 为新的命名空间创建默认帐户和 API 访问令牌。</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge4fa3fc" class="outline-2">
+<h2 id="orge4fa3fc"><span class="section-number-2">2</span> Node 组件</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org43f92fb" class="outline-3">
+<h3 id="org43f92fb"><span class="section-number-3">2.1</span> kubelet</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+节点上的代理。
+</p>
+
+<p>
+kubelet 接收一组通过各类机制提供给它的 PodSpecs，确保 PodSpecs 中描述的容器处于运行状态且健康。kubelet 不会管理非 Kubernetes 创建的容器。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3b81cfe" class="outline-3">
+<h3 id="org3b81cfe"><span class="section-number-3">2.2</span> kube-proxy</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+节点上运行的网络代理，实现 Kubernetes Service 概念的一部分。
+</p>
+
+<p>
+kube-proxy 维护节点的网络规则。这些规则允许从集群内部或者外部的网络回话与 Pod 进行网络通信。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge63183d" class="outline-3">
+<h3 id="orge63183d"><span class="section-number-3">2.3</span> 容器运行时（Container Runtime）</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+运行时是负责运行容器的软件。
+</p>
+
+<p>
+Kubernetes 支持多个容器运行环境：Docker，containerd，cri-o，rktlet 以及任何实现 Kubernetes CRI（Container Runtime Interface）
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgedcc63c" class="outline-2">
+<h2 id="orgedcc63c"><span class="section-number-2">3</span> 插件（Addons）</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+插件都属于 <code>kube-system</code> 命名空间。
+</p>
+</div>
+
+<div id="outline-container-org00acb97" class="outline-3">
+<h3 id="org00acb97"><span class="section-number-3">3.1</span> DNS</h3>
+</div>
+<div id="outline-container-orgd9e439c" class="outline-3">
+<h3 id="orgd9e439c"><span class="section-number-3">3.2</span> 用户界面（Dashboard）</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Kubernetes 集群的 Web UI。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org57ebbab" class="outline-3">
+<h3 id="org57ebbab"><span class="section-number-3">3.3</span> 容器资源监控</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+将容器常见的时间序列度量值保存到一个集中的数据库中，并提供浏览这些数据的界面。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7e0ace1" class="outline-3">
+<h3 id="org7e0ace1"><span class="section-number-3">3.4</span> 集群层面日志</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+负责容器的日志数据收集，并保存到日志存储中，存储能够提供搜索和浏览接口。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2020-02-04 17:27:47</p>
+<p class="author">Author: JerryZhang</p>
+<p class="validation"></p>
 </div>
 </body>
 </html>
