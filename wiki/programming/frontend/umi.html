@@ -236,18 +236,11 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb6cf00c">1. Pro 时代</a>
+<li><a href="#org8c896a0">1. Pro</a>
 <ul>
 <li><a href="#orgb8dc0c1">1.1. 技术栈</a></li>
 <li><a href="#org2349df3">1.2. 如何评价 Pro 2.0</a></li>
 <li><a href="#org908f085">1.3. 从 0.x 升级到 V2</a></li>
-<li><a href="#org2cbff08">1.4. FAQ</a>
-<ul>
-<li><a href="#orge35f817">1.4.1. 部署时，文件名添加 hash 值</a></li>
-<li><a href="#orgafe0d48">1.4.2. npm run start 报错</a></li>
-</ul>
-</li>
-<li><a href="#orgeb2999e">1.5. v1 升级 v2 之后报错：An immer producer returned a new value <b>and</b> modified its draft.</a></li>
 </ul>
 </li>
 <li><a href="#org9400f6b">2. Umi</a>
@@ -258,12 +251,20 @@ for the JavaScript code in this tag.
 <li><a href="#org3756919">2.4. 再次评价 umi</a></li>
 </ul>
 </li>
+<li><a href="#org2cbff08">3. FAQ</a>
+<ul>
+<li><a href="#orge35f817">3.1. 部署时，文件名添加 hash 值</a></li>
+<li><a href="#orgafe0d48">3.2. npm run start 报错</a></li>
+<li><a href="#orgeb2999e">3.3. v1 升级 v2 之后报错：An immer producer returned a new value <b>and</b> modified its draft.</a></li>
+<li><a href="#faq-uncaught-syntaxerror-unexpected-token">3.4. 部署到非根路径报错：Uncaught SyntaxError: Unexpected token '&lt;'</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb6cf00c" class="outline-2">
-<h2 id="orgb6cf00c"><span class="section-number-2">1</span> Pro 时代</h2>
+<div id="outline-container-org8c896a0" class="outline-2">
+<h2 id="org8c896a0"><span class="section-number-2">1</span> Pro</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 <a href="https://pro.ant.design/docs/getting-started-cn">Ant Design Pro</a> 是一个前端的基于 React 脚手架（框架，开箱即用，提供了菜单和路由、数据处理等），
@@ -369,106 +370,6 @@ Pro 缺陷也是优势，对于我这样的伪前端（也不想深入）的人�
 </p>
 </div>
 </div>
-
-<div id="outline-container-org2cbff08" class="outline-3">
-<h3 id="org2cbff08"><span class="section-number-3">1.4</span> FAQ</h3>
-<div class="outline-text-3" id="text-1-4">
-</div>
-<div id="outline-container-orge35f817" class="outline-4">
-<h4 id="orge35f817"><span class="section-number-4">1.4.1</span> 部署时，文件名添加 hash 值</h4>
-<div class="outline-text-4" id="text-1-4-1">
-<p>
-2.0 之后， <code>npm run build</code> 生成的 css 和 js 文件名不再包含 hash 值，这样会导致即便 nginx 设置了 <code>index.html</code> 不缓存，因为 css 和 js 每个版本的名字都是一样的，导致新版本更新之后，用户只有强制刷新浏览器才能生效。
-</p>
-
-<p>
-解决办法是在 <code>/config/config.js</code> 中添加 <code>hash:true</code> ，这是 umi 的一个配置特性：
-</p>
-
-<p>
-<a href="https://umijs.org/zh/config/#hash">https://umijs.org/zh/config/#hash</a>
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgafe0d48" class="outline-4">
-<h4 id="orgafe0d48"><span class="section-number-4">1.4.2</span> npm run start 报错</h4>
-<div class="outline-text-4" id="text-1-4-2">
-<p>
-<code>npm run start</code> 的时候，报错：
-</p>
-
-<blockquote>
-<p>
-Module build failed: Error: The 'decorators' plugin requires a
-'decoratorsBeforeExport' option, whose value must be a boolean. If you
-are migrating from Babylon/Babel 6 or want to use the old decorators
-proposal, you should use the 'decorators-legacy' plugin instead of
-'decorators'.
-</p>
-</blockquote>
-
-<p>
-解决的办法是用 <code>npm install</code> ，不要使用 cnpm 这种镜像。讨论在 <a href="https://github.com/ant-design/ant-design-pro/issues/2043">ant-design-pro issues#2043 </a>，好像也没有看到具体的原因，应该是依赖问题。
-</p>
-
-<p>
-之前用 npm 的时候也有类似的情况，一般是因为包依赖有问题，因为是镜像缘故，包的同步总会有先后顺序，卡到中间的时候就会出现依赖版本问题。
-</p>
-
-<p>
-其实不光是 npm，其它的镜像也会出这种情况，比如 Emacs 的源引发的问题：<a href="https://github.com/abo-abo/swiper/issues/2087">swiper issue#2087</a>
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-orgeb2999e" class="outline-3">
-<h3 id="orgeb2999e"><span class="section-number-3">1.5</span> v1 升级 v2 之后报错：An immer producer returned a new value <b>and</b> modified its draft.</h3>
-<div class="outline-text-3" id="text-1-5">
-<p>
-<a href="https://github.com/umijs/umi/issues/592">https://github.com/umijs/umi/issues/592</a>
-</p>
-
-<p>
-之前在 reducers 中使用了 state，但是升级之后不允许这么用了（好像是说简化写法，具体可以看 <a href="https://umijs.org/zh/guide/config.html#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">配置文件</a>）。一种 hack 的解决办法是上面 issue 中提到的：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">stockList</span> = <span style="color: #707183;">[</span>...state.stockList<span style="color: #707183;">]</span>
-</pre>
-</div>
-
-<p>
-但是不知道这种方式的原理是什么。
-</p>
-
-<p>
-<b>2020-01-08 16:52:10 更新</b>
-</p>
-
-<p>
-<a href="https://github.com/umijs/umi/issues/816">https://github.com/umijs/umi/issues/816</a>
-</p>
-
-<p>
-上面说的这种办法不通用，想恢复以前的使用办法可以关闭 immer，
-</p>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">export</span> <span style="color: #0000FF;">default</span> <span style="color: #707183;">{</span>
-  plugins: <span style="color: #7388D6;">[</span>
-    <span style="color: #909183;">[</span><span style="color: #008000;">'umi-plugin-dva'</span>, <span style="color: #709870;">{</span> immer: <span style="color: #D0372D;">true</span> <span style="color: #709870;">}</span><span style="color: #909183;">]</span>,
-  <span style="color: #7388D6;">]</span>,
-<span style="color: #707183;">}</span>;
-</pre>
-</div>
-
-<p>
-关闭之后又出现了 <code>Reducer "index" returned undefined during initialization.</code> 的报错，原因是 models 下面的 <code>*.js</code> 文件没有设置初始化 state，
-查看代码发现，在 models 下有一些 utils.js 文件，移出 model 目录即可。应该是认为 models 下的 .js 文件都要符合 <code>export { state: {} }</code> 这样的格式。
-</p>
-</div>
-</div>
 </div>
 
 <div id="outline-container-org9400f6b" class="outline-2">
@@ -486,7 +387,6 @@ proposal, you should use the 'decorators-legacy' plugin instead of
 </ul>
 </div>
 </div>
-
 <div id="outline-container-org793ed92" class="outline-3">
 <h3 id="org793ed92"><span class="section-number-3">2.2</span> Pro 和 UmiJS</h3>
 <div class="outline-text-3" id="text-2-2">
@@ -575,6 +475,128 @@ Pro <code>0.x</code> 版本和 <code>1.x</code> 版本 <code>npm run start</code
 React 全家桶（react，react-router，redux 等）了解之后，使用官方的的 create-react-app 来创建应用，UI 库自己选型即可。这样的好处是遇到了问题
 网上都有足够的资料帮你解决，社区也很好。坦白说，阿里开源的 antd 系列，社区都不怎么好。
 </p>
+</div>
+</div>
+</div>
+<div id="outline-container-org2cbff08" class="outline-2">
+<h2 id="org2cbff08"><span class="section-number-2">3</span> FAQ</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orge35f817" class="outline-3">
+<h3 id="orge35f817"><span class="section-number-3">3.1</span> 部署时，文件名添加 hash 值</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+2.0 之后， <code>npm run build</code> 生成的 css 和 js 文件名不再包含 hash 值，这样会导致即便 nginx 设置了 <code>index.html</code> 不缓存，因为 css 和 js 每个版本的名字都是一样的，导致新版本更新之后，用户只有强制刷新浏览器才能生效。
+</p>
+
+<p>
+解决办法是在 <code>/config/config.js</code> 中添加 <code>hash:true</code> ，这是 umi 的一个配置特性：
+</p>
+
+<p>
+<a href="https://umijs.org/zh/config/#hash">https://umijs.org/zh/config/#hash</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgafe0d48" class="outline-3">
+<h3 id="orgafe0d48"><span class="section-number-3">3.2</span> npm run start 报错</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+<code>npm run start</code> 的时候，报错：
+</p>
+
+<blockquote>
+<p>
+Module build failed: Error: The 'decorators' plugin requires a
+'decoratorsBeforeExport' option, whose value must be a boolean. If you
+are migrating from Babylon/Babel 6 or want to use the old decorators
+proposal, you should use the 'decorators-legacy' plugin instead of
+'decorators'.
+</p>
+</blockquote>
+
+<p>
+解决的办法是用 <code>npm install</code> ，不要使用 cnpm 这种镜像。讨论在 <a href="https://github.com/ant-design/ant-design-pro/issues/2043">ant-design-pro issues#2043 </a>，好像也没有看到具体的原因，应该是依赖问题。
+</p>
+
+<p>
+之前用 npm 的时候也有类似的情况，一般是因为包依赖有问题，因为是镜像缘故，包的同步总会有先后顺序，卡到中间的时候就会出现依赖版本问题。
+</p>
+
+<p>
+其实不光是 npm，其它的镜像也会出这种情况，比如 Emacs 的源引发的问题：<a href="https://github.com/abo-abo/swiper/issues/2087">swiper issue#2087</a>
+</p>
+</div>
+</div>
+<div id="outline-container-orgeb2999e" class="outline-3">
+<h3 id="orgeb2999e"><span class="section-number-3">3.3</span> v1 升级 v2 之后报错：An immer producer returned a new value <b>and</b> modified its draft.</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+<a href="https://github.com/umijs/umi/issues/592">https://github.com/umijs/umi/issues/592</a>
+</p>
+
+<p>
+之前在 reducers 中使用了 state，但是升级之后不允许这么用了（好像是说简化写法，具体可以看 <a href="https://umijs.org/zh/guide/config.html#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">配置文件</a>）。一种 hack 的解决办法是上面 issue 中提到的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">stockList</span> = <span style="color: #707183;">[</span>...state.stockList<span style="color: #707183;">]</span>
+</pre>
+</div>
+
+<p>
+但是不知道这种方式的原理是什么。
+</p>
+
+<p>
+<b>2020-01-08 16:52:10 更新</b>
+</p>
+
+<p>
+<a href="https://github.com/umijs/umi/issues/816">https://github.com/umijs/umi/issues/816</a>
+</p>
+
+<p>
+上面说的这种办法不通用，想恢复以前的使用办法可以关闭 immer，
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #0000FF;">export</span> <span style="color: #0000FF;">default</span> <span style="color: #707183;">{</span>
+  plugins: <span style="color: #7388D6;">[</span>
+    <span style="color: #909183;">[</span><span style="color: #008000;">'umi-plugin-dva'</span>, <span style="color: #709870;">{</span> immer: <span style="color: #D0372D;">true</span> <span style="color: #709870;">}</span><span style="color: #909183;">]</span>,
+  <span style="color: #7388D6;">]</span>,
+<span style="color: #707183;">}</span>;
+</pre>
+</div>
+
+<p>
+关闭之后又出现了 <code>Reducer "index" returned undefined during initialization.</code> 的报错，原因是 models 下面的 <code>*.js</code> 文件没有设置初始化 state，
+查看代码发现，在 models 下有一些 utils.js 文件，移出 model 目录即可。应该是认为 models 下的 .js 文件都要符合 <code>export { state: {} }</code> 这样的格式。
+</p>
+</div>
+</div>
+<div id="outline-container-org729b879" class="outline-3">
+<h3 id="faq-uncaught-syntaxerror-unexpected-token"><a id="org729b879"></a><span class="section-number-3">3.4</span> 部署到非根路径报错：Uncaught SyntaxError: Unexpected token '&lt;'</h3>
+<div class="outline-text-3" id="text-faq-uncaught-syntaxerror-unexpected-token">
+<p>
+这个错误一般是因为 html 中 script src 引用的 js 文件有错（不是 js 格式的）。下面是 umi 部署到非根路径流程（假定路径为 <code>/base</code> ）：
+</p>
+
+<ol class="org-ol">
+<li>umi 的 <a href="https://umijs.org/zh/guide/config.html">配置文件</a> 中添加 <code>base</code> 和 <code>publicPath</code> 为 <code>/base/</code></li>
+<li>构建的 dist 文件多加一层目录 base</li>
+<li><p>
+nginx
+</p>
+<div class="org-src-container">
+<pre class="src src-nginx"><span style="color: #0000FF;">location</span> <span style="color: #006699;">/base</span> <span style="color: #707183;">{</span>
+  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">&#29992;&#20110;&#37197;&#21512; browserHistory&#20351;&#29992;</span>
+  <span style="color: #0000FF;">try_files</span> <span style="color: #BA36A5;">$uri</span> <span style="color: #BA36A5;">$uri</span>/ /index.html;
+<span style="color: #707183;">}</span>
+</pre>
+</div></li>
+</ol>
 </div>
 </div>
 </div>
