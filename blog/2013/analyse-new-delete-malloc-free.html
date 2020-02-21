@@ -162,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -187,7 +200,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -251,7 +264,7 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-orgd239a8e" class="outline-2">
-<h2 id="缘由"><a id="orgd239a8e"></a><span class="section-number-2">1</span> 缘由</h2>
+<h2 id="缘由"><span class="section-number-2">1</span> 缘由</h2>
 <div class="outline-text-2" id="text-缘由">
 <p>
 从一开始搞 <code>C/C++</code> 的时候，一直在时不时的探究 <code>new/delete &amp;&amp; malloc/free</code> 几者之间的关系。没有一本书确切的，深入的探讨它们的具体机制。
@@ -413,7 +426,7 @@ for invoking the destructor(s) of the allocated objects.
 </div>
 
 <div id="outline-container-orga8c19f1" class="outline-2">
-<h2 id="newdeletemallocfree-基本知识"><a id="orga8c19f1"></a><span class="section-number-2">2</span> new/delete/malloc/free 基本知识</h2>
+<h2 id="newdeletemallocfree-基本知识"><span class="section-number-2">2</span> new/delete/malloc/free 基本知识</h2>
 <div class="outline-text-2" id="text-newdeletemallocfree-基本知识">
 <p>
 <b>new/delete 流程</b>
@@ -533,7 +546,7 @@ delete[] 与之相似，先分别调用每个数组对象的析构函数，然�
 <span style="color: #707183;">}</span>
 
 <span style="color: #6434A3;">void</span>* <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">new</span><span style="color: #707183;">[](</span><span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">size</span><span style="color: #707183;">)</span> <span style="color: #0000FF;">throw</span><span style="color: #707183;">(</span><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">bad_alloc</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #ff0000; font-weight: bold;">"</span><span style="color: #008000;">in operator new[] | alloc size: &lt;&lt; size &lt;&lt; std::endl;</span>
+    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #ff0000;">"</span><span style="color: #008000;">in operator new[] | alloc size: &lt;&lt; size &lt;&lt; std::endl;</span>
 <span style="color: #008000;">    void * p = malloc(size);</span>
 
 <span style="color: #008000;">    return p;</span>
@@ -541,13 +554,13 @@ delete[] 与之相似，先分别调用每个数组对象的析构函数，然�
 
 <span style="color: #008000;">void operator delete(void *pointer)</span>
 <span style="color: #008000;">{</span>
-<span style="color: #008000;">    std::cout &lt;&lt; "</span><span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">delete</span> <span style="color: #ff0000; font-weight: bold;">"</span><span style="color: #008000;"> &lt;&lt;  std::endl;</span>
+<span style="color: #008000;">    std::cout &lt;&lt; "</span><span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">delete</span> <span style="color: #ff0000;">"</span><span style="color: #008000;"> &lt;&lt;  std::endl;</span>
 <span style="color: #008000;">    free(pointer);</span>
 <span style="color: #008000;">}</span>
 
 <span style="color: #008000;">void operator delete[](void *pointer)</span>
 <span style="color: #008000;">{</span>
-<span style="color: #008000;">    std::cout &lt;&lt; "</span><span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">delete</span><span style="color: #7388D6;">[]</span> <span style="color: #ff0000; font-weight: bold;">"</span><span style="color: #008000;"> &lt;&lt; std::endl;</span>
+<span style="color: #008000;">    std::cout &lt;&lt; "</span><span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">delete</span><span style="color: #7388D6;">[]</span> <span style="color: #ff0000;">"</span><span style="color: #008000;"> &lt;&lt; std::endl;</span>
 <span style="color: #008000;">    free(pointer);</span>
 <span style="color: #008000;">}</span>
 
@@ -555,11 +568,11 @@ delete[] 与之相似，先分别调用每个数组对象的析构函数，然�
 <span style="color: #008000;">{</span>
 <span style="color: #008000;">public:</span>
 <span style="color: #008000;">    data_stream() {</span>
-<span style="color: #008000;">        std::cout &lt;&lt; "</span>in data_stream ctor<span style="color: #ff0000; font-weight: bold;">"</span><span style="color: #008000;"> &lt;&lt;  std::endl;</span>
+<span style="color: #008000;">        std::cout &lt;&lt; "</span>in data_stream ctor<span style="color: #ff0000;">"</span><span style="color: #008000;"> &lt;&lt;  std::endl;</span>
 <span style="color: #008000;">    }</span>
 
 <span style="color: #008000;">    ~data_stream() {</span>
-<span style="color: #008000;">        std::cout  &lt;&lt; "</span>in data_stream dtor<span style="color: #ff0000; font-weight: bold;">"</span><span style="color: #008000;"> &lt;&lt; std::endl;</span>
+<span style="color: #008000;">        std::cout  &lt;&lt; "</span>in data_stream dtor<span style="color: #ff0000;">"</span><span style="color: #008000;"> &lt;&lt; std::endl;</span>
 <span style="color: #008000;">    }</span>
 <span style="color: #008000;">};</span>
 
@@ -658,7 +671,7 @@ operator delete
 </div>
 
 <div id="outline-container-orgebb7aff" class="outline-2">
-<h2 id="追踪溯源"><a id="orgebb7aff"></a><span class="section-number-2">3</span> 追踪溯源</h2>
+<h2 id="追踪溯源"><span class="section-number-2">3</span> 追踪溯源</h2>
 <div class="outline-text-2" id="text-追踪溯源">
 <p>
 抱着上面的疑问，我进行了测试和跟踪。本想把分析过程分享一下的，可是分析过程描述会很杂乱，而且很容易让大家摸不着重点，就直接分享结论了。
@@ -711,7 +724,7 @@ Type of block:
 </div>
 
 <div id="outline-container-org914241b" class="outline-3">
-<h3 id="内置类型"><a id="org914241b"></a><span class="section-number-3">3.1</span> 内置类型</h3>
+<h3 id="内置类型"><span class="section-number-3">3.1</span> 内置类型</h3>
 <div class="outline-text-3" id="text-内置类型">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #6434A3;">int</span> *<span style="color: #BA36A5;">int_array</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">[</span>16<span style="color: #707183;">]</span>;
@@ -747,7 +760,7 @@ Type of block:
 </div>
 
 <div id="outline-container-org87ac40c" class="outline-3">
-<h3 id="单个类对象"><a id="org87ac40c"></a><span class="section-number-3">3.2</span> 单个类对象</h3>
+<h3 id="单个类对象"><span class="section-number-3">3.2</span> 单个类对象</h3>
 <div class="outline-text-3" id="text-单个类对象">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #0000FF;">class</span> <span style="color: #6434A3;">data_stream</span>
@@ -784,7 +797,7 @@ Type of block:
 </div>
 
 <div id="outline-container-org8c7dcd5" class="outline-3">
-<h3 id="类对象数组"><a id="org8c7dcd5"></a><span class="section-number-3">3.3</span> 类对象数组</h3>
+<h3 id="类对象数组"><span class="section-number-3">3.3</span> 类对象数组</h3>
 <div class="outline-text-3" id="text-类对象数组">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #6434A3;">void</span>* <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">new</span><span style="color: #707183;">[](</span><span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">size</span><span style="color: #707183;">)</span> <span style="color: #0000FF;">throw</span><span style="color: #707183;">(</span><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">bad_alloc</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
@@ -871,7 +884,7 @@ Type of block:
 </div>
 
 <div id="outline-container-org4ac7f59" class="outline-2">
-<h2 id="总结"><a id="org4ac7f59"></a><span class="section-number-2">4</span> 总结</h2>
+<h2 id="总结"><span class="section-number-2">4</span> 总结</h2>
 <div class="outline-text-2" id="text-总结">
 <ol class="org-ol">
 <li>对于内置类型，=new[]-&gt;= 怎么对应都不会有问题， <code>free</code> 只需要一个首地址，通过指针偏移可以获取到下一个内存块和上一个内存的地址，
@@ -901,7 +914,6 @@ btw:
 <div id="postamble" class="status">
 <p class="date">Date: 2013-07-28 00:00:00</p>
 <p class="author">Author: JerryZhang</p>
-<p class="validation"></p>
 </div>
 </body>
 </html>

@@ -162,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -187,7 +200,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -256,7 +269,6 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-
 <div id="outline-container-orge5bdce6" class="outline-2">
 <h2 id="orge5bdce6"><span class="section-number-2">1</span> 日志</h2>
 <div class="outline-text-2" id="text-1">
@@ -328,7 +340,7 @@ Uber 开源的日志系统。
 <div class="outline-text-3" id="text-1-5">
 <ul class="org-ul">
 <li>高性能的系统，推荐使用 zap；</li>
-<li>业务系统推荐使用 logrus，glog 的日志级别（ <code>V()</code> ）很容易误导开发人员，个人体验并不是很好。</li>
+<li>业务系统推荐使用 logrus，glog 的日志级别（ <code>V()</code> ）很容易误导开发人员，体验并不是很好。</li>
 </ul>
 </div>
 </div>
@@ -400,32 +412,33 @@ maxTimeMS
 代码如下：
 </p>
 
-<pre class="example">
-func yieldIndexModel(key string, unique bool, order int) mongo.IndexModel {
-    keys := bsonx.Doc{{Key: key, Value: bsonx.Int32(int32(order))}}
-    index := mongo.IndexModel{
-        Keys: keys,
-    }
-    if unique {
-        index.Options = options.Index().SetUnique(true)
-    }
-    return index
-}
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">yieldIndexModel</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">key</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">unique</span> <span style="color: #6434A3;">bool</span>, <span style="color: #BA36A5;">order</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">mongo.IndexModel</span> <span style="color: #707183;">{</span>
+    <span style="color: #BA36A5;">keys</span> := <span style="color: #6434A3;">bsonx.Doc</span><span style="color: #7388D6;">{</span><span style="color: #909183;">{</span><span style="color: #D0372D;">Key</span>: key, <span style="color: #D0372D;">Value</span>: bsonx.<span style="color: #006699;">Int32</span><span style="color: #709870;">(</span><span style="color: #006699;">int32</span><span style="color: #907373;">(</span>order<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">}</span><span style="color: #7388D6;">}</span>
+    <span style="color: #BA36A5;">index</span> := <span style="color: #6434A3;">mongo.IndexModel</span><span style="color: #7388D6;">{</span>
+        <span style="color: #D0372D;">Keys</span>: keys,
+    <span style="color: #7388D6;">}</span>
+    <span style="color: #0000FF;">if</span> unique <span style="color: #7388D6;">{</span>
+        index.Options = options.<span style="color: #006699;">Index</span><span style="color: #909183;">()</span>.<span style="color: #006699;">SetUnique</span><span style="color: #909183;">(</span><span style="color: #D0372D;">true</span><span style="color: #909183;">)</span>
+    <span style="color: #7388D6;">}</span>
+    <span style="color: #0000FF;">return</span> index
+<span style="color: #707183;">}</span>
 
-func (sc *StorageClient) BuildIndex(name string, key string, unique bool) error {
-    db, err := sc.GetDatabase()
-    if err != nil {
-        return err
-    }
+<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">sc</span> *<span style="color: #6434A3;">StorageClient</span><span style="color: #707183;">)</span> <span style="color: #006699;">BuildIndex</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">name</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">key</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">unique</span> <span style="color: #6434A3;">bool</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">error</span> <span style="color: #707183;">{</span>
+    <span style="color: #BA36A5;">db</span>, <span style="color: #BA36A5;">err</span> := sc.<span style="color: #006699;">GetDatabase</span><span style="color: #7388D6;">()</span>
+    <span style="color: #0000FF;">if</span> err != <span style="color: #D0372D;">nil</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #0000FF;">return</span> err
+    <span style="color: #7388D6;">}</span>
 
-    collection := db.Collection(name)
-    opts := options.CreateIndexes().SetMaxTime(20 * time.Second) // set max build time
-    indexModel := yieldIndexModel(key, unique, ASCENDING)
-    indexName, err := collection.Indexes().CreateOne(context.Background(), indexModel, opts)
+    <span style="color: #BA36A5;">collection</span> := db.<span style="color: #006699;">Collection</span><span style="color: #7388D6;">(</span>name<span style="color: #7388D6;">)</span>
+    <span style="color: #BA36A5;">opts</span> := options.<span style="color: #006699;">CreateIndexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">SetMaxTime</span><span style="color: #7388D6;">(</span>20 * time.Second<span style="color: #7388D6;">)</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">set max build time</span>
+    <span style="color: #BA36A5;">indexModel</span> := <span style="color: #006699;">yieldIndexModel</span><span style="color: #7388D6;">(</span>key, unique, ASCENDING<span style="color: #7388D6;">)</span>
+    <span style="color: #BA36A5;">indexName</span>, <span style="color: #BA36A5;">err</span> := collection.<span style="color: #006699;">Indexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">CreateOne</span><span style="color: #7388D6;">(</span>context.<span style="color: #006699;">Background</span><span style="color: #909183;">()</span>, indexModel, opts<span style="color: #7388D6;">)</span>
 
-    // ...
-}
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">...</span>
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
 去掉 <code>SetMaxTime</code> 之后就正常了。
@@ -503,7 +516,6 @@ original session to wait.
 <div id="postamble" class="status">
 <p class="date">Date: 2019-03-14 17:50:00</p>
 <p class="author">Author: JerryZhang</p>
-<p class="validation"></p>
 </div>
 </body>
 </html>

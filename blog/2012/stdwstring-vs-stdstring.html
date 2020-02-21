@@ -162,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -187,7 +200,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -266,7 +279,7 @@ for the JavaScript code in this tag.
 </ol>
 
 <div id="outline-container-org285457e" class="outline-2">
-<h2 id="问题表述"><a id="org285457e"></a><span class="section-number-2">1</span> 问题表述</h2>
+<h2 id="问题表述"><span class="section-number-2">1</span> 问题表述</h2>
 <div class="outline-text-2" id="text-问题表述">
 <p>
 我不理解 std::string 和 std::wstring 之间的差别。我知道 wstring
@@ -283,7 +296,7 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-orge0eb54d" class="outline-2">
-<h2 id="解释一"><a id="orge0eb54d"></a><span class="section-number-2">2</span> 解释一</h2>
+<h2 id="解释一"><span class="section-number-2">2</span> 解释一</h2>
 <div class="outline-text-2" id="text-解释一">
 <ol class="org-ol">
 <li>存在一些历史原因，人们希望宽字符可以支持 Unicode。现在常用作 APIs
@@ -311,12 +324,12 @@ part of the character that is two bytes long）。UTF-16
 </div>
 
 <div id="outline-container-orgebef5c6" class="outline-2">
-<h2 id="解释二"><a id="orgebef5c6"></a><span class="section-number-2">3</span> 解释二</h2>
+<h2 id="解释二"><span class="section-number-2">3</span> 解释二</h2>
 <div class="outline-text-2" id="text-解释二">
 </div>
 
 <div id="outline-container-org6315808" class="outline-3">
-<h3 id="string-wstring"><a id="org6315808"></a><span class="section-number-3">3.1</span> string? wstring?</h3>
+<h3 id="string-wstring"><span class="section-number-3">3.1</span> string? wstring?</h3>
 <div class="outline-text-3" id="text-string-wstring">
 <p>
 std::string 是模板类 basic<sub>string</sub> 模板用 char 的特化，std::wstring
@@ -326,7 +339,7 @@ std::string 是模板类 basic<sub>string</sub> 模板用 char 的特化，std::
 </div>
 
 <div id="outline-container-org7d39531" class="outline-3">
-<h3 id="char-vs.-wchar_t"><a id="org7d39531"></a><span class="section-number-3">3.2</span> char vs. wchar<sub>t</sub></h3>
+<h3 id="char-vs.-wchar_t"><span class="section-number-3">3.2</span> char vs. wchar<sub>t</sub></h3>
 <div class="outline-text-3" id="text-char-vs.-wchar_t">
 <p>
 char 用来存储一个字符，通常来说占一个字节。wchar<sub>t</sub>
@@ -337,7 +350,7 @@ char 用来存储一个字符，通常来说占一个字节。wchar<sub>t</sub>
 </div>
 
 <div id="outline-container-orgc0c22d8" class="outline-3">
-<h3 id="那么关于-unicode-呢"><a id="orgc0c22d8"></a><span class="section-number-3">3.3</span> 那么关于 Unicode 呢？</h3>
+<h3 id="那么关于-unicode-呢"><span class="section-number-3">3.3</span> 那么关于 Unicode 呢？</h3>
 <div class="outline-text-3" id="text-那么关于-unicode-呢">
 <p>
 问题在于 char 和 wchar<sub>t</sub> 都没有和 unicode 有直接的关系。
@@ -346,7 +359,7 @@ char 用来存储一个字符，通常来说占一个字节。wchar<sub>t</sub>
 </div>
 
 <div id="outline-container-org7fb509b" class="outline-3">
-<h3 id="在-linux-上"><a id="org7fb509b"></a><span class="section-number-3">3.4</span> 在 Linux 上？</h3>
+<h3 id="在-linux-上"><span class="section-number-3">3.4</span> 在 Linux 上？</h3>
 <div class="outline-text-3" id="text-在-linux-上">
 <p>
 我们选一个 Linux 操作系统吧：我的 Ubuntu 系统对 Unicode
@@ -474,7 +487,7 @@ Windows 上 "olé" 显示为"olé"，但是在 cyrillic-localized Windows
 
 <p>
 因此，如果在 Windows 下工作的话，你应该尽可能使用 wchar<sub>t</sub>
-（除非你使用了一个框架，把它（wchar<sub>t</sub>）给隐藏了，比如：<a href="http://en.wikipedia.org/wiki/GTK+">GTK+</a>或者<a href="en.wikipedia.org/wiki/Qt_%28toolkit%29">QT</a>&#x2026;）.<br />
+（除非你使用了一个框架，把它（wchar<sub>t</sub>）给隐藏了，比如：<a href="http://en.wikipedia.org/wiki/GTK%2B">GTK+</a>或者<a href="en.wikipedia.org/wiki/Qt_%28toolkit%29">QT</a>&#x2026;）.<br />
 Windows 下使用 wchar<sub>t</sub> 字符串，因此，之前的应用程序将会把他们的 char
 字符串转换成 wchar<sub>t</sub> （当使用类似于 SetWindowText 这种 API 的时候）。
 </p>
@@ -482,7 +495,7 @@ Windows 下使用 wchar<sub>t</sub> 字符串，因此，之前的应用程序�
 </div>
 
 <div id="outline-container-orgadc16b9" class="outline-3">
-<h3 id="内存问题memory-issues"><a id="orgadc16b9"></a><span class="section-number-3">3.5</span> 内存问题（Memory issues）</h3>
+<h3 id="内存问题memory-issues"><span class="section-number-3">3.5</span> 内存问题（Memory issues）</h3>
 <div class="outline-text-3" id="text-内存问题memory-issues">
 <p>
 UTF-32 每个字符占 4 个字节，因此没什么要添加的。只要 UTF-8 和 UTF-16
@@ -512,7 +525,7 @@ UTF-16 少占用内存。
 </div>
 
 <div id="outline-container-orgee05062" class="outline-3">
-<h3 id="总结"><a id="orgee05062"></a><span class="section-number-3">3.6</span> 总结</h3>
+<h3 id="总结"><span class="section-number-3">3.6</span> 总结</h3>
 <div class="outline-text-3" id="text-总结">
 <p>
 1、什么时候我应该使用 std::wstring 替代 std::string 呢？
@@ -562,7 +575,7 @@ UTF-16 少占用内存。
 </div>
 
 <div id="outline-container-org3c3c122" class="outline-3">
-<h3 id="解释三"><a id="org3c3c122"></a><span class="section-number-3">3.7</span> 解释三</h3>
+<h3 id="解释三"><span class="section-number-3">3.7</span> 解释三</h3>
 <div class="outline-text-3" id="text-解释三">
 <p>
 1、当你想要在你的字符串中存储宽字符的时候。这个"宽"依赖于实现。如果我没有记错的话。Visual
@@ -606,7 +619,6 @@ UNICODE，因为我一开始就有曲解，我希望以这个帖子作引，让�
 <div id="postamble" class="status">
 <p class="date">Date: 2012-08-26 00:00:00</p>
 <p class="author">Author: JerryZhang</p>
-<p class="validation"></p>
 </div>
 </body>
 </html>

@@ -162,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -187,7 +200,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -354,7 +367,7 @@ Docker 引擎把 namespaces，cgroups 和 UnionFS 组合到一个称为容器格
 </div>
 
 <div id="outline-container-orgf0ebc84" class="outline-3">
-<h3 id="如何让构建的镜像足够小"><a id="orgf0ebc84"></a><span class="section-number-3">2.1</span> 如何让构建的镜像足够小</h3>
+<h3 id="如何让构建的镜像足够小"><span class="section-number-3">2.1</span> 如何让构建的镜像足够小</h3>
 <div class="outline-text-3" id="text-如何让构建的镜像足够小">
 <p>
 启动容器或者服务时，小的镜像可以更快的下载、当容器或者服务启动时，更快的加载到内存中。这些原则可以让你的镜像尽可能的小：
@@ -509,7 +522,7 @@ Docker 的子网络是可插拔的，默认支持几种驱动程序，提供核�
 </div>
 
 <div id="outline-container-orgf3720ff" class="outline-3">
-<h3 id="用户自定义的桥接和默认的桥接网络之间的区别"><a id="orgf3720ff"></a><span class="section-number-3">4.1</span> 用户自定义的桥接和默认的桥接网络之间的区别</h3>
+<h3 id="用户自定义的桥接和默认的桥接网络之间的区别"><span class="section-number-3">4.1</span> 用户自定义的桥接和默认的桥接网络之间的区别</h3>
 <div class="outline-text-3" id="text-用户自定义的桥接和默认的桥接网络之间的区别">
 <ul class="org-ul">
 <li><p>
@@ -599,7 +612,7 @@ MTU 和 iptables 规则。此外，因为配置默认桥接网络是在 Docker
 </div>
 
 <div id="outline-container-orge87e614" class="outline-3">
-<h3 id="管理用户定义桥接网络"><a id="orge87e614"></a><span class="section-number-3">4.2</span> 管理用户定义桥接网络</h3>
+<h3 id="管理用户定义桥接网络"><span class="section-number-3">4.2</span> 管理用户定义桥接网络</h3>
 <div class="outline-text-3" id="text-管理用户定义桥接网络">
 <p>
 使用 <code>docker network create</code> 命令创建一个用户定义桥接网络。你可以指定子网，IP 地址范围，网关和其他选项。具体通过 help 参数查看 <code>docker network create --help</code> 。
@@ -624,7 +637,7 @@ MTU 和 iptables 规则。此外，因为配置默认桥接网络是在 Docker
 </div>
 
 <div id="outline-container-org8a04589" class="outline-3">
-<h3 id="连接容器到用户定义桥接网络"><a id="org8a04589"></a><span class="section-number-3">4.3</span> 连接容器到用户定义桥接网络</h3>
+<h3 id="连接容器到用户定义桥接网络"><span class="section-number-3">4.3</span> 连接容器到用户定义桥接网络</h3>
 <div class="outline-text-3" id="text-连接容器到用户定义桥接网络">
 <p>
 当你创建容器的时候，你可以指定一个或者多个 <code>--network</code> 标识。下面的例子将 Nginx 容器连接到 <code>my-net</code> 网络，并且将容器内部的 80 端口映射到宿主机的 8080 端口，任何连接到 <code>my-net</code> 的网络都可以连接 <code>my-nginx</code> 的所有端口，反之亦然。
@@ -710,7 +723,7 @@ $ docker network connect my-net my-nginx
 </div>
 
 <div id="outline-container-org72bc918" class="outline-3">
-<h3 id="创建和管理-volumes"><a id="org72bc918"></a><span class="section-number-3">6.2</span> 创建和管理 volumes</h3>
+<h3 id="创建和管理-volumes"><span class="section-number-3">6.2</span> 创建和管理 volumes</h3>
 <div class="outline-text-3" id="text-创建和管理-volumes">
 <p>
 和 bind mount 不同，你需要在容器外部创建和管理 volumes。
@@ -829,7 +842,7 @@ $ docker run -d \
 </div>
 
 <div id="outline-container-org6d02591" class="outline-2">
-<h2 id="管理应用数据bind-mounts"><a id="org6d02591"></a><span class="section-number-2">7</span> 管理应用数据：bind mounts</h2>
+<h2 id="管理应用数据bind-mounts"><span class="section-number-2">7</span> 管理应用数据：bind mounts</h2>
 <div class="outline-text-2" id="text-管理应用数据bind-mounts">
 <p>
 bind mounts，是将容器的宿主目录/文件挂载到容器中，如果目录不存在会自动创建。如果你开发一个新的 Docker 容器，推荐使用命名 volumes 替代 bind mounts。
@@ -892,7 +905,6 @@ tmpfs 使用时没有 source 选项，只有 target 选项。tmpfs 支持两个�
 <div id="postamble" class="status">
 <p class="date">Date: 2019-03-04 18:05</p>
 <p class="author">Author: JerryZhang</p>
-<p class="validation"></p>
 </div>
 </body>
 </html>

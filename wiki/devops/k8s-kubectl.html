@@ -162,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -187,7 +200,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -272,7 +285,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgbaafaee">2.9. 删除资源（Delete Resources）</a></li>
 <li><a href="#org87b45b8">2.10. 与正在运行的 Pods 交互</a></li>
 <li><a href="#org8a0322d">2.11. 与节点和集群交互</a></li>
-<li><a href="#org48fd7c8">2.12. 格式化输出</a></li>
+<li><a href="#org0c02f19">2.12. 格式化输出</a></li>
 </ul>
 </li>
 <li><a href="#orgf406b4f">3. 针对 Docker 用户</a>
@@ -366,7 +379,7 @@ $ kubectl get po pod1
 </div>
 
 <div id="outline-container-orgd4cf6bb" class="outline-3">
-<h3 id="资源类型"><a id="orgd4cf6bb"></a><span class="section-number-3">1.2</span> 资源类型</h3>
+<h3 id="资源类型"><span class="section-number-3">1.2</span> 资源类型</h3>
 <div class="outline-text-3" id="text-资源类型">
 <p>
 下面是 <code>kubectl</code> 做支持的资源类型和他们的简写：
@@ -585,8 +598,8 @@ $ kubectl get po pod1
 <h3 id="org1325c94"><span class="section-number-3">1.3</span> 输出选项</h3>
 <div class="outline-text-3" id="text-1-3">
 </div>
-<div id="outline-container-org40c257d" class="outline-4">
-<h4 id="格式化输出"><a id="org40c257d"></a><span class="section-number-4">1.3.1</span> 格式化输出</h4>
+<div id="outline-container-org48fd7c8" class="outline-4">
+<h4 id="格式化输出"><span class="section-number-4">1.3.1</span> 格式化输出</h4>
 <div class="outline-text-4" id="text-格式化输出">
 <p>
 语法: <code>kubectl [command] [TYPE] [NAME] -o=&lt;output_format&gt;</code>
@@ -660,7 +673,7 @@ submit-queue   610995
 </div>
 
 <div id="outline-container-org8356284" class="outline-5">
-<h5 id="服务端server-side的列"><a id="org8356284"></a><span class="section-number-5">1.3.1.2</span> 服务端（Server-side）的列</h5>
+<h5 id="服务端server-side的列"><span class="section-number-5">1.3.1.2</span> 服务端（Server-side）的列</h5>
 <div class="outline-text-5" id="text-服务端server-side的列">
 <p>
 <code>kubectl</code> 支持从服务器接受有关对象的特定信息的列，这意味着任意给定的资源，服务器会返回资源相关的行和列，供客户端输出。这样的设定保证了相同的集群提供一致的跨客户端的人类可读的输出（服务器封装了打印的细节）。
@@ -921,7 +934,7 @@ EOF
 </div>
 
 <div id="outline-container-org82fa57e" class="outline-3">
-<h3 id="查看查找资源"><a id="org82fa57e"></a><span class="section-number-3">2.4</span> 查看，查找资源</h3>
+<h3 id="查看查找资源"><span class="section-number-3">2.4</span> 查看，查找资源</h3>
 <div class="outline-text-3" id="text-查看查找资源">
 <pre class="example">
 # get：基本输出命令
@@ -969,7 +982,7 @@ kubectl get events --sort-by=.metadata.creationTimestamp
 </div>
 
 <div id="outline-container-org8d0248d" class="outline-3">
-<h3 id="更新资源"><a id="org8d0248d"></a><span class="section-number-3">2.5</span> 更新资源</h3>
+<h3 id="更新资源"><span class="section-number-3">2.5</span> 更新资源</h3>
 <div class="outline-text-3" id="text-更新资源">
 <pre class="example">
 kubectl rolling-update frontend-v1 -f frontend-v2.json           # 滚动更新 frontend-1 pods
@@ -997,7 +1010,7 @@ kubectl autoscale deployment foo --min=2 --max=10                # 自动扩展�
 </div>
 
 <div id="outline-container-org220e210" class="outline-3">
-<h3 id="修补资源patching-resources"><a id="org220e210"></a><span class="section-number-3">2.6</span> 修补资源（Patching Resources）</h3>
+<h3 id="修补资源patching-resources"><span class="section-number-3">2.6</span> 修补资源（Patching Resources）</h3>
 <div class="outline-text-3" id="text-修补资源patching-resources">
 <pre class="example">
 kubectl patch node k8s-node-1 -p '{"spec":{"unschedulable":true}}' # 部分更新一个节点
@@ -1032,7 +1045,7 @@ KUBE_EDITOR="nano" kubectl edit svc/docker-registry   # 指定交互编辑器
 </div>
 
 <div id="outline-container-org43a338e" class="outline-3">
-<h3 id="扩展资源scaling-resources"><a id="org43a338e"></a><span class="section-number-3">2.8</span> 扩展资源（Scaling Resources）</h3>
+<h3 id="扩展资源scaling-resources"><span class="section-number-3">2.8</span> 扩展资源（Scaling Resources）</h3>
 <div class="outline-text-3" id="text-扩展资源scaling-resources">
 <pre class="example">
 kubectl scale --replicas=3 rs/foo                                 # 将名为 'foo' 的 replicaset 缩放为 3
@@ -1094,8 +1107,8 @@ kubectl taint nodes foo dedicated=special-user:NoSchedule
 </div>
 </div>
 
-<div id="outline-container-org48fd7c8" class="outline-3">
-<h3 id="org48fd7c8"><span class="section-number-3">2.12</span> 格式化输出</h3>
+<div id="outline-container-org0c02f19" class="outline-3">
+<h3 id="org0c02f19"><span class="section-number-3">2.12</span> 格式化输出</h3>
 <div class="outline-text-3" id="text-2-12">
 <p>
 <code>kubectl</code> 支持使用 <code>-o</code> 或者 <code>-output</code> flag 将输出信息以特定的格式格式化到你的终端窗口。
@@ -1250,7 +1263,7 @@ Ctrl+P, Ctrl+Q 从容器中 detach 。
 </div>
 
 <div id="outline-container-org6f8d439" class="outline-3">
-<h3 id="docker-exec"><a id="org6f8d439"></a><span class="section-number-3">3.4</span> docker exec</h3>
+<h3 id="docker-exec"><span class="section-number-3">3.4</span> docker exec</h3>
 <div class="outline-text-3" id="text-docker-exec">
 <p>
 在容器中执行命令。
@@ -1307,7 +1320,7 @@ $ kubectl exec -ti nginx-app-5jyvm -- /bin/sh
 </div>
 
 <div id="outline-container-org4cf5e01" class="outline-3">
-<h3 id="docker-logs"><a id="org4cf5e01"></a><span class="section-number-3">3.5</span> docker logs</h3>
+<h3 id="docker-logs"><span class="section-number-3">3.5</span> docker logs</h3>
 <div class="outline-text-3" id="text-docker-logs">
 <p>
 运行中进程的 stdout/stderr 日志。
@@ -1401,7 +1414,7 @@ $ kubectl get po -l run=nginx-app
 </div>
 
 <div id="outline-container-org57a150a" class="outline-3">
-<h3 id="docker-version"><a id="org57a150a"></a><span class="section-number-3">3.8</span> docker version</h3>
+<h3 id="docker-version"><span class="section-number-3">3.8</span> docker version</h3>
 <div class="outline-text-3" id="text-docker-version">
 <p>
 获取客户端和服务器的版本。
@@ -1438,7 +1451,7 @@ Server Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.9+a3d1dfa6f4
 </div>
 
 <div id="outline-container-orgd3a0bb4" class="outline-3">
-<h3 id="docker-info"><a id="orgd3a0bb4"></a><span class="section-number-3">3.9</span> docker info</h3>
+<h3 id="docker-info"><span class="section-number-3">3.9</span> docker info</h3>
 <div class="outline-text-3" id="text-docker-info">
 <p>
 获取环境和配置的更细的信息。
@@ -1488,7 +1501,6 @@ InfluxDB is running at https://108.59.85.141/api/v1/namespaces/kube-system/servi
 <div id="postamble" class="status">
 <p class="date">Date: 2018-08-20 17:38:19</p>
 <p class="author">Author: JerryZhang</p>
-<p class="validation"></p>
 </div>
 </body>
 </html>
