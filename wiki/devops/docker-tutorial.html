@@ -257,7 +257,11 @@ for the JavaScript code in this tag.
 <li><a href="#orgcfd0590">2.3. Docker Registry</a></li>
 </ul>
 </li>
-<li><a href="#org5e34b63">3. 安装 Docker</a></li>
+<li><a href="#org5e34b63">3. 安装 Docker</a>
+<ul>
+<li><a href="#orgaf420a4">3.1. 设置加速器</a></li>
+</ul>
+</li>
 <li><a href="#orge261e9b">4. 镜像操作</a>
 <ul>
 <li><a href="#orgb3eeeb2">4.1. 理解镜像构成</a></li>
@@ -419,33 +423,32 @@ Registry =&gt; Repositories =&gt; Tags = Image
 <li>Ubuntu：<a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/">https://docs.docker.com/install/linux/docker-ce/ubuntu/</a></li>
 <li>CentOS：<a href="https://docs.docker.com/install/linux/docker-ce/centos/">https://docs.docker.com/install/linux/docker-ce/centos/</a></li>
 </ul>
+</div>
 
+<div id="outline-container-orgaf420a4" class="outline-3">
+<h3 id="orgaf420a4"><span class="section-number-3">3.1</span> 设置加速器</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
-整体都比较简单，国内注意使用镜像加速器，可选的 Registry migrrors：
+推荐 Azure 的源，<a href="https://github.com/Azure/container-service-for-azure-china/blob/master/aks/README.md">AKS on Azure China Best Practices</a>
 </p>
-
-<ul class="org-ul">
-<li>Docker 中国：<a href="https://registry.docker-cn.com">https://registry.docker-cn.com</a></li>
-<li>网易云：<a href="http://hub-mirror.c.163.com/">http://hub-mirror.c.163.com/</a></li>
-<li>daocloud：<a href="https://www.daocloud.io/mirror">https://www.daocloud.io/mirror</a>， 推荐</li>
-</ul>
 
 <p>
 修改配置 <code>/etc/docker/daemon.json</code> ：
 </p>
 
-<pre class="example">
-{
-    "registry-mirrors": [
-        "http://hub-mirror.c.163.com/",
-        "https://registry.docker-cn.com"
-    ]
-}
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #707183;">{</span>
+    <span style="color: #008000;">"registry-mirrors"</span>: <span style="color: #7388D6;">[</span>
+        <span style="color: #008000;">"https://dockerhub.azk8s.cn"</span>
+    <span style="color: #7388D6;">]</span>
+<span style="color: #707183;">}</span>
 </pre>
+</div>
 
 <p>
 重启： <code>service docker restart</code> ，查看信息： <code>docker version</code> 。
 </p>
+</div>
 </div>
 </div>
 
