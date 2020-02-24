@@ -256,7 +256,7 @@ for the JavaScript code in this tag.
 <li><a href="#org13b58ca">1.1.1. Pod 是如何管理多个容器的</a></li>
 </ul>
 </li>
-<li><a href="#orgbb1d5ad">1.2. 使用 Pod</a>
+<li><a href="#org2872b69">1.2. 使用 Pod</a>
 <ul>
 <li><a href="#org11343bc">1.2.1. Pod 和控制器</a></li>
 <li><a href="#org3b698fc">1.2.2. Pod 模板</a></li>
@@ -268,7 +268,7 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#orgd8f1519">2.1. Pod 是什么？</a></li>
 <li><a href="#org177fae7">2.2. 设计 Pod 的目的</a></li>
-<li><a href="#org2872b69">2.3. 使用 Pod</a></li>
+<li><a href="#orgb005907">2.3. 使用 Pod</a></li>
 <li><a href="#org8df02cd">2.4. Pod 的持久性（或稀缺性）</a></li>
 <li><a href="#org7a35100">2.5. Pod 的终止</a>
 <ul>
@@ -276,6 +276,21 @@ for the JavaScript code in this tag.
 </ul>
 </li>
 <li><a href="#org7ddb51f">2.6. API 对象</a></li>
+</ul>
+</li>
+<li><a href="#org5e7d3b1">3. Pod 的生命周期</a>
+<ul>
+<li><a href="#orgbfd2f91">3.1. Pod phase</a></li>
+<li><a href="#org5403725">3.2. Pod conditions</a></li>
+<li><a href="#orgd1f4420">3.3. <span class="todo TODO">TODO</span> 容器探针（probes）</a></li>
+<li><a href="#org4a4eb09">3.4. <span class="todo TODO">TODO</span> Pod 和容器状态</a>
+<ul>
+<li><a href="#orgad251d2">3.4.1. <span class="todo TODO">TODO</span> 容器状态</a></li>
+<li><a href="#org11e4e74">3.4.2. <span class="todo TODO">TODO</span> 容器 readiness gate</a></li>
+<li><a href="#org2aed6d9">3.4.3. <span class="todo TODO">TODO</span> 重启策略</a></li>
+</ul>
+</li>
+<li><a href="#org38a832c">3.5. Pod 的一生（lifetime）</a></li>
 </ul>
 </li>
 </ul>
@@ -348,8 +363,8 @@ Pod 为组成容器提供了两种资源：网络和存储。
 </div>
 </div>
 
-<div id="outline-container-orgbb1d5ad" class="outline-3">
-<h3 id="orgbb1d5ad"><span class="section-number-3">1.2</span> 使用 Pod</h3>
+<div id="outline-container-org2872b69" class="outline-3">
+<h3 id="org2872b69"><span class="section-number-3">1.2</span> 使用 Pod</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Pod 通常不会被单独使用，不方便用户管理而且本身不能自愈。Kubernetes 通常使用一个更高级别的抽象成为 <i>控制器</i> 来管理。
@@ -404,6 +419,7 @@ Pod 通常不会被单独使用，不方便用户管理而且本身不能自愈�
 </div>
 </div>
 </div>
+
 <div id="outline-container-org0eb38d8" class="outline-2">
 <h2 id="org0eb38d8"><span class="section-number-2">2</span> Pods</h2>
 <div class="outline-text-2" id="text-2">
@@ -457,8 +473,8 @@ Pod 可以用作部署、水平扩展和制作副本的最小单元。
 </div>
 </div>
 
-<div id="outline-container-org2872b69" class="outline-3">
-<h3 id="org2872b69"><span class="section-number-3">2.3</span> 使用 Pod</h3>
+<div id="outline-container-orgb005907" class="outline-3">
+<h3 id="orgb005907"><span class="section-number-3">2.3</span> 使用 Pod</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 通常，不会用单个 Pod 来运行同一应用程序的多个实例。
@@ -563,6 +579,115 @@ Pod 中包含容器进程，Pod 终止时，优雅的终止容器中的服务是
 Pod 是 REST API 的顶级资源，<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#pod-v1-core">https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#pod-v1-core</a>。
 </p>
 </div>
+</div>
+</div>
+<div id="outline-container-org5e7d3b1" class="outline-2">
+<h2 id="org5e7d3b1"><span class="section-number-2">3</span> Pod 的生命周期</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgbfd2f91" class="outline-3">
+<h3 id="orgbfd2f91"><span class="section-number-3">3.1</span> Pod phase</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+Pod 的 <code>status</code> 字段是一个 PodStatus 对象，其中包含一个 <code>phase</code> 字段。
+</p>
+
+<p>
+Pod 的阶段（phase）是一个简单的，高层次的总结了 Pod 在生命周期中的状态；它并不是对容器或者 Pod 状态的全面检测之后的汇总，
+也不是一个全面的状态机。
+</p>
+
+<p>
+对阶段的定义有严格的保护，除了下面列举的值之外，不应该有其它的值。
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">值</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>Pending</code></td>
+<td class="org-left">Pod 已被 Kubernetes 接受，但容器镜像还没被创建。这包括了被调度的时间和镜像下载时间，可能有点费时</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>Running</code></td>
+<td class="org-left">Pod 已经绑定到节点上，所有的容器已经被创建。至少一个容器在运行或者正在启动、重新启动</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>Succeeded</code></td>
+<td class="org-left">Pod 中所有的容器已成功终止，并且不会重新启动</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>Failed</code></td>
+<td class="org-left">Pod 中所有容器都已终止，并且至少有一个容器因故障而终止。也就是要么容器非 0 退出，要么被系统终止</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>Unknown</code></td>
+<td class="org-left">因为某种原因，无法获得 Pod 的状态，通常是和 Pod 所在主机通信故障</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org5403725" class="outline-3">
+<h3 id="org5403725"><span class="section-number-3">3.2</span> Pod conditions</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Pod 包含一个 PodStatus 对象，包含一个数组来记录 Pod 通过或者未通过。其中的每个元素都有六个可能的字段：
+</p>
+
+<ul class="org-ul">
+<li><code>lastProbeTime</code> 提供最近一次 Pod 探测的时间</li>
+<li><code>lastTransitionTime</code> 提供最近一次状态变换的时间</li>
+<li><code>message</code> 人类可读的状态变更的详细信息</li>
+<li><code>reason</code> 唯一的驼峰命名的一个单词来描述最后一次状态变换</li>
+<li><code>status</code> 字符串，可能的值为 <code>True</code> <code>False</code> <code>Unknown</code></li>
+<li><code>type</code> 字符串，可能的值为：
+<ul class="org-ul">
+<li><code>PodScheduled</code> Pod 已经被调度到节点；</li>
+<li><code>Ready</code> Pod 已经可以处理请求，应该将它添加到匹配 services 的负载均衡池中；</li>
+<li><code>Initialized</code> 所有的初始化容器（Init Containers）已经初始化成功；</li>
+<li><code>ContainersReady</code> Pod 中所有的容器都已经就绪。</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd1f4420" class="outline-3">
+<h3 id="orgd1f4420"><span class="section-number-3">3.3</span> <span class="todo TODO">TODO</span> 容器探针（probes）</h3>
+</div>
+<div id="outline-container-org4a4eb09" class="outline-3">
+<h3 id="org4a4eb09"><span class="section-number-3">3.4</span> <span class="todo TODO">TODO</span> Pod 和容器状态</h3>
+<div class="outline-text-3" id="text-3-4">
+</div>
+<div id="outline-container-orgad251d2" class="outline-4">
+<h4 id="orgad251d2"><span class="section-number-4">3.4.1</span> <span class="todo TODO">TODO</span> 容器状态</h4>
+</div>
+<div id="outline-container-org11e4e74" class="outline-4">
+<h4 id="org11e4e74"><span class="section-number-4">3.4.2</span> <span class="todo TODO">TODO</span> 容器 readiness gate</h4>
+</div>
+<div id="outline-container-org2aed6d9" class="outline-4">
+<h4 id="org2aed6d9"><span class="section-number-4">3.4.3</span> <span class="todo TODO">TODO</span> 重启策略</h4>
+</div>
+</div>
+<div id="outline-container-org38a832c" class="outline-3">
+<h3 id="org38a832c"><span class="section-number-3">3.5</span> Pod 的一生（lifetime）</h3>
 </div>
 </div>
 </div>
