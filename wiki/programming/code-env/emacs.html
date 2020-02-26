@@ -264,14 +264,14 @@ for the JavaScript code in this tag.
 <li><a href="#org6770cec">3. 插件推荐</a></li>
 <li><a href="#org7fa77a5">4. 日常使用</a>
 <ul>
-<li><a href="#orgc676d8a">4.1. 日常编辑</a>
+<li><a href="#orgc676d8a">4.1. 日常编辑</a></li>
+<li><a href="#org8abe63e">4.2. 多鼠标操作</a></li>
+<li><a href="#org9f8fcee">4.3. 项目管理</a></li>
+<li><a href="#org6061f4d">4.4. 多窗口</a>
 <ul>
-<li><a href="#org8abe63e">4.1.1. 多鼠标操作</a></li>
+<li><a href="#orgc629ca3">4.4.1. LSP 使用</a></li>
 </ul>
 </li>
-<li><a href="#org9f8fcee">4.2. 项目管理</a></li>
-<li><a href="#org6061f4d">4.3. 多窗口</a></li>
-<li><a href="#orgdb0ea1c">4.4. IDE</a></li>
 <li><a href="#manual-vc">4.5. 版本管理</a></li>
 <li><a href="#manual-org-mode">4.6. org-mode</a></li>
 </ul>
@@ -755,10 +755,11 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 </tbody>
 </table>
 </div>
+</div>
 
-<div id="outline-container-org8abe63e" class="outline-4">
-<h4 id="org8abe63e"><span class="section-number-4">4.1.1</span> 多鼠标操作</h4>
-<div class="outline-text-4" id="text-4-1-1">
+<div id="outline-container-org8abe63e" class="outline-3">
+<h3 id="org8abe63e"><span class="section-number-3">4.2</span> 多鼠标操作</h3>
+<div class="outline-text-3" id="text-4-2">
 <p>
 选中要改动的单词，然后：
 </p>
@@ -805,11 +806,10 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 </table>
 </div>
 </div>
-</div>
 
 <div id="outline-container-org9f8fcee" class="outline-3">
-<h3 id="org9f8fcee"><span class="section-number-3">4.2</span> 项目管理</h3>
-<div class="outline-text-3" id="text-4-2">
+<h3 id="org9f8fcee"><span class="section-number-3">4.3</span> 项目管理</h3>
+<div class="outline-text-3" id="text-4-3">
 <p>
 使用 projectile 之后，包含 <code>.svn</code> <code>.git</code> 的项目，Emacs 会自动识别为一个项目，也可以手动添加一个空的 <code>.projectile</code> 文件到项目中。
 但是，设置 projectile-indexing-method 为 <code>native</code> 并且关闭 <code>projectile-enable-caching</code> 之后，project 只认 <code>.projectile</code>
@@ -871,8 +871,8 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 </div>
 
 <div id="outline-container-org6061f4d" class="outline-3">
-<h3 id="org6061f4d"><span class="section-number-3">4.3</span> 多窗口</h3>
-<div class="outline-text-3" id="text-4-3">
+<h3 id="org6061f4d"><span class="section-number-3">4.4</span> 多窗口</h3>
+<div class="outline-text-3" id="text-4-4">
 <p>
 结合 avy 实现，默认的切换快捷键（ <code>C-x o</code> ）很鸡肋。
 </p>
@@ -938,12 +938,11 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 </tr>
 </tbody>
 </table>
-</div>
-</div>
 
-<div id="outline-container-orgdb0ea1c" class="outline-3">
-<h3 id="orgdb0ea1c"><span class="section-number-3">4.4</span> IDE</h3>
-<div class="outline-text-3" id="text-4-4">
+<p>
+《》** IDE
+</p>
+
 <p>
 语言的开发环境配置一直很费时间，我记得以前刚配置 C/C++ 的开发环境时，折腾了一个月左右时间才找到一个相对比较
 满意的开发环境（折腾完之后使用起来可真爽啊）： <code>xcscope + etags + c++-mode</code> 。
@@ -958,6 +957,17 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 后来看到了 <a href="https://langserver.org/">LSP（Language Server Protocol）</a> 项目，感觉这个项目才是终极解法：插件化，C/S 模式。
 目前已经默认支持 Python 和 Go 了，虽然还是有许许多多的 Bug，但比起 2018 年我试的时候已经成熟太多了。有社区的驱动，发展很快。
 </p>
+</div>
+
+<div id="outline-container-orgc629ca3" class="outline-4">
+<h4 id="orgc629ca3"><span class="section-number-4">4.4.1</span> LSP 使用</h4>
+<div class="outline-text-4" id="text-4-4-1">
+<p>
+<code>lsp-workspace-folders-remove</code> 可以移出之前添加的 workspace，但是如果遇到大的目录变更，一个一个的移出很慢。
+目前似乎没有提供一次性 remove all 的方法。一个解决办法是删除 lsp 的存储文件（lsp 提供了 <code>lsp-session-file</code> 变量来定义文件路径，
+默认在 <code>.emacs.d/.lsp-session-*</code> 路径下，如果没找到也可以在 lsp 源代码中搜索 lsp-session-file）。
+</p>
+</div>
 </div>
 </div>
 

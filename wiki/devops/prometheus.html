@@ -1,0 +1,1157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prometheus</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Prometheus</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgb3cf94c">1. 概念</a>
+<ul>
+<li><a href="#org9a344b6">1.1. 数据模型</a>
+<ul>
+<li><a href="#org000e011">1.1.1. Metric 名字和标签（labels）</a></li>
+<li><a href="#orga910cb9">1.1.2. 样本</a></li>
+<li><a href="#org85802dc">1.1.3. 表达式（Notation）</a></li>
+</ul>
+</li>
+<li><a href="#orgfa27978">1.2. Metric 类型</a></li>
+<li><a href="#org7a390d2">1.3. Jobs 和 instances</a>
+<ul>
+<li><a href="#orge55ac98">1.3.1. 自动生成 labels 和时间序列</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org4a8172d">2. <span class="todo TODO">TODO</span> Prometheus</a>
+<ul>
+<li><a href="#org76b4b9a">2.1. <span class="todo TODO">TODO</span> 开始</a></li>
+<li><a href="#org7923a65">2.2. <span class="todo TODO">TODO</span> 安装</a></li>
+<li><a href="#org2d424d5">2.3. <span class="todo TODO">TODO</span> 配置</a></li>
+<li><a href="#org8037c40">2.4. 查询</a>
+<ul>
+<li><a href="#orgdc10a1b">2.4.1. 函数（Functions）</a>
+<ul>
+<li><a href="#orga6ab908">2.4.1.1. irate 与 rate</a></li>
+</ul>
+</li>
+<li><a href="#org1117361">2.4.2. HTTP API</a>
+<ul>
+<li><a href="#org2922377">2.4.2.1. 格式</a></li>
+<li><a href="#org64cdaf1">2.4.2.2. 表达式查询</a>
+<ul>
+<li><a href="#orgd2fc1fc">2.4.2.2.1. 瞬时查询</a></li>
+<li><a href="#org28ed22f">2.4.2.2.2. 范围查询</a></li>
+</ul>
+</li>
+<li><a href="#org9eb8616">2.4.2.3. 查询元数据（metadata）</a>
+<ul>
+<li><a href="#orgfba16dd">2.4.2.3.1. 通过 label 匹配找到时间序列</a></li>
+<li><a href="#orge8dd0ac">2.4.2.3.2. 获取 label 名称</a></li>
+<li><a href="#org7269baa">2.4.2.3.3. 查询 label 值</a></li>
+</ul>
+</li>
+<li><a href="#org3a82491">2.4.2.4. 表达式查询结果格式</a>
+<ul>
+<li><a href="#orga61ff01">2.4.2.4.1. 范围向量（Range vectors）</a></li>
+<li><a href="#org542a5fb">2.4.2.4.2. 瞬间向量（Instant vectors）</a></li>
+<li><a href="#org8c237d1">2.4.2.4.3. 标量（Scalars）</a></li>
+<li><a href="#org75e8e87">2.4.2.4.4. 字符串（Strings）</a></li>
+</ul>
+</li>
+<li><a href="#orged38c79">2.4.2.5. <span class="todo TODO">TODO</span> 目标（targets）</a></li>
+<li><a href="#orge97867a">2.4.2.6. <span class="todo TODO">TODO</span> 规则（Rules）</a></li>
+<li><a href="#org17c40e4">2.4.2.7. <span class="todo TODO">TODO</span> 告警（Alerts）</a></li>
+<li><a href="#orgf533c92">2.4.2.8. <span class="todo TODO">TODO</span> 查询目标元数据</a></li>
+<li><a href="#orgb58df1e">2.4.2.9. <span class="todo TODO">TODO</span> 查询 metric 元数据</a></li>
+<li><a href="#orgb9ce066">2.4.2.10. <span class="todo TODO">TODO</span> Alertmanagers</a></li>
+<li><a href="#orgfebb470">2.4.2.11. <span class="todo TODO">TODO</span> 状态（status）</a></li>
+<li><a href="#orge4f17f1">2.4.2.12. <span class="todo TODO">TODO</span> TSDB 管理 APIs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orge43800e">2.5. <span class="todo TODO">TODO</span> 存储</a></li>
+<li><a href="#org4c1f4ce">2.6. <span class="todo TODO">TODO</span> Federation</a></li>
+<li><a href="#orga25728f">2.7. <span class="todo TODO">TODO</span> 管理 API</a></li>
+</ul>
+</li>
+<li><a href="#org6f189f8">3. <span class="todo TODO">TODO</span> 可视化</a></li>
+<li><a href="#org8c69f43">4. <span class="todo TODO">TODO</span> Instrumenting</a></li>
+<li><a href="#org9475b33">5. <span class="todo TODO">TODO</span> Operating</a></li>
+<li><a href="#org4179b16">6. <span class="todo TODO">TODO</span> 告警（Alerting）</a></li>
+<li><a href="#org3c4e201">7. <span class="todo TODO">TODO</span> 最佳实践</a></li>
+<li><a href="#orgebbb82e">8. <span class="todo TODO">TODO</span> 指南（GUIDES）</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb3cf94c" class="outline-2">
+<h2 id="orgb3cf94c"><span class="section-number-2">1</span> 概念</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org9a344b6" class="outline-3">
+<h3 id="org9a344b6"><span class="section-number-3">1.1</span> 数据模型</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org000e011" class="outline-4">
+<h4 id="org000e011"><span class="section-number-4">1.1.1</span> Metric 名字和标签（labels）</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+每一个时间序列都是一个唯一标识，标识由它的 <i>metric 名字</i> 和可选的 key-value 对称之为 <i>标签(labels)</i> 组成。
+</p>
+
+<p>
+<i>metric 名字</i> 一般表达要被测量的系统的一些特性（比如： <code>http_requests_total</code> 表示收到的 http 请求数量）。
+命名格式为：ASCII 字母和数字，以及下划线和冒号。必须符合正则表达式 <code>[a-zA-Z_:][a-zA-Z0-9_:]*</code>
+</p>
+
+<p>
+注意：冒号是给用户定义的规则预留的。在 exporters 或者 direct instrumentation 中不应该使用它。
+</p>
+
+<p>
+labels 用作同一种 metric 的多纬统计（比如：在所有的 HTTP 请求中方法为 <code>POST</code> 的 <code>/api/tracks</code> 有哪些）。查询语言允许基于这些纬度进行过滤和聚合。
+修改任何 label 值，添加或者移出 label 都会创建一个新的时间序列。
+</p>
+
+<p>
+label 名字由 ASCII 字母，数字和下划线组成，比如符合正则表达式 <code>[a-zA-Z_][a-zA-Z0-9_]*</code> ，双下划线 <code>__</code> 开头的保留内内部使用。
+</p>
+
+<p>
+label 的值可以是任意的 Unicode 字符。值如果是空的，被认为 label 不存在。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga910cb9" class="outline-4">
+<h4 id="orga910cb9"><span class="section-number-4">1.1.2</span> 样本</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+样本构成了实际的时间序列数据。每个样本包括：
+</p>
+
+<ul class="org-ul">
+<li>一个 float64 的值</li>
+<li>毫秒精度的时间戳</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org85802dc" class="outline-4">
+<h4 id="org85802dc"><span class="section-number-4">1.1.3</span> 表达式（Notation）</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+由一个 metric 名字和一组标签组成，通常使用一下符号来标识时间序列：
+</p>
+
+<pre class="example">
+&lt;metric name&gt;{&lt;label name&gt;=&lt;label value&gt;, ...}
+</pre>
+
+<p>
+举例，metric 名字为 <code>api_http_request_total</code> ，有两个 labels <code>method="POST"</code> 和 <code>handler="/messages"</code> ，可以被写为：
+</p>
+
+<pre class="example">
+api_http_requests_total{method="POST", handler="/messages"}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfa27978" class="outline-3">
+<h3 id="orgfa27978"><span class="section-number-3">1.2</span> Metric 类型</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Prometheus 客户端库提供了四种核心的 Metric 类型。
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Metric 类型</th>
+<th scope="col" class="org-left">说明</th>
+<th scope="col" class="org-left">举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Counter</td>
+<td class="org-left">单调递增的计数器，其值只能一直递增或者重启时重置为 0</td>
+<td class="org-left">请求总数，可能完成任务或者错误的数量</td>
+</tr>
+
+<tr>
+<td class="org-left">Gauge</td>
+<td class="org-left">表示可以增加或者减少的值。</td>
+<td class="org-left">当前温度、内存、并发请求数</td>
+</tr>
+
+<tr>
+<td class="org-left">Histogram</td>
+<td class="org-left">对观察值采样，分组和统计</td>
+<td class="org-left">请求时长、回包大小等</td>
+</tr>
+
+<tr>
+<td class="org-left">Summary</td>
+<td class="org-left">类似 Histogram，提供了按百分比跟踪结果的方法</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+补充说明：
+</p>
+
+<ul class="org-ul">
+<li>Counter 不要用计数器来表示可能会减小的值。例如，不要对当前运行的进程数量使用计数器，而应该使用 gauge。</li>
+<li><p>
+Histogram 会暴露出多个采样的时间序列，假如说名称为 <code>&lt;basename&gt;</code>
+</p>
+<ul class="org-ul">
+<li>观察桶的累积计数器，暴露为 <code>&lt;basename&gt;_bucket{le="&lt;upper inclusive bound&gt;"}</code></li>
+<li>所有观测值的总和，暴露为 <code>&lt;basename&gt;_sum</code></li>
+<li>观察到的事件数量，暴露为 <code>&lt;basename&gt;_count</code> （等价于 <code>&lt;basename&gt;_bucket{le="+Inf"}</code> ）</li>
+</ul>
+<p>
+使用 <code>histogram_quantile()</code> 函数计算出 histogram 的分位数
+</p></li>
+<li>Summary 会暴露出多个采样的时间序列，假如说名称为 <code>&lt;basename&gt;</code>
+<ul class="org-ul">
+<li>流观测时间 φ-quantiles （0 ≤ φ ≤ 1），暴露为 <code>&lt;basename&gt;{quantile="&lt;φ&gt;"}</code></li>
+<li>所有观测值的总和，暴露为 <code>&lt;basename&gt;_sum</code></li>
+<li>观察到的事件数量，暴露为 <code>&lt;basename&gt;_count</code></li>
+</ul></li>
+</ul>
+
+<p>
+官方提供了几种常见编程语言的 SDK 库：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://pkg.go.dev/github.com/prometheus/client_golang/prometheus">Go</a></li>
+<li><a href="https://github.com/prometheus/client_java">Java</a></li>
+<li><a href="https://github.com/prometheus/client_python">Python</a></li>
+<li><a href="https://github.com/prometheus/client_ruby">Ruby</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7a390d2" class="outline-3">
+<h3 id="org7a390d2"><span class="section-number-3">1.3</span> Jobs 和 instances</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+在 Prometheus 术语中，获取 metric 的端点（endpoint）叫做 <i>instance（实例）</i> ，通常对应一个单独的进程。
+具有相同 instance 目的的集合，比如进程的水平扩展多个实例，叫做 <i>job</i> 。
+</p>
+
+<p>
+比如说，一个 API job 有四个实例并行：
+</p>
+
+<ul class="org-ul">
+<li>job <code>api-server</code>
+<ul class="org-ul">
+<li>instance 1 <code>1.2.3.4:5670</code></li>
+<li>instance 2 <code>1.2.3.4:5671</code></li>
+<li>instance 3 <code>5.6.7.8:5670</code></li>
+<li>instance 4 <code>5.6.7.8:5671</code></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="outline-container-orge55ac98" class="outline-4">
+<h4 id="orge55ac98"><span class="section-number-4">1.3.1</span> 自动生成 labels 和时间序列</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+当 Prometheus 从目标获取数据时，会自动将一些 labels 添加到获取的时间序列上，用来区别获取目标：
+</p>
+
+<ul class="org-ul">
+<li><code>job</code> 目标集合所属的 job 名称</li>
+<li><code>instance</code> <code>&lt;host&gt;:&lt;port&gt;</code> 被获取目标的 URL 的一部分</li>
+</ul>
+
+<p>
+如果这些 label 已经存在，产生的行为依赖于 <code>honor_labels</code> 的配置选项。
+</p>
+
+<p>
+对于每一个抓取的实例，Promethues 都会存储如下的时间序列样本：
+</p>
+
+<ul class="org-ul">
+<li><code>up{job="&lt;job-name&gt;", instance="&lt;instance-id&gt;"}</code> <code>1</code> 表示健康， <code>0</code> 表示抓取失败</li>
+<li><code>scrape_duration_seconds{job="&lt;job-name&gt;", instance="&lt;instance-id&gt;"}</code> 抓取的持续时间</li>
+<li><code>scrape_samples_post_metric_relabeling{job="&lt;job-name&gt;", instance="&lt;instance-id&gt;"}</code></li>
+<li><code>scrape_samples_scraped{job="&lt;job-name&gt;", instance="&lt;instance-id&gt;"}</code> 目标暴露的样本数</li>
+<li><code>scrape_series_added{job="&lt;job-name&gt;", instance="&lt;instance-id&gt;"}</code></li>
+</ul>
+
+<p>
+<code>up</code> 时间序列对于实例可用性检测很有用。
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4a8172d" class="outline-2">
+<h2 id="org4a8172d"><span class="section-number-2">2</span> <span class="todo TODO">TODO</span> Prometheus</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org76b4b9a" class="outline-3">
+<h3 id="org76b4b9a"><span class="section-number-3">2.1</span> <span class="todo TODO">TODO</span> 开始</h3>
+</div>
+<div id="outline-container-org7923a65" class="outline-3">
+<h3 id="org7923a65"><span class="section-number-3">2.2</span> <span class="todo TODO">TODO</span> 安装</h3>
+</div>
+<div id="outline-container-org2d424d5" class="outline-3">
+<h3 id="org2d424d5"><span class="section-number-3">2.3</span> <span class="todo TODO">TODO</span> 配置</h3>
+</div>
+<div id="outline-container-org8037c40" class="outline-3">
+<h3 id="org8037c40"><span class="section-number-3">2.4</span> 查询</h3>
+<div class="outline-text-3" id="text-2-4">
+</div>
+<div id="outline-container-orgdc10a1b" class="outline-4">
+<h4 id="orgdc10a1b"><span class="section-number-4">2.4.1</span> 函数（Functions）</h4>
+<div class="outline-text-4" id="text-2-4-1">
+</div>
+<div id="outline-container-orga6ab908" class="outline-5">
+<h5 id="orga6ab908"><span class="section-number-5">2.4.1.1</span> irate 与 rate</h5>
+<div class="outline-text-5" id="text-2-4-1-1">
+<p>
+<code>irate(v range-vector)</code> 计算范围内时间序列的 <span class="underline">每秒</span> 瞬时增加率，是 <span class="underline">基于最后两个点</span> 计算的。数值中断（比如机器重启，计数器重置）会自动调整。
+</p>
+
+<p>
+<code>rate(v range-vector)</code> 计算范围内事件序列的 <span class="underline">平均每秒</span> 的增长率，是 <span class="underline">基于所有数据点的</span> 。
+</p>
+
+<p>
+irate 和 rate 都只能和计数器（Counter）一起使用。因为两个计算的算法不同，所以使用场景略微不同：
+</p>
+
+<ul class="org-ul">
+<li>irate 适用于快速变化计数器</li>
+<li>rate 适用于告警以及计数器缓慢变化的计数场景下的图形展示</li>
+</ul>
+
+<p>
+不管是 irate 还是 rate 最终的结果是速率，不是增长的值，这一点很重要。有如下样本数据：
+</p>
+
+<pre class="example">
+2201 @1570868068.053
+2204 @1570868083.053
+2205 @1570868098.053
+2216 @1570868113.053
+</pre>
+
+<p>
+irate 的计算方法为：
+</p>
+
+<pre class="example">
+(2216-2205)/(1570868113.053-1570868098.053) = 0.7333333333333333
+</pre>
+
+<p>
+rate 的计算方法为：
+</p>
+
+<pre class="example">
+(2216-2205)/(1570868113.053-1570868098.053) = 0.7333333333333333
+(2205-2204)/(1570868098.053-1570868083.053) = 0.06666666666666667
+(2204-2201)/(1570868083.053-1570868068.053) = 0.2
+(0.7333333333333333 + 0.06666666666666667 + 0.2) / 3 = 0.3333333333333333
+</pre>
+
+<p>
+<i>一开始对 TSDB 不是很了解的情况下，不自己算一下还是不是很好理解的。</i>
+</p>
+
+<p>
+根据上面的计算方法也可以看出：
+</p>
+
+<ul class="org-ul">
+<li>对于 irate 时间段的选择 <code>[1m]</code> 还是 <code>[5m]</code> ，只要有数据，就没区别； 而 rate 的区别就很大，时间越长越平滑；</li>
+<li>rate 不会把数值中的毛刺直接暴露出来，通过平均值计算潜在的问题就是会有 <span class="underline">长尾问题</span> 。</li>
+</ul>
+
+<p>
+选择 irate 还是 rate 视业务场景而定。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org1117361" class="outline-4">
+<h4 id="org1117361"><span class="section-number-4">2.4.2</span> HTTP API</h4>
+<div class="outline-text-4" id="text-2-4-2">
+<p>
+稳定的 API 都在 <code>/api/v1</code> 路径下。
+</p>
+</div>
+<div id="outline-container-org2922377" class="outline-5">
+<h5 id="org2922377"><span class="section-number-5">2.4.2.1</span> 格式</h5>
+<div class="outline-text-5" id="text-2-4-2-1">
+<p>
+回包格式是 JSON，每个成功的 API 状态码都是 <code>2xx</code> 。
+</p>
+
+<p>
+无效的 API 请求会返回 JSON 错误对象和 HTTP 响应码之一：
+</p>
+
+<ul class="org-ul">
+<li><code>400 Bad Request</code> 参数不存在或者错误</li>
+<li><code>422 Unprocessable Entity</code> 表达式不可被执行</li>
+<li><code>503 Service Unavailabl</code> 请求超时或者中断</li>
+</ul>
+
+<p>
+对于没有到达 API 端点（endpoint）之前的错误，返回其它的非 2xx 的代码。
+</p>
+
+<p>
+如果存在不会影响正常执行的错误，则会返回一系列的警告。成功执行的数据会返回在 data 字段。
+</p>
+
+<p>
+回包的 JSON 格式如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #707183;">{</span>
+    <span style="color: #008000;">"status"</span>: <span style="color: #008000;">"success"</span> | <span style="color: #008000;">"error"</span>,
+    <span style="color: #008000;">"data"</span>: &lt;data&gt;,
+
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Only set if status is "error". The data field may still hold</span>
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">additional data.</span>
+    <span style="color: #008000;">"errorType"</span>: <span style="color: #008000;">"&lt;string&gt;"</span>,
+    <span style="color: #008000;">"error"</span>: <span style="color: #008000;">"&lt;string&gt;"</span>,
+
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Only if there were warnings while executing the request.</span>
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">There will still be data in the data field.</span>
+    <span style="color: #008000;">"warnings"</span>: <span style="color: #7388D6;">[</span><span style="color: #008000;">"&lt;string&gt;"</span><span style="color: #7388D6;">]</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+输入的时间格式可以是：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://www.ietf.org/rfc/rfc3339.txt">RFC3339</a> 格式</li>
+<li>Unix 秒级别的时间戳，可以带小数位</li>
+</ul>
+
+<p>
+输出的时间格式一般是 Unix 秒级别的时间戳。
+</p>
+
+<p>
+名字中重复的参数以 <code>[]</code> 方式展现。
+</p>
+
+<p>
+<code>&lt;series_selector&gt;</code> 是类似 <code>http_requests_total</code> 和 <code>http_requests_total{method=~"(GET|POST)"}</code> 这种格式的时间序列选择器的占位符，
+而且需要 URL-encoded。
+</p>
+
+<p>
+<code>&lt;duration&gt;</code>  是 <code>[0-9]+[smhdwy]</code> 格式的字符串的占位符，比如说 <code>5m</code> 表示持续 5 分钟。
+</p>
+
+<p>
+<code>&lt;bool&gt;</code> 是布尔值 <code>true</code> <code>false</code> 字符串的占位符。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org64cdaf1" class="outline-5">
+<h5 id="org64cdaf1"><span class="section-number-5">2.4.2.2</span> 表达式查询</h5>
+<div class="outline-text-5" id="text-2-4-2-2">
+<p>
+查询语言表达式可以在单个瞬间或者一段时间内求值。
+</p>
+</div>
+
+<div id="outline-container-orgd2fc1fc" class="outline-6">
+<h6 id="orgd2fc1fc"><span class="section-number-6">2.4.2.2.1</span> 瞬时查询</h6>
+<div class="outline-text-6" id="text-2-4-2-2-1">
+<p>
+下面两个 API 查询单个时间点的值：
+</p>
+
+<pre class="example">
+GET /api/v1/query
+POST /api/v1/query
+</pre>
+
+<p>
+查询参数：
+</p>
+
+<ul class="org-ul">
+<li><code>query=&lt;string&gt;</code> Prometheus 查询字符串</li>
+<li><code>time=&lt;rfc3339 | unix_timestamp&gt;</code> 时间戳，可选的。默认是当前时间戳</li>
+<li><code>timeout=&lt;duration&gt;</code> 超时时间，可选的。默认值是 <code>-query.timeout</code> 标识的值</li>
+</ul>
+
+<p>
+你可以使用 <code>POST</code> 方法配合 <code>Content-Type: application/x-www-form-urlencoded</code> 头实现请求 body 的 URL-encoded
+（当查询条件超过 URL 字符限制时很有用）。
+</p>
+
+<p>
+返回值中 <code>data</code> 有如下格式：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #707183;">{</span>
+  <span style="color: #008000;">"resultType"</span>: <span style="color: #008000;">"matrix"</span> | <span style="color: #008000;">"vector"</span> | <span style="color: #008000;">"scalar"</span> | <span style="color: #008000;">"string"</span>,
+  <span style="color: #008000;">"result"</span>: &lt;value&gt;
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+<code>&lt;value&gt;</code> 是查询数据，不同的 <code>resultType</code> 有不同的格式。 <i>下面的表达式查询结果格式中有详细说明。</i>
+</p>
+
+<p>
+下面的例子执行了 <code>up</code> 表达式在 <code>2015-07-01T20:10:51.781Z</code> ：
+</p>
+
+<pre class="example">
+$ curl 'http://localhost:9090/api/v1/query?query=up&amp;time=2015-07-01T20:10:51.781Z'
+{
+   "status" : "success",
+   "data" : {
+      "resultType" : "vector",
+      "result" : [
+         {
+            "metric" : {
+               "__name__" : "up",
+               "job" : "prometheus",
+               "instance" : "localhost:9090"
+            },
+            "value": [ 1435781451.781, "1" ]
+         },
+         {
+            "metric" : {
+               "__name__" : "up",
+               "job" : "node",
+               "instance" : "localhost:9100"
+            },
+            "value" : [ 1435781451.781, "0" ]
+         }
+      ]
+   }
+}
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org28ed22f" class="outline-6">
+<h6 id="org28ed22f"><span class="section-number-6">2.4.2.2.2</span> 范围查询</h6>
+<div class="outline-text-6" id="text-2-4-2-2-2">
+<p>
+以下 API 查询一段时间内的范围数据：
+</p>
+
+<pre class="example">
+GET /api/v1/query_range
+POST /api/v1/query_range
+</pre>
+
+<p>
+查询参数：
+</p>
+
+<ul class="org-ul">
+<li><code>query=&lt;string&gt;</code> 查询表达式</li>
+<li><code>start=&lt;rfc3339 | unix_timestamp&gt;</code> 开始时间戳</li>
+<li><code>end=&lt;rfc3339 | unix_timestamp&gt;</code> 结束时间戳</li>
+<li><code>step=&lt;duration | float&gt;</code> 查询步长： <code>duration</code> 格式或者浮点数的秒</li>
+<li><code>timeout=&lt;duration&gt;</code> 超时时间，默认为 <code>-query.timeout</code> 的值</li>
+</ul>
+
+<p>
+请求方式和返回值格式与瞬时请求的相同，不再赘述。
+</p>
+
+<p>
+下面的例子查询了表达式 <code>up</code> 超过 30s 范围并且 15s 的步长的值：
+</p>
+
+<pre class="example">
+$ curl 'http://localhost:9090/api/v1/query_range?query=up&amp;start=2015-07-01T20:10:30.781Z&amp;end=2015-07-01T20:11:00.781Z&amp;step=15s'
+{
+   "status" : "success",
+   "data" : {
+      "resultType" : "matrix",
+      "result" : [
+         {
+            "metric" : {
+               "__name__" : "up",
+               "job" : "prometheus",
+               "instance" : "localhost:9090"
+            },
+            "values" : [
+               [ 1435781430.781, "1" ],
+               [ 1435781445.781, "1" ],
+               [ 1435781460.781, "1" ]
+            ]
+         },
+         {
+            "metric" : {
+               "__name__" : "up",
+               "job" : "node",
+               "instance" : "localhost:9091"
+            },
+            "values" : [
+               [ 1435781430.781, "0" ],
+               [ 1435781445.781, "0" ],
+               [ 1435781460.781, "1" ]
+            ]
+         }
+      ]
+   }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9eb8616" class="outline-5">
+<h5 id="org9eb8616"><span class="section-number-5">2.4.2.3</span> 查询元数据（metadata）</h5>
+<div class="outline-text-5" id="text-2-4-2-3">
+</div>
+<div id="outline-container-orgfba16dd" class="outline-6">
+<h6 id="orgfba16dd"><span class="section-number-6">2.4.2.3.1</span> 通过 label 匹配找到时间序列</h6>
+<div class="outline-text-6" id="text-2-4-2-3-1">
+<p>
+下面的 API 通过 label 找到匹配的时间序列列表：
+</p>
+
+<pre class="example">
+GET /api/v1/series
+POST /api/v1/series
+</pre>
+
+<p>
+URL 查询参数：
+</p>
+
+<ul class="org-ul">
+<li><code>match[]=&lt;series_selector&gt;</code> 重复的序列选择器列表，作为筛选条件。至少需要提供一个参数</li>
+<li><code>start=&lt;rfc3339 | unix_timestamp&gt;</code> 起始时间</li>
+<li><code>end=&lt;rfc3339 | unix_timestamp&gt;</code> 结束时间</li>
+</ul>
+
+<p>
+查询结果 <code>data</code> 由每个时间序列的 名称-值 对的目标组成。
+</p>
+
+<p>
+下面的例子返回所有匹配选择器 <code>up</code> 或者 <code>process_start_time_seconds{job="prometheus"}</code> 匹配的序列：
+</p>
+
+<pre class="example">
+$ curl -g 'http://localhost:9090/api/v1/series?' --data-urlencode 'match[]=up' --data-urlencode 'match[]=process_start_time_seconds{job="prometheus"}'
+{
+   "status" : "success",
+   "data" : [
+      {
+         "__name__" : "up",
+         "job" : "prometheus",
+         "instance" : "localhost:9090"
+      },
+      {
+         "__name__" : "up",
+         "job" : "node",
+         "instance" : "localhost:9091"
+      },
+      {
+         "__name__" : "process_start_time_seconds",
+         "job" : "prometheus",
+         "instance" : "localhost:9090"
+      }
+   ]
+}
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orge8dd0ac" class="outline-6">
+<h6 id="orge8dd0ac"><span class="section-number-6">2.4.2.3.2</span> 获取 label 名称</h6>
+<div class="outline-text-6" id="text-2-4-2-3-2">
+<p>
+下面 API 获取所有的 label 名称：
+</p>
+
+<pre class="example">
+GET /api/v1/labels
+POST /api/v1/labels
+</pre>
+
+<p>
+返回值 <code>data</code> 字段是一个字符串的 label 名称列表。下面是一个例子：
+</p>
+
+<pre class="example">
+$ curl 'localhost:9090/api/v1/labels'
+{
+    "status": "success",
+    "data": [
+        "__name__",
+        "call",
+        "code",
+        "config",
+        "dialer_name",
+        "endpoint",
+        "event",
+        "goversion",
+        "handler",
+        "instance",
+        "interval",
+        "job",
+        "le",
+        "listener_name",
+        "name",
+        "quantile",
+        "reason",
+        "role",
+        "scrape_job",
+        "slice",
+        "version"
+    ]
+}
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org7269baa" class="outline-6">
+<h6 id="org7269baa"><span class="section-number-6">2.4.2.3.3</span> 查询 label 值</h6>
+<div class="outline-text-6" id="text-2-4-2-3-3">
+<p>
+下面的 API 通过 <code>label_name</code> 返回所有的值列表：
+</p>
+
+<pre class="example">
+GET /api/v1/label/&lt;label_name&gt;/values
+</pre>
+
+<p>
+下面的例子查询所有的 <code>job</code> label 的值：
+</p>
+
+<pre class="example">
+$ curl http://localhost:9090/api/v1/label/job/values
+{
+   "status" : "success",
+   "data" : [
+      "node",
+      "prometheus"
+   ]
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3a82491" class="outline-5">
+<h5 id="org3a82491"><span class="section-number-5">2.4.2.4</span> 表达式查询结果格式</h5>
+<div class="outline-text-5" id="text-2-4-2-4">
+<p>
+表达式查询结果在 <code>data</code> 中的 <code>result</code> 属性中。JSON 不支持特殊的浮点值，比如 <code>NaN</code> <code>Inf</code> <code>-Inf</code> 等，
+所以会被转换成 JSON 字符串，而不是原数字。
+</p>
+</div>
+
+<div id="outline-container-orga61ff01" class="outline-6">
+<h6 id="orga61ff01"><span class="section-number-6">2.4.2.4.1</span> 范围向量（Range vectors）</h6>
+<div class="outline-text-6" id="text-2-4-2-4-1">
+<p>
+<code>matrix</code> 类型表示范围向量， <code>result</code> 属性格式如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #707183;">[</span>
+  <span style="color: #7388D6;">{</span>
+    <span style="color: #008000;">"metric"</span>: <span style="color: #909183;">{</span> <span style="color: #008000;">"&lt;label_name&gt;"</span>: <span style="color: #008000;">"&lt;label_value&gt;"</span>, ... <span style="color: #909183;">}</span>,
+    <span style="color: #008000;">"values"</span>: <span style="color: #909183;">[</span> <span style="color: #709870;">[</span> &lt;unix_time&gt;, <span style="color: #008000;">"&lt;sample_value&gt;"</span> <span style="color: #709870;">]</span>, ... <span style="color: #909183;">]</span>
+  <span style="color: #7388D6;">}</span>,
+  ...
+<span style="color: #707183;">]</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org542a5fb" class="outline-6">
+<h6 id="org542a5fb"><span class="section-number-6">2.4.2.4.2</span> 瞬间向量（Instant vectors）</h6>
+<div class="outline-text-6" id="text-2-4-2-4-2">
+<p>
+<code>vector</code> 类型表示瞬间向量， <code>result</code> 属性格式如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #707183;">[</span>
+  <span style="color: #7388D6;">{</span>
+    <span style="color: #008000;">"metric"</span>: <span style="color: #909183;">{</span> <span style="color: #008000;">"&lt;label_name&gt;"</span>: <span style="color: #008000;">"&lt;label_value&gt;"</span>, ... <span style="color: #909183;">}</span>,
+    <span style="color: #008000;">"value"</span>: <span style="color: #909183;">[</span> &lt;unix_time&gt;, <span style="color: #008000;">"&lt;sample_value&gt;"</span> <span style="color: #909183;">]</span>
+  <span style="color: #7388D6;">}</span>,
+  ...
+<span style="color: #707183;">]</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8c237d1" class="outline-6">
+<h6 id="org8c237d1"><span class="section-number-6">2.4.2.4.3</span> 标量（Scalars）</h6>
+<div class="outline-text-6" id="text-2-4-2-4-3">
+<p>
+<code>scalar</code> 类型表示标量， <code>result</code> 属性格式如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #707183;">[</span> &lt;unix_time&gt;, <span style="color: #008000;">"&lt;scalar_value&gt;"</span> <span style="color: #707183;">]</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org75e8e87" class="outline-6">
+<h6 id="org75e8e87"><span class="section-number-6">2.4.2.4.4</span> 字符串（Strings）</h6>
+<div class="outline-text-6" id="text-2-4-2-4-4">
+<p>
+<code>string</code> 类型表示字符串， <code>result</code> 属性格式如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #707183;">[</span> &lt;unix_time&gt;, <span style="color: #008000;">"&lt;string_value&gt;"</span> <span style="color: #707183;">]</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orged38c79" class="outline-5">
+<h5 id="orged38c79"><span class="section-number-5">2.4.2.5</span> <span class="todo TODO">TODO</span> 目标（targets）</h5>
+</div>
+<div id="outline-container-orge97867a" class="outline-5">
+<h5 id="orge97867a"><span class="section-number-5">2.4.2.6</span> <span class="todo TODO">TODO</span> 规则（Rules）</h5>
+</div>
+<div id="outline-container-org17c40e4" class="outline-5">
+<h5 id="org17c40e4"><span class="section-number-5">2.4.2.7</span> <span class="todo TODO">TODO</span> 告警（Alerts）</h5>
+</div>
+<div id="outline-container-orgf533c92" class="outline-5">
+<h5 id="orgf533c92"><span class="section-number-5">2.4.2.8</span> <span class="todo TODO">TODO</span> 查询目标元数据</h5>
+</div>
+<div id="outline-container-orgb58df1e" class="outline-5">
+<h5 id="orgb58df1e"><span class="section-number-5">2.4.2.9</span> <span class="todo TODO">TODO</span> 查询 metric 元数据</h5>
+</div>
+<div id="outline-container-orgb9ce066" class="outline-5">
+<h5 id="orgb9ce066"><span class="section-number-5">2.4.2.10</span> <span class="todo TODO">TODO</span> Alertmanagers</h5>
+</div>
+<div id="outline-container-orgfebb470" class="outline-5">
+<h5 id="orgfebb470"><span class="section-number-5">2.4.2.11</span> <span class="todo TODO">TODO</span> 状态（status）</h5>
+</div>
+<div id="outline-container-orge4f17f1" class="outline-5">
+<h5 id="orge4f17f1"><span class="section-number-5">2.4.2.12</span> <span class="todo TODO">TODO</span> TSDB 管理 APIs</h5>
+</div>
+</div>
+</div>
+<div id="outline-container-orge43800e" class="outline-3">
+<h3 id="orge43800e"><span class="section-number-3">2.5</span> <span class="todo TODO">TODO</span> 存储</h3>
+</div>
+<div id="outline-container-org4c1f4ce" class="outline-3">
+<h3 id="org4c1f4ce"><span class="section-number-3">2.6</span> <span class="todo TODO">TODO</span> Federation</h3>
+</div>
+<div id="outline-container-orga25728f" class="outline-3">
+<h3 id="orga25728f"><span class="section-number-3">2.7</span> <span class="todo TODO">TODO</span> 管理 API</h3>
+</div>
+</div>
+<div id="outline-container-org6f189f8" class="outline-2">
+<h2 id="org6f189f8"><span class="section-number-2">3</span> <span class="todo TODO">TODO</span> 可视化</h2>
+</div>
+<div id="outline-container-org8c69f43" class="outline-2">
+<h2 id="org8c69f43"><span class="section-number-2">4</span> <span class="todo TODO">TODO</span> Instrumenting</h2>
+</div>
+<div id="outline-container-org9475b33" class="outline-2">
+<h2 id="org9475b33"><span class="section-number-2">5</span> <span class="todo TODO">TODO</span> Operating</h2>
+</div>
+<div id="outline-container-org4179b16" class="outline-2">
+<h2 id="org4179b16"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> 告警（Alerting）</h2>
+</div>
+<div id="outline-container-org3c4e201" class="outline-2">
+<h2 id="org3c4e201"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> 最佳实践</h2>
+</div>
+<div id="outline-container-orgebbb82e" class="outline-2">
+<h2 id="orgebbb82e"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> 指南（GUIDES）</h2>
+</div>
+</div>
+</body>
+</html>

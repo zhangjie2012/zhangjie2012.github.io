@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Go 包管理工具</title>
+<title>基于 Prometheus 监控告警</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -244,177 +244,102 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Go 包管理工具</h1>
+<h1 class="title">基于 Prometheus 监控告警</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7e1f23d">1. govender</a>
+<li><a href="#org04a24ba">1. 监控架构</a>
 <ul>
-<li><a href="#org31e0779">1.1. 创建项目</a></li>
-<li><a href="#org2e93a80">1.2. 常规使用</a></li>
+<li><a href="#orgd9a2ae7">1.1. 生成度量指标（metric）</a></li>
+<li><a href="#org30af1b9">1.2. metrics 收集</a></li>
+<li><a href="#orgaf3258a">1.3. UI 显示</a></li>
+<li><a href="#org21623cd">1.4. 告警</a></li>
 </ul>
 </li>
-<li><a href="#org62a5e67">2. Go module</a>
-<ul>
-<li><a href="#org671a7c1">2.1. 常见场景</a></li>
-<li><a href="#org645b8ba">2.2. vendor 目录说明</a></li>
-<li><a href="#org84bc792">2.3. go mod 使用私有库</a></li>
-</ul>
-</li>
+<li><a href="#org07f326f">2. 对接 Kubernetes</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org7e1f23d" class="outline-2">
-<h2 id="org7e1f23d"><span class="section-number-2">1</span> govender</h2>
+<div id="outline-container-org04a24ba" class="outline-2">
+<h2 id="org04a24ba"><span class="section-number-2">1</span> 监控架构</h2>
 <div class="outline-text-2" id="text-1">
-<p>
-govendor: <a href="https://github.com/kardianos/govendor">https://github.com/kardianos/govendor</a>，安装： <code>go get -u github.com/kardianos/govendor</code> 。
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/prom.png" alt="prom.png" />
 </p>
 </div>
 
-<div id="outline-container-org31e0779" class="outline-3">
-<h3 id="org31e0779"><span class="section-number-3">1.1</span> 创建项目</h3>
+<p>
+这是一个常规的监控架构，从 metrics 生成、收集、到查询展示。
+</p>
+</div>
+
+<div id="outline-container-orgd9a2ae7" class="outline-3">
+<h3 id="orgd9a2ae7"><span class="section-number-3">1.1</span> 生成度量指标（metric）</h3>
 <div class="outline-text-3" id="text-1-1">
-<ul class="org-ul">
-<li>项目初始化： <code>govendor init</code></li>
-<li>查看文件状态： <code>govendor list</code></li>
-<li>添加 package 到 vendor： <code>govendor add +external</code></li>
-</ul>
+<p>
+Prometheus 提供了各种 <a href="https://prometheus.io/docs/instrumenting/exporters/">exporter</a>，常见的系统和一些开源框架框架都已经支持。
+比如我们常用的：Node（系统主机）、MySQL、Redis、Kafka、Ceph、HAProxy，尤其是云原生相关的系统支持更加完备。
+</p>
+
+<p>
+自己的 API server 对接需要使用 <a href="https://prometheus.io/docs/instrumenting/clientlibs/">clientlibs</a>，自己也可以 <a href="https://prometheus.io/docs/instrumenting/writing_exporters/">写 exporter</a>。
+</p>
 </div>
 </div>
 
-<div id="outline-container-org2e93a80" class="outline-3">
-<h3 id="org2e93a80"><span class="section-number-3">1.2</span> 常规使用</h3>
+<div id="outline-container-org30af1b9" class="outline-3">
+<h3 id="org30af1b9"><span class="section-number-3">1.2</span> metrics 收集</h3>
 <div class="outline-text-3" id="text-1-2">
-<ul class="org-ul">
-<li>git pull 下来项目后，本地同步安装 package： <code>govendor sync -v</code></li>
-<li>查看 package 被哪里引用： <code>govendor list -v package</code></li>
-<li>govendor 其实并不那么好用（不然 go 的 package 管理也不会这么混乱了），升级和删除 package 等，暴力解法是：删掉 vendor 目录，重新走一遍初始化</li>
-</ul>
+<p>
+Prometheus 中包含 TSDB（时间序列 DB），用作数据存储。
+Prometheus 采用的是 pull 的方案，配置之后会按照规则定时获取 metrics 并存储到 TSDB 中，TSDB 可以序列化到本地（SSD 比较好）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaf3258a" class="outline-3">
+<h3 id="orgaf3258a"><span class="section-number-3">1.3</span> UI 显示</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Promethues 有自己的 Web UI，但是比较简陋。业内的做法是对接 Grafana 显示数据。Grafana 提供了丰富的 <a href="https://grafana.com/dashboards">Dashboards</a>，直接导入即可。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org21623cd" class="outline-3">
+<h3 id="org21623cd"><span class="section-number-3">1.4</span> 告警</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+Grafana 自身是支持告警的，但是比较蛋疼的点在于告警规则不支持模板变量，那就约等于没有了···
+</p>
+
+<p>
+业内常用的做法是使用 Alertmanager，它提供了多种告警策略，甚至包含了 Webhook 的方式(自定义告警、对接自有的告警系统)。
+</p>
 </div>
 </div>
 </div>
-<div id="outline-container-org62a5e67" class="outline-2">
-<h2 id="org62a5e67"><span class="section-number-2">2</span> Go module</h2>
+
+<div id="outline-container-org07f326f" class="outline-2">
+<h2 id="org07f326f"><span class="section-number-2">2</span> 对接 Kubernetes</h2>
 <div class="outline-text-2" id="text-2">
 <p>
-<b>2020-01-17 14:14:44 Fri update</b>
+Kubernetes 原生暴露了很多的集群（节点、Job、Ingress、Namespace 等）的 metric，具体可以看 <a href="https://github.com/kubernetes/kube-state-metrics/">kubernetes/kube-state-metrics</a> 。
 </p>
 
 <p>
-官方的几篇介绍文章：
-</p>
-
-<ol class="org-ol">
-<li><a href="https://blog.golang.org/using-go-modules">Using Go Modules</a></li>
-<li><a href="https://blog.golang.org/migrating-to-go-modules">Migrating to Go Modules</a></li>
-<li><a href="https://blog.golang.org/publishing-go-modules">Publishing Go Modules</a></li>
-<li><a href="https://blog.golang.org/v2-go-modules">Go Modules: v2 and Beyond</a></li>
-</ol>
-
-<p>
-Go 1.11 之后官方支持包管理工具 <code>go mod</code> 。
-</p>
-
-<pre class="example">
-Usage:
-
-    go mod &lt;command&gt; [arguments]
-
-The commands are:
-
-    download    download modules to local cache
-    edit        edit go.mod from tools or scripts
-    graph       print module requirement graph
-    init        initialize new module in current directory
-    tidy        add missing and remove unused modules
-    vendor      make vendored copy of dependencies
-    verify      verify dependencies have expected content
-    why         explain why packages or modules are needed
-</pre>
-</div>
-
-<div id="outline-container-org671a7c1" class="outline-3">
-<h3 id="org671a7c1"><span class="section-number-3">2.1</span> 常见场景</h3>
-<div class="outline-text-3" id="text-2-1">
-<ul class="org-ul">
-<li>初始化： <code>go mod init</code> 会生成 go.mod 文件；如果在 <code>GOPATH</code> 之外的项目， <code>go mod init</code> 需要指定仓库名称</li>
-<li>添加依赖：如果 Go 发现有新的 package 引入，在执行 <code>go build</code> 或者 <code>go test</code> 会自动 finding-&gt;downloading-&gt;extracting，然后将 package 名称和版本写入到 go.mod 文件中。
-引入一个 package，package 可能还依赖其它的 package，go.mod 只记录根依赖，你可以通过 <code>go list -m all</code> 来查看所有的依赖；
-除了 go.mod 之外，还生成了一个 go.sum 文件用来做 hash 校验；
-<b>go.mod 和 go.sum 都应该放到版本管理工具中</b></li>
-<li>升级依赖， <code>go get</code> 包之后，go.mod 会自动升级到最新版本；
-<ul class="org-ul">
-<li><code>go list -m -versions</code> 可以查看包的版本</li>
-</ul></li>
-<li>移出不常用的依赖 <code>go mod tidy</code></li>
-<li><code>go mod download</code> 下载依赖的 module 到本地缓存</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org645b8ba" class="outline-3">
-<h3 id="org645b8ba"><span class="section-number-3">2.2</span> vendor 目录说明</h3>
-<div class="outline-text-3" id="text-2-2">
-<p>
-从上面的几篇文章可以看到基本上没有再提 vendor 目录的事，虽然 go mod 命令确实有支持。
-官方 wiki 里有说明： <a href="https://github.com/golang/go/wiki/Modules#how-do-i-use-vendoring-with-modules-is-vendoring-going-away">How do I use vendoring with modules? Is vendoring going away?</a>
+<a href="https://github.com/google/cadvisor">google/cadvisor</a> 对容器的资源使用情况（metric）进行暴露，是专门用来解决容器监控指标问题的。
+它可以对接多种存储，包括 Prometheus，暴露的指标、类型、描述、单位等在 <a href="https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md">Monitoring cAdvisor with Prometheus</a> 有说明。
 </p>
 
 <p>
-Go modules 的设计之初是想完全放弃 vendor 目录的，但是社区的 <a href="https://groups.google.com/forum/#!msg/golang-dev/FTMScX1fsYk/uEUSjBAHAwAJ">反馈</a> 导致保留了对 vendor 的支持。
-</p>
-
-<p>
-简单来讲，如果要支持的话，可以这样：
-</p>
-
-<ul class="org-ul">
-<li><code>go mod vendor</code> 会根据 go.mod 中的文件重置 vendor 目录，将依赖的包拷贝入内</li>
-<li>默认情况下， <code>go build</code> 会忽略 <code>vendor</code> 中的内容</li>
-<li>指定了 <code>-mod=vendor</code> 情况下才会从根目录下的 vendor 目录找包依赖，这种情况下会忽略 go.mod 的内容。
-注意，只会从项目的顶级目录下找，其它目录下的会被忽略。</li>
-<li>如果希望全局支持的话，可以设置 <code>GOFLAGS=-mod=vendor</code> 环境变量。</li>
-</ul>
-
-<p>
-<i>所以，对于用户来讲，是不是可以考虑不再关心 vendor 目录了？</i>
+<a href="https://github.com/google/cadvisor/blob/master/docs/runtime_options.md">cAdvisor 运行时选项</a> 可作为配置参考，其中 <code>--enable_load_reader=true</code> 才能收集到 CPU 负载数据，否则都是 0。
 </p>
 </div>
 </div>
-
-<div id="outline-container-org84bc792" class="outline-3">
-<h3 id="org84bc792"><span class="section-number-3">2.3</span> go mod 使用私有库</h3>
-<div class="outline-text-3" id="text-2-3">
-<p>
-不使用 go mod 私有库直接手动拷贝到 <code>$GOPATH/src</code> 下面就可以用了，使用 go mod 之后，依赖库的位置放在了 <code>$GOPATH/pkg/mod</code> 下面，并且还有 go.sum 校验，
-所以直接拷贝的方式不可用了，可以用下面的方法来解决。假设 git 仓库的地址为： <code>git.zhangjiee.com</code> 。
-</p>
-
-<ol class="org-ol">
-<li><code>go env -w GOPRIVATE=git.zhangjiee.com</code></li>
-<li><p>
-<code>.gitconfig</code> 中添加：
-</p>
-<pre class="example">
-[url "ssh://git@git.zhangjiee.com/"]
-    insteadOf = http://git.zhangjiee.com/
-</pre></li>
-<li><code>go get -u -v -insecure git.zhangjiee.com/group/project</code> 非 https 在 go get 时需要加上 <code>-insecure</code></li>
-</ol>
-
-<p>
-然后在 <code>$GOPATH/pkg/mod</code> 中就会出现 <code>git.zhangjiee.com/group/project@vx.y.z</code> 目录了，并且添加到了 go.mod 和 go.sum 文件中。
-</p>
-</div>
-</div>
-</div>
-</div>
-<div id="postamble" class="status">
-<p class="date">Date: 2019-01-18 11:07</p>
-<p class="author">Author: JerryZhang</p>
 </div>
 </body>
 </html>
