@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-02 Mon 10:53 -->
+<!-- 2020-03-03 Tue 16:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Emacs</title>
@@ -260,6 +260,7 @@ for the JavaScript code in this tag.
 </ul>
 </li>
 <li><a href="#org77f5e83">2.2. 键位约定</a></li>
+<li><a href="#org80c7f91">2.3. 包安装与管理</a></li>
 </ul>
 </li>
 <li><a href="#org6770cec">3. 插件推荐</a></li>
@@ -274,7 +275,7 @@ for the JavaScript code in this tag.
 </ul>
 </li>
 <li><a href="#manual-vc">4.5. 版本管理</a></li>
-<li><a href="#manual-org-mode">4.6. org-mode</a></li>
+<li><a href="#manual-org-mode">4.6. Org Mode</a></li>
 </ul>
 </li>
 <li><a href="#org4ee0f6e">5. FAQ</a>
@@ -283,23 +284,28 @@ for the JavaScript code in this tag.
 <li><a href="#org131921f">5.2. 如何将 markdown 转成 org-mode</a></li>
 <li><a href="#orgd4c1c47">5.3. Org mode 如何排序，按列表，按标题等</a></li>
 <li><a href="#org2986dd7">5.4. 使用 GUI 版本还是 Terminal ?</a></li>
-<li><a href="#orgcee0ab0">5.5. 包安装问题（如何设置代理）</a></li>
-<li><a href="#org4e808aa">5.6. 如何去掉空白字符</a></li>
-<li><a href="#org57d57cb">5.7. 如何显示所有安装的 package</a></li>
-<li><a href="#org1d12f3a">5.8. 如何更新所有的依赖包？</a></li>
-<li><a href="#org8d01bd5">5.9. 如何记忆 Emacs 快捷键？</a></li>
-<li><a href="#orge3f1559">5.10. 如何软重启 Emacs？</a></li>
-<li><a href="#orgf2cc740">5.11. 我可不可以用 Emacs 完成 XXX 能做的事情？</a></li>
-<li><a href="#org576fbf2">5.12. 是否要使用 Evil ？</a></li>
-<li><a href="#org4d5c61b">5.13. 行逆序排序</a></li>
+<li><a href="#org4e808aa">5.5. 如何去掉空白字符</a></li>
+<li><a href="#org57d57cb">5.6. 如何显示所有安装的 package</a></li>
+<li><a href="#org1d12f3a">5.7. 如何更新所有的依赖包？</a></li>
+<li><a href="#org8d01bd5">5.8. 如何记忆 Emacs 快捷键？</a></li>
+<li><a href="#orge3f1559">5.9. 如何软重启 Emacs？</a></li>
+<li><a href="#orgf2cc740">5.10. 我可不可以用 Emacs 完成 XXX 能做的事情？</a></li>
+<li><a href="#org576fbf2">5.11. 是否要使用 Evil ？</a></li>
+<li><a href="#org4d5c61b">5.12. 行逆序排序</a></li>
 </ul>
 </li>
-<li><a href="#org88ee1cf">6. Resource</a>
+<li><a href="#org6186800">6. Troubleshooting</a>
 <ul>
-<li><a href="#org5f8f1f6">6.1. Blog/Site/Tutorial</a></li>
-<li><a href="#org16e3f1d">6.2. Article</a></li>
-<li><a href="#orgfd8a93a">6.3. Configure reference</a></li>
-<li><a href="#orge43aa5b">6.4. org-mode theme</a></li>
+<li><a href="#org5dcccef">6.1. 安装 lsp-mode 报错 spinner-1.7.3 is unavailable？</a></li>
+<li><a href="#org0cbc1f5">6.2. lsp go: Suspicious state fromsyntax checker go-vet ?</a></li>
+</ul>
+</li>
+<li><a href="#org88ee1cf">7. Resource</a>
+<ul>
+<li><a href="#org5f8f1f6">7.1. Blog/Site/Tutorial</a></li>
+<li><a href="#org16e3f1d">7.2. Article</a></li>
+<li><a href="#orgfd8a93a">7.3. Configure reference</a></li>
+<li><a href="#orge43aa5b">7.4. org-mode theme</a></li>
 </ul>
 </li>
 </ul>
@@ -457,6 +463,68 @@ Emacs 几乎所有的快捷键都是以 <code>C-</code> 开始的，也是 Emacs
 
 <p>
 每个初学者建议先阅读 Emacs 的 <code>help-with-tutorial</code> （ <code>C-h t</code> ）。走一遍，基本上就可以流畅的操作 Emacs 了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org80c7f91" class="outline-3">
+<h3 id="org80c7f91"><span class="section-number-3">2.3</span> 包安装与管理</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+因为某些原因官方的 elpa 源无法使用怎么办？ 可使用清华大学提供了 elpa 镜像源：<a href="https://mirror.tuna.tsinghua.edu.cn/help/elpa/">https://mirror.tuna.tsinghua.edu.cn/help/elpa/</a> 。替代下面的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> package-archives
+      '<span style="color: #7388D6;">(</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"gnu"</span> . <span style="color: #008000;">"https://elpa.gnu.org/packages/"</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"melpa"</span> . <span style="color: #008000;">"https://melpa.org/packages/"</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"melpa-stable"</span> . <span style="color: #008000;">"https://stable.melpa.org/packages/"</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"org"</span> . <span style="color: #008000;">"https://orgmode.org/elpa/"</span><span style="color: #909183;">)</span>
+        <span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+<code>melpa</code> 一般是最新的（daily build），支持最新的特性当然也不稳定； <code>melpa-stable</code> 对应的是正式版，如果没有很大的折腾劲的话，建议使用 stable。
+</p>
+
+<p>
+如果有代理的话，可以设置 HTTP 代理：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> url-proxy-services
+      '<span style="color: #7388D6;">(</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"http"</span> . <span style="color: #008000;">"127.0.0.1:1080"</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"https"</span> . <span style="color: #008000;">"127.0.0.1:1080"</span><span style="color: #909183;">)</span>
+        <span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+或者 Emacs 启动时添加 <code>http_proxy</code> 。比如 <code>http_proxy=http://127.0.0.1:1080 emacs</code> 。
+</p>
+
+<p>
+我使用 <a href="https://github.com/jwiegley/use-package">use-package</a> 来简化和规范包的配置，因为源不统一，经常会遇到包依赖问题，比如 <a href="https://github.com/abo-abo/swiper/issues/2087">issues#2087</a>；
+还有时会遇到有的包想用稳定版本，有的包想用最新版本的情况。所以在配置的时候，通过 <code>(setq use-package-always-pin t)</code> 规范 use-package，
+强制显式指定源，这样可以满足更多的个性化需求。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">use-package</span> <span style="color: #D0372D;">swiper</span>
+  <span style="color: #006FE0;">:pin</span> melpa
+  <span style="color: #006FE0;">:ensure</span> t
+  <span style="color: #006FE0;">:config</span>
+  <span style="color: #7388D6;">(</span>global-set-key <span style="color: #909183;">(</span>kbd <span style="color: #008000;">"C-s"</span><span style="color: #909183;">)</span> 'swiper<span style="color: #7388D6;">)</span>
+  <span style="color: #7388D6;">(</span>global-set-key <span style="color: #909183;">(</span>kbd <span style="color: #008000;">"M-s ."</span><span style="color: #909183;">)</span> 'swiper-isearch-thing-at-point<span style="color: #7388D6;">)</span>
+  <span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+上面的 <code>pin</code> 可以设置为 <code>package-archives</code> 列表中的值。
 </p>
 </div>
 </div>
@@ -1018,11 +1086,32 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 </div>
 </div>
 
-<div id="outline-container-orgdf5e246" class="outline-3">
-<h3 id="manual-org-mode"><span class="section-number-3">4.6</span> org-mode</h3>
+<div id="outline-container-org62da073" class="outline-3">
+<h3 id="manual-org-mode"><span class="section-number-3">4.6</span> Org Mode</h3>
 <div class="outline-text-3" id="text-manual-org-mode">
 <p>
 <a href="https://orgmode.org/">org-mode</a> 是 Emacs 最强力的插件，没有之一。可以用来做 GTD，博客/Wiki工具，写书，写论文等。
+orgmode 是 emacs 自带的 package，但是一般自带的版本比较低。更新到最新版本的办法：
+</p>
+
+<p>
+将 <code>("org" . "https://orgmode.org/elpa/")</code> 添加到 <code>package-archives</code> 中，然后：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">use-package</span> <span style="color: #D0372D;">org</span>
+  <span style="color: #006FE0;">:pin</span> org
+  <span style="color: #006FE0;">:ensure</span> org-plus-contrib
+  <span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+注意是 <code>org-plus-contrib</code> ，而不是 <code>org</code> 。
+</p>
+
+<p>
+常用快捷键：
 </p>
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
@@ -1033,12 +1122,13 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 
 <col  class="org-left" />
 </colgroup>
-<tbody>
+<thead>
 <tr>
-<td class="org-left">快捷键</td>
-<td class="org-left">功能</td>
+<th scope="col" class="org-left">快捷键</th>
+<th scope="col" class="org-left">功能</th>
 </tr>
-
+</thead>
+<tbody>
 <tr>
 <td class="org-left"><code>C-c C-e</code></td>
 <td class="org-left">Export or Publish</td>
@@ -1070,6 +1160,10 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 </tr>
 </tbody>
 </table>
+
+<p>
+扩展：
+</p>
 
 <ul class="org-ul">
 <li><a href="../../../blog/2019/build-site-with-org-mode.html">使用 org-mode 搭建网站</a></li>
@@ -1223,55 +1317,9 @@ Ubuntu GUI 无法切换搜狗输入法，与默认的 Mark 快捷键冲突，解
 </div>
 </div>
 
-<div id="outline-container-orgcee0ab0" class="outline-3">
-<h3 id="orgcee0ab0"><span class="section-number-3">5.5</span> 包安装问题（如何设置代理）</h3>
-<div class="outline-text-3" id="text-5-5">
-<p>
-因为某些原因官方的 elpa 源无法使用怎么办？ 如果没有 FQ 的环境，使用清华大学提供了 elpa 镜像源：<a href="https://mirror.tuna.tsinghua.edu.cn/help/elpa/">https://mirror.tuna.tsinghua.edu.cn/help/elpa/</a>
-</p>
-
-<p>
-包依赖问题导致安装失败，函数不存在等问题，怎么解决？ 这种情况一般是因为依赖的包版本有问题，当安装时存在多个源时，不管源之间的同步速度有多快，
-总会有版本滞后的问题。所以，安装时尽可能只选一个同一个源，比如：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> package-archives
-      '<span style="color: #7388D6;">(</span>
-        <span style="color: #909183;">(</span><span style="color: #008000;">"gnu"</span> . <span style="color: #008000;">"https://elpa.gnu.org/packages/"</span><span style="color: #909183;">)</span>
-        <span style="color: #909183;">(</span><span style="color: #008000;">"melpa"</span> . <span style="color: #008000;">"https://melpa.org/packages/"</span><span style="color: #909183;">)</span>
-        <span style="color: #909183;">(</span><span style="color: #008000;">"melpa-stable"</span> . <span style="color: #008000;">"https://stable.melpa.org/packages/"</span><span style="color: #909183;">)</span>
-        <span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
-</pre>
-</div>
-
-<p>
-如果发现类似问题，可以注释掉其中的两个，只保留一个，比如 <code>melpta-stable</code> ，一般能解决此问题。之前在安装 helm 的时候经常遇到依赖有问题，
-刚才（2019-05-31）安装 ivy 也遇到了类似的问题，给 github ivy 提了一个 <a href="https://github.com/abo-abo/swiper/issues/2087">issue</a> 才解决了这个问题（社区的力量真强大）。
-</p>
-
-<p>
-另外一种办法就是设置代理，可以可以在配置文件中设置 proxy ：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> url-proxy-services
-      '<span style="color: #7388D6;">(</span>
-        <span style="color: #909183;">(</span><span style="color: #008000;">"http"</span> . <span style="color: #008000;">"127.0.0.1:1080"</span><span style="color: #909183;">)</span>
-        <span style="color: #909183;">(</span><span style="color: #008000;">"https"</span> . <span style="color: #008000;">"127.0.0.1:1080"</span><span style="color: #909183;">)</span>
-        <span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
-</pre>
-</div>
-
-<p>
-或者 Emacs 启动时添加 <code>http_proxy</code> 。比如 <code>http_proxy=http://127.0.0.1:1080 emacs</code>
-</p>
-</div>
-</div>
-
 <div id="outline-container-org4e808aa" class="outline-3">
-<h3 id="org4e808aa"><span class="section-number-3">5.6</span> 如何去掉空白字符</h3>
-<div class="outline-text-3" id="text-5-6">
+<h3 id="org4e808aa"><span class="section-number-3">5.5</span> 如何去掉空白字符</h3>
+<div class="outline-text-3" id="text-5-5">
 <ul class="org-ul">
 <li><code>M-\</code> ：删除光标周围的空格和 tab</li>
 <li><code>M-&lt;SPC&gt;</code> ：删除光标周围的空格和 tab，但是保留一个</li>
@@ -1294,16 +1342,16 @@ Ubuntu GUI 无法切换搜狗输入法，与默认的 Mark 快捷键冲突，解
 </div>
 
 <div id="outline-container-org57d57cb" class="outline-3">
-<h3 id="org57d57cb"><span class="section-number-3">5.7</span> 如何显示所有安装的 package</h3>
-<div class="outline-text-3" id="text-5-7">
+<h3 id="org57d57cb"><span class="section-number-3">5.6</span> 如何显示所有安装的 package</h3>
+<div class="outline-text-3" id="text-5-6">
 <p>
 <code>C-h v package-activated-list</code> <sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>
 </p>
 </div>
 </div>
 <div id="outline-container-org1d12f3a" class="outline-3">
-<h3 id="org1d12f3a"><span class="section-number-3">5.8</span> 如何更新所有的依赖包？</h3>
-<div class="outline-text-3" id="text-5-8">
+<h3 id="org1d12f3a"><span class="section-number-3">5.7</span> 如何更新所有的依赖包？</h3>
+<div class="outline-text-3" id="text-5-7">
 <ol class="org-ol">
 <li><code>M-x list-package</code></li>
 <li><code>U</code> 标记所有不是最新的包</li>
@@ -1313,8 +1361,8 @@ Ubuntu GUI 无法切换搜狗输入法，与默认的 Mark 快捷键冲突，解
 </div>
 
 <div id="outline-container-org8d01bd5" class="outline-3">
-<h3 id="org8d01bd5"><span class="section-number-3">5.9</span> 如何记忆 Emacs 快捷键？</h3>
-<div class="outline-text-3" id="text-5-9">
+<h3 id="org8d01bd5"><span class="section-number-3">5.8</span> 如何记忆 Emacs 快捷键？</h3>
+<div class="outline-text-3" id="text-5-8">
 <p>
 Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外（就是上面描述的内容）并不需要刻意的记忆，只要你掌握了两点：
 </p>
@@ -1337,8 +1385,8 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 
 <div id="outline-container-orge3f1559" class="outline-3">
-<h3 id="orge3f1559"><span class="section-number-3">5.10</span> 如何软重启 Emacs？</h3>
-<div class="outline-text-3" id="text-5-10">
+<h3 id="orge3f1559"><span class="section-number-3">5.9</span> 如何软重启 Emacs？</h3>
+<div class="outline-text-3" id="text-5-9">
 <p>
 所谓软重启指的是通过命令重新加载配置文件：
 </p>
@@ -1355,8 +1403,8 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 
 <div id="outline-container-orgf2cc740" class="outline-3">
-<h3 id="orgf2cc740"><span class="section-number-3">5.11</span> 我可不可以用 Emacs 完成 XXX 能做的事情？</h3>
-<div class="outline-text-3" id="text-5-11">
+<h3 id="orgf2cc740"><span class="section-number-3">5.10</span> 我可不可以用 Emacs 完成 XXX 能做的事情？</h3>
+<div class="outline-text-3" id="text-5-10">
 <p>
 没有银弹！纵然 Emacs 可能「可以做任何事情」，比如收发邮件、GTD、阅读 pdf、打开图片等等。然而我以为用合适的工具做合适的事情才是重要的.
 </p>
@@ -1364,8 +1412,8 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 
 <div id="outline-container-org576fbf2" class="outline-3">
-<h3 id="org576fbf2"><span class="section-number-3">5.12</span> 是否要使用 Evil ？</h3>
-<div class="outline-text-3" id="text-5-12">
+<h3 id="org576fbf2"><span class="section-number-3">5.11</span> 是否要使用 Evil ？</h3>
+<div class="outline-text-3" id="text-5-11">
 <p>
 因人而异，如果之前你曾是 Vim 用户，建议你用 Evil。因为我一开始就用的是 Emacs，而不是 Vim，所以我一直用的是 Emacs 的键映射。
 </p>
@@ -1373,8 +1421,8 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 
 <div id="outline-container-org4d5c61b" class="outline-3">
-<h3 id="org4d5c61b"><span class="section-number-3">5.13</span> 行逆序排序</h3>
-<div class="outline-text-3" id="text-5-13">
+<h3 id="org4d5c61b"><span class="section-number-3">5.12</span> 行逆序排序</h3>
+<div class="outline-text-3" id="text-5-12">
 <ol class="org-ol">
 <li><code>M-x sort-lines</code></li>
 <li><code>M-x reverse-region</code></li>
@@ -1383,13 +1431,37 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 </div>
 
-<div id="outline-container-org88ee1cf" class="outline-2">
-<h2 id="org88ee1cf"><span class="section-number-2">6</span> Resource</h2>
+<div id="outline-container-org6186800" class="outline-2">
+<h2 id="org6186800"><span class="section-number-2">6</span> Troubleshooting</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-org5f8f1f6" class="outline-3">
-<h3 id="org5f8f1f6"><span class="section-number-3">6.1</span> Blog/Site/Tutorial</h3>
+<div id="outline-container-org5dcccef" class="outline-3">
+<h3 id="org5dcccef"><span class="section-number-3">6.1</span> 安装 lsp-mode 报错 spinner-1.7.3 is unavailable？</h3>
 <div class="outline-text-3" id="text-6-1">
+<p>
+spinner 在 <code>gnu</code> 中，确保 <code>package-archives</code> 中包含 <code>https://elpa.gnu.org/packages/</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0cbc1f5" class="outline-3">
+<h3 id="org0cbc1f5"><span class="section-number-3">6.2</span> lsp go: Suspicious state fromsyntax checker go-vet ?</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+错误是由 flycheck 报出来的，高于 1.12 的 Go <code>go vet</code> 已被废弃，而是使用 <code>go tool vet</code> 代替。 flycheck 最新稳定的版本还停留在 <code>Flycheck 31</code> 支持到 go1.11 。
+解决办法是要么升级 flycheck，使用 <code>melpa</code> 源，不要用 <code>melpa-stable</code> 即可 <sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org88ee1cf" class="outline-2">
+<h2 id="org88ee1cf"><span class="section-number-2">7</span> Resource</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-org5f8f1f6" class="outline-3">
+<h3 id="org5f8f1f6"><span class="section-number-3">7.1</span> Blog/Site/Tutorial</h3>
+<div class="outline-text-3" id="text-7-1">
 <ul class="org-ul">
 <li><a href="https://github.com/emacs-tw/awesome-emacs">awesome-emacs</a></li>
 <li><a href="https://planet.emacslife.com/">Planet Emacslife</a>：Emacs 百科全书，大杂烩</li>
@@ -1402,8 +1474,8 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 
 <div id="outline-container-org16e3f1d" class="outline-3">
-<h3 id="org16e3f1d"><span class="section-number-3">6.2</span> Article</h3>
-<div class="outline-text-3" id="text-6-2">
+<h3 id="org16e3f1d"><span class="section-number-3">7.2</span> Article</h3>
+<div class="outline-text-3" id="text-7-2">
 <ul class="org-ul">
 <li><a href="https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/guide-zh.org">一年成为 Emacs 高手 (像神一样使用编辑器)</a>， <code>@chenbin</code> 解释了 Emacs 的好处以及如何成为高手。</li>
 </ul>
@@ -1411,8 +1483,8 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 
 <div id="outline-container-orgfd8a93a" class="outline-3">
-<h3 id="orgfd8a93a"><span class="section-number-3">6.3</span> Configure reference</h3>
-<div class="outline-text-3" id="text-6-3">
+<h3 id="orgfd8a93a"><span class="section-number-3">7.3</span> Configure reference</h3>
+<div class="outline-text-3" id="text-7-3">
 <p>
 社区有很多优秀的配置（我的配置大多都是到处「摘抄」的）：
 </p>
@@ -1427,8 +1499,8 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 
 <div id="outline-container-orge43aa5b" class="outline-3">
-<h3 id="orge43aa5b"><span class="section-number-3">6.4</span> org-mode theme</h3>
-<div class="outline-text-3" id="text-6-4">
+<h3 id="orge43aa5b"><span class="section-number-3">7.4</span> org-mode theme</h3>
+<div class="outline-text-3" id="text-7-4">
 <ul class="org-ul">
 <li><a href="https://jessekelly881-imagine.surge.sh">Imagine</a>: 范例 <a href="https://jessekelly.tk/">Jesse Kelly</a></li>
 <li><a href="https://jessekelly881-rethink.surge.sh">Rethink</a></li>
@@ -1456,11 +1528,15 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 <a href="https://stackoverflow.com/questions/13866848/how-to-save-a-list-of-all-the-installed-packages-in-emacs-24">https://stackoverflow.com/questions/13866848/how-to-save-a-list-of-all-the-installed-packages-in-emacs-24</a>
 </p></div></div>
 
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://github.com/hlissner/doom-emacs/issues/1225">https://github.com/hlissner/doom-emacs/issues/1225</a>
+</p></div></div>
+
 
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-06-22 23:24:56 <br />Last updated: 2020-03-02 Mon 10:45 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2018-06-22 23:24:56 <br />Last updated: 2020-03-03 Tue 16:24 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>
