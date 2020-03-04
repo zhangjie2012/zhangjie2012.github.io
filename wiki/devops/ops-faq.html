@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-02 Mon 10:52 -->
+<!-- 2020-03-04 Wed 09:50 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>运维 FAQ</title>
@@ -250,7 +250,7 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgdf0edcd">1. Shell 相关</a>
+<li><a href="#orgd43c0f4">1. Shell</a>
 <ul>
 <li><a href="#orgae62169">1.1. 登录读取配置的流程</a>
 <ul>
@@ -267,12 +267,13 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#org9713c9d">2. 如何矫正系统时间</a></li>
 <li><a href="#orgd10fd03">3. 如何查看机器基本信息（发行版本，CPU，内存等）</a></li>
+<li><a href="#org29be9d1">4. apt-get update 和 apt-get upgrade 的区别</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgdf0edcd" class="outline-2">
-<h2 id="orgdf0edcd"><span class="section-number-2">1</span> Shell 相关</h2>
+<div id="outline-container-orgd43c0f4" class="outline-2">
+<h2 id="orgd43c0f4"><span class="section-number-2">1</span> Shell</h2>
 <div class="outline-text-2" id="text-1">
 </div>
 <div id="outline-container-orgae62169" class="outline-3">
@@ -426,9 +427,42 @@ fi
 </ul>
 </div>
 </div>
+
+<div id="outline-container-org29be9d1" class="outline-2">
+<h2 id="org29be9d1"><span class="section-number-2">4</span> apt-get update 和 apt-get upgrade 的区别</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+先运行 <code>update</code> ，然后再运行 <code>upgrade</code> 。它们两个没有包含对方的功能，各自做的事情不同。
+</p>
+
+<ul class="org-ul">
+<li><code>apt-get update</code> 更新可用包列表和他们的版本，但是不安装和升级任何版本</li>
+<li><code>apt-get upgrade</code> 升级你已有包的到最新版本，更新列表之后，程序包管理器将会了解你已经安装的软件的可用更新。
+这就是为什么首先你需要 <code>update</code></li>
+</ul>
+
+<p>
+还有一个命令是 <code>dist-upgrade</code> ，它跟 <code>upgrade</code> 的区别：
+</p>
+
+<ul class="org-ul">
+<li><code>upgrade</code> 是对当前已经安装的包升级到最新版本（你首先要 <code>update</code> ），升级的规则是：在任何情况下安装的软件包都不会被删除，或者未安装的包被检索和安装。如果更新对你很重要，要使用 <code>upgrade</code></li>
+<li><code>dist-upgrade</code> 除了执行 <code>upgrade</code> 之外，还会智能的处理包的依赖关系，所以说 <code>dist-upgrade</code> 可能会移除一些包。如果你想事情「正常工作」，可能要使用 <code>dist-upgrade</code> 来确保解决依赖关系</li>
+</ul>
+
+<p>
+来自：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://askubuntu.com/questions/94102/what-is-the-difference-between-apt-get-update-and-upgrade">https://askubuntu.com/questions/94102/what-is-the-difference-between-apt-get-update-and-upgrade</a></li>
+<li><a href="https://askubuntu.com/questions/194651/why-use-apt-get-upgrade-instead-of-apt-get-dist-upgrade">https://askubuntu.com/questions/194651/why-use-apt-get-upgrade-instead-of-apt-get-dist-upgrade</a></li>
+</ul>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-09-11 15:29:32 <br />Last updated: 2019-09-19 Thu 16:05 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2018-09-11 15:29:32 <br />Last updated: 2020-03-04 Wed 09:41 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>
