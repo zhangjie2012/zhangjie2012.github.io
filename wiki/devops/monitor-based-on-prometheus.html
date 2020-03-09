@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-06 Fri 11:33 -->
+<!-- 2020-03-09 Mon 10:08 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>基于 Prometheus 监控告警</title>
@@ -256,6 +256,13 @@ for the JavaScript code in this tag.
 <li><a href="#org30af1b9">1.2. metrics 收集</a></li>
 <li><a href="#orgaf3258a">1.3. UI 显示</a></li>
 <li><a href="#org21623cd">1.4. 告警</a></li>
+<li><a href="#org7051ae8">1.5. 示例：本机系统监控平台搭建</a>
+<ul>
+<li><a href="#org6370ed1">1.5.1. node<sub>exporter</sub></a></li>
+<li><a href="#orgbac931c">1.5.2. Prometheus</a></li>
+<li><a href="#org7497ccf">1.5.3. Grafana</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#org07f326f">2. 对接 Kubernetes</a></li>
@@ -322,6 +329,156 @@ Grafana 自身是支持告警的，但是比较蛋疼的点在于告警规则不
 </p>
 </div>
 </div>
+
+<div id="outline-container-org7051ae8" class="outline-3">
+<h3 id="org7051ae8"><span class="section-number-3">1.5</span> 示例：本机系统监控平台搭建</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+<i>示例限于 Linux 平台，我使用 Ubuntu 18.04 测试搭建，不同的平台安装方式 node<sub>exporter</sub> 安装方式略有不同，但大同小异。</i>
+</p>
+</div>
+
+<div id="outline-container-org6370ed1" class="outline-4">
+<h4 id="org6370ed1"><span class="section-number-4">1.5.1</span> node<sub>exporter</sub></h4>
+<div class="outline-text-4" id="text-1-5-1">
+<ol class="org-ol">
+<li>下载，在 <a href="https://github.com/prometheus/node_exporter">https://github.com/prometheus/node_exporter</a> release 中找对应系统的安装包下载。
+二进制包拷贝到 <code>/user/local/bin/</code> 目录下</li>
+<li>systemd 配置 daemon 运行，和自启动
+<ul class="org-ul">
+<li><a href="https://github.com/prometheus/node_exporter/tree/master/examples/systemd">examples</a> 有配置文件范例可参考，注意设置一个有效的 <code>user</code> ，不然会提示权限不足</li>
+<li>设置开机启动： <code>systemctl enable node_exporter</code></li>
+</ul></li>
+</ol>
+
+<p>
+node<sub>exporter</sub> 默认的服务端口是 <code>9100</code> ，浏览器访问：  <code>127.0.0.1:9100</code> 即可查看暴露的 metric。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbac931c" class="outline-4">
+<h4 id="orgbac931c"><span class="section-number-4">1.5.2</span> Prometheus</h4>
+<div class="outline-text-4" id="text-1-5-2">
+<p>
+使用 Docker 部署。下载镜像： <code>docker pull prom/prometheus:v2.16.0</code>
+</p>
+
+<p>
+创建 <code>/data/storage</code> 目录用来存储 TSDB 内容，创建 <code>/data/prometheus</code> 放置 promethues 配置文件。
+</p>
+
+<p>
+注意：要授权成 65534， prometheus 运行的用户和组是 <code>nobody/nogroup</code> ，对用的 UID 和 GID 是 65534，这是一种简单的方法。
+也可以在宿主机上创建一个用户，然后传给容器。
+</p>
+
+<p>
+添加配置文件：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">global</span>:
+  <span style="color: #BA36A5;">scrape_interval</span>:     15s <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Set the scrape interval to every 15 seconds. Default is every 1 minute.</span>
+  <span style="color: #BA36A5;">evaluation_interval</span>: 15s <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Evaluate rules every 15 seconds. The default is every 1 minute.</span>
+  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">scrape_timeout is set to the global default (10s).</span>
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Alertmanager configuration</span>
+<span style="color: #BA36A5;">alerting</span>:
+  <span style="color: #BA36A5;">alertmanagers</span>:
+  - <span style="color: #BA36A5;">static_configs</span>:
+    - <span style="color: #BA36A5;">targets</span>:
+      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">- alertmanager:9093</span>
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Load rules once and periodically evaluate them according to the global 'evaluation_interval'.</span>
+<span style="color: #BA36A5;">rule_files</span>:
+  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">- "first_rules.yml"</span>
+  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">- "second_rules.yml"</span>
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">A scrape configuration containing exactly one endpoint to scrape:</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Here it's Prometheus itself.</span>
+<span style="color: #BA36A5;">scrape_configs</span>:
+  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span>
+  - <span style="color: #BA36A5;">job_name</span>: <span style="color: #008000;">'prometheus'</span>
+
+    <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">metrics_path defaults to '/metrics'</span>
+    <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">scheme defaults to 'http'.</span>
+
+    <span style="color: #BA36A5;">static_configs</span>:
+    - <span style="color: #BA36A5;">targets</span>: [<span style="color: #008000;">'localhost:9090'</span>]
+</pre>
+</div>
+
+<p>
+创建容器：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">sudo docker run -it -d --restart=always -p 9090:9090 --name prometheus <span style="color: #008000;">\</span>
+     -v /data/prometheus/prometheus.yml:/prometheus.yml -v /data/storage/:/data/storage/ <span style="color: #008000;">\</span>
+     prom/prometheus:v2.16.0  <span style="color: #008000;">\</span>
+     --config.file=<span style="color: #008000;">"/prometheus.yml"</span> --storage.tsdb.path=<span style="color: #008000;">"/data/storage"</span> --web.enable-lifecycle
+</pre>
+</div>
+
+<p>
+然后在 <code>http://127.0.0.1:9090/graph</code> 即可访问 web UI。
+</p>
+
+<p>
+将之前 node<sub>exporter</sub> 作为 job 添加到 prometheus 配置文件中。
+</p>
+
+<pre class="example">
+- job_name: 'local-node'
+  static_configs:
+          - targets: ['192.168.2.101:9100']
+</pre>
+
+<p>
+注意要使用主机的 IP 地址，而不是 localhost 或者 127.0.0.1 ，因为运行在容器中，而不是本机。
+</p>
+
+<p>
+修改完配置之后需要重启容器才能生效，数据已经被挂载到宿主机了，所以不会丢。
+</p>
+
+<p>
+访问 <code>http://127.0.0.1:9090/targets</code> 可以看到 <code>local-node</code> target 表示添加成功。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7497ccf" class="outline-4">
+<h4 id="org7497ccf"><span class="section-number-4">1.5.3</span> Grafana</h4>
+<div class="outline-text-4" id="text-1-5-3">
+<p>
+使用 Docker 部署， 下载镜像： <code>sudo docker pull grafana/grafana:5.4.3</code>
+</p>
+
+<p>
+创建容器：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">sudo docker run -it --restart=always -d -p 3000:3000 --name grafana grafana/grafana:5.4.3
+</pre>
+</div>
+
+<p>
+浏览器访问： <code>http://127.0.0.1:3000</code> 初始的账号密码都是 <code>admin</code> 。
+</p>
+
+<p>
+添加数据源 Prometheus，注意要写宿主机的 IP。
+</p>
+
+<p>
+Grafana 官网提供了很多的 <a href="https://grafana.com/grafana/dashboards">dashboards</a>，找一个 node<sub>exporter</sub> 的 dashboard ID 比如： <code>11074</code> ，在 Grafana 中导入即可（记得选择数据源）。
+</p>
+</div>
+</div>
+</div>
 </div>
 
 <div id="outline-container-org07f326f" class="outline-2">
@@ -343,7 +500,7 @@ Kubernetes 原生暴露了很多的集群（节点、Job、Ingress、Namespace �
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-04-11 15:46 <br />Last updated: 2020-03-04 Wed 10:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2019-04-11 15:46 <br />Last updated: 2020-03-09 Mon 10:05 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>
