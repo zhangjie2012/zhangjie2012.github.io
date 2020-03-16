@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-10 Tue 09:47 -->
+<!-- 2020-03-16 Mon 10:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Emacs</title>
@@ -272,7 +272,9 @@ for the JavaScript code in this tag.
 <li><a href="#org6061f4d">4.4. 多窗口</a></li>
 <li><a href="#orgc6b4329">4.5. IDE</a>
 <ul>
-<li><a href="#orgc629ca3">4.5.1. LSP 使用</a></li>
+<li><a href="#org0a247ae">4.5.1. Go</a></li>
+<li><a href="#orge747b9e">4.5.2. <span class="todo TODO">TODO</span> Python</a></li>
+<li><a href="#orgc629ca3">4.5.3. LSP 使用</a></li>
 </ul>
 </li>
 <li><a href="#manual-vc">4.6. 版本管理</a></li>
@@ -293,6 +295,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgf2cc740">5.10. 我可不可以用 Emacs 完成 XXX 能做的事情？</a></li>
 <li><a href="#org576fbf2">5.11. 是否要使用 Evil ？</a></li>
 <li><a href="#org4d5c61b">5.12. 行逆序排序</a></li>
+<li><a href="#orgc83d99d">5.13. eshell git diff 高亮</a></li>
 </ul>
 </li>
 <li><a href="#org6186800">6. Troubleshooting</a>
@@ -308,6 +311,7 @@ for the JavaScript code in this tag.
 <li><a href="#org16e3f1d">7.3. Article</a></li>
 <li><a href="#orgfd8a93a">7.4. Configure reference</a></li>
 <li><a href="#orge43aa5b">7.5. org-mode theme</a></li>
+<li><a href="#orgd5eae37">7.6. 知名的 Emacs 用户有哪些？</a></li>
 </ul>
 </li>
 </ul>
@@ -324,7 +328,7 @@ for the JavaScript code in this tag.
 </p>
 
 <dl class="org-dl">
-<dt>前端</dt><dd>JavasSript/HTML/CSS/LESS, React(jsx)</dd>
+<dt>前端</dt><dd>JavaSript/HTML/CSS/LESS, React(jsx)</dd>
 <dt>后端</dt><dd>C/C++, Python/Django, Go</dd>
 <dt>日常</dt><dd>Shell，YAML，JSON，&#x2026;</dd>
 <dt>写文章</dt><dd>org-mode</dd>
@@ -382,7 +386,7 @@ sudo make install
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell"><span style="color: #006FE0;">alias</span> <span style="color: #BA36A5;">em</span>=<span style="color: #008000;">"env TERM=xterm-256color emacs -nw"</span>
+<pre class="src src-shell"><span style="color: #a626a4;">alias</span> <span style="color: #6a1868;">em</span>=<span style="color: #50a14f;">"env TERM=xterm-256color emacs -nw"</span>
 </pre>
 </div>
 
@@ -476,13 +480,13 @@ Emacs 几乎所有的快捷键都是以 <code>C-</code> 开始的，也是 Emacs
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> package-archives
-      '<span style="color: #7388D6;">(</span>
-        <span style="color: #909183;">(</span><span style="color: #008000;">"gnu"</span> . <span style="color: #008000;">"https://elpa.gnu.org/packages/"</span><span style="color: #909183;">)</span>
-        <span style="color: #909183;">(</span><span style="color: #008000;">"melpa"</span> . <span style="color: #008000;">"https://melpa.org/packages/"</span><span style="color: #909183;">)</span>
-        <span style="color: #909183;">(</span><span style="color: #008000;">"melpa-stable"</span> . <span style="color: #008000;">"https://stable.melpa.org/packages/"</span><span style="color: #909183;">)</span>
-        <span style="color: #909183;">(</span><span style="color: #008000;">"org"</span> . <span style="color: #008000;">"https://orgmode.org/elpa/"</span><span style="color: #909183;">)</span>
-        <span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #4078f2;">(</span><span style="color: #e45649;">setq</span> package-archives
+      '<span style="color: #a626a4;">(</span>
+        <span style="color: #50a14f;">(</span><span style="color: #50a14f;">"gnu"</span> . <span style="color: #50a14f;">"https://elpa.gnu.org/packages/"</span><span style="color: #50a14f;">)</span>
+        <span style="color: #50a14f;">(</span><span style="color: #50a14f;">"melpa"</span> . <span style="color: #50a14f;">"https://melpa.org/packages/"</span><span style="color: #50a14f;">)</span>
+        <span style="color: #50a14f;">(</span><span style="color: #50a14f;">"melpa-stable"</span> . <span style="color: #50a14f;">"https://stable.melpa.org/packages/"</span><span style="color: #50a14f;">)</span>
+        <span style="color: #50a14f;">(</span><span style="color: #50a14f;">"org"</span> . <span style="color: #50a14f;">"https://orgmode.org/elpa/"</span><span style="color: #50a14f;">)</span>
+        <span style="color: #a626a4;">)</span><span style="color: #4078f2;">)</span>
 </pre>
 </div>
 
@@ -495,11 +499,11 @@ Emacs 几乎所有的快捷键都是以 <code>C-</code> 开始的，也是 Emacs
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> url-proxy-services
-      '<span style="color: #7388D6;">(</span>
-        <span style="color: #909183;">(</span><span style="color: #008000;">"http"</span> . <span style="color: #008000;">"127.0.0.1:1080"</span><span style="color: #909183;">)</span>
-        <span style="color: #909183;">(</span><span style="color: #008000;">"https"</span> . <span style="color: #008000;">"127.0.0.1:1080"</span><span style="color: #909183;">)</span>
-        <span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #4078f2;">(</span><span style="color: #e45649;">setq</span> url-proxy-services
+      '<span style="color: #a626a4;">(</span>
+        <span style="color: #50a14f;">(</span><span style="color: #50a14f;">"http"</span> . <span style="color: #50a14f;">"127.0.0.1:1080"</span><span style="color: #50a14f;">)</span>
+        <span style="color: #50a14f;">(</span><span style="color: #50a14f;">"https"</span> . <span style="color: #50a14f;">"127.0.0.1:1080"</span><span style="color: #50a14f;">)</span>
+        <span style="color: #a626a4;">)</span><span style="color: #4078f2;">)</span>
 </pre>
 </div>
 
@@ -514,13 +518,13 @@ Emacs 几乎所有的快捷键都是以 <code>C-</code> 开始的，也是 Emacs
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">use-package</span> <span style="color: #D0372D;">swiper</span>
-  <span style="color: #006FE0;">:pin</span> melpa
-  <span style="color: #006FE0;">:ensure</span> t
-  <span style="color: #006FE0;">:config</span>
-  <span style="color: #7388D6;">(</span>global-set-key <span style="color: #909183;">(</span>kbd <span style="color: #008000;">"C-s"</span><span style="color: #909183;">)</span> 'swiper<span style="color: #7388D6;">)</span>
-  <span style="color: #7388D6;">(</span>global-set-key <span style="color: #909183;">(</span>kbd <span style="color: #008000;">"M-s ."</span><span style="color: #909183;">)</span> 'swiper-isearch-thing-at-point<span style="color: #7388D6;">)</span>
-  <span style="color: #707183;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #4078f2;">(</span><span style="color: #e45649;">use-package</span> <span style="color: #b751b6;">swiper</span>
+  <span style="color: #a626a4;">:pin</span> melpa
+  <span style="color: #a626a4;">:ensure</span> t
+  <span style="color: #a626a4;">:config</span>
+  <span style="color: #a626a4;">(</span>global-set-key <span style="color: #50a14f;">(</span>kbd <span style="color: #50a14f;">"C-s"</span><span style="color: #50a14f;">)</span> 'swiper<span style="color: #a626a4;">)</span>
+  <span style="color: #a626a4;">(</span>global-set-key <span style="color: #50a14f;">(</span>kbd <span style="color: #50a14f;">"M-s ."</span><span style="color: #50a14f;">)</span> 'swiper-isearch-thing-at-point<span style="color: #a626a4;">)</span>
+  <span style="color: #4078f2;">)</span>
 </pre>
 </div>
 
@@ -557,12 +561,6 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 </thead>
 <tbody>
 <tr>
-<td class="org-left"><a href="https://www.flycheck.org/en/latest/">Flycheck</a></td>
-<td class="org-left">强大的语法检查框架</td>
-<td class="org-left">需要编程语言的 lint 工具配合，比如 eslint、golint。编码必备。</td>
-</tr>
-
-<tr>
 <td class="org-left"><a href="https://github.com/abo-abo/ace-window">ace-window</a></td>
 <td class="org-left">多窗口切换</td>
 <td class="org-left">以前一直用 <a href="https://github.com/deb0ch/emacs-winum">emacs-winum</a></td>
@@ -575,21 +573,33 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 </tr>
 
 <tr>
+<td class="org-left"><a href="https://github.com/tumashu/cnfonts">cnfonts</a></td>
+<td class="org-left">GUI 中英文混排等宽</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
 <td class="org-left"><a href="https://github.com/company-mode/company-mode">company-mode</a></td>
 <td class="org-left">模块化补全框架（支持各种语言）</td>
 <td class="org-left">相同的还有 auto-complete，但它没有 company 精准。编码必备。</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="https://github.com/emacsmirror/diminish">diminish</a></td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">减少一些 mode 在 mode line 上的显示</td>
+<td class="org-left"><a href="https://github.com/seagle0128/doom-modeline">doom-modeline</a></td>
+<td class="org-left">modeline 看起来漂亮一些</td>
+<td class="org-left">依赖 <a href="https://github.com/domtronn/all-the-icons.el">all-the-icons</a> <span class="underline">GUI 才可用</span></td>
 </tr>
 
 <tr>
 <td class="org-left"><a href="https://github.com/magnars/expand-region.el">expand-region</a></td>
 <td class="org-left">快速选中文本</td>
 <td class="org-left">比如我常用 <code>M-s s</code> 选中一个单词，用 <code>M-s p</code> 选中括号内内容，然后复制</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://www.flycheck.org/en/latest/">Flycheck</a></td>
+<td class="org-left">强大的语法检查框架</td>
+<td class="org-left">需要编程语言的 lint 工具配合，比如 eslint、golint。编码必备。</td>
 </tr>
 
 <tr>
@@ -626,12 +636,6 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 <td class="org-left"><a href="https://orgmode.org">org-mode</a></td>
 <td class="org-left">最牛逼的插件，没有之一</td>
 <td class="org-left">&#xa0;</td>
-</tr>
-
-<tr>
-<td class="org-left"><a href="https://github.com/milkypostman/powerline">powerline</a></td>
-<td class="org-left">mode line 看起来更漂亮一些</td>
-<td class="org-left">同类的还有很多</td>
 </tr>
 
 <tr>
@@ -674,9 +678,11 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 <li><a href="https://github.com/auto-complete/auto-complete">auto-complete</a> 自动完成插件，后来用 company 替换了</li>
 <li><a href="https://github.com/technomancy/better-defaults">better-defaults</a> 几行代码就可以达到相同的效果</li>
 <li><a href="https://github.com/emacs-dashboard/emacs-dashboard">dashboard</a> 启动会显示最近使用过的文件，项目，标签等 华而不实啊</li>
-<li><a href="https://github.com/magit/magit">magit</a> 评价非常高的 git package，但是我感觉太慢了，另外是习惯了命令行操作 git，常用的操作用 build-in 的功能足够了，见 <a href="#manual-vc">版本管理</a></li>
-<li><a href="https://github.com/joaotavora/yasnippet">yasnippet</a> 代码片段，以前写 C++ 的时候常用，现在感觉不咋用了</li>
+<li><a href="https://github.com/emacsmirror/diminish">diminish</a> 减少一些 mode 在 modeline 上的显示，doom-modeline 显示已经很精简了</li>
 <li><a href="https://github.com/emacs-helm/helm">helm</a> 一个补全框架，用了四五年，后来用 ivy 替换掉了</li>
+<li><a href="https://github.com/magit/magit">magit</a> 评价非常高的 git package，但是我感觉太慢了，另外是习惯了命令行操作 git，常用的操作用 build-in 的功能足够了，见 <a href="#manual-vc">版本管理</a></li>
+<li><a href="https://github.com/milkypostman/powerline">powerline</a> 用了一段时间，后来用 doom-modeline 替换掉了</li>
+<li><a href="https://github.com/joaotavora/yasnippet">yasnippet</a> 代码片段，以前写 C++ 的时候常用，现在感觉不咋用了</li>
 </ul>
 </div>
 </div>
@@ -744,13 +750,18 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 </tr>
 
 <tr>
+<td class="org-left"><code>F12</code></td>
+<td class="org-left">semantic-or-imenu，显示当前文件的全局变量、类，方法等</td>
+</tr>
+
+<tr>
 <td class="org-left"><code>F3</code></td>
 <td class="org-left">打开 Eshell</td>
 </tr>
 
 <tr>
 <td class="org-left"><code>F4</code></td>
-<td class="org-left">插入当前时间</td>
+<td class="org-left">插入当前时间，比如 <span class="timestamp-wrapper"><span class="timestamp">&lt;2020-03-12 Thu 22:07&gt;</span></span></td>
 </tr>
 
 <tr>
@@ -761,11 +772,6 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 <tr>
 <td class="org-left"><code>F7</code></td>
 <td class="org-left">执行前一条命令</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>F12</code></td>
-<td class="org-left">semantic-or-imenu，显示当前文件的全局变量、类，方法等</td>
 </tr>
 
 <tr>
@@ -784,8 +790,8 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 </tr>
 
 <tr>
-<td class="org-left"><code>M-s P</code></td>
-<td class="org-left">选中括号内的内容</td>
+<td class="org-left"><code>M-s D</code></td>
+<td class="org-left">切换到暗色主题</td>
 </tr>
 
 <tr>
@@ -811,6 +817,26 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 <tr>
 <td class="org-left"><code>M-s l</code></td>
 <td class="org-left">打开/关闭行号</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-s L</code></td>
+<td class="org-left">切换到亮色主题</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-s m</code></td>
+<td class="org-left">选中注释</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-s p</code></td>
+<td class="org-left">选中括号内的内容(包含括号)</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-s P</code></td>
+<td class="org-left">选中括号内的内容</td>
 </tr>
 
 <tr>
@@ -849,6 +875,11 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 </tr>
 
 <tr>
+<td class="org-left"><code>M-s ;</code></td>
+<td class="org-left">选择当前函数选中的单词</td>
+</tr>
+
+<tr>
 <td class="org-left"><code>M-s &gt;</code></td>
 <td class="org-left">选择下一个相同的单词</td>
 </tr>
@@ -861,16 +892,6 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 <tr>
 <td class="org-left"><code>M-s C-a</code></td>
 <td class="org-left">选择所有与单词相同的</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>M-s a</code></td>
-<td class="org-left">选择行首</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>M-s e</code></td>
-<td class="org-left">选择行位</td>
 </tr>
 </tbody>
 </table>
@@ -1014,6 +1035,7 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 <div id="outline-container-orgc6b4329" class="outline-3">
 <h3 id="orgc6b4329"><span class="section-number-3">4.5</span> IDE</h3>
 <div class="outline-text-3" id="text-4-5">
+<blockquote>
 <p>
 语言的开发环境配置一直很费时间，我记得以前刚配置 C/C++ 的开发环境时，折腾了一个月左右时间才找到一个相对比较
 满意的开发环境（折腾完之后使用起来可真爽啊）： <code>xcscope + etags + c++-mode</code> 。
@@ -1027,11 +1049,34 @@ Emacs 有很多的 <a href="http://melpa.org">插件</a>，<a href="https://gith
 后来看到了 <a href="https://langserver.org/">LSP（Language Server Protocol）</a> 项目，感觉这个项目才是终极解法：插件化，C/S 模式。
 目前已经默认支持 Python 和 Go 了，虽然还是有许许多多的 Bug，但比起 2018 年我试的时候已经成熟太多了。有社区的驱动，发展很快。
 </p>
+</blockquote>
 </div>
 
-<div id="outline-container-orgc629ca3" class="outline-4">
-<h4 id="orgc629ca3"><span class="section-number-4">4.5.1</span> LSP 使用</h4>
+<div id="outline-container-org0a247ae" class="outline-4">
+<h4 id="org0a247ae"><span class="section-number-4">4.5.1</span> Go</h4>
 <div class="outline-text-4" id="text-4-5-1">
+<p>
+按照 <a href="https://golang.org/doc/install">官方说明</a> 安装 Go，LSP server 用的是 <a href="https://github.com/golang/tools/tree/master/gopls">gopls</a>。
+</p>
+
+<p>
+guru: a tool for answering questions about Go source code.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">go get golang.org/x/tools/cmd/guru
+go get golang.org/x/tools/gopls@latest
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge747b9e" class="outline-4">
+<h4 id="orge747b9e"><span class="section-number-4">4.5.2</span> <span class="todo TODO">TODO</span> Python</h4>
+</div>
+<div id="outline-container-orgc629ca3" class="outline-4">
+<h4 id="orgc629ca3"><span class="section-number-4">4.5.3</span> LSP 使用</h4>
+<div class="outline-text-4" id="text-4-5-3">
 <ol class="org-ol">
 <li><code>lsp-workspace-folders-remove</code> 可以移出之前添加的 workspace，但是如果遇到大的目录变更，一个一个的移出很慢。
 目前似乎没有提供一次性 remove all 的方法。一个解决办法是删除 lsp 的存储文件（lsp 提供了 <code>lsp-session-file</code> 变量来定义文件路径，
@@ -1101,10 +1146,10 @@ orgmode 是 emacs 自带的 package，但是一般自带的版本比较低。更
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">use-package</span> <span style="color: #D0372D;">org</span>
-  <span style="color: #006FE0;">:pin</span> org
-  <span style="color: #006FE0;">:ensure</span> org-plus-contrib
-  <span style="color: #707183;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #4078f2;">(</span><span style="color: #e45649;">use-package</span> <span style="color: #b751b6;">org</span>
+  <span style="color: #a626a4;">:pin</span> org
+  <span style="color: #a626a4;">:ensure</span> org-plus-contrib
+  <span style="color: #4078f2;">)</span>
 </pre>
 </div>
 
@@ -1283,7 +1328,7 @@ elisp 比较熟的有自己的办法优化，当然我不熟。我的解决办�
 </p>
 
 <p>
-<i>2019-06-15 10:03:35</i>
+<span class="timestamp-wrapper"><span class="timestamp">&lt;2019-06-15 Sat 10:03&gt;</span></span>
 </p>
 
 <p>
@@ -1304,7 +1349,7 @@ elisp 比较熟的有自己的办法优化，当然我不熟。我的解决办�
 </p>
 
 <p>
-<i>2019-06-24 10:29:43</i>
+<span class="timestamp-wrapper"><span class="timestamp">&lt;2019-06-24 Mon 10:29&gt;</span></span>
 </p>
 
 <p>
@@ -1313,7 +1358,7 @@ Ubuntu 下文泉驿是 OK 的，还不错，MacOS 有点丑。习惯了之后还
 </p>
 
 <p>
-<i>2019-07-08 20:57:06</i>
+<span class="timestamp-wrapper"><span class="timestamp">&lt;2019-07-08 Mon 20:57&gt;</span></span>
 </p>
 
 <p>
@@ -1322,11 +1367,27 @@ Ubuntu GUI 无法切换搜狗输入法，与默认的 Mark 快捷键冲突，解
 </p>
 
 <p>
-<i>2019-11-17 16:18:19</i>
+<span class="timestamp-wrapper"><span class="timestamp">&lt;2019-11-17 Sun 16:18&gt;</span></span>
 </p>
 
 <p>
 试了一下 <a href="https://github.com/whorusq/sublime-text-3/blob/master/fonts/Microsoft-Yahei-Mono.ttf">Microsoft YaHei Mono</a>，发现效果要比文泉驿要好很多，中文还挺好看。决定终端和 GUI 都使用一段时间。
+</p>
+
+<p>
+<span class="timestamp-wrapper"><span class="timestamp">&lt;2020-03-12 Thu 16:45&gt;</span></span>
+</p>
+
+<p>
+使用 <a href="https://github.com/tumashu/cnfonts">cnfonts</a> 进行中英文混排的配置，终结了 GUI 上字体的折腾（虽然不是特别完美）。
+</p>
+
+<p>
+从今天开始，All in GUI，再见终端。
+</p>
+
+<p>
+终于可以使用自己喜爱的主题，而不用考虑终端是否兼容了~
 </p>
 </div>
 </div>
@@ -1344,8 +1405,8 @@ Ubuntu GUI 无法切换搜狗输入法，与默认的 Mark 快捷键冲突，解
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> show-trailing-whitespace t<span style="color: #707183;">)</span>
-<span style="color: #707183;">(</span>add-hook 'before-save-hook 'delete-trailing-whitespace<span style="color: #707183;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #4078f2;">(</span><span style="color: #e45649;">setq</span> show-trailing-whitespace t<span style="color: #4078f2;">)</span>
+<span style="color: #4078f2;">(</span>add-hook 'before-save-hook 'delete-trailing-whitespace<span style="color: #4078f2;">)</span>
 </pre>
 </div>
 
@@ -1443,6 +1504,24 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </ol>
 </div>
 </div>
+
+<div id="outline-container-orgc83d99d" class="outline-3">
+<h3 id="orgc83d99d"><span class="section-number-3">5.13</span> eshell git diff 高亮</h3>
+<div class="outline-text-3" id="text-5-13">
+<p>
+在 <code>.git/config</code> 文件中添加<sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>：
+</p>
+
+<pre class="example">
+[color]
+		ui = always
+</pre>
+
+<p>
+因为我用的是 eshell，ansi-term 默认就是一个 ansi color 的 term。但是用惯了 eshell 不想换了。
+</p>
+</div>
+</div>
 </div>
 
 <div id="outline-container-org6186800" class="outline-2">
@@ -1463,7 +1542,7 @@ spinner 在 <code>gnu</code> 中，确保 <code>package-archives</code> 中包�
 <div class="outline-text-3" id="text-6-2">
 <p>
 错误是由 flycheck 报出来的，高于 1.12 的 Go <code>go vet</code> 已被废弃，而是使用 <code>go tool vet</code> 代替。 flycheck 最新稳定的版本还停留在 <code>Flycheck 31</code> 支持到 go1.11 。
-解决办法是要么升级 flycheck，使用 <code>melpa</code> 源，不要用 <code>melpa-stable</code> 即可 <sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>。
+解决办法是要么升级 flycheck，使用 <code>melpa</code> 源，不要用 <code>melpa-stable</code> 即可 <sup><a id="fnr.6" class="footref" href="#fn.6">6</a></sup>。
 </p>
 </div>
 </div>
@@ -1516,6 +1595,7 @@ spinner 在 <code>gnu</code> 中，确保 <code>package-archives</code> 中包�
 <li><a href="https://github.com/redguardtoo/emacs.d">redguardtoo/emacs.d</a></li>
 <li><a href="https://github.com/hlissner/doom-emacs">hlissner/doom-emacs</a></li>
 <li><a href="https://protesilaos.com/dotemacs/">Emacs initialisation file (dotemacs)</a>: wiki + 配置</li>
+<li><a href="http://www.emacs-bootstrap.com/">emacs-bootstrap</a>: 动态生成 Emacs 配置</li>
 </ul>
 </div>
 </div>
@@ -1527,6 +1607,37 @@ spinner 在 <code>gnu</code> 中，确保 <code>package-archives</code> 中包�
 <li><a href="https://jessekelly881-imagine.surge.sh">Imagine</a>: 范例 <a href="https://jessekelly.tk/">Jesse Kelly</a></li>
 <li><a href="https://jessekelly881-rethink.surge.sh">Rethink</a></li>
 </ul>
+</div>
+</div>
+
+<div id="outline-container-orgd5eae37" class="outline-3">
+<h3 id="orgd5eae37"><span class="section-number-3">7.6</span> 知名的 Emacs 用户有哪些？</h3>
+<div class="outline-text-3" id="text-7-6">
+<p>
+<a href="http://ergoemacs.org/misc/famous_emacs_users.html">Famous Emacs Users</a>
+</p>
+
+<ul class="org-ul">
+<li>Donald Knuth: 计算机程序设计艺术的作者</li>
+<li>Julian Assange: 维基解密 董事与发言人</li>
+<li>松本行弘: Ruby 之父，而且做过 How Emacs changed my life 的演讲，<a href="https://www.slideshare.net/yukihiro_matz/how-emacs-changed-my-life">ppt</a></li>
+<li>Rich Hickey: Clojure 之父</li>
+<li>Joe Armstrong: Erlang 语言设计者和主架构师</li>
+<li>Andrei Alexandrescu: D lang 创建者之一</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%8F%B2%E8%92%82%E8%8A%AC%C2%B7%E6%B2%83%E7%88%BE%E5%A4%AB%E5%8B%92%E5%A7%86">Stephen Wolfram</a></li>
+</ul>
+
+<p>
+<a href="https://usesthis.com/interviews/graydon.hoare/">Graydon Hoare</a> 也使用 Emacs，他是 Rust 编程语言项目的启动者。
+</p>
+
+<p>
+<a href="http://wenshanren.org/?p=418">Famous Emacs Users (that are not famous for using Emacs)</a> 也列举了很多知名的和非知名的 Emacs 用户。
+</p>
+
+<p>
+[以上均来自 <a href="https://www.reddit.com/r/emacs/comments/fdxvuw/which_famous_devs_use_emacs/">reddit</a> 的讨论帖。]
+</p>
 </div>
 </div>
 </div>
@@ -1551,6 +1662,10 @@ spinner 在 <code>gnu</code> 中，确保 <code>package-archives</code> 中包�
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">
+<a href="http://mbork.pl/2018-06-10_Git_diff_in_Eshell">http://mbork.pl/2018-06-10_Git_diff_in_Eshell</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6">6</a></sup> <div class="footpara"><p class="footpara">
 <a href="https://github.com/hlissner/doom-emacs/issues/1225">https://github.com/hlissner/doom-emacs/issues/1225</a>
 </p></div></div>
 
@@ -1558,7 +1673,7 @@ spinner 在 <code>gnu</code> 中，确保 <code>package-archives</code> 中包�
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-06-22 23:24:56 <br />Last updated: 2020-03-09 Mon 17:14 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2018-06-22 23:24:56 <br />Last updated: 2020-03-16 Mon 10:26 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>
