@@ -1,0 +1,928 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-03-18 Wed 11:42 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>使用 Go 构建 Web 服务技术栈</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">使用 Go 构建 Web 服务技术栈</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd9f72d0">1. 开发</a>
+<ul>
+<li><a href="#orge1ab931">1.1. 框架选择</a>
+<ul>
+<li><a href="#org5b664ea">1.1.1. 原生</a></li>
+<li><a href="#orgdc4fd31">1.1.2. gin</a></li>
+<li><a href="#org3c9bd90">1.1.3. 结论</a></li>
+</ul>
+</li>
+<li><a href="#org78c6460">1.2. 最佳实践</a>
+<ul>
+<li><a href="#org30424ce">1.2.1. 流程流转</a></li>
+<li><a href="#org6b6c25f">1.2.2. 使用配置文件，而不是参数注入</a></li>
+<li><a href="#org4eeffc9">1.2.3. 服务优雅关闭</a></li>
+<li><a href="#org829122f">1.2.4. 使用 API 分组</a></li>
+<li><a href="#orge693d88">1.2.5. 使用 prometheus_client 暴露 API metrics</a></li>
+</ul>
+</li>
+<li><a href="#org6734aee">1.3. 常用库选型</a>
+<ul>
+<li><a href="#org9bcad3a">1.3.1. 日志</a></li>
+<li><a href="#org231cda2">1.3.2. MySQL</a></li>
+<li><a href="#org545fcb5">1.3.3. MongoDB</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgdd06b75">2. 打包</a></li>
+<li><a href="#orgc6e11bd">3. 部署</a>
+<ul>
+<li><a href="#orge9c641a">3.1. 直接部署到主机上</a></li>
+<li><a href="#org5c22760">3.2. 部署到容器环境下</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+<i>本文将梳理使用 Go 构建一个 Web server 的方方面面，随时更新.</i>
+</p>
+
+<div id="outline-container-orgd9f72d0" class="outline-2">
+<h2 id="orgd9f72d0"><span class="section-number-2">1</span> 开发</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+项目布局结构可参考 <a href="https://github.com/golang-standards/project-layout">project-layout</a> 中的说明，<a href="build-web-server-stack.html">这里</a> 是我的翻译。核心目录：
+</p>
+
+<ul class="org-ul">
+<li><code>cmd/</code> 入口
+<ul class="org-ul">
+<li><code>main.go</code> main</li>
+<li><code>options/</code>
+<ul class="org-ul">
+<li><code>options.go</code> 服务配置参数解析，提供服务的全局配置，比如 Port，比如 DB 连接信息</li>
+</ul></li>
+</ul></li>
+<li><code>internal/</code> 不可对外的包
+<ul class="org-ul">
+<li><code>apiserver/</code>
+<ul class="org-ul">
+<li><code>server.go</code> server 初始化、启、停等接口</li>
+<li><code>router.go</code> URL 路由注册</li>
+<li><code>middleware.go</code> 中间件，比如鉴权</li>
+<li><code>${module}handler</code> 不同的 URL 对应的处理器，业务逻辑都放这里，比如 <code>userhandler</code></li>
+</ul></li>
+<li><code>xxx/</code> apiserver 中需要的模块，比如数据操作封装</li>
+</ul></li>
+<li><code>pkg/</code> 可对外的包，可单独被其他项目引用</li>
+</ul>
+</div>
+
+<div id="outline-container-orge1ab931" class="outline-3">
+<h3 id="orge1ab931"><span class="section-number-3">1.1</span> 框架选择</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org5b664ea" class="outline-4">
+<h4 id="org5b664ea"><span class="section-number-4">1.1.1</span> 原生</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+Go 的 <code>net/http</code> 库比较丰富，借助 <a href="https://github.com/gorilla/mux">mux</a> 即可自己完成一个 server 基本需求。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">router := mux.<span style="color: #a626a4;">NewRouter</span><span style="color: #4078f2;">()</span>
+router.<span style="color: #a626a4;">HandleFunc</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/"</span>, <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span>resp <span style="color: #986801;">http.ResponseWriter</span>, req *<span style="color: #986801;">http.Request</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+    resp.<span style="color: #a626a4;">Write</span><span style="color: #50a14f;">(</span><span style="color: #da8548;">[]</span><span style="color: #a626a4;">byte</span><span style="color: #da8548;">(</span><span style="color: #50a14f;">"ok"</span><span style="color: #da8548;">)</span><span style="color: #50a14f;">)</span>
+<span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span>
+
+httpServer := &amp;http.<span style="color: #986801;">Server</span><span style="color: #4078f2;">{</span>
+    <span style="color: #b751b6;">Addr</span>:    <span style="color: #50a14f;">":8080"</span>,
+    <span style="color: #b751b6;">Handler</span>: router,
+<span style="color: #4078f2;">}</span>
+
+<span style="color: #e45649;">go</span> <span style="color: #e45649;">func</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">if</span> err := s.HTTPServer.<span style="color: #a626a4;">ListenAndServe</span><span style="color: #a626a4;">()</span>; err != <span style="color: #b751b6;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a626a4;">{</span>
+        log.<span style="color: #a626a4;">Fatalf</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"server error, %s\n"</span>, err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}()</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdc4fd31" class="outline-4">
+<h4 id="orgdc4fd31"><span class="section-number-4">1.1.2</span> gin</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+<a href="https://github.com/gin-gonic/gin">gin</a> 是一个 Go 的 Web 框架，当然很多的其它框架。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">router := gin.<span style="color: #a626a4;">New</span><span style="color: #4078f2;">()</span>
+
+router.<span style="color: #a626a4;">GET</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/"</span>, <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span>c *<span style="color: #986801;">gin.Context</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+    c.<span style="color: #a626a4;">String</span><span style="color: #50a14f;">(</span>http.StatusOK, <span style="color: #50a14f;">"ok"</span><span style="color: #50a14f;">)</span>
+<span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span>
+
+srv := &amp;http.<span style="color: #986801;">Server</span><span style="color: #4078f2;">{</span>
+    <span style="color: #b751b6;">Addr</span>:    <span style="color: #50a14f;">":8080"</span>,
+    <span style="color: #b751b6;">Handler</span>: router,
+<span style="color: #4078f2;">}</span>
+
+<span style="color: #e45649;">go</span> <span style="color: #e45649;">func</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">if</span> err := server.HttpServer.<span style="color: #a626a4;">ListenAndServe</span><span style="color: #a626a4;">()</span>; err != <span style="color: #b751b6;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a626a4;">{</span>
+        log.<span style="color: #a626a4;">Fatalf</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"server failure : %s\n"</span>, err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}()</span>
+
+</pre>
+</div>
+
+<p>
+有没发现，gin 的定位类似 mux，也是在解决路由问题。
+</p>
+
+<p>
+当然，gin 除了提供 router 之外，还提供了 middleware 的功能，middleware 对于一个 Web Server 来讲是至关重要的，比如你可以：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #e45649;">func</span> <span style="color: #a626a4;">AuthRequired</span><span style="color: #4078f2;">()</span> <span style="color: #986801;">gin.HandlerFunc</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">return</span> <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span>c *<span style="color: #986801;">gin.Context</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+        token := c.Request.Header.<span style="color: #a626a4;">Get</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"X-Login-Token"</span><span style="color: #50a14f;">)</span>
+        <span style="color: #e45649;">if</span> token != <span style="color: #50a14f;">"xxx"</span> <span style="color: #50a14f;">{</span>
+            c.<span style="color: #a626a4;">String</span><span style="color: #da8548;">(</span>http.StatusUnauthorized, <span style="color: #50a14f;">"login required"</span><span style="color: #da8548;">)</span>
+            c.<span style="color: #a626a4;">Abort</span><span style="color: #da8548;">()</span> <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">must abort to next handler</span>
+            <span style="color: #e45649;">return</span>
+        <span style="color: #50a14f;">}</span>
+
+        c.<span style="color: #a626a4;">Set</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"username"</span>, <span style="color: #50a14f;">"xxx"</span><span style="color: #50a14f;">)</span>
+
+        c.<span style="color: #a626a4;">Next</span><span style="color: #50a14f;">()</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}</span>
+
+apiv1 := r.<span style="color: #a626a4;">Group</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/api/v1"</span><span style="color: #4078f2;">)</span>
+apiv1.<span style="color: #a626a4;">Use</span><span style="color: #4078f2;">(</span><span style="color: #a626a4;">AuthRequired</span><span style="color: #a626a4;">()</span><span style="color: #4078f2;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3c9bd90" class="outline-4">
+<h4 id="org3c9bd90"><span class="section-number-4">1.1.3</span> 结论</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+使用原生的库还是框架，我的思路是：
+</p>
+
+<ul class="org-ul">
+<li>如果服务侧重于 agent/proxy 对外暴露的 API 比较单一，比如用于收集机器 metric 的 exporter，建议使用原生</li>
+<li>如果服务侧重于业务，对外暴露的 API 很多，需要分组和鉴权相关，建议用框架</li>
+</ul>
+
+<p>
+<i>本文档的示例用的都是 gin，其实区别不大的。</i>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org78c6460" class="outline-3">
+<h3 id="org78c6460"><span class="section-number-3">1.2</span> 最佳实践</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org30424ce" class="outline-4">
+<h4 id="org30424ce"><span class="section-number-4">1.2.1</span> 流程流转</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<ol class="org-ol">
+<li><code>main</code> 统一流转
+<ol class="org-ol">
+<li><code>options.InitServerConfig()</code>
+<ul class="org-ul">
+<li><code>flag.parse()</code></li>
+<li><code>yaml/json parse</code> 配置文件解析</li>
+</ul></li>
+<li><code>NewAPIServer</code></li>
+<li><code>StartServer</code></li>
+<li>接收服务终止信号 <code>StopServer</code></li>
+</ol></li>
+<li><code>server</code> server 流转
+<ol class="org-ol">
+<li><code>NewAPIServer</code> 资源初始化（比如：DB 连接）、路由初始化、中间件挂载、 <code>http.Server</code> 初始化</li>
+<li><code>StartServer</code> 启动服务、监听请求 <code>HttpServer.ListenAndServe()</code></li>
+<li><code>StopServer</code> 资源销毁、关闭 Server</li>
+</ol></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org6b6c25f" class="outline-4">
+<h4 id="org6b6c25f"><span class="section-number-4">1.2.2</span> 使用配置文件，而不是参数注入</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+配置文件选择 JSON、YAML，一般使用 YAML，全部参数注入在参数情况下，启动服务会变的复杂。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #e45649;">package</span> options
+
+<span style="color: #e45649;">type</span> <span style="color: #986801;">ServerConfig</span> <span style="color: #e45649;">struct</span> <span style="color: #4078f2;">{</span>
+    Host string <span style="color: #50a14f;">`yaml:"host"`</span>
+    Port string <span style="color: #50a14f;">`yaml:"port"`</span>
+<span style="color: #4078f2;">}</span>
+
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">flagParse</span><span style="color: #4078f2;">()</span> <span style="color: #986801;">string</span> <span style="color: #4078f2;">{</span>
+    configFile := <span style="color: #50a14f;">""</span>
+    flag.<span style="color: #a626a4;">StringVar</span><span style="color: #a626a4;">(</span>&amp;configFile, <span style="color: #50a14f;">"config-file"</span>, <span style="color: #50a14f;">"/etc/xxx-server/config.yaml"</span>, <span style="color: #50a14f;">"server configure file"</span><span style="color: #a626a4;">)</span>
+    flag.<span style="color: #a626a4;">Parse</span><span style="color: #a626a4;">()</span>
+
+    logrus.<span style="color: #a626a4;">Tracef</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"config file = %s"</span>, configFile<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">return</span> configFile
+<span style="color: #4078f2;">}</span>
+
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">parseConfigFile</span><span style="color: #4078f2;">(</span>configFile <span style="color: #986801;">string</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">(</span>*<span style="color: #986801;">ServerConfig</span>, <span style="color: #986801;">error</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+    file, err := ioutil.<span style="color: #a626a4;">ReadFile</span><span style="color: #a626a4;">(</span>configFile<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #e45649;">return</span> <span style="color: #b751b6;">nil</span>, err
+    <span style="color: #a626a4;">}</span>
+
+    cfg := &amp;<span style="color: #986801;">ServerConfig</span><span style="color: #a626a4;">{}</span>
+    err = yaml.<span style="color: #a626a4;">Unmarshal</span><span style="color: #a626a4;">(</span>file, cfg<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #e45649;">return</span> <span style="color: #b751b6;">nil</span>, err
+    <span style="color: #a626a4;">}</span>
+
+    logrus.<span style="color: #a626a4;">Tracef</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"parse config success, cfg=%#v"</span>, cfg<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">return</span> cfg, <span style="color: #b751b6;">nil</span>
+<span style="color: #4078f2;">}</span>
+
+<span style="color: #e45649;">var</span> cfg *ServerConfig
+
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">InitServerConfig</span><span style="color: #4078f2;">()</span> <span style="color: #986801;">error</span> <span style="color: #4078f2;">{</span>
+    configFile := <span style="color: #a626a4;">flagParse</span><span style="color: #a626a4;">()</span>
+    cfg_, err := <span style="color: #a626a4;">parseConfigFile</span><span style="color: #a626a4;">(</span>configFile<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #e45649;">return</span> err
+    <span style="color: #a626a4;">}</span>
+
+    cfg = cfg_
+    <span style="color: #e45649;">return</span> <span style="color: #b751b6;">nil</span>
+<span style="color: #4078f2;">}</span>
+
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">GetCfg</span><span style="color: #4078f2;">()</span> *<span style="color: #986801;">ServerConfig</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">return</span> cfg
+<span style="color: #4078f2;">}</span>
+</pre>
+</div>
+
+<p>
+这是一个单例，使用时，直接调用 <code>options.GetCfg()</code> 即可。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4eeffc9" class="outline-4">
+<h4 id="org4eeffc9"><span class="section-number-4">1.2.3</span> 服务优雅关闭</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+优雅关闭一般指的是，关闭服务时把该处理的请求处理完毕，相关的资源正常清理结束之后再程序自动运行结束。而不是直接杀进程。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">quit := <span style="color: #a626a4;">make</span><span style="color: #4078f2;">(</span><span style="color: #e45649;">chan</span> <span style="color: #986801;">os.Signal</span><span style="color: #4078f2;">)</span>
+signal.<span style="color: #a626a4;">Notify</span><span style="color: #4078f2;">(</span>quit, syscall.SIGINT, syscall.SIGTERM<span style="color: #4078f2;">)</span>
+&lt;-quit
+logrus.<span style="color: #a626a4;">Infof</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"recv shutdown server signal..."</span><span style="color: #4078f2;">)</span>
+
+<span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span>server *<span style="color: #986801;">APIServer</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">StopServer</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">defer</span> <span style="color: #e45649;">func</span><span style="color: #a626a4;">()</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#28165;&#29702;&#20854;&#23427;&#36164;&#28304;</span>
+    <span style="color: #a626a4;">}()</span>
+
+    waiting := 5 * time.Second
+    ctx, cancel := context.<span style="color: #a626a4;">WithTimeout</span><span style="color: #a626a4;">(</span>context.<span style="color: #a626a4;">Background</span><span style="color: #50a14f;">()</span>, waiting<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">defer</span> <span style="color: #a626a4;">cancel</span><span style="color: #a626a4;">()</span>
+
+    <span style="color: #e45649;">if</span> err := server.HttpServer.<span style="color: #a626a4;">Shutdown</span><span style="color: #a626a4;">(</span>ctx<span style="color: #a626a4;">)</span>; err != <span style="color: #b751b6;">nil</span> <span style="color: #a626a4;">{</span>
+        logrus.<span style="color: #a626a4;">Fatalf</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"server shutdown failure, error=%s"</span>, err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+
+    <span style="color: #e45649;">select</span> <span style="color: #a626a4;">{</span>
+    <span style="color: #e45649;">case</span> &lt;-ctx.<span style="color: #a626a4;">Done</span><span style="color: #50a14f;">()</span>:
+        logrus.<span style="color: #a626a4;">Infof</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"waiting finish, %v"</span>, waiting<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+
+    logrus.<span style="color: #a626a4;">Infof</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"server exiting"</span><span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
+</pre>
+</div>
+
+<p>
+上面的逻辑是等待 <code>SIGINT</code> 和 <code>SIGTERM</code> 信号，然后开始关闭服务，给 <code>waiting</code> 的时间让服务 <code>Shutdown</code> ，然后对资源进行清理。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org829122f" class="outline-4">
+<h4 id="org829122f"><span class="section-number-4">1.2.4</span> 使用 API 分组</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<p>
+不管是 mux 还是 gin 都支持 API 分组，mux 隐式一些是 <code>subPath</code> ，而 gin 直接叫 <code>Group</code> 。
+</p>
+
+<p>
+分组最直接的好处是业务模块多了之后，API 会变的很清晰，对于 gin，你还可以针对不同的分组，使用不同的中间件。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge693d88" class="outline-4">
+<h4 id="orge693d88"><span class="section-number-4">1.2.5</span> 使用 prometheus_client 暴露 API metrics</h4>
+<div class="outline-text-4" id="text-1-2-5">
+<p>
+对接 promethues 之后可以很方便的监控 API 调用情况，调用耗时、状态码等等。因为 Prometheus 是 pull 的模式，所以服务很好解耦，
+不会依赖 promethues server。
+</p>
+
+<p>
+<a href="https://github.com/prometheus/client_golang">prometheus/client_golang</a> 是 Go 的客户端。对于 gin，你可以写一个中间件来完成 API 耗时统计：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #e45649;">var</span> <span style="color: #4078f2;">(</span>
+    APICalledLatency = prometheus.<span style="color: #a626a4;">NewSummaryVec</span><span style="color: #a626a4;">(</span>
+        prometheus.<span style="color: #986801;">SummaryOpts</span><span style="color: #50a14f;">{</span>
+            <span style="color: #b751b6;">Name</span>: <span style="color: #50a14f;">"metaserver_api_called_latency"</span>,
+            <span style="color: #b751b6;">Help</span>: <span style="color: #50a14f;">"Latency in microseconds"</span>,
+        <span style="color: #50a14f;">}</span>,
+        <span style="color: #50a14f;">[]</span><span style="color: #986801;">string</span><span style="color: #50a14f;">{</span><span style="color: #50a14f;">"api"</span>, <span style="color: #50a14f;">"method"</span>, <span style="color: #50a14f;">"status_code"</span><span style="color: #50a14f;">}</span>,
+    <span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">)</span>
+
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">init</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    prometheus.<span style="color: #a626a4;">MustRegister</span><span style="color: #a626a4;">(</span>APICalledLatency<span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
+
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">SinceInMicroseconds</span><span style="color: #4078f2;">(</span>start <span style="color: #986801;">time.Time</span><span style="color: #4078f2;">)</span> <span style="color: #986801;">float64</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">return</span> <span style="color: #a626a4;">float64</span><span style="color: #a626a4;">(</span>time.<span style="color: #a626a4;">Since</span><span style="color: #50a14f;">(</span>start<span style="color: #50a14f;">)</span>.<span style="color: #a626a4;">Nanoseconds</span><span style="color: #50a14f;">()</span> / time.Microsecond.<span style="color: #a626a4;">Nanoseconds</span><span style="color: #50a14f;">()</span><span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
+
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">metricsExport</span><span style="color: #4078f2;">()</span> <span style="color: #986801;">gin.HandlerFunc</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">return</span> <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span>c *<span style="color: #986801;">gin.Context</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+        start := time.<span style="color: #a626a4;">Now</span><span style="color: #50a14f;">()</span>
+        <span style="color: #e45649;">defer</span> <span style="color: #e45649;">func</span><span style="color: #50a14f;">()</span> <span style="color: #50a14f;">{</span>
+            cost := <span style="color: #a626a4;">SinceInMicroseconds</span><span style="color: #da8548;">(</span>start<span style="color: #da8548;">)</span>
+            api := c.Request.URL.Path
+            method := c.Request.Method
+            status := strconv.<span style="color: #a626a4;">Itoa</span><span style="color: #da8548;">(</span>c.Writer.<span style="color: #a626a4;">Status</span><span style="color: #b751b6;">()</span><span style="color: #da8548;">)</span>
+
+            <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">set ignore itself in here</span>
+            <span style="color: #e45649;">if</span> api == <span style="color: #50a14f;">"/metrics"</span> <span style="color: #da8548;">{</span>
+                <span style="color: #e45649;">return</span>
+            <span style="color: #da8548;">}</span>
+
+            APICalledLatency.<span style="color: #a626a4;">WithLabelValues</span><span style="color: #da8548;">(</span>api, method, status<span style="color: #da8548;">)</span>.<span style="color: #a626a4;">Observe</span><span style="color: #da8548;">(</span>cost<span style="color: #da8548;">)</span>
+            logrus.<span style="color: #a626a4;">Tracef</span><span style="color: #da8548;">(</span><span style="color: #50a14f;">"api run time, api=%s, method=%s, status=%s, time=%f(ms)"</span>, api, method, status, cost/1000<span style="color: #da8548;">)</span>
+        <span style="color: #50a14f;">}()</span>
+
+        c.<span style="color: #a626a4;">Next</span><span style="color: #50a14f;">()</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}</span>
+</pre>
+</div>
+
+<p>
+因为 gin 的 Handler 不是标准库的 <code>ServeHTTP(ResponseWriter, *Request)</code> ，但是它提供了一个转换函数，我们可以这样：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">r.<span style="color: #a626a4;">GET</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/metrics"</span>, gin.<span style="color: #a626a4;">WrapH</span><span style="color: #a626a4;">(</span>promhttp.<span style="color: #a626a4;">Handler</span><span style="color: #50a14f;">()</span><span style="color: #a626a4;">)</span><span style="color: #4078f2;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6734aee" class="outline-3">
+<h3 id="org6734aee"><span class="section-number-3">1.3</span> 常用库选型</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+<a href="packages.html">Go 包选择与对比</a> 中有一些列举，说到的这里就不赘述了。
+</p>
+</div>
+
+<div id="outline-container-org9bcad3a" class="outline-4">
+<h4 id="org9bcad3a"><span class="section-number-4">1.3.1</span> 日志</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+使用 <a href="https://github.com/sirupsen/logrus">logrus</a>，基本设置：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #e45649;">func</span> <span style="color: #a626a4;">init</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    logrus.<span style="color: #a626a4;">SetFormatter</span><span style="color: #a626a4;">(</span>&amp;logrus.<span style="color: #986801;">TextFormatter</span><span style="color: #50a14f;">{</span>
+        <span style="color: #b751b6;">ForceColors</span>:     <span style="color: #b751b6;">false</span>,
+        <span style="color: #b751b6;">DisableColors</span>:   <span style="color: #b751b6;">true</span>,
+        <span style="color: #b751b6;">FullTimestamp</span>:   <span style="color: #b751b6;">true</span>,
+        <span style="color: #b751b6;">TimestampFormat</span>: <span style="color: #50a14f;">"2006-01-02 15:04:05.000"</span>,
+        <span style="color: #b751b6;">CallerPrettyfier</span>: <span style="color: #e45649;">func</span><span style="color: #da8548;">(</span>frame *<span style="color: #986801;">runtime.Frame</span><span style="color: #da8548;">)</span> <span style="color: #da8548;">(</span>function <span style="color: #986801;">string</span>, file <span style="color: #986801;">string</span><span style="color: #da8548;">)</span> <span style="color: #da8548;">{</span>
+            ss := strings.<span style="color: #a626a4;">Split</span><span style="color: #b751b6;">(</span>frame.Function, <span style="color: #50a14f;">"."</span><span style="color: #b751b6;">)</span>
+            function = ss<span style="color: #b751b6;">[</span><span style="color: #a626a4;">len</span><span style="color: #986801;">(</span>ss<span style="color: #986801;">)</span>-1<span style="color: #b751b6;">]</span>
+            file = fmt.<span style="color: #a626a4;">Sprintf</span><span style="color: #b751b6;">(</span><span style="color: #50a14f;">"%s:%d"</span>, filepath.<span style="color: #a626a4;">Base</span><span style="color: #986801;">(</span>frame.File<span style="color: #986801;">)</span>, frame.Line<span style="color: #b751b6;">)</span>
+            <span style="color: #e45649;">return</span> function, file
+        <span style="color: #da8548;">}</span>,
+    <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
+    logrus.<span style="color: #a626a4;">SetOutput</span><span style="color: #a626a4;">(</span>os.Stdout<span style="color: #a626a4;">)</span>
+
+    debug := os.<span style="color: #a626a4;">Getenv</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"DEBUG"</span><span style="color: #a626a4;">)</span> <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#27809;&#26377;&#26126;&#30830;&#20851;&#38381;&#65292;&#21017;&#40664;&#35748;&#25171;&#24320;</span>
+    <span style="color: #e45649;">if</span> debug == <span style="color: #50a14f;">""</span> || debug == <span style="color: #50a14f;">"true"</span> || debug == <span style="color: #50a14f;">"1"</span> <span style="color: #a626a4;">{</span>
+        logrus.<span style="color: #a626a4;">SetReportCaller</span><span style="color: #50a14f;">(</span><span style="color: #b751b6;">true</span><span style="color: #50a14f;">)</span>
+        logrus.<span style="color: #a626a4;">SetLevel</span><span style="color: #50a14f;">(</span>logrus.TraceLevel<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span> <span style="color: #e45649;">else</span> <span style="color: #a626a4;">{</span>
+        logrus.<span style="color: #a626a4;">SetReportCaller</span><span style="color: #50a14f;">(</span><span style="color: #b751b6;">false</span><span style="color: #50a14f;">)</span>
+        logrus.<span style="color: #a626a4;">SetLevel</span><span style="color: #50a14f;">(</span>logrus.InfoLevel<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org231cda2" class="outline-4">
+<h4 id="org231cda2"><span class="section-number-4">1.3.2</span> MySQL</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<p>
+使用 <a href="https://github.com/go-sql-driver/mysql">go-sql-driver/mysql</a>，但是它是一个驱动，使用使用 SQL 的 CRUD，还是要看 Go 的标准库 <a href="https://golang.org/pkg/database/sql/">database/sql</a>。
+看起来有些蛋疼，但我觉得这是 Go 标准化做的好的一个体现。不管是你用的什么 SQL，只要有驱动，就可以一视同仁。
+这样的话，比如从 MySQL 到 MS SQL Server，只需要在初始化的做一下变更，其它部分代码基本上不需要动。
+</p>
+
+<p>
+驱动列表可以见：<a href="https://github.com/golang/go/wiki/SQLDrivers">https://github.com/golang/go/wiki/SQLDrivers</a>
+</p>
+
+<p>
+官方的使用范例：<a href="https://github.com/golang/go/wiki/SQLInterface">https://github.com/golang/go/wiki/SQLInterface</a>
+</p>
+
+<p>
+<i>Python 也提供了 <a href="https://www.python.org/dev/peps/pep-0249/">PEP 249 &#x2013; Python Database API Specification v2.0</a>，但它更像是一个协议上的约束，并不是实际限制库的实现。</i>
+</p>
+
+<p>
+使用标准库对 DB 操作时，需要手写 SQL 的 CRUD，一方面不方便，另外一方面也不安全。有一些包提供 SQL 构建器（用来生成 SQL 语句）。
+</p>
+
+<p>
+比如：<a href="https://github.com/doug-martin/goqu">doug-martin/goqu</a>，你可以这样：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">ds := goqu.<span style="color: #a626a4;">Insert</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"user"</span><span style="color: #4078f2;">)</span>.
+    <span style="color: #a626a4;">Cols</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"first_name"</span>, <span style="color: #50a14f;">"last_name"</span><span style="color: #4078f2;">)</span>.
+    <span style="color: #a626a4;">Vals</span><span style="color: #4078f2;">(</span>
+        goqu.<span style="color: #986801;">Vals</span><span style="color: #a626a4;">{</span><span style="color: #50a14f;">"Greg"</span>, <span style="color: #50a14f;">"Farley"</span><span style="color: #a626a4;">}</span>,
+        goqu.<span style="color: #986801;">Vals</span><span style="color: #a626a4;">{</span><span style="color: #50a14f;">"Jimmy"</span>, <span style="color: #50a14f;">"Stewart"</span><span style="color: #a626a4;">}</span>,
+        goqu.<span style="color: #986801;">Vals</span><span style="color: #a626a4;">{</span><span style="color: #50a14f;">"Jeff"</span>, <span style="color: #50a14f;">"Jeffers"</span><span style="color: #a626a4;">}</span>,
+    <span style="color: #4078f2;">)</span>
+insertSQL, args, _ := ds.<span style="color: #a626a4;">ToSQL</span><span style="color: #4078f2;">()</span>
+fmt.<span style="color: #a626a4;">Println</span><span style="color: #4078f2;">(</span>insertSQL, args<span style="color: #4078f2;">)</span>
+</pre>
+</div>
+
+<p>
+会输出：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #e45649;">INSERT</span> <span style="color: #e45649;">INTO</span> "<span style="color: #a626a4;">user</span>" <span style="color: #4078f2;">(</span>"first_name", "last_name"<span style="color: #4078f2;">)</span> <span style="color: #e45649;">VALUES</span> <span style="color: #4078f2;">(</span><span style="color: #50a14f;">'Greg'</span>, <span style="color: #50a14f;">'Farley'</span><span style="color: #4078f2;">)</span>, <span style="color: #4078f2;">(</span><span style="color: #50a14f;">'Jimmy'</span>, <span style="color: #50a14f;">'Stewart'</span><span style="color: #4078f2;">)</span>, <span style="color: #4078f2;">(</span><span style="color: #50a14f;">'Jeff'</span>, <span style="color: #50a14f;">'Jeffers'</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">[]</span>
+</pre>
+</div>
+
+<p>
+它是一个 SQL 语句生成器，并不会实际的执行。
+</p>
+
+<p>
+再比如：<a href="https://github.com/Masterminds/squirrel">squirrel</a> ，你可以这样：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">sql, args, err := sq.
+    <span style="color: #a626a4;">Insert</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"users"</span><span style="color: #4078f2;">)</span>.<span style="color: #a626a4;">Columns</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"name"</span>, <span style="color: #50a14f;">"age"</span><span style="color: #4078f2;">)</span>.
+    <span style="color: #a626a4;">Values</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"moe"</span>, 13<span style="color: #4078f2;">)</span>.<span style="color: #a626a4;">Values</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"larry"</span>, sq.<span style="color: #a626a4;">Expr</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"? + 5"</span>, 12<span style="color: #a626a4;">)</span><span style="color: #4078f2;">)</span>.
+    <span style="color: #a626a4;">ToSql</span><span style="color: #4078f2;">()</span>
+</pre>
+</div>
+
+<p>
+它会生成：
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #e45649;">sql</span> == "<span style="color: #e45649;">INSERT</span> <span style="color: #e45649;">INTO</span> users <span style="color: #4078f2;">(</span><span style="color: #e45649;">name</span>,age<span style="color: #4078f2;">)</span> <span style="color: #e45649;">VALUES</span> <span style="color: #4078f2;">(</span>?,?<span style="color: #4078f2;">)</span>,<span style="color: #4078f2;">(</span>?,? + 5<span style="color: #4078f2;">)</span>"
+</pre>
+</div>
+
+<p>
+但是它也允许直接执行 SQL 语句：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">stooges := users.<span style="color: #a626a4;">Where</span><span style="color: #4078f2;">(</span>sq.<span style="color: #986801;">Eq</span><span style="color: #a626a4;">{</span><span style="color: #50a14f;">"username"</span>: <span style="color: #50a14f;">[]</span><span style="color: #986801;">string</span><span style="color: #50a14f;">{</span><span style="color: #50a14f;">"moe"</span>, <span style="color: #50a14f;">"larry"</span>, <span style="color: #50a14f;">"curly"</span>, <span style="color: #50a14f;">"shemp"</span><span style="color: #50a14f;">}</span><span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span>
+three_stooges := stooges.<span style="color: #a626a4;">Limit</span><span style="color: #4078f2;">(</span>3<span style="color: #4078f2;">)</span>
+rows, err := three_stooges.<span style="color: #a626a4;">RunWith</span><span style="color: #4078f2;">(</span>db<span style="color: #4078f2;">)</span>.<span style="color: #a626a4;">Query</span><span style="color: #4078f2;">()</span>
+</pre>
+</div>
+
+<p>
+等价于：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">rows, err := db.<span style="color: #a626a4;">Query</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"SELECT * FROM users WHERE username IN (?,?,?,?) LIMIT 3"</span>,
+    <span style="color: #50a14f;">"moe"</span>, <span style="color: #50a14f;">"larry"</span>, <span style="color: #50a14f;">"curly"</span>, <span style="color: #50a14f;">"shemp"</span><span style="color: #4078f2;">)</span>
+</pre>
+</div>
+
+<p>
+goqu 和 squirrel 是社区比较出名的两个 SQL 构建器。我自己使用下来：
+</p>
+
+<ul class="org-ul">
+<li>goqu 基本上没有什么学习成本，也很好 debug，但自己还是要封装 SQL 调用和异常处理；</li>
+<li>squirrel 基本上封装了 SQL 调用这一层，自己全做了，用起来省事，但有一定的学习成本；</li>
+</ul>
+
+<p>
+具体用哪个看个人。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org545fcb5" class="outline-4">
+<h4 id="org545fcb5"><span class="section-number-4">1.3.3</span> MongoDB</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<p>
+建议使用官方提供的库：<a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a>，开发已经一两年了，正式版本发布有六七个月了。
+再测试版本的时候，我用过，比 mgo.v2 好用（mgo.v2 在社区很出名，但是已经不维护了，
+这意味着随着 MongoDB 版本更新就会逐渐不适配了）。
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdd06b75" class="outline-2">
+<h2 id="orgdd06b75"><span class="section-number-2">2</span> 打包</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Go 支持跨平台编译，参考 <a href="build-env.html">构建环境</a> 中的说明。
+</p>
+
+<p>
+这里假定服务名称为： <code>hello</code> ，构建 Docker 镜像：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #4078f2;">FROM Ubuntu</span>:18.04
+
+COPY hello /hello
+COPY config.yaml /etc/hello/config.yaml
+
+EXPOSE 8080
+
+CMD <span style="color: #4078f2;">[</span><span style="color: #50a14f;">"/hello"</span>, <span style="color: #50a14f;">"-config-file"</span>, <span style="color: #50a14f;">"/etc/hello/config.yaml"</span><span style="color: #4078f2;">]</span>
+</pre>
+</div>
+
+<p>
+一个简单的 Makefile：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #6a1868;">OUTPUT</span>=hello
+<span style="color: #6a1868;">TAG</span>=<span style="color: #50a14f;">`git rev-parse --short HEAD`</span>
+
+<span style="color: #4078f2;">build</span>:
+    go build -o $<span style="color: #4078f2;">{</span><span style="color: #6a1868;">OUTPUT</span><span style="color: #4078f2;">}</span> cmd/main.go
+
+<span style="color: #4078f2;">build-linux</span>:
+    <span style="color: #6a1868;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #4078f2;">{</span><span style="color: #6a1868;">OUTPUT</span><span style="color: #4078f2;">}</span> cmd/main.go
+
+<span style="color: #4078f2;">build-docker</span>:
+    <span style="color: #6a1868;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #4078f2;">{</span><span style="color: #6a1868;">OUTPUT</span><span style="color: #4078f2;">}</span> cmd/main.go
+    <span style="color: #4078f2;">docker build -t &lt;your docker registry addr&gt;/$</span><span style="color: #4078f2;">{</span><span style="color: #4078f2;">OUTPUT</span><span style="color: #4078f2;">}</span>:$<span style="color: #4078f2;">{</span><span style="color: #6a1868;">TAG</span><span style="color: #4078f2;">}</span> .
+
+<span style="color: #4078f2;">push-docker</span>:
+    <span style="color: #4078f2;">docker push &lt;your docker registry addr&gt;/$</span><span style="color: #4078f2;">{</span><span style="color: #4078f2;">OUTPUT</span><span style="color: #4078f2;">}</span>:$<span style="color: #4078f2;">{</span><span style="color: #6a1868;">TAG</span><span style="color: #4078f2;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc6e11bd" class="outline-2">
+<h2 id="orgc6e11bd"><span class="section-number-2">3</span> 部署</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orge9c641a" class="outline-3">
+<h3 id="orge9c641a"><span class="section-number-3">3.1</span> 直接部署到主机上</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+构建对应平台的二进制包，Ubuntu 15.04 之后，以及 CentOS7 之后都使用 <a href="https://wiki.archlinux.org/index.php/Systemd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">systemd</a> 作为默认的系统和服务管理器了。
+他提供了一些的工具集合，使用起来比 <a href="http://supervisord.org/">Supervisor</a> 这种工具爽多了。
+</p>
+
+<p>
+配置比较简单，使用 systemd 管理的进程，都会在 <code>/usr/lib/systemd/system</code> 目录下有一个 service 文件，用来编排你的应用。
+</p>
+
+<p>
+比如：
+</p>
+
+<pre class="example" id="org7970e4a">
+[Unit]
+Description=Command Scheduler
+After=auditd.service systemd-user-sessions.service time-sync.target
+
+[Service]
+EnvironmentFile=/etc/sysconfig/crond
+ExecStart=/usr/sbin/crond -n $CRONDARGS
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+</pre>
+
+<p>
+这是 crond 的配置文件，里面囊括了服务的描述、依赖、启动命令、配置文件等。
+</p>
+
+<p>
+使用 systemd 工具集，可以轻松的查看服务状态、查看日志、设置重启策略，开机启动等。具体可以看我之前梳理的文档：
+<a href="wiki/devops/systemd.html">systemd</a>、<a href="wiki/devops/journalctl.html">journalctl</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5c22760" class="outline-3">
+<h3 id="org5c22760"><span class="section-number-3">3.2</span> 部署到容器环境下</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+在有容器运行时的情况下，建议使用容器部署。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2020-03-18 Wed 11:16 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+</div>
+</body>
+</html>

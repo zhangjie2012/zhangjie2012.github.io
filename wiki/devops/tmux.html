@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-18 Wed 11:42 -->
+<!-- 2020-03-17 Tue 16:07 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>构建环境</title>
+<title>tmux</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -245,129 +245,191 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">构建环境</h1>
+<h1 class="title">tmux</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3583b77">1. 安装 Go</a>
+<li><a href="#org52aac25">1. Workflow</a>
 <ul>
-<li><a href="#orgbf417bd">1.1. Linux, macOS, and FreeBSD tarballs</a></li>
-<li><a href="#org57ab125">1.2. 检测是否安装成功</a></li>
+<li><a href="#orgb83641b">1.1. 新建 session</a></li>
+<li><a href="#org3849c47">1.2. 窗口（window）管理</a></li>
+<li><a href="#orgdd33d1c">1.3. 面板管理</a></li>
 </ul>
 </li>
-<li><a href="#org765615e">2. 卸载</a></li>
-<li><a href="#org268eafc">3. 插件和 IDE</a></li>
-<li><a href="#org6b8df51">4. 跨平台编译</a></li>
+<li><a href="#org2417cbe">2. 扩展</a></li>
 </ul>
 </div>
 </div>
+<p>
+<a href="https://github.com/tmux/tmux">tmux</a> 是一个终端复用器。一个屏幕可以创建多个终端。已 session 的方式维护，后台运行，前台 attach。
+</p>
 
-<div id="outline-container-org3583b77" class="outline-2">
-<h2 id="org3583b77"><span class="section-number-2">1</span> 安装 Go</h2>
+<p>
+配置地址：<a href="https://github.com/zhangjie2012/dotfiles/blob/master/_tmux.conf">https://github.com/zhangjie2012/dotfiles/blob/master/_tmux.conf</a>
+</p>
+
+<p>
+<i>因为习惯了 Emacs 的快捷键，所以把快捷键前缀由默认的 <code>C-b</code> 改成了 <code>C-x</code> 。</i>
+</p>
+
+<div id="outline-container-org52aac25" class="outline-2">
+<h2 id="org52aac25"><span class="section-number-2">1</span> Workflow</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgbf417bd" class="outline-3">
-<h3 id="orgbf417bd"><span class="section-number-3">1.1</span> Linux, macOS, and FreeBSD tarballs</h3>
+<div id="outline-container-orgb83641b" class="outline-3">
+<h3 id="orgb83641b"><span class="section-number-3">1.1</span> 新建 session</h3>
 <div class="outline-text-3" id="text-1-1">
-<div class="org-src-container">
-<pre class="src src-shell">wget https://dl.google.com/go/go1.13.6.darwin-amd64.tar.gz --no-check-certificate
-sudo tar -C /usr/local -xzf go1.13.6.darwin-amd64.tar.gz
-</pre>
-</div>
-
 <p>
-将 <code>/usr/local/go/bin</code> 添加到系统 <code>PATH</code> 环境变量，在 <code>/etc/profile</code> 或者 <code>$HOME/.profile</code> 中添加
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell"><span style="color: #a626a4;">export</span> <span style="color: #6a1868;">PATH</span>=$<span style="color: #6a1868;">PATH</span>:/usr/local/go/bin
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org57ab125" class="outline-3">
-<h3 id="org57ab125"><span class="section-number-3">1.2</span> 检测是否安装成功</h3>
-<div class="outline-text-3" id="text-1-2">
-<p>
-默认的工作目录是 <code>$HOME/go</code> ，如果是不同的目录需要 <a href="https://github.com/golang/go/wiki/SettingGOPATH">设置一下 GOPATH 环境变量</a>。
-</p>
-
-<p>
-在工作目录下创建 <code>src/hello</code> 目录，然后创建 <code>hello.go</code> ：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-go"><span style="color: #e45649;">package</span> main
-
-<span style="color: #e45649;">import</span> <span style="color: #50a14f;">"fmt"</span>
-
-<span style="color: #e45649;">func</span> <span style="color: #a626a4;">main</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
-    fmt.<span style="color: #a626a4;">Printf</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"hello, world\n"</span><span style="color: #a626a4;">)</span>
-<span style="color: #4078f2;">}</span>
-</pre>
-</div>
-
-<p>
-<code>go run hello.go</code> 看到 <code>hello, world</code> 表示安装成功。
-</p>
-
-<p>
-<b>注意</b> 如果存在旧版本的 Go 需要先卸载才行。
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org765615e" class="outline-2">
-<h2 id="org765615e"><span class="section-number-2">2</span> 卸载</h2>
-<div class="outline-text-2" id="text-2">
-<ol class="org-ol">
-<li>删除 <code>/usr/local/go</code> 目录</li>
-<li>编辑 <code>/etc/profile</code> 或者 <code>$HOME/profile</code> 移除 <code>PATH</code> 环境变量中的 go bin 路径</li>
-<li>删除工作目录</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-org268eafc" class="outline-2">
-<h2 id="org268eafc"><span class="section-number-2">3</span> 插件和 IDE</h2>
-<div class="outline-text-2" id="text-3">
-<p>
-见 <a href="wiki/programming/code-env/emacs.html">emacs</a> 中的 IDE 小结。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org6b8df51" class="outline-2">
-<h2 id="org6b8df51"><span class="section-number-2">4</span> 跨平台编译</h2>
-<div class="outline-text-2" id="text-4">
-<p>
-1.5 版本之后，Go 支持跨平台编译（碉堡的一个功能），在编译之前指定 <code>$GOOS</code> 和 <code>$GOARCH</code> 两个环境变量即可。这两个环境变量分别表示的目标的操作系统和编译体系架构的名称。常用的值：
+一般情况，直接输入 <code>tmux</code> 进入一个默认的 session 就可以了。其它：
 </p>
 
 <ul class="org-ul">
-<li><code>GOOS</code>: <code>android</code> <code>darwin</code> <code>freebsd</code> <code>linux</code> <code>windows</code></li>
-<li><code>GOARCH</code>: <code>arm</code> <code>amd64</code> <code>386</code></li>
+<li><code>tmux new -s &lt;session-name&gt;</code> 创建一个具名的 session，直接 <code>tmux</code> 创建的名字是按照序号 0, 1, 2.. 命名</li>
+<li><code>tmux attach -t &lt;index/name&gt;</code> 接入回话</li>
+<li><code>tmux detach</code> <code>C-x d</code> 窗口和当前回话分离</li>
+<li><code>tmux ls</code> <code>tmux list-session</code> 列出 sessions</li>
 </ul>
+</div>
+</div>
 
-<p>
-完整的可选值在 <a href="https://golang.org/doc/install/source#environment">Optional environment variables</a>。
-</p>
+<div id="outline-container-org3849c47" class="outline-3">
+<h3 id="org3849c47"><span class="section-number-3">1.2</span> 窗口（window）管理</h3>
+<div class="outline-text-3" id="text-1-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
-<p>
-比如在 MacOS 上编译 CentOS7 下的二进制包:  <code>GOOS=linux GOARCH=amd64 go build main</code> 。
-</p>
 
-<p>
-相关的 Stackoverflow 帖子：<a href="https://stackoverflow.com/questions/20728767/all-possible-goos-value">All possible GOOS value?</a> 中说明在 Go 1.7 之后，可以使用 <code>go tool dist list -json</code> 来显示可选的值（不加 <code>-json</code> 参数将显示为文本）。
-</p>
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">命令</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>c</code></td>
+<td class="org-left">新建窗口</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>,</code></td>
+<td class="org-left">重命名窗口</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&amp;</code></td>
+<td class="org-left">关闭窗口</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>p</code></td>
+<td class="org-left">前一个窗口</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>n</code></td>
+<td class="org-left">后一个窗口</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>l</code></td>
+<td class="org-left">切换到上一个窗口</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;number&gt;</code></td>
+<td class="org-left">用索引切换窗口</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgdd33d1c" class="outline-3">
+<h3 id="orgdd33d1c"><span class="section-number-3">1.3</span> 面板管理</h3>
+<div class="outline-text-3" id="text-1-3">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">命令</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">&vert;</td>
+<td class="org-left">垂直分屏</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>-</code></td>
+<td class="org-left">水平分屏</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;方向键&gt;</code></td>
+<td class="org-left">切换面板</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>q</code></td>
+<td class="org-left">显示面板编号</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>Alt+o</code></td>
+<td class="org-left">逆时针旋转当前窗口的面板</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>Ctrl+o</code></td>
+<td class="org-left">顺时针选装当前窗口的面板</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>z</code></td>
+<td class="org-left">最大化当前面板</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>{</code></td>
+<td class="org-left">前置当前面板</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>}</code></td>
+<td class="org-left">后置当前面板</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2417cbe" class="outline-2">
+<h2 id="org2417cbe"><span class="section-number-2">2</span> 扩展</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><a href="https://blog.opskumu.com/tmux.html">终端利器 Tmux</a></li>
+<li><a href="https://wiki.tankywoo.com/tool/tmux.html">TMUX - terminal multiplexer</a></li>
+</ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2017-12-07 09:41:24 <br />Last updated: 2020-03-18 Wed 11:17 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-03-17 14:08:36 <br />Last updated: 2020-03-17 Tue 15:56 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>
