@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-02 Mon 10:53 -->
+<!-- 2020-03-25 Wed 14:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 包选择与对比</title>
@@ -414,9 +414,9 @@ maxTimeMS
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">yieldIndexModel</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">key</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">unique</span> <span style="color: #6434A3;">bool</span>, <span style="color: #BA36A5;">order</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">mongo.IndexModel</span> <span style="color: #707183;">{</span>
-    <span style="color: #BA36A5;">keys</span> := <span style="color: #6434A3;">bsonx.Doc</span><span style="color: #7388D6;">{</span><span style="color: #909183;">{</span><span style="color: #D0372D;">Key</span>: key, <span style="color: #D0372D;">Value</span>: bsonx.<span style="color: #006699;">Int32</span><span style="color: #709870;">(</span><span style="color: #006699;">int32</span><span style="color: #907373;">(</span>order<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">}</span><span style="color: #7388D6;">}</span>
-    <span style="color: #BA36A5;">index</span> := <span style="color: #6434A3;">mongo.IndexModel</span><span style="color: #7388D6;">{</span>
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">yieldIndexModel</span><span style="color: #707183;">(</span>key <span style="color: #6434A3;">string</span>, unique <span style="color: #6434A3;">bool</span>, order <span style="color: #6434A3;">int</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">mongo.IndexModel</span> <span style="color: #707183;">{</span>
+    keys := bsonx.<span style="color: #6434A3;">Doc</span><span style="color: #7388D6;">{</span><span style="color: #909183;">{</span>Key: key, Value: bsonx.<span style="color: #006699;">Int32</span><span style="color: #709870;">(</span><span style="color: #006699;">int32</span><span style="color: #907373;">(</span>order<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">}</span><span style="color: #7388D6;">}</span>
+    index := mongo.<span style="color: #6434A3;">IndexModel</span><span style="color: #7388D6;">{</span>
         <span style="color: #D0372D;">Keys</span>: keys,
     <span style="color: #7388D6;">}</span>
     <span style="color: #0000FF;">if</span> unique <span style="color: #7388D6;">{</span>
@@ -425,16 +425,16 @@ maxTimeMS
     <span style="color: #0000FF;">return</span> index
 <span style="color: #707183;">}</span>
 
-<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">sc</span> *<span style="color: #6434A3;">StorageClient</span><span style="color: #707183;">)</span> <span style="color: #006699;">BuildIndex</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">name</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">key</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">unique</span> <span style="color: #6434A3;">bool</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">error</span> <span style="color: #707183;">{</span>
-    <span style="color: #BA36A5;">db</span>, <span style="color: #BA36A5;">err</span> := sc.<span style="color: #006699;">GetDatabase</span><span style="color: #7388D6;">()</span>
+<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span>sc *<span style="color: #6434A3;">StorageClient</span><span style="color: #707183;">)</span> <span style="color: #006699;">BuildIndex</span><span style="color: #707183;">(</span>name <span style="color: #6434A3;">string</span>, key <span style="color: #6434A3;">string</span>, unique <span style="color: #6434A3;">bool</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">error</span> <span style="color: #707183;">{</span>
+    db, err := sc.<span style="color: #006699;">GetDatabase</span><span style="color: #7388D6;">()</span>
     <span style="color: #0000FF;">if</span> err != <span style="color: #D0372D;">nil</span> <span style="color: #7388D6;">{</span>
         <span style="color: #0000FF;">return</span> err
     <span style="color: #7388D6;">}</span>
 
-    <span style="color: #BA36A5;">collection</span> := db.<span style="color: #006699;">Collection</span><span style="color: #7388D6;">(</span>name<span style="color: #7388D6;">)</span>
-    <span style="color: #BA36A5;">opts</span> := options.<span style="color: #006699;">CreateIndexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">SetMaxTime</span><span style="color: #7388D6;">(</span>20 * time.Second<span style="color: #7388D6;">)</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">set max build time</span>
-    <span style="color: #BA36A5;">indexModel</span> := <span style="color: #006699;">yieldIndexModel</span><span style="color: #7388D6;">(</span>key, unique, ASCENDING<span style="color: #7388D6;">)</span>
-    <span style="color: #BA36A5;">indexName</span>, <span style="color: #BA36A5;">err</span> := collection.<span style="color: #006699;">Indexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">CreateOne</span><span style="color: #7388D6;">(</span>context.<span style="color: #006699;">Background</span><span style="color: #909183;">()</span>, indexModel, opts<span style="color: #7388D6;">)</span>
+    collection := db.<span style="color: #006699;">Collection</span><span style="color: #7388D6;">(</span>name<span style="color: #7388D6;">)</span>
+    opts := options.<span style="color: #006699;">CreateIndexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">SetMaxTime</span><span style="color: #7388D6;">(</span>20 * time.Second<span style="color: #7388D6;">)</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">set max build time</span>
+    indexModel := <span style="color: #006699;">yieldIndexModel</span><span style="color: #7388D6;">(</span>key, unique, ASCENDING<span style="color: #7388D6;">)</span>
+    indexName, err := collection.<span style="color: #006699;">Indexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">CreateOne</span><span style="color: #7388D6;">(</span>context.<span style="color: #006699;">Background</span><span style="color: #909183;">()</span>, indexModel, opts<span style="color: #7388D6;">)</span>
 
     <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">...</span>
 <span style="color: #707183;">}</span>

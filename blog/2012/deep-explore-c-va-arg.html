@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-03-02 Mon 10:53 -->
+<!-- 2020-03-25 Wed 14:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>深度探索C语言函数可变长参数</title>
@@ -323,7 +323,7 @@ int printf ( const char * format, ... );
 <h2 id="如何实现"><span class="section-number-2">2</span> 1.2 如何实现</h2>
 <div class="outline-text-2" id="text-如何实现">
 <p>
-C语言可变参数通过三个宏（=va<sub>start</sub>、va<sub>end</sub>、va<sub>arg</sub>=）和一个类型（=va<sub>list</sub>=）实现的，
+C语言可变参数通过三个宏（=va_start、va_end、va_arg=）和一个类型（=va_list=）实现的，
 </p>
 
 <pre class="example">
@@ -360,13 +360,13 @@ type va_arg ( va_list ap, type );
 </p>
 
 <ul class="org-ul">
-<li>va<sub>list</sub> ：存储参数的类型信息。</li>
+<li>va_list ：存储参数的类型信息。</li>
 </ul>
 
 <p>
 好了，综合上面3个宏和一个类型可以猜出如何实现C语言可变长参数函数：用
-va<sub>start</sub> 获取参数列表（的地址）存储到 ap 中，用 va<sub>arg</sub>
-逐个获取值，最后用 va<sub>arg</sub> 将 ap 置空。
+va_start 获取参数列表（的地址）存储到 ap 中，用 va_arg
+逐个获取值，最后用 va_arg 将 ap 置空。
 </p>
 </div>
 
@@ -421,7 +421,7 @@ int main ()
 <div class="outline-text-3" id="text-使用注意事项">
 <ul class="org-ul">
 <li>宏定义在 stdarg.h 中，所以使用时，不要忘了添加头文件。</li>
-<li>设定一个参数结束标志（cplusplus 上说，va<sub>arg</sub>
+<li>设定一个参数结束标志（cplusplus 上说，va_arg
 并不能确定哪个参数是最后一个参数）。</li>
 <li>类型的匹配</li>
 <li>期待您的补充&#x2026;&#x2026;</li>
@@ -520,7 +520,7 @@ sizeof("Hello,world") = 12
 <h3 id="简单介绍两种函数调用约定"><span class="section-number-3">4.1</span> 简单介绍两种函数调用约定</h3>
 <div class="outline-text-3" id="text-简单介绍两种函数调用约定">
 <p>
-<b><b>_<sub>stdcall</sub> （C++默认）</b></b>
+<b><b>__stdcall （C++默认）</b></b>
 </p>
 
 <ul class="org-ul">
@@ -530,7 +530,7 @@ sizeof("Hello,world") = 12
 </ul>
 
 <p>
-<b><b>_<sub>cdecl</sub> （C语言默认）</b></b>
+<b><b>__cdecl （C语言默认）</b></b>
 </p>
 
 <ul class="org-ul">
@@ -539,7 +539,7 @@ sizeof("Hello,world") = 12
 </ul>
 
 <p>
-那么，变参函数的调用方式为（也只能是）：_<sub>cdecl</sub> 。
+那么，变参函数的调用方式为（也只能是）：__cdecl 。
 </p>
 
 <p>

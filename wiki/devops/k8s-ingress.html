@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-02 Mon 10:53 -->
+<!-- 2020-03-25 Wed 14:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>K8s Ingress</title>
@@ -308,7 +308,7 @@ _tips_：Vhosts 分为两种情况，一种是基于 IP 的（IP-based virtual h
 
 <pre class="example">
   internet
-      |
+	  |
 ------------
 [ Services ]
 </pre>
@@ -320,7 +320,7 @@ Ingress 提供了一系列的规则允许入站连接到达集群服务。
 
 <pre class="example">
  internet
-     |
+	 |
 [ Ingress ]
 --|-----|--
 [ Services ]
@@ -362,15 +362,15 @@ kind: Ingress
 metadata:
   name: test-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+	nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
   - http:
-      paths:
-      - path: /testpath
-        backend:
-          serviceName: test
-          servicePort: 80
+	  paths:
+	  - path: /testpath
+		backend:
+		  serviceName: test
+		  servicePort: 80
 </pre>
 </div>
 
@@ -443,8 +443,8 @@ metadata:
   name: test-ingress
 spec:
   backend:
-    serviceName: testsvc
-    servicePort: 80
+	serviceName: testsvc
+	servicePort: 80
 </pre>
 
 <p>
@@ -472,7 +472,7 @@ test-ingress        -             testsvc:80     107.178.254.228
 
 <pre class="example">
 foo.bar.com -&gt; 178.91.123.132 -&gt; / foo    s1:80
-                                 / bar    s2:80
+								 / bar    s2:80
 </pre>
 
 <p>
@@ -485,20 +485,20 @@ kind: Ingress
 metadata:
   name: test
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+	nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
   - host: foo.bar.com
-    http:
-      paths:
-      - path: /foo
-        backend:
-          serviceName: s1
-          servicePort: 80
-      - path: /bar
-        backend:
-          serviceName: s2
-          servicePort: 80
+	http:
+	  paths:
+	  - path: /foo
+		backend:
+		  serviceName: s1
+		  servicePort: 80
+	  - path: /bar
+		backend:
+		  serviceName: s2
+		  servicePort: 80
 </pre>
 
 <p>
@@ -509,9 +509,9 @@ spec:
 $ kubectl get ing
 NAME      RULE          BACKEND   ADDRESS
 test      -
-          foo.bar.com
-          /foo          s1:80
-          /bar          s2:80
+		  foo.bar.com
+		  /foo          s1:80
+		  /bar          s2:80
 </pre>
 
 <p>
@@ -529,7 +529,7 @@ test      -
 
 <pre class="example">
 foo.bar.com --|                 |-&gt; foo.bar.com s1:80
-              | 178.91.123.132  |
+			  | 178.91.123.132  |
 bar.foo.com --|                 |-&gt; bar.foo.com s2:80
 </pre>
 
@@ -545,17 +545,17 @@ metadata:
 spec:
   rules:
   - host: foo.bar.com
-    http:
-      paths:
-      - backend:
-          serviceName: s1
-          servicePort: 80
+	http:
+	  paths:
+	  - backend:
+		  serviceName: s1
+		  servicePort: 80
   - host: bar.foo.com
-    http:
-      paths:
-      - backend:
-          serviceName: s2
-          servicePort: 80
+	http:
+	  paths:
+	  - backend:
+		  serviceName: s2
+		  servicePort: 80
 </pre>
 
 <p>
@@ -597,8 +597,8 @@ spec:
   tls:
   - secretName: testsecret
   backend:
-    serviceName: s1
-    servicePort: 80
+	serviceName: s1
+	servicePort: 80
 </pre>
 
 <p>
@@ -633,8 +633,8 @@ spec:
 $ kubectl get ing
 NAME      RULE          BACKEND   ADDRESS
 test      -                       178.91.123.132
-          foo.bar.com
-          /foo          s1:80
+		  foo.bar.com
+		  /foo          s1:80
 $ kubectl edit ing test
 </pre>
 
@@ -646,19 +646,19 @@ $ kubectl edit ing test
 <pre class="src src-yaml"><span style="color: #BA36A5;">spec</span>:
   <span style="color: #BA36A5;">rules</span>:
   - <span style="color: #BA36A5;">host</span>: foo.bar.com
-    <span style="color: #BA36A5;">http</span>:
-      <span style="color: #BA36A5;">paths</span>:
-      - <span style="color: #BA36A5;">backend</span>:
-          <span style="color: #BA36A5;">serviceName</span>: s1
-          <span style="color: #BA36A5;">servicePort</span>: 80
-        <span style="color: #BA36A5;">path</span>: /foo
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">http</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  paths</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - backend</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  serviceName</span>: s1
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  servicePort</span>: 80
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">path</span>: /foo
   - <span style="color: #BA36A5;">host</span>: bar.baz.com
-    <span style="color: #BA36A5;">http</span>:
-      <span style="color: #BA36A5;">paths</span>:
-      - <span style="color: #BA36A5;">backend</span>:
-          <span style="color: #BA36A5;">serviceName</span>: s2
-          <span style="color: #BA36A5;">servicePort</span>: 80
-        <span style="color: #BA36A5;">path</span>: /foo
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">http</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  paths</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - backend</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  serviceName</span>: s2
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  servicePort</span>: 80
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">path</span>: /foo
 ..
 </pre>
 </div>
@@ -671,10 +671,10 @@ $ kubectl edit ing test
 $ kubectl get ing
 NAME      RULE          BACKEND   ADDRESS
 test      -                       178.91.123.132
-          foo.bar.com
-          /foo          s1:80
-          bar.baz.com
-          /foo          s2:80
+		  foo.bar.com
+		  /foo          s1:80
+		  bar.baz.com
+		  /foo          s2:80
 </pre>
 
 <p>

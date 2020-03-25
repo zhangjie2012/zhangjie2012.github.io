@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-02 Mon 10:53 -->
+<!-- 2020-03-25 Wed 14:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DevOps - 日志收集</title>
@@ -251,6 +251,7 @@ for the JavaScript code in this tag.
 <div id="text-table-of-contents">
 <ul>
 <li><a href="#org65c5c51">1. 一个简易的日志收集方案</a></li>
+<li><a href="#org4bf4a10">2. ELK</a></li>
 </ul>
 </div>
 </div>
@@ -271,7 +272,6 @@ for the JavaScript code in this tag.
 <ol class="org-ol">
 <li>主机使用 filebeat 上报日志到 Redis (<code>list</code>, <code>channel</code> 等)</li>
 <li>起一个服务「订阅」Redis <code>list</code> 或者 <code>channel</code> 中的日志，然后：
-
 <ul class="org-ul">
 <li>按照文件名称保存到本地</li>
 <li>根据日志中的日志级别进行告警通知</li>
@@ -292,9 +292,125 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
+
+<div id="outline-container-org4bf4a10" class="outline-2">
+<h2 id="org4bf4a10"><span class="section-number-2">2</span> ELK</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+上面只是一个简易的日志收集方案，业内常用的标准是 ELK：
+</p>
+
+<ul class="org-ul">
+<li><b>E</b> lasticsearch 分布式的搜索和分析引擎</li>
+<li><b>L</b> ogstash 是一个流式数据收集引擎</li>
+<li><b>K</b> ibana 数据可视化</li>
+</ul>
+
+<p>
+Elastic 技术栈和产品文档：<a href="https://www.elastic.co/guide/index.html">https://www.elastic.co/guide/index.html</a>
+</p>
+
+<p>
+ELK 是一个技术栈，随着技术的发展，加上实际的业务场景会有一些取舍。也不全是用 ELK 这一套，也不仅限于这三个。
+</p>
+
+<p>
+针对收集又衍生了 Beats，是跑在服务器上的代理，用来收集数据然后发送到 ES。有很多的 Beats，比如最常用的：
+日志文件收集 filebeat，就是专门用来做日志收集；还有 Metricbeat 收集 metric 等。
+</p>
+
+<p>
+然后，日志数据量很大时，往往会引入 Kafka 做数据缓冲或者架构解耦（日志被多个订阅），Kafka 越来越成为主流的情况下，
+ELK 技术栈现在也有很多人称为 EFK。
+</p>
+
+<p>
+但是实际的架构非常灵活，正如上面所说要看场景，还有流量有多大。可以：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">&#xa0;</th>
+<th scope="col" class="org-left">收集</th>
+<th scope="col" class="org-left">中间层</th>
+<th scope="col" class="org-left">存储、搜索、分析</th>
+<th scope="col" class="org-left">展示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">#1</td>
+<td class="org-left">logstash</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ES</td>
+<td class="org-left">Kibana</td>
+</tr>
+
+<tr>
+<td class="org-left">#2</td>
+<td class="org-left">filebeat</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">ES</td>
+<td class="org-left">Kibana</td>
+</tr>
+
+<tr>
+<td class="org-left">#3</td>
+<td class="org-left">filebeat</td>
+<td class="org-left">logstash</td>
+<td class="org-left">ES</td>
+<td class="org-left">Kibana</td>
+</tr>
+
+<tr>
+<td class="org-left">#4</td>
+<td class="org-left">filebeat</td>
+<td class="org-left">Kafka -&gt; logstash</td>
+<td class="org-left">ES</td>
+<td class="org-left">Kibana</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+灵活的架构还包括：
+</p>
+
+<ul class="org-ul">
+<li>收集层有些公司业务比较复杂的情况下，希望在收集日志时加一些额外的信息（比如应用信息等），比较简单的 filebeat/logstash
+也可以实现，但是复杂的逻辑往往也需要添加收集规则，或者二次开发，又或者自研</li>
+<li>流量比较大的时候，一般都会引入 Kafka，而 logstash 的性能常被人诟病，所以通常被自研的服务代替
+自研的成本并不高，逻辑就是从 Kafka 订阅数据，然后进行一些 <span class="underline">清洗</span> 输出到 ES</li>
+<li>对于日志分析和展示也可以自研，不用 Kibana 也行，而且 Kibana 有些学习的成本，有些业务场景比较简单没必要用 Kibana</li>
+</ul>
+
+<p>
+说明：
+</p>
+<ul class="org-ul">
+<li>ELK 中最核心的组件其实是 ES，不然如何架构 ES 几乎都是绕不开的，自研的成本有点高了&#x2026;</li>
+<li>Kakfa 的解耦往往用在从主机上收集的日志，不仅仅给日志平台用，业务方也无需要使用，这种情况下要么自己订阅消息，
+要么用调用 ES API 来实现</li>
+</ul>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-04-11 15:48 <br />Last updated: 2020-03-02 Mon 10:09 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2019-04-11 15:48 <br />Last updated: 2020-03-25 Wed 14:29 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>

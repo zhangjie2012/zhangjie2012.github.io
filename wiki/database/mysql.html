@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-02 Mon 10:52 -->
+<!-- 2020-03-25 Wed 14:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>MySQL</title>
@@ -387,7 +387,7 @@ for the JavaScript code in this tag.
 <li>在 count 计算不重复的记录的时候能用到: <code>SELECT COUNT( DISTINCT player_id ) FROM task;</code> 就是计算表中 id 不同的记录有多少条</li>
 <li>在需要返回记录不同的 id 的具体值的时候可以用: <code>SELECT DISTINCT player_id FROM task;</code> 返回表中不同的 id 的具体的值</li>
 <li>上面的 情况2 对于需要返回 mysql 表中 2 列以上的结果时会有歧义: <code>SELECT DISTINCT player_id, task_id FROM task;</code> 实际上返回的是 <code>player_id</code> 与 <code>task_id</code> 同时不相同的结果,也就是 DISTINCT 同时作用了两个字段，
-必须得 <code>player_id</code> 与 <code>task_id</code> 都相同的才被排除了, 与我们期望的结果不一样,我们期望的是 player<sub>id</sub> 不同被过滤, 在这种情况下，distinct 同时作用了两个字段，player<sub>id</sub>, task<sub>id</sub>。
+必须得 <code>player_id</code> 与 <code>task_id</code> 都相同的才被排除了, 与我们期望的结果不一样,我们期望的是 player_id 不同被过滤, 在这种情况下，distinct 同时作用了两个字段，player_id, task_id。
 这时候可以考虑使用 <code>group_concat</code> 函数来进行排除,不过这个 mysql 函数是在 mysql4.1 以上才支持的</li>
 <li>其实还有另外一种解决方式, 就是使用 <code>SELECT player_id, task_id, count(DISTINCT player_id) FROM task</code>
 虽然这样的返回结果多了一列无用的count数据(有时也许就需要这个数据)</li>
@@ -699,7 +699,7 @@ default-character-set=utf8mb4
 <ul class="org-ul">
 <li>在控制台执行一条 SQL 语句: <code>mysql -h127.0.0.1 -uuser -ppassword db_name -e "select xxx from xxx" &gt; aa.txt</code></li>
 <li>控制台中文乱码: <code>set names 'utf8'</code></li>
-<li>MySQL 报错: Row size too large (&gt; 8126). Changing some columns to TEXT or BLOB or using ROW<sub>FORMAT</sub>=DYNAMIC &#x2026; 解决方案: <a href="http://hidba.org/?p=551">innodb使用大字段text，blob的一些优化建议</a>。</li>
+<li>MySQL 报错: Row size too large (&gt; 8126). Changing some columns to TEXT or BLOB or using ROW_FORMAT=DYNAMIC &#x2026; 解决方案: <a href="http://hidba.org/?p=551">innodb使用大字段text，blob的一些优化建议</a>。</li>
 <li><a href="http://stackoverflow.com/questions/286039/get-record-counts-for-all-tables-in-mysql-database">Get record counts for all tables in MySQL database</a></li>
 <li>系统配置文件位置: <code>mysql --help | grep cnf</code></li>
 <li><p>
@@ -751,7 +751,7 @@ DESC;
 <li>在已知密码的情况下: <code>SET PASSWORD FOR 'root'@'localhost' = PASSWORD('MyNewPass');</code></li>
 <li><a href="http://stackoverflow.com/questions/5683154/how-do-i-find-out-my-root-mysql-password">Howdo I find out my root MySQL password?</a></li>
 </ul></li>
-<li>auto<sub>increment</sub> 存在的问题: <a href="http://www.kancloud.cn/taobaomysql/monthly/67122">http://www.kancloud.cn/taobaomysql/monthly/67122</a></li>
+<li>auto_increment 存在的问题: <a href="http://www.kancloud.cn/taobaomysql/monthly/67122">http://www.kancloud.cn/taobaomysql/monthly/67122</a></li>
 <li>设置输出分隔符: <code>mysql -umyuser -pmydb dbname -e "select CONCAT_WS(',' , f1 , f2) from mytable;" &gt; /tmp/mydata.txt</code></li>
 <li>设置默认编码为 <code>ut8mb4</code> <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup></li>
 <li>macOS 下 stop MySQL，使用 <code>mysql.server stop</code> 或者 <code>kill</code> 命令删掉之后会自动重启，正确的方法是找到 MySQL 的 plist，然后 unload 掉，
