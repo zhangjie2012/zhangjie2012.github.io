@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <!-- 2020-03-30 Mon 10:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>未读的书</title>
+<title>Emacs 基础</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,7 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -243,116 +245,213 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">未读的书</h1>
+<h1 class="title">Emacs 基础</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4d158a2">System</a></li>
-<li><a href="#org878befb">Databases</a></li>
-<li><a href="#org571ceeb">Programming Language</a></li>
-<li><a href="#org3f569ae">DevOps</a></li>
-<li><a href="#orgd34b62b">Project Management</a></li>
-<li><a href="#org6749e4a">Technology &amp;&amp; Internet</a></li>
-<li><a href="#orga7efaaf">设计与产品</a></li>
-<li><a href="#orgdc5c952">历史</a></li>
+<li><a href="#orga223a06">1. 安装</a>
+<ul>
+<li><a href="#org5da4ae1">1.1. Ubuntu 18.04</a></li>
+<li><a href="#org7a8815a">1.2. MacOS</a></li>
+</ul>
+</li>
+<li><a href="#org2a9beb2">2. 键位约定</a></li>
+<li><a href="#org29ffae1">3. 包安装与管理</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4d158a2" class="outline-2">
-<h2 id="org4d158a2">System</h2>
-<div class="outline-text-2" id="text-org4d158a2">
-<ul class="org-ul">
-<li><a href="https://book.douban.com/subject/25809330/">Linux/Unix 系统编程手册</a></li>
-<li><a href="https://book.douban.com/subject/5333562/">深入理解计算机系统</a></li>
-<li><a href="https://book.douban.com/subject/5064311/">操作系统-精髓与设计原理</a></li>
-<li><a href="https://book.douban.com/subject/26586598/">性能之巅</a></li>
-<li><a href="https://book.douban.com/subject/3923575/">数据库系统基础教程</a></li>
-<li><a href="https://book.douban.com/subject/30333919/">架构整洁之道</a></li>
-<li><a href="https://book.douban.com/subject/33425123/">微服务架构设计模式</a></li>
-</ul>
+<div id="outline-container-orga223a06" class="outline-2">
+<h2 id="orga223a06"><span class="section-number-2">1</span> 安装</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org5da4ae1" class="outline-3">
+<h3 id="org5da4ae1"><span class="section-number-3">1.1</span> Ubuntu 18.04</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+直接使用系统的包管理工具安装的 Emacs 版本都很低，推荐使用源码安装，当前最新的版本是 26.3。
+</p>
+
+<p>
+下载源码：<a href="http://mirrors.ustc.edu.cn/gnu/emacs/">http://mirrors.ustc.edu.cn/gnu/emacs/</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">apt install make gcc g++ autoconf
+apt-get install build-essential texinfo libx11-dev libxpm-dev libjpeg-dev libpng-dev libgif-dev libtiff-dev libgtk2.0-dev libncurses-dev
+./autogen.sh
+./configure
+make -j4
+sudo make install
+</pre>
+</div>
+
+<p>
+打开 <code>.bashrc</code> 添加两行 alias：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #006FE0;">alias</span> <span style="color: #BA36A5;">em</span>=<span style="color: #008000;">"env TERM=xterm-256color emacs -nw"</span>
+</pre>
+</div>
+
+<p>
+<i>注意</i> ：如果编译提示 <code>configure: error: The following required libraries were not found: gnutls</code> 需要安装 <code>gnutls</code> 开发包，
+使用 <code>apt-cache search 'libgnutls.*-dev'</code> 找到对应的包，然后安装 <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
+</p>
 </div>
 </div>
 
-<div id="outline-container-org878befb" class="outline-2">
-<h2 id="org878befb">Databases</h2>
-<div class="outline-text-2" id="text-org878befb">
-<ul class="org-ul">
-<li><a href="https://book.douban.com/subject/23008813/">高性能 MySQL</a></li>
-<li><a href="https://book.douban.com/subject/5373022/">MySQL 技术内幕</a></li>
-</ul>
+<div id="outline-container-org7a8815a" class="outline-3">
+<h3 id="org7a8815a"><span class="section-number-3">1.2</span> MacOS</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+<pre class="src src-shell">brew install emacs
+</pre>
+</div>
+</div>
 </div>
 </div>
 
-<div id="outline-container-org571ceeb" class="outline-2">
-<h2 id="org571ceeb">Programming Language</h2>
-<div class="outline-text-2" id="text-org571ceeb">
-<ul class="org-ul">
-<li><a href="https://book.douban.com/subject/2308234/">CSS 权威指南</a></li>
-<li><a href="https://book.douban.com/subject/26869212/">Python 网络编程</a></li>
-<li><a href="https://book.douban.com/subject/27064848/">Python 高性能编程</a></li>
-<li><a href="https://book.douban.com/subject/24316255/">Go Web 编程</a></li>
-<li><a href="https://book.douban.com/subject/27015617/">Go 语言实战</a></li>
-<li><a href="https://book.douban.com/subject/27072230/">深入理解 ES6</a></li>
-</ul>
+<div id="outline-container-org2a9beb2" class="outline-2">
+<h2 id="org2a9beb2"><span class="section-number-2">2</span> 键位约定</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Emacs 快捷键约定，所有的快捷键基本都是从这些前缀开始的，如下：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">前缀</td>
+<td class="org-left">说明</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-</code></td>
+<td class="org-left">Ctrl 键</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-</code></td>
+<td class="org-left">Meta 键（键盘上的 Alt）</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>S-</code></td>
+<td class="org-left">Super 键（非 Mac 键盘上的 Win 键），很少用</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>s-</code></td>
+<td class="org-left">Shift 键</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>DEL</code></td>
+<td class="org-left">退格键，而不是实际的 DELETE 键</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>SPC</code></td>
+<td class="org-left">空格键</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Emacs 几乎所有的快捷键都是以 <code>C-</code> 开始的，也是 Emacs 令人诟病的一部分（伤小拇指，还好我的小拇指健在）。
+系统默认的绑定键都是 <code>C-x</code> 开始的，用户自定义的大多是 <code>C-c</code> 开始的。
+</p>
+
+<p>
+每个初学者建议先阅读 Emacs 的 <code>help-with-tutorial</code> （ <code>C-h t</code> ）。走一遍，基本上就可以流畅的操作 Emacs 了。
+</p>
 </div>
 </div>
 
-<div id="outline-container-org3f569ae" class="outline-2">
-<h2 id="org3f569ae">DevOps</h2>
-<div class="outline-text-2" id="text-org3f569ae">
-<ul class="org-ul">
-<li><a href="https://book.douban.com/subject/26902196/">The DevOps Handbook</a></li>
-<li><a href="https://clouddamcdnprodep.azureedge.net/gdc/gdckTlBtc/original">Kubernetes Up &amp; Running: Dive into the Future of Infrastructure</a></li>
-<li><a href="https://landing.google.com/sre/workbook/toc/">The Site Reliability Workbook</a></li>
-</ul>
-</div>
+<div id="outline-container-org29ffae1" class="outline-2">
+<h2 id="org29ffae1"><span class="section-number-2">3</span> 包安装与管理</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+因为某些原因官方的 elpa 源无法使用怎么办？ 可使用清华大学提供了 elpa 镜像源：<a href="https://mirror.tuna.tsinghua.edu.cn/help/elpa/">https://mirror.tuna.tsinghua.edu.cn/help/elpa/</a> 。替代下面的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> package-archives
+      '<span style="color: #7388D6;">(</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"gnu"</span> . <span style="color: #008000;">"https://elpa.gnu.org/packages/"</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"melpa"</span> . <span style="color: #008000;">"https://melpa.org/packages/"</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"melpa-stable"</span> . <span style="color: #008000;">"https://stable.melpa.org/packages/"</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"org"</span> . <span style="color: #008000;">"https://orgmode.org/elpa/"</span><span style="color: #909183;">)</span>
+        <span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
 </div>
 
-<div id="outline-container-orgd34b62b" class="outline-2">
-<h2 id="orgd34b62b">Project Management</h2>
-<div class="outline-text-2" id="text-orgd34b62b">
-<ul class="org-ul">
-<li><a href="https://book.douban.com/subject/10484712/">驱动力</a></li>
-<li><a href="https://book.douban.com/subject/4235591/">团队协作的五大障碍</a></li>
-</ul>
-</div>
+<p>
+<code>melpa</code> 一般是最新的（daily build），支持最新的特性当然也不稳定； <code>melpa-stable</code> 对应的是正式版，如果没有很大的折腾劲的话，建议使用 stable。
+</p>
+
+<p>
+如果有代理的话，可以设置 HTTP 代理：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> url-proxy-services
+      '<span style="color: #7388D6;">(</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"http"</span> . <span style="color: #008000;">"127.0.0.1:1080"</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #008000;">"https"</span> . <span style="color: #008000;">"127.0.0.1:1080"</span><span style="color: #909183;">)</span>
+        <span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
 </div>
 
-<div id="outline-container-org6749e4a" class="outline-2">
-<h2 id="org6749e4a">Technology &amp;&amp; Internet</h2>
-<div class="outline-text-2" id="text-org6749e4a">
-<ul class="org-ul">
-<li><a href="https://book.douban.com/subject/26652329/">失控：全人类的最终命运和结局</a></li>
-<li><a href="https://book.douban.com/subject/4075835/">从优秀到卓越</a></li>
-<li><a href="https://book.douban.com/subject/1022936/">基业长青</a></li>
-<li><a href="https://book.douban.com/subject/1919072/">长尾理论</a></li>
-</ul>
-</div>
+<p>
+或者 Emacs 启动时添加 <code>http_proxy</code> 。比如 <code>http_proxy=http://127.0.0.1:1080 emacs</code> 。
+</p>
+
+<p>
+我使用 <a href="https://github.com/jwiegley/use-package">use-package</a> 来简化和规范包的配置，因为源不统一，经常会遇到包依赖问题，比如 <a href="https://github.com/abo-abo/swiper/issues/2087">issues#2087</a>；
+还有时会遇到有的包想用稳定版本，有的包想用最新版本的情况。所以在配置的时候，通过 <code>(setq use-package-always-pin t)</code> 规范 use-package，
+强制显式指定源，这样可以满足更多的个性化需求。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">use-package</span> <span style="color: #D0372D;">swiper</span>
+  <span style="color: #006FE0;">:pin</span> melpa
+  <span style="color: #006FE0;">:ensure</span> t
+  <span style="color: #006FE0;">:config</span>
+  <span style="color: #7388D6;">(</span>global-set-key <span style="color: #909183;">(</span>kbd <span style="color: #008000;">"C-s"</span><span style="color: #909183;">)</span> 'swiper<span style="color: #7388D6;">)</span>
+  <span style="color: #7388D6;">(</span>global-set-key <span style="color: #909183;">(</span>kbd <span style="color: #008000;">"M-s ."</span><span style="color: #909183;">)</span> 'swiper-isearch-thing-at-point<span style="color: #7388D6;">)</span>
+  <span style="color: #707183;">)</span>
+</pre>
 </div>
 
-<div id="outline-container-orga7efaaf" class="outline-2">
-<h2 id="orga7efaaf">设计与产品</h2>
-<div class="outline-text-2" id="text-orga7efaaf">
-<ul class="org-ul">
-<li><a href="https://book.douban.com/subject/3323633/">写给大家看的设计书</a></li>
-<li><a href="https://book.douban.com/subject/6523997/">用户体验要素</a></li>
-<li><a href="https://book.douban.com/subject/5394309/">简约至上</a></li>
-<li><a href="https://book.douban.com/subject/3886044/">瞬间之美</a></li>
-</ul>
+<p>
+上面的 <code>pin</code> 可以设置为 <code>package-archives</code> 列表中的值。
+</p>
 </div>
 </div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
 
-<div id="outline-container-orgdc5c952" class="outline-2">
-<h2 id="orgdc5c952">历史</h2>
-<div class="outline-text-2" id="text-orgdc5c952">
-<ul class="org-ul">
-<li>人类简史：从动物到上帝</li>
-<li><a href="https://www.douban.com/doulist/458012/">https://www.douban.com/doulist/458012/</a></li>
-</ul>
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://stackoverflow.com/questions/52722096/build-emacs-and-gnutls-not-found">https://stackoverflow.com/questions/52722096/build-emacs-and-gnutls-not-found</a>
+</p></div></div>
+
+
 </div>
-</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-03-28 12:21:11 <br />Last updated: 2020-03-30 Mon 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>
