@@ -6,7 +6,7 @@
 <!-- 2020-04-07 Tue 09:59 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Kubernetes 工作负载 - Pod</title>
+<title>Kubernetes - Pod</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -245,193 +245,60 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Kubernetes 工作负载 - Pod</h1>
+<h1 class="title">Kubernetes - Pod</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org68cc86d">1. 概览</a>
+<li><a href="#orgdfa964d">1. 基本概念</a></li>
+<li><a href="#org1bcb826">2. 设计 pod 的目的</a></li>
+<li><a href="#org1b8592a">3. 使用 pod</a></li>
+<li><a href="#orge3d1b19">4. 终止 pod</a>
 <ul>
-<li><a href="#orgdf48067">1.1. 理解 Pod</a>
-<ul>
-<li><a href="#org13b58ca">1.1.1. Pod 是如何管理多个容器的</a></li>
+<li><a href="#org62b3ab9">4.1. 优雅终止</a></li>
+<li><a href="#org86fed04">4.2. 强制删除</a></li>
 </ul>
 </li>
-<li><a href="#orge21065d">1.2. 使用 Pod</a>
-<ul>
-<li><a href="#org11343bc">1.2.1. Pod 和控制器</a></li>
-<li><a href="#org3b698fc">1.2.2. Pod 模板</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#org0eb38d8">2. Pods</a>
-<ul>
-<li><a href="#orgd8f1519">2.1. Pod 是什么？</a></li>
-<li><a href="#org177fae7">2.2. 设计 Pod 的目的</a></li>
-<li><a href="#orgb246d2d">2.3. 使用 Pod</a></li>
-<li><a href="#org8df02cd">2.4. Pod 的持久性（或稀缺性）</a></li>
-<li><a href="#org7a35100">2.5. Pod 的终止</a>
-<ul>
-<li><a href="#orgeb90f6d">2.5.1. Pod 强制删除</a></li>
-</ul>
-</li>
-<li><a href="#org7ddb51f">2.6. API 对象</a></li>
-</ul>
-</li>
-<li><a href="#org5e7d3b1">3. Pod 的生命周期</a>
-<ul>
-<li><a href="#orgbfd2f91">3.1. Pod phase</a></li>
-<li><a href="#org5403725">3.2. Pod conditions</a></li>
-<li><a href="#orgd1f4420">3.3. <span class="todo TODO">TODO</span> 容器探针（probes）</a></li>
-<li><a href="#org4a4eb09">3.4. <span class="todo TODO">TODO</span> Pod 和容器状态</a>
-<ul>
-<li><a href="#orgad251d2">3.4.1. <span class="todo TODO">TODO</span> 容器状态</a></li>
-<li><a href="#org11e4e74">3.4.2. <span class="todo TODO">TODO</span> 容器 readiness gate</a></li>
-<li><a href="#org2aed6d9">3.4.3. <span class="todo TODO">TODO</span> 重启策略</a></li>
-</ul>
-</li>
-<li><a href="#org38a832c">3.5. Pod 的一生（lifetime）</a></li>
-</ul>
-</li>
+<li><a href="#org006c6ac">5. Pod 的持久性（或稀缺性）</a></li>
+<li><a href="#orgb3e6189">6. Pod 的状态标识</a></li>
+<li><a href="#org8433cfa">7. 容器探针(probes)</a></li>
+<li><a href="#org3ca3480">8. Pod 的重启策略</a></li>
+<li><a href="#org24ffabe">9. Pod 的lifetime</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org68cc86d" class="outline-2">
-<h2 id="org68cc86d"><span class="section-number-2">1</span> 概览</h2>
+<div id="outline-container-orgdfa964d" class="outline-2">
+<h2 id="orgdfa964d"><span class="section-number-2">1</span> 基本概念</h2>
 <div class="outline-text-2" id="text-1">
-</div>
-<div id="outline-container-orgdf48067" class="outline-3">
-<h3 id="orgdf48067"><span class="section-number-3">1.1</span> 理解 Pod</h3>
-<div class="outline-text-3" id="text-1-1">
 <p>
 Pod 是 Kubernetes 的基本执行单元，是对象模型中创建或者部署的最小和最简单的单元。Pod 表示在集群上运行的进程。
 </p>
 
 <p>
-Pod 封装了应用程序容器、存储、唯一网络 IP 以及控制器运行选项。
+<i>通常我们也把 pod 称之为应用的实例。</i>
 </p>
 
 <p>
-一个 Pod 表示部署单元：Kubernetes 中应用程序的单个实例。一个 Pod 包含的容器个数：
+一个 pod 中包含的容器个数：
 </p>
 
 <ul class="org-ul">
 <li><b>单个容器</b>
-一个 Pod 一个容器是最常见的 Kubernetes 用例；Kubernetes 直接管理 Pod，而不是容器。</li>
+一个 pod 一个容器是最常见的 Kubernetes 用例；Kubernetes 直接管理 Pod，而不是容器。</li>
 <li><b>多个紧密耦合且需要共享资源的容器</b>
 一般也是一个应用容器，其它的容器以 sidecar 的方式存在（系统级而非应用级）。</li>
 </ul>
 
 <p>
-一个 Pod 表示单个实例，如果希望横向扩展应用程序，应该创建多个 Pod（而不是一个 Pod 多个容器）。
-在 Kubernetes 中，这通常称之为 <i>副本(replication)</i> 。一组副本通常由抽象的控制器来创建和管理。
-</p>
-</div>
-
-<div id="outline-container-org13b58ca" class="outline-4">
-<h4 id="org13b58ca"><span class="section-number-4">1.1.1</span> Pod 是如何管理多个容器的</h4>
-<div class="outline-text-4" id="text-1-1-1">
-<p>
-同一个 Pod 的容器会自动安排到集群中的同一个节点上，一起调度；容器可以共享资源、依赖、彼此通信、协调终止方式。
-</p>
-
-<p>
-有些 Pod 具有 初始容器 和 应用容器。初始容器会在应用容器之前运行并完成。
-</p>
-
-<p>
-Pod 为组成容器提供了两种资源：网络和存储。
-</p>
-
-<p>
-<b>网络</b>
-</p>
-
-<p>
-每个 Pod 分配一个 IP 地址。内部容器共享网络命名空间，包括 IP 地址和网络端口。内部容器可以使用 <code>localhost</code> 互相通信。
-</p>
-
-<p>
-<b>存储</b>
-</p>
-
-<p>
-一个 Pod 可指定一组共享存储卷。内部容器可以访问共享卷，允许容器共享数据。
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orge21065d" class="outline-3">
-<h3 id="orge21065d"><span class="section-number-3">1.2</span> 使用 Pod</h3>
-<div class="outline-text-3" id="text-1-2">
-<p>
-Pod 通常不会被单独使用，不方便用户管理而且本身不能自愈。Kubernetes 通常使用一个更高级别的抽象成为 <i>控制器</i> 来管理。
-</p>
-</div>
-
-<div id="outline-container-org11343bc" class="outline-4">
-<h4 id="org11343bc"><span class="section-number-4">1.2.1</span> Pod 和控制器</h4>
-<div class="outline-text-4" id="text-1-2-1">
-<p>
-控制器可以创建和管理多个 Pod：处理副本和在集群范围内提供自愈功能。比如：一个节点失败了，控制器在不同的节点上调度副本。
-</p>
-
-<p>
-包含一个或者多个 Pod 的控制器的示例包括：
+总结 pod 的一些特性：
 </p>
 
 <ul class="org-ul">
-<li>Deployment</li>
-<li>StatefulSet</li>
-<li>DaemonSet</li>
-</ul>
-
-<p>
-控制器通常使用用户提供的 Pod 模板来创建它负责的 Pod。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org3b698fc" class="outline-4">
-<h4 id="org3b698fc"><span class="section-number-4">1.2.2</span> Pod 模板</h4>
-<div class="outline-text-4" id="text-1-2-2">
-<p>
-控制器使用 Pod 模板来制作实际使用的 Pod。比如：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
-<span style="color: #BA36A5;">kind</span>: Pod
-<span style="color: #BA36A5;">metadata</span>:
-  <span style="color: #BA36A5;">name</span>: myapp-pod
-  <span style="color: #BA36A5;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app</span>: myapp
-<span style="color: #BA36A5;">spec</span>:
-  <span style="color: #BA36A5;">containers</span>:
-  - <span style="color: #BA36A5;">name</span>: myapp-container
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">image</span>: busybox
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">command</span>: [<span style="color: #008000;">'sh'</span>, <span style="color: #008000;">'-c'</span>, <span style="color: #008000;">'echo Hello Kubernetes! &amp;&amp; sleep 3600'</span>]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org0eb38d8" class="outline-2">
-<h2 id="org0eb38d8"><span class="section-number-2">2</span> Pods</h2>
-<div class="outline-text-2" id="text-2">
-</div>
-<div id="outline-container-orgd8f1519" class="outline-3">
-<h3 id="orgd8f1519"><span class="section-number-3">2.1</span> Pod 是什么？</h3>
-<div class="outline-text-3" id="text-2-1">
-<ul class="org-ul">
-<li>Pod 中的容器共享存储、网络、以及怎样运行这些容器的声明。共享同一个 IP 地址和端口空间，可以通过 <code>localhost</code> 互相发现。</li>
-<li>Pod 中的内容总是一同调度，在共享的上下文（Linux namespace、cgroups、以及其它的潜在的资源隔离因素）中运行。</li>
-<li>Pod 的抽象定位是特定于应用的「逻辑主机」，包含一个或者多个容器，多个容器紧密的耦合在一起。</li>
+<li>Pod 中的容器共享存储（卷）、网络、以及怎样运行这些容器的声明。共享同一个 IP 地址和端口空间，可以通过 <code>localhost</code> 互相发现。</li>
+<li>Pod 中的内容总是一同调度，在共享的上下文（Linux namespace、cgroups、以及其它的潜在的资源隔离因素）中运行。
+同一个 pod 中的容器会安排到同一个节点中。</li>
+<li>Pod 的抽象定位是特定于应用的 <b>逻辑主机</b> ，包含一个或者多个容器，多个容器紧密的耦合在一起。</li>
 <li>Pod 内部容器之间可以通过标准的进程间（System V 信号量或者 POSIX 共享内存）通信方式通信，不同的 Pod 没有特殊的配置不能通过 IPC 通信，
 通常使用 IP 地址进行通信。</li>
 <li>Pod 被认为是一个短暂的实体，可能随时因为其它的原因销毁或者被其它节点的 Pod 替换掉。</li>
@@ -439,9 +306,9 @@ Pod 通常不会被单独使用，不方便用户管理而且本身不能自愈�
 </div>
 </div>
 
-<div id="outline-container-org177fae7" class="outline-3">
-<h3 id="org177fae7"><span class="section-number-3">2.2</span> 设计 Pod 的目的</h3>
-<div class="outline-text-3" id="text-2-2">
+<div id="outline-container-org1bcb826" class="outline-2">
+<h2 id="org1bcb826"><span class="section-number-2">2</span> 设计 pod 的目的</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 Pod 是形成内聚服务单元的多个协作过程模式的模型。它们提供了一个比它们的应用组成集合更高级的抽象，从而简化了应用的部署和管理。
 Pod 可以用作部署、水平扩展和制作副本的最小单元。
@@ -463,40 +330,131 @@ Pod 可以用作部署、水平扩展和制作副本的最小单元。
 </p>
 
 <p>
-这种处理方法尽管可以提供同址，但不能提供 Pod 的大部分好处，如资源共享、IPC、有保证的命运共享和简化的管理
+这种处理方法尽管可以提供同址，但不能提供 pod 的大部分好处，如资源共享、IPC、有保证的命运共享和简化的管理。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1b8592a" class="outline-2">
+<h2 id="org1b8592a"><span class="section-number-2">3</span> 使用 pod</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+尽管 pod 可以单独被创建，但是实际使用过程中，不会直接使用。因为以 pod 为单独，不方便用户管理而且服务不可自愈。
+Kubernetes 提供了更高级别的抽象 <i>控制器</i> 来管理 pod。
+</p>
+
+<p>
+控制器可以创建或者管理多个 Pod，他提供了集群范围内的自愈机制，比如：一个节点宕机了，控制器会把副本调度到其它节点，保证服务可用。
+</p>
+
+<p>
+常见的 pod 控制器有：Deployment, StatefulSet, DaemonSet 等。控制器通常使用用户提供的 pod 模板来创建 pod。模板样例：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
+<span style="color: #BA36A5;">kind</span>: Pod
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: myapp-pod
+  <span style="color: #BA36A5;">labels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app</span>: myapp
+<span style="color: #BA36A5;">spec</span>:
+  <span style="color: #BA36A5;">containers</span>:
+  - <span style="color: #BA36A5;">name</span>: myapp-container
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">image</span>: busybox
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">command</span>: [<span style="color: #008000;">'sh'</span>, <span style="color: #008000;">'-c'</span>, <span style="color: #008000;">'echo Hello Kubernetes! &amp;&amp; sleep 3600'</span>]
+</pre>
+</div>
+
+<p>
+上面提供了 pod 容器的名称、镜像和启动命令。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge3d1b19" class="outline-2">
+<h2 id="orge3d1b19"><span class="section-number-2">4</span> 终止 pod</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org62b3ab9" class="outline-3">
+<h3 id="org62b3ab9"><span class="section-number-3">4.1</span> 优雅终止</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+优雅终止 pod 是很重要的，用户可以设置容器的 <b>宽限期</b> ，默认的时间是 30 秒。流程如下：
+</p>
+
+<p>
+在用户请求删除 Pod 时，同时进行下面几步：
+</p>
+
+<ul class="org-ul">
+<li>Pod 会向容器主进程中发送 TERM 信号，然后等待 <b>宽限期</b> 。
+如果过了限制时间，就会发送 KILL 信号，然后就从 API 服务器上删除 Pod。</li>
+<li>Pod 状态就会设置为 "Terminating"，然后同步开始关闭 Pod 流程：
+<ol class="org-ol">
+<li>如果 pod 定义了 preStop Hook，就在 Pod 内部调用它。
+如果宽限期结束了，但是 <code>preStop</code> Hook 还在运行，会有一个小的宽限期（2 秒）</li>
+<li>给 pod 内的进程发送 TERM 信号。请注意：并不是所有的 Pod 容器同时收到 TERM 信号</li>
+</ol></li>
+<li>从 services 的 endpoints 中删除 pod，即从负载均衡器中删除</li>
+</ul>
+
+<p>
+最后，宽限期到时，依然运行的所有进程都会发出 SIGKILL 信号。kubelet 通过设置宽限期为 0 来完成 API server 中删除 pod 的操作。
 </p>
 
 <blockquote>
 <p>
-这两个问题可以合并到一起：为什么需要 Kubernetes 需要抽象一个 Pod 出来，而不是直接使用容器？
+站在用户（应用方）视角理解：
 </p>
+
+<ul class="org-ul">
+<li>设置的宽限期是给容器中服务优雅终止的时间。如果服务没有合理的处理 TERM 信号，或者宽限期内服务没有终止完成。Pod 是不会关心的；</li>
+<li>请求关闭 pod 之后的关闭 pod 逻辑和不对外提供服务是同时发生的；</li>
+<li>宽限期时间不是固定的，会根据 preStop 微调，但是宽限期时间倒计时到 0 时，会强制清理所有资源（发送 SIGKILL 信号）；</li>
+</ul>
 </blockquote>
 </div>
 </div>
 
-<div id="outline-container-orgb246d2d" class="outline-3">
-<h3 id="orgb246d2d"><span class="section-number-3">2.3</span> 使用 Pod</h3>
-<div class="outline-text-3" id="text-2-3">
+<div id="outline-container-org86fed04" class="outline-3">
+<h3 id="org86fed04"><span class="section-number-3">4.2</span> 强制删除</h3>
+<div class="outline-text-3" id="text-4-2">
 <p>
-通常，不会用单个 Pod 来运行同一应用程序的多个实例。
+强制删除指的是：从集群状态和 etcd 中立即删除 Pod；API 服务器不会等待 kubelet 的确认信息（该 Pod 是否被所运行的节点终止）。
+</p>
+
+<p>
+<i>强制删除对某些 Pod 可能具有潜在危险，应谨慎执行</i>
 </p>
 </div>
 </div>
+</div>
 
-<div id="outline-container-org8df02cd" class="outline-3">
-<h3 id="org8df02cd"><span class="section-number-3">2.4</span> Pod 的持久性（或稀缺性）</h3>
-<div class="outline-text-3" id="text-2-4">
+<div id="outline-container-org006c6ac" class="outline-2">
+<h2 id="org006c6ac"><span class="section-number-2">5</span> Pod 的持久性（或稀缺性）</h2>
+<div class="outline-text-2" id="text-5">
 <p>
-不能将 Pod 视为持久的实体。它们无法在调度失败、节点故障或其他驱逐策略（例如由于缺乏资源或在节点维护的情况下）中生存。
+<b>不能将 pod 视为持久的实体。</b> 它们无法在调度失败、节点故障或其他驱逐策略（例如由于缺乏资源或在节点维护的情况下）中生存。
 </p>
 
+<blockquote>
 <p>
-一般情况下，Pod 不会被直接使用。大都通过控制器创建（即便是只有一个实例），比如 Deployments。控制器提供集群范围的自修复以及副本数和滚动管理。
-StatefulSet 还支持有状态的 Pod。
+Pod 可以当做一个应用实例，但不能当成虚拟机的定位。它们的逻辑是完全不同的：
 </p>
 
+<ul class="org-ul">
+<li>虚拟机中运行的服务宕了之后只会重启服务自身，但不会重启虚拟机</li>
+<li>Pod 中运行的服务宕机，不会重启服务，也不会重启 pod，而是重新创建一个 pod，然后销毁掉之前的 pod</li>
+</ul>
+
 <p>
-即便这样，还是会暴露 Pod 原语，目的是方便：
+这种情况下 pod 的更新策略也叫 滚动更新。使用 Kubernetes 理解这一层至关重要。
+</p>
+</blockquote>
+
+<p>
+尽管按照上面说的 pod 的不会被直接使用，但还是会暴露 Pod 原语，目的是方便：
 </p>
 
 <ul class="org-ul">
@@ -508,89 +466,21 @@ StatefulSet 还支持有状态的 Pod。
 <li>高可用性应用程序期望在 Pod 终止之前并且肯定要在 Pod 被删除之前替换 Pod，例如在计划驱逐或镜像预先拉取的情况下</li>
 </ul>
 
-<blockquote>
 <p>
-其实就是为了组件解耦和方便管理。
-</p>
-</blockquote>
-</div>
-</div>
-
-<div id="outline-container-org7a35100" class="outline-3">
-<h3 id="org7a35100"><span class="section-number-3">2.5</span> Pod 的终止</h3>
-<div class="outline-text-3" id="text-2-5">
-<p>
-Pod 中包含容器进程，Pod 终止时，优雅的终止容器中的服务是至关重要的：用户可以设置容器的 <b>宽限期</b> ，默认的时间是 30 秒。
-</p>
-
-<p>
-在用户请求删除 Pod 时，Pod 会向容器主进程中发送 TERM 信号，然后等待 <b>宽限期</b> 。
-如果过了限制时间，就会发送 KILL 信号，然后就从 API 服务器上删除 Pod。
-</p>
-
-<p>
-当用户发送命令删除时，Pod 状态就会被显示为 「Terminating」，然后同步开始关闭 Pod 流程：
-</p>
-
-<ol class="org-ol">
-<li>如果 Pod 定义了 preStop Hook，就在 Pod 内部调用它。如果宽限期结束了，但是 <code>preStop</code> Hook 还在运行，会有一个小的宽限期（2 秒）</li>
-<li>给 Pod 内的进程发送 TERM 信号。请注意：并不是所有的 Pod 容器同时收到 TERM 信号</li>
-</ol>
-
-<p>
-与此同时（设置 Terminating 状态时），从服务的 Endpoint 列表中删除 Pod，Pod 也不再会被视为副本控制器的运行状态的 Pod 集的一部分
-（负载均衡器会从列表删除）。
-</p>
-
-<p>
-当宽限期到时，扔在 Pod 中运行的所有进程都会被 SIGKILL 信号杀死。kubelet 将通过设置宽限期为 0 （立即删除）来完成 API 服务器中删除 Pod 的操作。
-</p>
-
-<blockquote>
-<p>
-站在用户（应用方）视角理解：
-</p>
-
-<ul class="org-ul">
-<li>设置的宽限期是给容器中服务优雅终止的时间。如果服务没有合理的处理 TERM 信号，或者宽限期内服务没有终止完成。Pod 是不会关心的。</li>
-<li>请求关闭 Pod 之后的关闭 Pod 逻辑和不对外提供服务是同时发生的。</li>
-<li>宽限期时间不是固定的，会根据 preStop 微调，但是宽限期时间倒计时到 0 时，会强制清理所有资源（发送 SIGKILL 信号）。</li>
-</ul>
-</blockquote>
-</div>
-
-<div id="outline-container-orgeb90f6d" class="outline-4">
-<h4 id="orgeb90f6d"><span class="section-number-4">2.5.1</span> Pod 强制删除</h4>
-<div class="outline-text-4" id="text-2-5-1">
-<p>
-强制删除的定义是：从集群状态和 etcd 中立即删除 Pod； API 服务器不会等待 kubelet 的确认信息（该 Pod 是否被所运行的节点终止）。
-</p>
-
-<p>
-强制删除对某些 Pod 可能具有潜在危险，应谨慎执行。
+总结一句话， *其实就是为了组件解耦和方便管理*。
 </p>
 </div>
 </div>
-</div>
 
-<div id="outline-container-org7ddb51f" class="outline-3">
-<h3 id="org7ddb51f"><span class="section-number-3">2.6</span> API 对象</h3>
-<div class="outline-text-3" id="text-2-6">
+<div id="outline-container-orgb3e6189" class="outline-2">
+<h2 id="orgb3e6189"><span class="section-number-2">6</span> Pod 的状态标识</h2>
+<div class="outline-text-2" id="text-6">
 <p>
-Pod 是 REST API 的顶级资源，<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#pod-v1-core">https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#pod-v1-core</a>。
+Pod 的 <code>status</code> 字段是一个 PodStatus 对象，其中包含 <code>phase</code> 和 <code>conditions</code> 用来标识 pod 的状态。
 </p>
-</div>
-</div>
-</div>
-<div id="outline-container-org5e7d3b1" class="outline-2">
-<h2 id="org5e7d3b1"><span class="section-number-2">3</span> Pod 的生命周期</h2>
-<div class="outline-text-2" id="text-3">
-</div>
-<div id="outline-container-orgbfd2f91" class="outline-3">
-<h3 id="orgbfd2f91"><span class="section-number-3">3.1</span> Pod phase</h3>
-<div class="outline-text-3" id="text-3-1">
+
 <p>
-Pod 的 <code>status</code> 字段是一个 PodStatus 对象，其中包含一个 <code>phase</code> 字段。
+<b>phase</b>
 </p>
 
 <p>
@@ -643,14 +533,13 @@ Pod 的阶段（phase）是一个简单的，高层次的总结了 Pod 在生命
 </tr>
 </tbody>
 </table>
-</div>
-</div>
 
-<div id="outline-container-org5403725" class="outline-3">
-<h3 id="org5403725"><span class="section-number-3">3.2</span> Pod conditions</h3>
-<div class="outline-text-3" id="text-3-2">
 <p>
-Pod 包含一个 PodStatus 对象，包含一个数组来记录 Pod 通过或者未通过。其中的每个元素都有六个可能的字段：
+<b>conditions</b>
+</p>
+
+<p>
+<code>conditions</code> 是一个数组，来记录 pod 通过或者未通过。每个元素都可能有 6 个可能的字段：
 </p>
 
 <ul class="org-ul">
@@ -670,30 +559,107 @@ Pod 包含一个 PodStatus 对象，包含一个数组来记录 Pod 通过或者
 </div>
 </div>
 
-<div id="outline-container-orgd1f4420" class="outline-3">
-<h3 id="orgd1f4420"><span class="section-number-3">3.3</span> <span class="todo TODO">TODO</span> 容器探针（probes）</h3>
+<div id="outline-container-org8433cfa" class="outline-2">
+<h2 id="org8433cfa"><span class="section-number-2">7</span> 容器探针(probes)</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+探针（probes）是 kubelet 对容器的定时诊断。提供三种探测方式：
+</p>
+
+<ul class="org-ul">
+<li><b>ExecAction</b> 在容器内部执行命令。退出时状态码为 0 表示成功</li>
+<li><b>TCPSocketAction</b> TCP 端口监测。判断端口是否存在</li>
+<li><b>HTTPGetAction:</b> HTTP Get 请求。回包响应码等于 200 或者小于 400 会被认为执行成功</li>
+</ul>
+
+<p>
+每种探测方式的结果会有下面三种中的一种：
+</p>
+
+<ul class="org-ul">
+<li><b>成功</b> 通过诊断</li>
+<li><b>失败</b> 诊断失败</li>
+<li><b>未知</b> 诊断失败，但什么都不做</li>
+</ul>
+
+<p>
+kubelet 对已经运行的容器可选的执行下面三种探针：
+</p>
+
+<ul class="org-ul">
+<li><code>livenessProbe</code> 存活探针，表示容器是否处于运行。如果判断结果为失败，会杀掉容器（优雅终止）</li>
+<li><code>readinessProbe</code> 可用探针，表示容器是否可正常对外请求。如果判断结果为失败，会把该 pod 从 services 的 endpoint 列表中移出。
+也就是暂时不对外提供服务。</li>
+<li><code>startupProbe</code> 启动探针，表示容器中的应用程序是否已经启动。如果使用了启动探针，会禁掉其它的探针，直到启动探针成功为止。
+如果启动探针执行失败，kubelet 会杀掉容器（优雅终止）。</li>
+</ul>
+
+<p>
+上面三种探针都是可选的，如果不配置默认都是成功。
+</p>
+
+<ul class="org-ul">
+<li>慎用存活探针，服务临时不可用时杀掉服务，未必是你想要的。除非你的需求就是这样。</li>
+<li>建议服务都配置可用探针，服务不可用时，临时切掉流量，等恢复了在继续处理请求。
+尤其是服务的更新策略是滚动更新时，更加建议配置可用检测，等新的 pod 真正意义的上 ready 了，然后再删除旧的 pod，
+这样更平滑一些。</li>
+<li>启动探针是 <code>v1.16</code> 版本之后的新功能， <i>还不是很了解</i> 。</li>
+</ul>
 </div>
-<div id="outline-container-org4a4eb09" class="outline-3">
-<h3 id="org4a4eb09"><span class="section-number-3">3.4</span> <span class="todo TODO">TODO</span> Pod 和容器状态</h3>
-<div class="outline-text-3" id="text-3-4">
 </div>
-<div id="outline-container-orgad251d2" class="outline-4">
-<h4 id="orgad251d2"><span class="section-number-4">3.4.1</span> <span class="todo TODO">TODO</span> 容器状态</h4>
+
+<div id="outline-container-org3ca3480" class="outline-2">
+<h2 id="org3ca3480"><span class="section-number-2">8</span> Pod 的重启策略</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Pod 有可以设置重启策略，由 pod 所在容器的 kubelet 来判断容器状态（异常退出、存活检测失败），重启策略由 PodSpec 中的
+<code>restartPolicy</code> 字段来控制。
+</p>
+
+<ul class="org-ul">
+<li><code>Always</code> 当容器终止退出之后，自动重启，默认策略；</li>
+<li><code>OnFailure</code> 容器异常退出且退出码不为 0 时重启；</li>
+<li><code>Nerver</code> 容器退出时，不重启；</li>
+</ul>
+
+<p>
+在需要重启时，是基于延迟策略的间隔进行重启的（10s、20s、40s），上限是 5 分钟，并且成功执行 10 分钟之后重置。
+</p>
 </div>
-<div id="outline-container-org11e4e74" class="outline-4">
-<h4 id="org11e4e74"><span class="section-number-4">3.4.2</span> <span class="todo TODO">TODO</span> 容器 readiness gate</h4>
 </div>
-<div id="outline-container-org2aed6d9" class="outline-4">
-<h4 id="org2aed6d9"><span class="section-number-4">3.4.3</span> <span class="todo TODO">TODO</span> 重启策略</h4>
-</div>
-</div>
-<div id="outline-container-org38a832c" class="outline-3">
-<h3 id="org38a832c"><span class="section-number-3">3.5</span> Pod 的一生（lifetime）</h3>
+
+<div id="outline-container-org24ffabe" class="outline-2">
+<h2 id="org24ffabe"><span class="section-number-2">9</span> Pod 的lifetime</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+Pod 除非是人工或者控制器删除，否则会一直存在。当 pod 的数量超过配置的阈值时（由 kube-controller-manager 配置的
+<code>terminated-pod-gc-threshold</code> 决定），控制面板将清理终止的 pod（phase 值为 "success" 或者 "error"）。
+</p>
+
+<p>
+提供三种类型的控制器：
+</p>
+
+<ul class="org-ul">
+<li>Job 运行的预期会终止的 pods ，比如批量计算。Job 仅适用于 pod  <code>restartPolicy</code> 等于 OnFailure 或者 Never。</li>
+<li>ReplicationController, Replicaset 或者 Deployment 的 pods 预期不会被终止，比如 web 服务。
+ReplicationControllers 仅适用于 <code>restartPolicy</code> 为 always 的 pod。</li>
+<li>DaemonSet 运行的 pods 需要在每台机器上都运行一个，因为它们提供了特定于机器的系统服务。</li>
+</ul>
+
+<p>
+三种类型的控制器都包含 PodTemplate。建议创建合适的控制器（让它们来创建 pods），而不是手动创建 pods。
+因为 pods 本身不能抵御机器故障，但是控制器可以。
+</p>
+
+<p>
+如果节点宕掉或者与集群失联，kubernetes 会把所有的 pod phase 设置为 Failed。
+</p>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-08 15:20:07 <br />Last updated: 2020-03-31 Tue 16:05 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-02-08 15:20:07 <br />Last updated: 2020-04-07 Tue 09:58 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>
