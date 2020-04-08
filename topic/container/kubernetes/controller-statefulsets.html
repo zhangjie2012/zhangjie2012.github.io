@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <!-- 2020-04-08 Wed 11:45 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>容器化技术</title>
+<title>Kubernetes - Pod</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,7 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -243,88 +245,10 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">容器化技术</h1>
-
-<div id="outline-container-org318100b" class="outline-2">
-<h2 id="org318100b"><span class="todo TODO">TODO</span> 容器</h2>
+<h1 class="title">Kubernetes - Pod</h1>
 </div>
-<div id="outline-container-orga060df5" class="outline-2">
-<h2 id="orga060df5"><span class="todo TODO">TODO</span> Docker</h2>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-04-07 11:51:47 <br />Last updated: 2020-04-08 Wed 11:43 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
-<div id="outline-container-orga6a8b9c" class="outline-2">
-<h2 id="orga6a8b9c"><span class="todo TODO">TODO</span> Kubernetes</h2>
-<div class="outline-text-2" id="text-orga6a8b9c">
-<p>
-Kubernetes 是开源的微服务或者容器化应用的编排工具，是谷歌开发的集群管理工具（前身是谷歌内部运行十几年的集群管理工具 Borg<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>，
-Kubernetes 吸取 Borg 的经验，然后针对社区定制的开源版本<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>），现已捐赠给 CNCF<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>。
-</p>
-
-<p>
-Kubernetes 提供了服务发现和负载均衡、自动部署和回滚、弹性伸缩、健康检测和服务自愈等特性。它的主要目标是通过提供一组 REST APIS
-来隐藏管理容器的复杂性<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>。
-</p>
-</div>
-
-<div id="outline-container-org847fdd8" class="outline-3">
-<h3 id="org847fdd8">概念（Concepts）</h3>
-<div class="outline-text-3" id="text-org847fdd8">
-<ul class="org-ul">
-<li><a href="kubernetes/architecture.html">架构</a>: kubernetes 架构与组件概览</li>
-<li><a href="kubernetes/pod.html">Pod</a>: 概念、为什么需要 Pod、状态标识、健康检查、生命周期等</li>
-<li>控制器(controller):
-<ul class="org-ul">
-<li><a href="kubernetes/controller-replicaset.html">ReplicaSet</a></li>
-<li>ReplicationController: ReplicaSet 是下一代的 RC（支持新的基于集合的标签选择器），建议使用 RS</li>
-<li><a href="kubernetes/controller-deployments.html">Deployments</a></li>
-<li>StatefulSets</li>
-<li>DaemonSet</li>
-<li>Garbage Collection</li>
-<li>TTL Controler for Finished Resources</li>
-<li>Jobs - Run to Completion</li>
-<li>CronJob</li>
-</ul></li>
-<li>Services、负载均衡和集群网络: 服务对外暴露</li>
-<li>存储: Volumes, Persistent Volumes, Storage Class 等</li>
-<li>调度: 调度器和调度策略</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org2a7449c" class="outline-3">
-<h3 id="org2a7449c">kubectl CLI</h3>
-<div class="outline-text-3" id="text-org2a7449c">
-<p>
-kubectl 是用来管理 Kubernetes 集群的命令行工具。
-</p>
-
-<ul class="org-ul">
-<li><a href="kubernetes/kubectl-official.html">官方说明</a></li>
-</ul>
-</div>
-</div>
-</div>
-<div id="footnotes">
-<h2 class="footnotes">Footnotes: </h2>
-<div id="text-footnotes">
-
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
-<a href="https://research.google/pubs/pub44843/">Borg, Omega, and Kubernetes</a>
-</p></div></div>
-
-<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
-<a href="https://kubernetes.io/blog/2015/04/borg-predecessor-to-kubernetes/">Borg: The Predecessor to Kubernetes</a>
-</p></div></div>
-
-<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
-<a href="https://zh.wikipedia.org/wiki/Kubernetes">https://zh.wikipedia.org/wiki/Kubernetes</a>
-</p></div></div>
-
-<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
-<a href="https://wiki.aquasec.com/display/containers/Kubernetes+Architecture+101">https://wiki.aquasec.com/display/containers/Kubernetes+Architecture+101</a>
-</p></div></div>
-
-
-</div>
-</div></div>
 </body>
 </html>
