@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-04-07 Tue 09:59 -->
+<!-- 2020-04-07 Tue 18:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 控制器 - ReplicaSet</title>
@@ -246,12 +246,89 @@ for the JavaScript code in this tag.
 <body>
 <div id="content">
 <h1 class="title">Kubernetes 控制器 - ReplicaSet</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgb274be0">1. 工作原理</a></li>
+<li><a href="#org17b4121">2. 何时使用</a></li>
+<li><a href="#org926acce">3. 书写 ReplicaSet 清单</a></li>
+</ul>
+</div>
+</div>
 <p>
-ReplicaSet 的目标是稳定的维护 pod 副本的数量，保证给定数量的相同的 pod 的可用性。
+ReplicaSet（后面简称 RS） 是为了维护一组 Pod 副本的运行，作用就是保证这些 Pod 在集群中正常运行。
+</p>
+
+<div id="outline-container-orgb274be0" class="outline-2">
+<h2 id="orgb274be0"><span class="section-number-2">1</span> 工作原理</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+RS 使用字段定义，主要包括：
+</p>
+
+<ul class="org-ul">
+<li>选择器（selector）：来识别它可以获取的 Pods</li>
+<li>副本数量（replica）：表示维护的 Pod 数量</li>
+<li>Pod 模板（template）：表示创建 Pod 时所需要的信息</li>
+</ul>
+
+<p>
+RS 通过创建、删除 Pod 的方式来达到副本的期望（desired）数量，当它需要创建新的 Pod 时，会使用上面的 Pod 模板。
+</p>
+
+<p>
+RS 使用 Pod 的 metadata.ownerReferences 字段来与 Pod 之间建立连接（Pod 和 RS 的从属关系），指定当前对象所拥有的资源。
+使用 RS 创建的 Pods 都在 metadata.ownerReferences 中添加的自己的标识信息。
+</p>
+
+<p>
+RS 通过选择器来标识新的 Pods。如果一个 Pod 没有 OwnerReferences 或者 OwnerReference 不是 Controller，并且和
+RS 的选择器相匹配，那么 RS 会立即获取它。
 </p>
 </div>
+</div>
+
+<div id="outline-container-org17b4121" class="outline-2">
+<h2 id="org17b4121"><span class="section-number-2">2</span> 何时使用</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Deployment 相比 RS 是更高级的抽象来管理 ReplicaSets 和提供声明式的更新和其它有用的功能。因为，建议使用 Deployments
+而不直接使用 ReplicaSets，除非你需要自定义更新编排或者完全不需要更新。
+</p>
+
+<p>
+也就是说你永远不需要直接操作 RS 对象，而是通过修改 Deployment 中的 <code>spec</code> 部分来定义你的应用程序。
+</p>
+
+<p>
+注意：
+</p>
+
+<ul class="org-ul">
+<li><p>
+你可以直接创建 Pod，但是建议创建 Pod 时确保标签不要与已存在的 ReplicaSets 标签相同，否则会被 RS 获取到，然后被终止
+（因为 Pod 数量超过了 RS 所要求的数量）。
+</p>
+
+<p>
+如果你是先创建 Pod，然后创建 RS，那么 RS 会把该 Pod 作为 RS 的一部分，自己创建的 Pod 的数量将比实际的要少一个。
+</p></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org926acce" class="outline-2">
+<h2 id="org926acce"><span class="section-number-2">3</span> 书写 ReplicaSet 清单</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+<a href="https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#writing-a-replicaset-manifest">https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#writing-a-replicaset-manifest</a>
+</p>
+</div>
+</div>
+</div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-06 11:51:03 <br />Last updated: 2020-04-07 Tue 09:58 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-04-06 11:51:03 <br />Last updated: 2020-04-07 Tue 11:17 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>
