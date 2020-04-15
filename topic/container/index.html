@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-04-08 Wed 17:35 -->
+<!-- 2020-04-15 Wed 11:34 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>容器化技术</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="JerryZhang" />
+<meta name="author" content="admin" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -268,18 +268,22 @@ Kubernetes 提供了服务发现和负载均衡、自动部署和回滚、弹性
 <div id="outline-container-org847fdd8" class="outline-3">
 <h3 id="org847fdd8">概念（Concepts）</h3>
 <div class="outline-text-3" id="text-org847fdd8">
+<p>
+以下文档大都来自 Kubernetes 官方文档 <a href="https://kubernetes.io/docs/concepts/">Concepts</a>，加上自己的理解。
+</p>
+
 <ul class="org-ul">
 <li><a href="kubernetes/architecture.html">架构</a>: kubernetes 架构与组件概览</li>
 <li><a href="kubernetes/pod.html">Pod</a>: 概念、为什么需要 Pod、状态标识、健康检查、生命周期等</li>
 <li>控制器(controller):
 <ul class="org-ul">
-<li><a href="kubernetes/controller-replicaset.html">ReplicaSet</a></li>
-<li>ReplicationController: ReplicaSet 是下一代的 RC（支持新的基于集合的标签选择器），建议使用 RS</li>
-<li><a href="kubernetes/controller-deployments.html">Deployments</a></li>
-<li><a href="kubernetes/controller-statefulsets.html">StatefulSets</a></li>
-<li>DaemonSet</li>
-<li>Garbage Collection</li>
-<li>TTL Controler for Finished Resources</li>
+<li><a href="kubernetes/controller-replicaset.html">ReplicaSet</a>: 保证一组 Pod 副本在集群的正常运行</li>
+<li><del>ReplicationController</del>: ReplicaSet 是下一代的 RC（支持新的基于集合的标签选择器），建议使用 RS</li>
+<li><a href="kubernetes/controller-deployments.html">Deployments</a>: 用于无状态服务部署，在 ReplicaSet 基础上提供了更新策略等</li>
+<li><a href="kubernetes/controller-statefulsets.html">StatefulSets</a>: 用于部署无状态应用（ZooKeeper，Kafka，Redis 等）</li>
+<li><a href="kubernetes/controller-daemonset.html">DaemonSet</a>: 每个节点上跑一个 Pod，用作类似日志收集、系统监控等功能</li>
+<li><a href="kubernetes/controller-gc.html">Garbage Collection</a>: 负责集群资源回收</li>
+<li><a href="kubernetes/controller-ttlafterfinished.html">TTL Controller for Finished Resources</a>: 在对象执行完成后 TTL 秒，回收资源（目前仅用于 Job）</li>
 <li>Jobs - Run to Completion</li>
 <li>CronJob</li>
 </ul></li>
