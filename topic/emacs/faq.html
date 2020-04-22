@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-04-17 Fri 17:44 -->
+<!-- 2020-04-20 Mon 11:44 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Emacs 常见问题</title>
@@ -289,7 +289,8 @@ for the JavaScript code in this tag.
 </p>
 
 <p>
-多一个插件都会增加启动成本，不信你 <code>emacs -Q</code> 试试，所以要尽可能的减少插件。你可以使用 <a href="https://github.com/dacap/keyfreq">keyfreq</a> 来查看你常用的快捷键有哪些。筛选出不常用的插件给干掉，这是解决启动速度慢的根本办法。
+多一个插件都会增加启动成本，不信你 <code>emacs -Q</code> 试试，所以要尽可能的减少插件。你可以使用 <a href="https://github.com/dacap/keyfreq">keyfreq</a> 来查看你常用的快捷键有哪些。
+筛选出不常用的插件给干掉，这是解决启动速度慢的根本办法。
 </p>
 
 <p>
@@ -310,12 +311,10 @@ for the JavaScript code in this tag.
 elisp 比较熟的有自己的办法优化，当然我不熟。我的解决办法是：
 </p>
 
-<ul class="org-ul">
-<li>基本上不用的插件、UI 上炫酷的插件都干掉</li>
-<li>使用 <a href="https://github.com/jwiegley/use-package">use-package</a> ，use-package 并不是包管理工具，只是一个宏，用来配置和加载包。
-你可以设置延迟加载包，以提高第一次打开的速度。还有一个好处是，使用 use-package 组织包更清晰，对于 use-package 我还处于研究阶段，
-粗暴的使用 <code>:init</code> 和 <code>:config</code> 配置，实际上有很多优雅的方法</li>
-</ul>
+<p>
+使用 <a href="https://github.com/jwiegley/use-package">use-package</a> ，use-package 并不是包管理工具，只是一个宏，用来配置和加载包。你可以通过配置（合理的使用 init、config、hook、
+bind 等）实现延迟加载，提高打开的速度。
+</p>
 </div>
 </div>
 
@@ -350,7 +349,7 @@ elisp 比较熟的有自己的办法优化，当然我不熟。我的解决办�
 </p>
 
 <p>
-对我来说，GUI 中英文等宽等高的问题无法解决，折腾了很多次，最终决定实用终端，不折腾了。
+对我来说，GUI 中英文等宽等高的问题无法解决，折腾了很多次，最终决定使用终端，不折腾了。
 </p>
 </div>
 </div>
@@ -406,12 +405,14 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </p>
 
 <ol class="org-ol">
-<li>在 Emacs 中所有的快捷键对应的都是一个 Lisp 函数，快捷键忘了的话，可以使用 <code>M-x</code> 调用函数来实现相应的功能（如果使用了 helm 或者 ivy，绑定的快捷键会自动显示出来）</li>
+<li>在 Emacs 中所有的快捷键对应的都是一个 Lisp 函数，快捷键忘了的话，可以使用 <code>M-x</code> 调用函数来实现相应的功能
+（如果使用了 helm 或者 ivy，绑定的快捷键会自动显示出来）</li>
 <li>查看当前 mode 的所有快捷键可以使用 <code>C-h m</code> 寻求帮助，正如第一条所述： <code>C-h m</code> 对应的函数是 <code>describe-mode</code></li>
 </ol>
 
 <p>
-另外，Emacs 有个 <a href="https://github.com/justbur/emacs-which-key">emacs-which-key</a> 的插件，有快捷键提示。比如，在 Markdown 模式下，快捷键前缀都是 <code>C-c C-c</code> 但是后面你可能忘了，当你按下 <code>C-c C-c</code> 时，它会这样提示你：
+另外，Emacs 有个 <a href="https://github.com/justbur/emacs-which-key">emacs-which-key</a> 的插件，有快捷键提示。比如，在 Markdown 模式下，快捷键前缀都是 <code>C-c C-c</code> 但是后面你可能忘了，
+当你按下 <code>C-c C-c</code> 时，它会这样提示你：
 </p>
 
 
@@ -504,8 +505,8 @@ spinner 在 <code>gnu</code> 中，确保 <code>package-archives</code> 中包�
 <h3 id="org63a7956"><span class="section-number-3">2.2</span> lsp go: Suspicious state fromsyntax checker go-vet ?</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
-错误是由 flycheck 报出来的，高于 1.12 的 Go <code>go vet</code> 已被废弃，而是使用 <code>go tool vet</code> 代替。 flycheck 最新稳定的版本还停留在 <code>Flycheck 31</code> 支持到 go1.11 。
-解决办法是要么升级 flycheck，使用 <code>melpa</code> 源，不要用 <code>melpa-stable</code> 即可 <sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>。
+错误是由 flycheck 报出来的，高于 1.12 的 Go <code>go vet</code> 已被废弃，而是使用 <code>go tool vet</code> 代替。
+flycheck 最新稳定的版本还停留在 <code>Flycheck 31</code> 支持到 go1.11 。解决办法是要么升级 flycheck，使用 <code>melpa</code> 源，不要用 <code>melpa-stable</code> 即可 <sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>。
 </p>
 </div>
 </div>
@@ -534,7 +535,7 @@ spinner 在 <code>gnu</code> 中，确保 <code>package-archives</code> 中包�
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-28 20:44:09 <br />Last updated: 2020-04-17 Fri 17:39 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-03-28 20:44:09 <br />Last updated: 2020-04-20 Mon 11:40 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>
