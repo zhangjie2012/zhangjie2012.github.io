@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-04-28 Tue 11:44 -->
+<!-- 2020-05-08 Fri 10:18 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Emacs IDE</title>
@@ -250,12 +250,13 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2eb4b87">1. <span class="todo TODO">TODO</span> 项目管理</a></li>
-<li><a href="#org2414696">2. 编程语言</a>
+<li><a href="#org2eb4b87">1. 项目管理</a></li>
+<li><a href="#org9f60001">2. 编程</a>
 <ul>
-<li><a href="#org803b509">2.1. Go</a></li>
-<li><a href="#org9e6a3a5">2.2. <span class="todo TODO">TODO</span> Python</a></li>
-<li><a href="#org3d880e7">2.3. LSP 使用</a></li>
+<li><a href="#org3d880e7">2.1. LSP 使用</a></li>
+<li><a href="#org6534bff">2.2. <span class="todo TODO">TODO</span> Web 开发</a></li>
+<li><a href="#org803b509">2.3. Go</a></li>
+<li><a href="#org9e6a3a5">2.4. <span class="todo TODO">TODO</span> Python</a></li>
 </ul>
 </li>
 </ul>
@@ -263,12 +264,57 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-org2eb4b87" class="outline-2">
-<h2 id="org2eb4b87"><span class="section-number-2">1</span> <span class="todo TODO">TODO</span> 项目管理</h2>
+<h2 id="org2eb4b87"><span class="section-number-2">1</span> 项目管理</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+使用 <a href="https://github.com/bbatsov/projectile">projectile</a> 管理项目，非常方便。svn/git 项目会认为是一个 projectile，而且 ignore 的文件和目录也会自动过滤。
+你也可以手动添加 <code>.projectile</code> 标识。
+</p>
+
+<p>
+leading 键我映射成了 <code>C-c p</code> 和 <code>&lt;f8&gt;</code> 。比较常用的有：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>p</code></td>
+<td class="org-left">切换项目</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>f</code></td>
+<td class="org-left">从项目中打开文件</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>b</code></td>
+<td class="org-left">在项目 buffer 中切换</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>i</code></td>
+<td class="org-left">使缓存失效，在项目有很多文件变更时执行一次，重建缓存</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
-<div id="outline-container-org2414696" class="outline-2">
-<h2 id="org2414696"><span class="section-number-2">2</span> 编程语言</h2>
+<div id="outline-container-org9f60001" class="outline-2">
+<h2 id="org9f60001"><span class="section-number-2">2</span> 编程</h2>
 <div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org3d880e7" class="outline-3">
+<h3 id="org3d880e7"><span class="section-number-3">2.1</span> LSP 使用</h3>
+<div class="outline-text-3" id="text-2-1">
 <blockquote>
 <p>
 语言的开发环境配置一直很费时间，我记得以前刚配置 C/C++ 的开发环境时，折腾了一个月左右时间才找到一个相对比较
@@ -284,11 +330,62 @@ for the JavaScript code in this tag.
 目前已经默认支持 Python 和 Go 了，虽然还是有许许多多的 Bug，但比起 2018 年我试的时候已经成熟太多了。有社区的驱动，发展很快。
 </p>
 </blockquote>
+
+<ol class="org-ol">
+<li><code>lsp-workspace-folders-remove</code> 可以移出之前添加的 workspace，但是如果遇到大的目录变更，一个一个的移出很慢。
+目前似乎没有提供一次性 remove all 的方法。一个解决办法是删除 lsp 的存储文件（lsp 提供了 <code>lsp-session-file</code> 变量来定义文件路径，
+默认在 <code>.emacs.d/.lsp-session-*</code> 路径下，如果没找到也可以在 lsp 源代码中搜索 lsp-session-file）。</li>
+<li>当前 LSP 还不太稳定，遇到各种问题就可以重启是最有效的办法： <code>lsp-workspace-restart</code></li>
+</ol>
+
+<p>
+常用快捷键：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>M-.</code></td>
+<td class="org-left">跳转到定义</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-,</code></td>
+<td class="org-left">返回，与 <code>M-,</code> 一起使用</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-c f</code></td>
+<td class="org-left">格式化</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;f9&gt; s r</code></td>
+<td class="org-left">重启 lsp workspace</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;f9&gt; f r</code></td>
+<td class="org-left">查找所有引用</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
+<div id="outline-container-org6534bff" class="outline-3">
+<h3 id="org6534bff"><span class="section-number-3">2.2</span> <span class="todo TODO">TODO</span> Web 开发</h3>
+</div>
 <div id="outline-container-org803b509" class="outline-3">
-<h3 id="org803b509"><span class="section-number-3">2.1</span> Go</h3>
-<div class="outline-text-3" id="text-2-1">
+<h3 id="org803b509"><span class="section-number-3">2.3</span> Go</h3>
+<div class="outline-text-3" id="text-2-3">
 <p>
 按照 <a href="https://golang.org/doc/install">官方说明</a> 安装 Go，LSP server 用的是 <a href="https://github.com/golang/tools/tree/master/gopls">gopls</a>。
 </p>
@@ -298,31 +395,19 @@ guru: a tool for answering questions about Go source code.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">go get golang.org/x/tools/cmd/guru
-<span style="color: #BA36A5;">GO111MODULE</span>=on go get golang.org/x/tools/gopls@latest
+<pre class="src src-sh"><span style="color: #BA36A5;">GO111MODULE</span>=on go get golang.org/x/tools/gopls@latest
 </pre>
 </div>
 </div>
 </div>
 
 <div id="outline-container-org9e6a3a5" class="outline-3">
-<h3 id="org9e6a3a5"><span class="section-number-3">2.2</span> <span class="todo TODO">TODO</span> Python</h3>
-</div>
-<div id="outline-container-org3d880e7" class="outline-3">
-<h3 id="org3d880e7"><span class="section-number-3">2.3</span> LSP 使用</h3>
-<div class="outline-text-3" id="text-2-3">
-<ol class="org-ol">
-<li><code>lsp-workspace-folders-remove</code> 可以移出之前添加的 workspace，但是如果遇到大的目录变更，一个一个的移出很慢。
-目前似乎没有提供一次性 remove all 的方法。一个解决办法是删除 lsp 的存储文件（lsp 提供了 <code>lsp-session-file</code> 变量来定义文件路径，
-默认在 <code>.emacs.d/.lsp-session-*</code> 路径下，如果没找到也可以在 lsp 源代码中搜索 lsp-session-file）。</li>
-<li>当前 LSP 还不太稳定，遇到各种问题就可以重启是最有效的办法： <code>lsp-workspace-restart</code></li>
-</ol>
-</div>
+<h3 id="org9e6a3a5"><span class="section-number-3">2.4</span> <span class="todo TODO">TODO</span> Python</h3>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-28 20:38:14 <br />Last updated: 2020-04-28 Tue 11:40 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-03-28 20:38:14 <br />Last updated: 2020-05-07 Thu 17:43 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>

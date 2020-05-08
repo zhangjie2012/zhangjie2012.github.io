@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-04-20 Mon 11:20 -->
+<!-- 2020-05-08 Fri 10:18 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Ubuntu</title>
@@ -253,14 +253,7 @@ for the JavaScript code in this tag.
 <li><a href="#org3c4253f">1. 设置国内源</a></li>
 <li><a href="#org1e72a63">2. 代理</a>
 <ul>
-<li><a href="#org15d81aa">2.1. SS</a>
-<ul>
-<li><a href="#org94d63d1">2.1.1. 客户端</a></li>
-<li><a href="#orge797234">2.1.2. ss-local 配置</a></li>
-<li><a href="#orgbdd928d">2.1.3. Chrome 浏览器代理</a></li>
-<li><a href="#orge9a2215">2.1.4. 终端代理</a></li>
-</ul>
-</li>
+<li><a href="#orgd377c23">2.1. Ubuntu Server</a></li>
 <li><a href="#org828e2ea">2.2. SSR</a></li>
 </ul>
 </li>
@@ -313,27 +306,13 @@ for the JavaScript code in this tag.
 <h2 id="org1e72a63"><span class="section-number-2">2</span> 代理</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org15d81aa" class="outline-3">
-<h3 id="org15d81aa"><span class="section-number-3">2.1</span> SS</h3>
+<div id="outline-container-orgd377c23" class="outline-3">
+<h3 id="orgd377c23"><span class="section-number-3">2.1</span> Ubuntu Server</h3>
 <div class="outline-text-3" id="text-2-1">
-</div>
-<div id="outline-container-org94d63d1" class="outline-4">
-<h4 id="org94d63d1"><span class="section-number-4">2.1.1</span> 客户端</h4>
-<div class="outline-text-4" id="text-2-1-1">
-<ol class="org-ol">
-<li>命令行：<a href="https://github.com/shadowsocks/shadowsocks-libev">https://github.com/shadowsocks/shadowsocks-libev</a> <code>sudo apt install shadowsocks-libev</code></li>
-<li>GUI：<a href="https://github.com/shadowsocks/shadowsocks-qt5">https://github.com/shadowsocks/shadowsocks-qt5</a></li>
-</ol>
-
 <p>
-GUI 版本很不稳定，不如直接使用命令行（ <code>ss-local</code> ），配合 <code>systemd</code> 设置服务开机启动。
+安装 shadowsock-libev, <code>apt install shadowsocks-libev</code> ，客户端连接只需要 <code>ss-local</code> 。
 </p>
-</div>
-</div>
 
-<div id="outline-container-orge797234" class="outline-4">
-<h4 id="orge797234"><span class="section-number-4">2.1.2</span> ss-local 配置</h4>
-<div class="outline-text-4" id="text-2-1-2">
 <p>
 配置文件在 <code>/etc/shadowsocks-libev</code> 目录下。文件内容改为：
 </p>
@@ -349,27 +328,20 @@ GUI 版本很不稳定，不如直接使用命令行（ <code>ss-local</code> �
 </pre>
 
 <p>
-systemd unit 名字为： <code>shadowsock-libev</code> 直接重启即可。设置开机启动 <code>systemctl enable shadowsock-libev</code> 。
+systemd unit 文件是： <code>shadowsocks-libev-local@.service</code> ，把其中的配置文件路径修改成实际的配置文件。
 </p>
-</div>
-</div>
 
-<div id="outline-container-orgbdd928d" class="outline-4">
-<h4 id="orgbdd928d"><span class="section-number-4">2.1.3</span> Chrome 浏览器代理</h4>
-<div class="outline-text-4" id="text-2-1-3">
-<p>
-因为鸡生蛋，蛋生鸡的问题，需要手动安装 <a href="https://github.com/FelisCatus/SwitchyOmega">SwitchyOmega</a>，新版本的 Chrome 不允许安装第三方的插件，会报错。一个投机取巧的办法是将 crx 后缀改为 zip，打开开发者模式，然后拖入，经测试可行。
-</p>
+<ul class="org-ul">
+<li>重启 ss-local <code>systemctl restart shadowsocks-libev-local@.</code></li>
+<li>查看服务运行状态 <code>systemctl status shadowsocks-libev-local@.</code></li>
+<li>查询运行日志 <code>journalctl -f -u shadowsocks-libev-local@.</code></li>
+<li>设置开机启动 <code>systemctl enable shadowsocks-libev-local@.</code></li>
+</ul>
 
 <p>
-规则列表网址： <code>https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt</code>
+shadowsocks 是一个 socks5 代理，想用 http 代理需要做一层转换。
 </p>
-</div>
-</div>
 
-<div id="outline-container-orge9a2215" class="outline-4">
-<h4 id="orge9a2215"><span class="section-number-4">2.1.4</span> 终端代理</h4>
-<div class="outline-text-4" id="text-2-1-4">
 <p>
 Sock5 proxy：<a href="https://www.irif.fr/~jch/software/polipo/">Polipo</a>
 </p>
@@ -381,7 +353,7 @@ Sock5 proxy：<a href="https://www.irif.fr/~jch/software/polipo/">Polipo</a>
 </p>
 <pre class="example">
 proxyAddress = "0.0.0.0"
-
+proxyPort = 8123
 socksParentProxy = "127.0.0.1:1080"
 socksProxyType = socks5
 </pre></li>
@@ -389,17 +361,16 @@ socksProxyType = socks5
 </ol>
 
 <p>
-设置代理（polipo 的端口是 8123）：
+设置代理（polipo 的端口是 8123，可以换成其他的）：
 </p>
 
 <pre class="example">
-export http_proxy="http://127.0.0.1:8123" export https_proxy="http://127.0.0.1:8123"
+export http_proxy="http://127.0.0.1:8123" &amp;&amp; export https_proxy="http://127.0.0.1:8123"
 </pre>
 
 <p>
 测试是否生效: <code>curl ip.gs</code>
 </p>
-</div>
 </div>
 </div>
 
@@ -483,6 +454,18 @@ GNOME 太不稳定了，换到了 Xubuntu，世界顿时清净了。
 
 <p>
 迫于 Ubuntu 20.04 的诱惑，升级到了 20.04。
+</p>
+
+<p>
+<span class="timestamp-wrapper"><span class="timestamp">&lt;2020-05-01 Fri&gt;</span></span>
+</p>
+
+<p>
+换回 Windows 10 + 虚拟机了，不折腾了，Linux 桌面只适合研发，工具链撑不起来，弃了。
+</p>
+
+<p>
+<b>本文档只针对 Ubuntu Server。</b>
 </p>
 </div>
 </div>
@@ -636,7 +619,7 @@ deepin-wine 确实可行，但是问题挺多的，体验很差，还是算了�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-09-10 21:39:56 <br />Last updated: 2020-04-20 Mon 10:21 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2018-09-10 21:39:56 <br />Last updated: 2020-05-06 Wed 10:10 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>

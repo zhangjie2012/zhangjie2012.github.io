@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-05-07 Thu 18:02 -->
+<!-- 2020-05-08 Fri 10:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Service</title>
@@ -252,13 +252,21 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#org0f23829">1. 动机</a></li>
 <li><a href="#orgb4128f8">2. Service 资源</a></li>
-<li><a href="#org39e4ca5">3. <span class="todo TODO">TODO</span> 定义 Service</a>
+<li><a href="#org39e4ca5">3. 定义 Service</a>
 <ul>
 <li><a href="#org15caacb">3.1. 没有选择器的 Services</a></li>
-<li><a href="#orgbc891af">3.2. <span class="todo TODO">TODO</span> EndpointSlices</a></li>
+<li><a href="#orgbc891af">3.2. EndpointSlices</a></li>
+<li><a href="#org0f9427e">3.3. Application Protocol</a></li>
 </ul>
 </li>
-<li><a href="#orgde8050d">4. <span class="todo TODO">TODO</span> 虚拟 IPs 和服务代理</a></li>
+<li><a href="#orgde8050d">4. <span class="todo TODO">TODO</span> 虚拟 IPs 和服务代理</a>
+<ul>
+<li><a href="#org2efd559">4.1. 为什么不使用 DNS 轮询？</a></li>
+<li><a href="#orgbb85e2b">4.2. 使用空间代理模式（User space proxy mode）</a></li>
+<li><a href="#orgf2e2f56">4.3. <code>iptables</code> 代理模式</a></li>
+<li><a href="#orgc57deeb">4.4. IPVS 代理模式</a></li>
+</ul>
+</li>
 <li><a href="#orgc045095">5. <span class="todo TODO">TODO</span> 多端口 Services</a></li>
 <li><a href="#orgcb7af96">6. <span class="todo TODO">TODO</span> 选择自己的 IP 地址</a></li>
 <li><a href="#org714413a">7. <span class="todo TODO">TODO</span> 服务发现</a></li>
@@ -323,7 +331,7 @@ Service 是一种抽象，定义了 Pod 的逻辑集合和访问策略（有时�
 </div>
 
 <div id="outline-container-org39e4ca5" class="outline-2">
-<h2 id="org39e4ca5"><span class="section-number-2">3</span> <span class="todo TODO">TODO</span> 定义 Service</h2>
+<h2 id="org39e4ca5"><span class="section-number-2">3</span> 定义 Service</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Service 和 Pod 一样，是一个 REST 对象，和其它的对象一样，你可以 <code>POST</code> 一个 Service 到 API server 来创建一个实例。
@@ -441,12 +449,179 @@ ExternalName Service 是 Service 的特例，它没有选择器，而是使用 D
 </div>
 
 <div id="outline-container-orgbc891af" class="outline-3">
-<h3 id="orgbc891af"><span class="section-number-3">3.2</span> <span class="todo TODO">TODO</span> EndpointSlices</h3>
+<h3 id="orgbc891af"><span class="section-number-3">3.2</span> EndpointSlices</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+<a href="https://kubernetes.io/docs/concepts/services-networking/service/#endpointslices">https://kubernetes.io/docs/concepts/services-networking/service/#endpointslices</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0f9427e" class="outline-3">
+<h3 id="org0f9427e"><span class="section-number-3">3.3</span> Application Protocol</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+<a href="https://kubernetes.io/docs/concepts/services-networking/service/#application-protocol">https://kubernetes.io/docs/concepts/services-networking/service/#application-protocol</a>
+</p>
+</div>
 </div>
 </div>
 
 <div id="outline-container-orgde8050d" class="outline-2">
 <h2 id="orgde8050d"><span class="section-number-2">4</span> <span class="todo TODO">TODO</span> 虚拟 IPs 和服务代理</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> 。 <code>kube-proxy</code> 的责任是实现除了 ExternalName 之外的 <code>Services</code> 的虚拟 IP。
+</p>
+</div>
+
+<div id="outline-container-org2efd559" class="outline-3">
+<h3 id="org2efd559"><span class="section-number-3">4.1</span> 为什么不使用 DNS 轮询？</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+经常会有人问，为什么 Kubernetes 要依赖于代理将流量转发到后端，而不是使用其他方式，比如说：是否可以配置具有多个 A 值的 DNS 记录，
+并依靠轮询名称进行解析呢？
+</p>
+
+<p>
+使用服务代理有以下几个原因：
+</p>
+
+<ul class="org-ul">
+<li>DNS 实现的历史悠久都不遵守记录的 TTLs，并且在查找结果过期后进行缓存。</li>
+<li>某些应用仅执行一次 DNS 查找，并无限期缓存结果。</li>
+<li>即使应用程序和程序库做了适当的重新解析，DNS 的低或者 0 TTLs 可能会给 DNS 带来高负载，从而使 DNS 变的难以管理。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbb85e2b" class="outline-3">
+<h3 id="orgbb85e2b"><span class="section-number-3">4.2</span> 使用空间代理模式（User space proxy mode）</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+在此模式下，Kube-proxy 监听 Kubernetes master 以添加或者删除 Service 和 Endpoint 对象。
+对于每一个 Service ，它都会在本地节点上打开一个端口（随机选择）。与此代理端口的连接将代理到 Service 后端 Pod 之一。
+在决定选择哪一个后端 Pod 时，kube-proxy 会考虑 Service 的 <code>SessionAffinity</code> 设置。
+</p>
+
+<p>
+最后，user-space 代理安装 iptables 规则，以捕获到 Service 的 <code>clusterIP</code> 和 <code>port</code> 的流量。规则将流量重定向到代理后端 Pod 的
+代理端口。
+</p>
+
+<p>
+默认情况下，user-proxy 模式下的 kube-proxy 通过轮询算法选择后端。
+</p>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/e351b830334b8622a700a8da6568cb081c464a9b/13020/images/docs/services-userspace-overview.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+<p><span class="figure-number">Figure 1: </span>from <a href="https://kubernetes.io/">https://kubernetes.io/</a></p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf2e2f56" class="outline-3">
+<h3 id="orgf2e2f56"><span class="section-number-3">4.3</span> <code>iptables</code> 代理模式</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+在这种模式下，kube-proxy 监听 Kubernetes 控制面板用于添加和删除 Service 和 Endpoint 对象。对于每一个 Services，它安装
+iptables 规则，用来捕获到 Service 的 <code>clusterIP</code> 和 <code>port</code> 的流量，然后将该流量重定向到 Services 的后端集合之一。
+对于每一个 Endpoint 对象，都会安装 iptables 规则来选择后端 Pod。
+</p>
+
+<p>
+默认情况下，iptables 模式下的 kube-proxy 会随机选择一个后端。
+</p>
+
+<p>
+使用 iptables 处理流有较低的系统开销，因为流量由 Linux netfilter 处理，而无需在用户空间和内核空间之间切换。这种方法也可能更可靠。
+</p>
+
+<p>
+如果 kube-proxy 在 iptables 模式下运行，并且所选择的第一个 Pod 没有响应，则连接失败。这和 userspace 模式不同在于：
+在这种情况下，kube-proxy 会检测与第一个 Pod 的连接失败，并会自动使用其它后端 Pod 重试。
+</p>
+
+<p>
+你可以使用 Pod 的可用检测（readiness）探针来检测后端 Pods 是不是正常运行，确保 kube-proxy 只看到经过测试后正常的后端。
+这样做可以避免流量通过 kube-proxy 发送到已知故障的 Pod。
+</p>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/27b2978647a8d7bdc2a96b213f0c0d3242ef9ce0/e8c9b/images/docs/services-iptables-overview.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+<p><span class="figure-number">Figure 2: </span>from <a href="https://kubernetes.io/">https://kubernetes.io/</a></p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc57deeb" class="outline-3">
+<h3 id="orgc57deeb"><span class="section-number-3">4.4</span> IPVS 代理模式</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+<code>Kubernetes v1.11</code> 之后支持的特性, <span class="underline">stable</span> 。
+</p>
+
+<p>
+在 <code>ipvs</code> 模式中，kube-proxy 监听 Kubernetes Services 和 Endpoints，调用 <code>netlink</code> 接口创建对应的 IPVS 规则并定期与 Kubernetes
+中的对象保持同步。这种控制循环可确保 IPVS 状态与所期望状态匹配。当访问 Service 时，IPVS 直接转发流量到一个后端 Pod 中。
+</p>
+
+<p>
+IPVS 代理模式基于 netfilter hook 函数与 iptables 模式类似，但是它使用哈希表作为基础数据结构，并在内核空间中工作。
+这意味着 kube-proxy 在 IPVS 模式重定向流量延迟比 iptables 模式下的 kube-proxy 还要低，在同步代理规则时具有更好的性能。
+与其他代理模式相比，IPVS 模式还支持更高网络流量吞吐量。
+</p>
+
+<p>
+IPVS 为后端 Pods 流量的负载均衡提供了更多的选项：
+</p>
+
+<ul class="org-ul">
+<li><code>rr</code> 轮询</li>
+<li><code>lc</code> 最小连接（打开连接的最小数量）</li>
+<li><code>dh</code> 目标 hashing</li>
+<li><code>sh</code> 源 hashing</li>
+<li><code>sed</code> 最短预期延迟</li>
+<li><code>nq</code> 永不排队（never queue）</li>
+</ul>
+
+<blockquote>
+<p>
+<b>注意：</b>
+使用 IPVS 模式的 kube-proxy，必须在启动 kube-proxy 之前使 IPVS Linux 在节点上可用。
+</p>
+
+<p>
+当 kube-proxy 在 IPVS 代理模式下启动，它会验证 IPVS 内核模块是否可用。如果 IPVS 内核模块没有被检测到，它会以 iptables 代理
+模式运行。
+</p>
+</blockquote>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/2d3d2b521cf7f9ff83238218dac1c019c270b1ed/9ac5c/images/docs/services-ipvs-overview.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+<p><span class="figure-number">Figure 3: </span>from <a href="https://kubernetes.io/">https://kubernetes.io/</a></p>
+</div>
+
+<p>
+在这些代理模式中，Service 的 IP 流量限制：在客户端不知道 Kubernetes 或者 Service 或者 Pod 的任何信息的情况下，将 Port 代理到合适的后端。
+</p>
+
+<p>
+如果你想确保每次都将来自特定的客户端的连接都传递给相同的 Pod，你可以通过设置客户端基于 IP 地址的会话亲和性
+<code>service.spec.sessionAffinity</code> 设置为 "ClientIP" （默认情况下是 "None"）。你也可以适当的设置
+<code>service.spec.sessionAffinityConfig.clientIP.timeoutSeconds</code> 来控制最大会话粘性时间。（默认是 10800，3小时）。
+</p>
+</div>
+</div>
 </div>
 
 <div id="outline-container-orgc045095" class="outline-2">
@@ -486,7 +661,7 @@ ExternalName Service 是 Service 的特例，它没有选择器，而是使用 D
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2020-04-29 Wed 10:43 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2020-05-08 Fri 10:27 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>
