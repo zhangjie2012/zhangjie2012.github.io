@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-05-08 Fri 10:18 -->
+<!-- 2020-05-11 Mon 10:18 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Ubuntu</title>
@@ -262,22 +262,21 @@ for the JavaScript code in this tag.
 <li><a href="#orgc3c20fc">5. Xfce</a></li>
 <li><a href="#org4c8ee0f">6. FAQ</a>
 <ul>
-<li><a href="#org4006f87">6.1. 安装 xfce 之后，卸载不干净怎么办？</a></li>
-<li><a href="#org62c700c">6.2. 系统设置被卸载掉了，如何安装回来？</a></li>
-<li><a href="#orgde99511">6.3. 如何启动 ROOT 用户</a></li>
-<li><a href="#org7109192">6.4. 启动速度慢调试</a></li>
-<li><a href="#org674e3e5">6.5. 18.04 蓝牙每次重启之后不会自动连接</a></li>
-<li><a href="#org0e58ecb">6.6. fcitx + 搜狗拼音经常会出现某一个核 CPU 占 100 的情况</a></li>
-<li><a href="#orgfed7a73">6.7. 重启 fcitx 之后，Emacs GUI 无法进行输入法切换</a></li>
-<li><a href="#orgd8e271f">6.8. 使用 wine 安装微信、企业微信等</a></li>
+<li><a href="#org360ff68">6.1. Dell 安装 Ubuntu 找不到硬盘问题</a></li>
+<li><a href="#org4006f87">6.2. 安装 xfce 之后，卸载不干净怎么办？</a></li>
+<li><a href="#org62c700c">6.3. 系统设置被卸载掉了，如何安装回来？</a></li>
+<li><a href="#orgde99511">6.4. 如何启动 ROOT 用户</a></li>
+<li><a href="#org7109192">6.5. 启动速度慢调试</a></li>
+<li><a href="#org674e3e5">6.6. 18.04 蓝牙每次重启之后不会自动连接</a></li>
+<li><a href="#org0e58ecb">6.7. fcitx + 搜狗拼音经常会出现某一个核 CPU 占 100 的情况</a></li>
+<li><a href="#orgfed7a73">6.8. 重启 fcitx 之后，Emacs GUI 无法进行输入法切换</a></li>
+<li><a href="#orgd8e271f">6.9. 使用 wine 安装微信、企业微信等</a></li>
+<li><a href="#orga2c9904">6.10. 笔记本合屏之后，阻止自动休眠</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<p>
-系统版本: <del>Xubuntu 18.04</del> Ubuntu 20.04 beta
-</p>
 
 <div id="outline-container-org3c4253f" class="outline-2">
 <h2 id="org3c4253f"><span class="section-number-2">1</span> 设置国内源</h2>
@@ -310,8 +309,15 @@ for the JavaScript code in this tag.
 <h3 id="orgd377c23"><span class="section-number-3">2.1</span> Ubuntu Server</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
-安装 shadowsock-libev, <code>apt install shadowsocks-libev</code> ，客户端连接只需要 <code>ss-local</code> 。
+安装 shadowsock-libev, <code>apt install shadowsocks-libev</code> ，客户端连接只需要 <code>ss-local</code> 。先停掉无关的服务：
 </p>
+
+<div class="org-src-container">
+<pre class="src src-shell">systemctl disable shadowsocks-libev.service
+systemctl stop shadowsocks-libev.service
+</pre>
+</div>
+
 
 <p>
 配置文件在 <code>/etc/shadowsocks-libev</code> 目录下。文件内容改为：
@@ -357,7 +363,7 @@ proxyPort = 8123
 socksParentProxy = "127.0.0.1:1080"
 socksProxyType = socks5
 </pre></li>
-<li>重启: <code>system restart polipo</code></li>
+<li>重启: <code>systemctl restart polipo</code></li>
 </ol>
 
 <p>
@@ -522,9 +528,18 @@ GNOME 太不稳定了，换到了 Xubuntu，世界顿时清净了。
 <h2 id="org4c8ee0f"><span class="section-number-2">6</span> FAQ</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-org4006f87" class="outline-3">
-<h3 id="org4006f87"><span class="section-number-3">6.1</span> 安装 xfce 之后，卸载不干净怎么办？</h3>
+<div id="outline-container-org360ff68" class="outline-3">
+<h3 id="org360ff68"><span class="section-number-3">6.1</span> Dell 安装 Ubuntu 找不到硬盘问题</h3>
 <div class="outline-text-3" id="text-6-1">
+<p>
+进 BIOS 设置硬盘，将 raid on 改为 ahci。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4006f87" class="outline-3">
+<h3 id="org4006f87"><span class="section-number-3">6.2</span> 安装 xfce 之后，卸载不干净怎么办？</h3>
+<div class="outline-text-3" id="text-6-2">
 <ul class="org-ul">
 <li>卸载 <code>xfce4-*</code></li>
 <li>卸载 <code>xubuntu-*</code></li>
@@ -537,8 +552,8 @@ GNOME 太不稳定了，换到了 Xubuntu，世界顿时清净了。
 </div>
 
 <div id="outline-container-org62c700c" class="outline-3">
-<h3 id="org62c700c"><span class="section-number-3">6.2</span> 系统设置被卸载掉了，如何安装回来？</h3>
-<div class="outline-text-3" id="text-6-2">
+<h3 id="org62c700c"><span class="section-number-3">6.3</span> 系统设置被卸载掉了，如何安装回来？</h3>
+<div class="outline-text-3" id="text-6-3">
 <pre class="example">
 sudo apt-get install gnome-control-center
 </pre>
@@ -546,8 +561,8 @@ sudo apt-get install gnome-control-center
 </div>
 
 <div id="outline-container-orgde99511" class="outline-3">
-<h3 id="orgde99511"><span class="section-number-3">6.3</span> 如何启动 ROOT 用户</h3>
-<div class="outline-text-3" id="text-6-3">
+<h3 id="orgde99511"><span class="section-number-3">6.4</span> 如何启动 ROOT 用户</h3>
+<div class="outline-text-3" id="text-6-4">
 <p>
 默认的 root 是被锁定的，要先指定一个密码： <code>sudo passwd root</code> ，Ubuntu 默认禁用 root ssh，需要打开：
 </p>
@@ -560,8 +575,8 @@ sudo apt-get install gnome-control-center
 </div>
 
 <div id="outline-container-org7109192" class="outline-3">
-<h3 id="org7109192"><span class="section-number-3">6.4</span> 启动速度慢调试</h3>
-<div class="outline-text-3" id="text-6-4">
+<h3 id="org7109192"><span class="section-number-3">6.5</span> 启动速度慢调试</h3>
+<div class="outline-text-3" id="text-6-5">
 <ul class="org-ul">
 <li><code>systemd-analyze</code></li>
 <li><code>systemd-analyze critical-chain</code></li>
@@ -574,8 +589,8 @@ via: <a href="https://www.dedoimedo.com/computers/ubuntu-beaver-slow-boot.html">
 </div>
 
 <div id="outline-container-org674e3e5" class="outline-3">
-<h3 id="org674e3e5"><span class="section-number-3">6.5</span> 18.04 蓝牙每次重启之后不会自动连接</h3>
-<div class="outline-text-3" id="text-6-5">
+<h3 id="org674e3e5"><span class="section-number-3">6.6</span> 18.04 蓝牙每次重启之后不会自动连接</h3>
+<div class="outline-text-3" id="text-6-6">
 <p>
 使用 bluetoothctl 添加设备 TRUST：
 </p>
@@ -587,8 +602,8 @@ via: <a href="https://www.dedoimedo.com/computers/ubuntu-beaver-slow-boot.html">
 </div>
 
 <div id="outline-container-org0e58ecb" class="outline-3">
-<h3 id="org0e58ecb"><span class="section-number-3">6.6</span> fcitx + 搜狗拼音经常会出现某一个核 CPU 占 100 的情况</h3>
-<div class="outline-text-3" id="text-6-6">
+<h3 id="org0e58ecb"><span class="section-number-3">6.7</span> fcitx + 搜狗拼音经常会出现某一个核 CPU 占 100 的情况</h3>
+<div class="outline-text-3" id="text-6-7">
 <p>
 网上说在 fctix 输入法配置 -&gt; 附加组件 -&gt; 高级 -&gt; 然后把 "搜狗云拼音" 去掉就可以了。
 </p>
@@ -600,8 +615,8 @@ via: <a href="https://www.dedoimedo.com/computers/ubuntu-beaver-slow-boot.html">
 </div>
 
 <div id="outline-container-orgfed7a73" class="outline-3">
-<h3 id="orgfed7a73"><span class="section-number-3">6.7</span> 重启 fcitx 之后，Emacs GUI 无法进行输入法切换</h3>
-<div class="outline-text-3" id="text-6-7">
+<h3 id="orgfed7a73"><span class="section-number-3">6.8</span> 重启 fcitx 之后，Emacs GUI 无法进行输入法切换</h3>
+<div class="outline-text-3" id="text-6-8">
 <p>
 <code>Ctrl+Space</code> 默认被认为了 Emacs 中的文本 Mark Active，解决办法是重启 Emacs 。
 </p>
@@ -609,17 +624,26 @@ via: <a href="https://www.dedoimedo.com/computers/ubuntu-beaver-slow-boot.html">
 </div>
 
 <div id="outline-container-orgd8e271f" class="outline-3">
-<h3 id="orgd8e271f"><span class="section-number-3">6.8</span> 使用 wine 安装微信、企业微信等</h3>
-<div class="outline-text-3" id="text-6-8">
+<h3 id="orgd8e271f"><span class="section-number-3">6.9</span> 使用 wine 安装微信、企业微信等</h3>
+<div class="outline-text-3" id="text-6-9">
 <p>
 deepin-wine 确实可行，但是问题挺多的，体验很差，还是算了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga2c9904" class="outline-3">
+<h3 id="orga2c9904"><span class="section-number-3">6.10</span> 笔记本合屏之后，阻止自动休眠</h3>
+<div class="outline-text-3" id="text-6-10">
+<p>
+<code>/etc/systemd/logind.conf</code> 中的 <code>HandleLidSwitch</code> 打开，并且值修改为 <code>ignore</code> 。然后 <code>service systemd-logind restart</code> 。
 </p>
 </div>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-09-10 21:39:56 <br />Last updated: 2020-05-06 Wed 10:10 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2018-09-10 21:39:56 <br />Last updated: 2020-05-11 Mon 10:13 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>

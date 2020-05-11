@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-04-20 Mon 11:44 -->
+<!-- 2020-05-11 Mon 10:18 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Emacs 常见问题</title>
@@ -253,18 +253,19 @@ for the JavaScript code in this tag.
 <li><a href="#org4879574">1. FAQ</a>
 <ul>
 <li><a href="#orgc8390ec">1.1. Emacs 启动速度太慢怎么办？</a></li>
-<li><a href="#org1bd7765">1.2. 如何将 markdown 转成 org-mode</a></li>
+<li><a href="#orgacec0f2">1.2. eshell git diff 高亮</a></li>
 <li><a href="#org0b88a79">1.3. Org mode 如何排序，按列表，按标题等</a></li>
-<li><a href="#org37d71f5">1.4. 使用 GUI 版本还是 Terminal ?</a></li>
-<li><a href="#orgc9af87e">1.5. 如何去掉空白字符</a></li>
-<li><a href="#org4cf0442">1.6. 如何显示所有安装的 package</a></li>
-<li><a href="#org53e8e13">1.7. 如何更新所有的依赖包？</a></li>
-<li><a href="#org7f132fc">1.8. 如何记忆 Emacs 快捷键？</a></li>
-<li><a href="#org990fa52">1.9. 如何软重启 Emacs？</a></li>
-<li><a href="#orgd1617a3">1.10. 我可不可以用 Emacs 完成 XXX 能做的事情？</a></li>
-<li><a href="#org907b8e5">1.11. 是否要使用 Evil ？</a></li>
-<li><a href="#org6a9ec02">1.12. 行逆序排序</a></li>
-<li><a href="#orgacec0f2">1.13. eshell git diff 高亮</a></li>
+<li><a href="#org605c7ef">1.4. Windows 系统下使用 Emacs</a></li>
+<li><a href="#org6a9ec02">1.5. 行逆序排序</a></li>
+<li><a href="#org53e8e13">1.6. 如何更新所有的依赖包？</a></li>
+<li><a href="#org7f132fc">1.7. 如何记忆 Emacs 快捷键？</a></li>
+<li><a href="#org1bd7765">1.8. 如何将 markdown 转成 org-mode</a></li>
+<li><a href="#orgc9af87e">1.9. 如何去掉空白字符</a></li>
+<li><a href="#org990fa52">1.10. 如何软重启 Emacs？</a></li>
+<li><a href="#org4cf0442">1.11. 如何显示所有安装的 package</a></li>
+<li><a href="#org37d71f5">1.12. 使用 GUI 版本还是 Terminal ?</a></li>
+<li><a href="#org907b8e5">1.13. 是否要使用 Evil ？</a></li>
+<li><a href="#orgd1617a3">1.14. 我可不可以用 Emacs 完成 XXX 能做的事情？</a></li>
 </ul>
 </li>
 <li><a href="#orgbf4a01c">2. Troubleshooting</a>
@@ -318,17 +319,21 @@ bind 等）实现延迟加载，提高打开的速度。
 </div>
 </div>
 
-<div id="outline-container-org1bd7765" class="outline-3">
-<h3 id="org1bd7765"><span class="section-number-3">1.2</span> 如何将 markdown 转成 org-mode</h3>
+<div id="outline-container-orgacec0f2" class="outline-3">
+<h3 id="orgacec0f2"><span class="section-number-3">1.2</span> eshell git diff 高亮</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
-<code>.org</code> 文件可以很轻松的通过 <code>org-md-export-to-markdown</code> 生成 <code>.md</code> 文件。 <code>.md</code> 文件可以借助 Pandoc 生成 <code>.org</code>  <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
+在 <code>.git/config</code> 文件中添加<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>：
 </p>
 
-<div class="org-src-container">
-<pre class="src src-shell">pandoc -f markdown -t org -o test.org test.md
+<pre class="example">
+[color]
+	ui = always
 </pre>
-</div>
+
+<p>
+因为我用的是 eshell，ansi-term 默认就是一个 ansi color 的 term。但是用惯了 eshell 不想换了。
+</p>
 </div>
 </div>
 
@@ -341,54 +346,33 @@ bind 等）实现延迟加载，提高打开的速度。
 </div>
 </div>
 
-<div id="outline-container-org37d71f5" class="outline-3">
-<h3 id="org37d71f5"><span class="section-number-3">1.4</span> 使用 GUI 版本还是 Terminal ?</h3>
+<div id="outline-container-org605c7ef" class="outline-3">
+<h3 id="org605c7ef"><span class="section-number-3">1.4</span> Windows 系统下使用 Emacs</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
-推荐 GUI 的人比 Terminal 的多很多，这个分歧很大，各有优劣势。
+Emacs 本身是支持 Windows 系统的，但是它的一些都依赖于系统命令，比如 projectile 会用到 tr，counsel 会用到 ag 等。
+所以整体来讲 Windows 下的 Emacs 还是比较弱的。
 </p>
 
 <p>
-对我来说，GUI 中英文等宽等高的问题无法解决，折腾了很多次，最终决定使用终端，不折腾了。
+我在 Windows 下只用 Emacs 写文档（org），不写代码。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc9af87e" class="outline-3">
-<h3 id="orgc9af87e"><span class="section-number-3">1.5</span> 如何去掉空白字符</h3>
+<div id="outline-container-org6a9ec02" class="outline-3">
+<h3 id="org6a9ec02"><span class="section-number-3">1.5</span> 行逆序排序</h3>
 <div class="outline-text-3" id="text-1-5">
-<ul class="org-ul">
-<li><code>M-\</code> ：删除光标周围的空格和 tab</li>
-<li><code>M-&lt;SPC&gt;</code> ：删除光标周围的空格和 tab，但是保留一个</li>
-</ul>
-
-<p>
-另外，我会给文件保存（~C-x s~）时，添加一个 hook：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> show-trailing-whitespace t<span style="color: #707183;">)</span>
-<span style="color: #707183;">(</span>add-hook 'before-save-hook 'delete-trailing-whitespace<span style="color: #707183;">)</span>
-</pre>
-</div>
-
-<p>
-这样在每次保存文件的时候，会自动删掉每行或者段落后面多于的空白字符和空行。
-</p>
+<ol class="org-ol">
+<li><code>M-x sort-lines</code></li>
+<li><code>M-x reverse-region</code></li>
+</ol>
 </div>
 </div>
 
-<div id="outline-container-org4cf0442" class="outline-3">
-<h3 id="org4cf0442"><span class="section-number-3">1.6</span> 如何显示所有安装的 package</h3>
-<div class="outline-text-3" id="text-1-6">
-<p>
-<code>C-h v package-activated-list</code>
-</p>
-</div>
-</div>
 <div id="outline-container-org53e8e13" class="outline-3">
-<h3 id="org53e8e13"><span class="section-number-3">1.7</span> 如何更新所有的依赖包？</h3>
-<div class="outline-text-3" id="text-1-7">
+<h3 id="org53e8e13"><span class="section-number-3">1.6</span> 如何更新所有的依赖包？</h3>
+<div class="outline-text-3" id="text-1-6">
 <ol class="org-ol">
 <li><code>M-x list-package</code></li>
 <li><code>U</code> 标记所有不是最新的包</li>
@@ -398,8 +382,8 @@ bind 等）实现延迟加载，提高打开的速度。
 </div>
 
 <div id="outline-container-org7f132fc" class="outline-3">
-<h3 id="org7f132fc"><span class="section-number-3">1.8</span> 如何记忆 Emacs 快捷键？</h3>
-<div class="outline-text-3" id="text-1-8">
+<h3 id="org7f132fc"><span class="section-number-3">1.7</span> 如何记忆 Emacs 快捷键？</h3>
+<div class="outline-text-3" id="text-1-7">
 <p>
 Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外（就是上面描述的内容）并不需要刻意的记忆，只要你掌握了两点：
 </p>
@@ -423,9 +407,47 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 </div>
 
-<div id="outline-container-org990fa52" class="outline-3">
-<h3 id="org990fa52"><span class="section-number-3">1.9</span> 如何软重启 Emacs？</h3>
+<div id="outline-container-org1bd7765" class="outline-3">
+<h3 id="org1bd7765"><span class="section-number-3">1.8</span> 如何将 markdown 转成 org-mode</h3>
+<div class="outline-text-3" id="text-1-8">
+<p>
+<code>.org</code> 文件可以很轻松的通过 <code>org-md-export-to-markdown</code> 生成 <code>.md</code> 文件。 <code>.md</code> 文件可以借助 Pandoc 生成 <code>.org</code>  <sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">pandoc -f markdown -t org -o test.org test.md
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc9af87e" class="outline-3">
+<h3 id="orgc9af87e"><span class="section-number-3">1.9</span> 如何去掉空白字符</h3>
 <div class="outline-text-3" id="text-1-9">
+<ul class="org-ul">
+<li><code>M-\</code> ：删除光标周围的空格和 tab</li>
+<li><code>M-&lt;SPC&gt;</code> ：删除光标周围的空格和 tab，但是保留一个</li>
+</ul>
+
+<p>
+另外，我会给文件保存（~C-x s~）时，添加一个 hook：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #0000FF;">setq</span> show-trailing-whitespace t<span style="color: #707183;">)</span>
+<span style="color: #707183;">(</span>add-hook 'before-save-hook 'delete-trailing-whitespace<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+这样在每次保存文件的时候，会自动删掉每行或者段落后面多于的空白字符和空行。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org990fa52" class="outline-3">
+<h3 id="org990fa52"><span class="section-number-3">1.10</span> 如何软重启 Emacs？</h3>
+<div class="outline-text-3" id="text-1-10">
 <p>
 所谓软重启指的是通过命令重新加载配置文件：
 </p>
@@ -441,48 +463,53 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 </div>
 
-<div id="outline-container-orgd1617a3" class="outline-3">
-<h3 id="orgd1617a3"><span class="section-number-3">1.10</span> 我可不可以用 Emacs 完成 XXX 能做的事情？</h3>
-<div class="outline-text-3" id="text-1-10">
+<div id="outline-container-org4cf0442" class="outline-3">
+<h3 id="org4cf0442"><span class="section-number-3">1.11</span> 如何显示所有安装的 package</h3>
+<div class="outline-text-3" id="text-1-11">
 <p>
-没有银弹！纵然 Emacs 可能「可以做任何事情」，比如收发邮件、GTD、阅读 pdf、打开图片等等。然而我以为用合适的工具做合适的事情才是重要的.
+<code>C-h v package-activated-list</code>
+</p>
+</div>
+</div>
+<div id="outline-container-org37d71f5" class="outline-3">
+<h3 id="org37d71f5"><span class="section-number-3">1.12</span> 使用 GUI 版本还是 Terminal ?</h3>
+<div class="outline-text-3" id="text-1-12">
+<p>
+推荐 GUI 的人比 Terminal 的多很多，这个分歧很大，各有优劣势。
+</p>
+
+<p>
+对我来说，GUI 中英文等宽等高的问题无法解决，折腾了很多次，最终决定使用终端，不折腾了。
+</p>
+
+<p>
+<span class="timestamp-wrapper"><span class="timestamp">&lt;2020-05-09 Sat 11:41&gt;</span></span>
+</p>
+
+<p>
+终于找到一个绝对的等宽等高中英文混排而且好看的字体，感动到 cry。
+</p>
+
+<p>
+更纱黑体：<a href="https://github.com/be5invis/Sarasa-Gothic">https://github.com/be5invis/Sarasa-Gothic</a>
 </p>
 </div>
 </div>
 
 <div id="outline-container-org907b8e5" class="outline-3">
-<h3 id="org907b8e5"><span class="section-number-3">1.11</span> 是否要使用 Evil ？</h3>
-<div class="outline-text-3" id="text-1-11">
+<h3 id="org907b8e5"><span class="section-number-3">1.13</span> 是否要使用 Evil ？</h3>
+<div class="outline-text-3" id="text-1-13">
 <p>
 因人而异，如果之前你曾是 Vim 用户，建议你用 Evil。因为我一开始就用的是 Emacs，而不是 Vim，所以我一直用的是 Emacs 的键映射。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6a9ec02" class="outline-3">
-<h3 id="org6a9ec02"><span class="section-number-3">1.12</span> 行逆序排序</h3>
-<div class="outline-text-3" id="text-1-12">
-<ol class="org-ol">
-<li><code>M-x sort-lines</code></li>
-<li><code>M-x reverse-region</code></li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-orgacec0f2" class="outline-3">
-<h3 id="orgacec0f2"><span class="section-number-3">1.13</span> eshell git diff 高亮</h3>
-<div class="outline-text-3" id="text-1-13">
+<div id="outline-container-orgd1617a3" class="outline-3">
+<h3 id="orgd1617a3"><span class="section-number-3">1.14</span> 我可不可以用 Emacs 完成 XXX 能做的事情？</h3>
+<div class="outline-text-3" id="text-1-14">
 <p>
-在 <code>.git/config</code> 文件中添加<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>：
-</p>
-
-<pre class="example">
-[color]
-	ui = always
-</pre>
-
-<p>
-因为我用的是 eshell，ansi-term 默认就是一个 ansi color 的 term。但是用惯了 eshell 不想换了。
+没有银弹！纵然 Emacs 可能「可以做任何事情」，比如收发邮件、GTD、阅读 pdf、打开图片等等。然而我以为用合适的工具做合适的事情才是重要的.
 </p>
 </div>
 </div>
@@ -516,7 +543,7 @@ flycheck 最新稳定的版本还停留在 <code>Flycheck 31</code> 支持到 go
 <div id="text-footnotes">
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
-<a href="https://emacs.stackexchange.com/questions/5465/how-to-migrate-markdown-files-to-emacs-org-mode-format">https://emacs.stackexchange.com/questions/5465/how-to-migrate-markdown-files-to-emacs-org-mode-format</a>
+<a href="http://mbork.pl/2018-06-10_Git_diff_in_Eshell">http://mbork.pl/2018-06-10_Git_diff_in_Eshell</a>
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
@@ -524,7 +551,7 @@ flycheck 最新稳定的版本还停留在 <code>Flycheck 31</code> 支持到 go
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
-<a href="http://mbork.pl/2018-06-10_Git_diff_in_Eshell">http://mbork.pl/2018-06-10_Git_diff_in_Eshell</a>
+<a href="https://emacs.stackexchange.com/questions/5465/how-to-migrate-markdown-files-to-emacs-org-mode-format">https://emacs.stackexchange.com/questions/5465/how-to-migrate-markdown-files-to-emacs-org-mode-format</a>
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
@@ -535,7 +562,7 @@ flycheck 最新稳定的版本还停留在 <code>Flycheck 31</code> 支持到 go
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-28 20:44:09 <br />Last updated: 2020-04-20 Mon 11:40 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-03-28 20:44:09 <br />Last updated: 2020-05-11 Mon 10:13 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
 </div>
 </body>
 </html>
