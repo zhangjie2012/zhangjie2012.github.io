@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2020-05-18 Mon 10:46 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>[译] Docker 和 VM 的区别</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">[译] Docker 和 VM 的区别</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgff3340c">1. 问题</a></li>
+<li><a href="#orge385a62">2. 答案</a>
+<ul>
+<li><a href="#orge39ff44">2.1. by Ken Cochrane</a></li>
+<li><a href="#org0e453c3">2.2. by manu97</a></li>
+<li><a href="#org5d9c3b6">2.3. by Ashish Bista</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+原帖链接：<a href="https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine">https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine</a>
+</p>
+
+<div id="outline-container-orgff3340c" class="outline-2">
+<h2 id="orgff3340c"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>Docker 是怎么做到提供完整的文件系统和网络环境隔离，但却不那么重量级呢？</li>
+<li>为什么使用 Docker 镜像部署软件比简单的部署在一致的生产环境要更容易呢？</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge385a62" class="outline-2">
+<h2 id="orge385a62"><span class="section-number-2">2</span> 答案</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orge39ff44" class="outline-3">
+<h3 id="orge39ff44"><span class="section-number-3">2.1</span> by <a href="https://stackoverflow.com/users/356788/ken-cochrane">Ken Cochrane</a></h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Docker 最初使用的是 <a href="https://linuxcontainers.org/">LinuX Containers</a>（LXC），但是后来切换到了 <a href="https://github.com/opencontainers/runc">runC</a>（之前称为 <code>libcontainer</code> ），它可以把同一个操作系统做为运行主机。这就允许它共享宿主机操作系统的资源。此外，它使用分层文件系统（<a href="http://aufs.sourceforge.net/">AuFS</a>）并管理网络。
+</p>
+
+<p>
+AuFS 是一个分层的文件系统，你可以将只读部分和写入部分合并在一起。它将操作系统部分设置为只读（给所有的容器一起共享），然后对容器挂载部分进行写入。
+</p>
+
+<p>
+所以说，如果你有 1 GB 大小的容器镜像；如果你想使用完整的 VM，你可能需要 1 GB 乘以你所需要的 VMs 数量（的大小）。但使用 Docker 和 AuFS 的话，你可以在容器中共享 1G 的大部分，如果你有 1000 个容器，
+你可能只需要比 1 GB 多一些的空间就足够了（假设它们用的是相同的操作系统镜像）。
+</p>
+
+<p>
+完整的虚拟化系统可能或者给它分配的资源，实现最小的共享。为了实现尽可能多的隔离，就会变得很重量级（需要更多的资源）。使用 Docker，隔离少，但是很轻量级（需要更少的资源消耗）。
+所以，你可以在主机上轻松运行上千个容器，都不会抖动。假如使用的 Xen，除非你有一个巨大的主机（才能实现相同的量级），但我认为这是不可能实现的。
+</p>
+
+<p>
+完整的虚拟化系统启动可能需要几分钟，但是 Docker/LXC/runC 容器只需要几秒钟，甚至不超过一秒钟。
+</p>
+
+<p>
+每种类型的虚拟化系统都有利弊。如果你希望完全做到资源的隔离，VM 是正确的选择。如果你只需要进程层面的隔离，并且希望在一定大小的主机上运行大量的进程，Docker/LXC/runC 是更好的选择。
+</p>
+
+<p>
+更多信息，请查看 <a href="http://web.archive.org/web/20150326185901/http://blog.dotcloud.com/under-the-hood-linux-kernels-on-dotcloud-part">这一系列文章</a>，他们很好的解释了 LXC 的工作原理。
+</p>
+
+<blockquote>
+<p>
+为什么使用 Docker 镜像部署软件比简单的部署在一致的生产环境要更容易呢？
+</p>
+</blockquote>
+
+<p>
+首先采用一致的生产环境说起来容易实施起来难，即便你使用 <a href="https://en.wikipedia.org/wiki/Chef_%28software%29">Chef</a> 和 <a href="https://en.wikipedia.org/wiki/Puppet_%28software%29">Puppet</a> 这种工具，也会遇到操作系统更新以及主机和环境之间发生变化其他情况。
+</p>
+
+<p>
+Docker 可以将操作系统的快照放到共享镜像中，并且更容易的部署在 Docker 主机上。在本地开发环境、质检环境、生产环境中，都有相同的镜像。当然你也可以使用其他的工具，但不是那么容易或者快速。
+</p>
+
+<p>
+在测试方面也非常的合适；假设你有数千个需要连接到数据库的测试，每个测试都需要有数据库的原始副本，并且不会对数据进行更改。传统的解决办法是每次测试之后使用自定义代码或者 <a href="https://flywaydb.org/">Flyway</a> 等工具重置数据库 - 这是非常耗时的，并且意味着测试必须连续运行。
+然而，使用 Docker，你可以创建一个数据库的镜像，并且在每个测试中运行一个实例，然后运行所有的测试，因为你知道他们只是针对相同的数据库快照进行测试。因为测试的并行的，应该很快就可以完成。如果使用 VM 完成累死的工作，你试试看~
+</p>
+
+<p>
+对评论的解释：
+</p>
+
+<blockquote>
+<p>
+非常有趣！但我仍然对「快照」操作系统感到困惑。如果没有镜像的话，我该怎么制作操作系统的镜像？
+</p>
+</blockquote>
+
+<p>
+好吧，我来试着解释一下。你从基础镜像开始，添加你需要做的改动，然后提交更改到 docker 中，这会创建一个新的镜像。
+这个镜像只包含与基础镜像的差异。如果要运行镜像，你也需要基础镜像，它使用分层文件系统将你的镜像分层在基础镜像之上：如上所述，Docker 使用 AUFS。AUFS 将不同的层合并在一起，就得到了你想要镜像；你只需要运行就行了。
+你可以继续添加更多的镜像（多了一层），它只是保存差异。由于 Docker 通常建立在来自 <a href="https://hub.docker.com/">registry</a>（译者：镜像仓库）之上，所以你不需要自己制作操作系统镜像。
+</p>
+
+<p>
+一些评论补充：
+</p>
+
+<blockquote>
+<p>
+@Andy：Ken 在表述的时候一些地方把操作系统和内容混为一谈了。主机上所有容器都在同一个内核下运行的，但是其余的 OS 文件对于每个容器都是唯一的。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org0e453c3" class="outline-3">
+<h3 id="org0e453c3"><span class="section-number-3">2.2</span> by <a href="https://stackoverflow.com/users/2478933/manu97">manu97</a></h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+一张图即可说明容器和 VM 的区别：
+</p>
+
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/docker_vs_VM.png" alt="docker_vs_VM.png" />
+</p>
+</div>
+
+<p>
+<b>容器（CONTAINERS）</b>
+</p>
+
+<p>
+容器是应用层面的抽象，将代码和依赖关系打包在了一起。多个容器可以运行在同一个机器上，并且可以共享操作系统（OS）内核，每个容器在用户空间中做为独立的进程运行。
+容器占用的空间比虚拟机少（容器镜像的大小通常为几十兆），可以处理更多的应用程序，需要更少的虚拟机和操作系统。
+</p>
+
+<p>
+<b>虚拟机（VIRTUAL MACHINES）</b>
+</p>
+
+<p>
+虚拟机是物理硬件层面的抽象，将一台服务器变成多台服务器。Hypervisor 的允许多个虚拟机运行在同一个机器。每个虚拟机都包含操作系统的完整副本，应用程序，必要的二进制和库 - 占了几十 G。虚拟机启动也很慢。
+</p>
+
+<p>
+<a href="https://www.docker.com/resources/what-container#/package_software">来源</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5d9c3b6" class="outline-3">
+<h3 id="org5d9c3b6"><span class="section-number-3">2.3</span> by <a href="https://stackoverflow.com/users/1166183/ashish-bista">Ashish Bista</a></h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Docker <del>并不是</del> 一项虚拟化技术。它依赖于实际实现基于容器的虚拟化或者操作系统级别的虚拟化工具。早先使用 LXC 驱动，后来迁移到了 libcontainer 现在改名为为 runC。
+Docker 主要专注于应用程序容器化的自动部署。应用程序容器旨在打包和运行单个服务，而系统容器设计是用于运行多个进程，像虚拟机。所以，Docker 可以看作是容器化系统上的容器管理或者应用部署工具。
+</p>
+
+<p>
+为了理解与其它虚拟化的不同，我们先看看虚拟化及其类型。然后，就很好理解它们之间的不同了。
+</p>
+
+<p>
+<b>虚拟化</b>
+</p>
+
+<p>
+在构思上，它被认为是从逻辑上划分大型机器，用来支持多个应用程序同时运行的方法。然而，在公司和开源社区用一某种方式处理特权指令，并允许在单个基于 x86 的系统上同时运行多个操作系统的时候，使用情景才发生了变化。
+</p>
+
+<p>
+<b>管理程序（Hypervisor）</b>
+</p>
+
+<p>
+Hyper-V 处理创建客户虚拟机操作的虚拟环境，它监管客户系统并确保在必要的时候为客户分配资源。虚拟机管理程序（Hyper-V）处于物理机和虚拟机之间，并为虚拟机提供虚拟化服务。为了实现这个目标，它中断虚拟机上的客户操作系统操作，并模拟主机操作系统上的操作。
+</p>
+
+<p>
+虚拟化技术的快速发展，主要是在云服务领域，通过虚拟机管理程序，允许在单个物理机上创建多个虚拟机服务器，进一步的推动了虚拟化的使用，比如 Xen，VMware Player，KVM 等等，而且在商用处理机上加入了硬件支持，比如 Intel VT 和 AMD-V。
+</p>
+
+<p>
+<b>虚拟化的类型</b>
+</p>
+
+<p>
+可以根据虚拟化方法如何模仿客户操作系统的硬件，并模拟客户操作系统环境来对虚拟化方法进行分类。主要有三种类型的虚拟化：
+</p>
+
+<ul class="org-ul">
+<li>仿真（Emulation）</li>
+<li>半虚拟化（Paravirtualization）</li>
+<li>基于容器的虚拟化（Container-based virtualization）</li>
+</ul>
+
+<p>
+<span class="underline">仿真（Emulation）</span>
+</p>
+
+<p>
+仿真，也称之为完全虚拟化，完全在软件中运行虚拟机操作系统内核。这种类型中的管理程序称之为 Type 2 的管理程序（hypervisor）。它安装在主机操作系统的顶部，负责将客户操作系统内核代码转换为软件指令。这个转换全部由软件完成，无需硬件参与。
+仿真使得它可以支持所模拟环境的任何未修改的操作系统。这种虚拟化的缺陷是有额外的系统资源开销，所以与其他类型的虚拟化相比性能差。
+</p>
+
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/FS8uzm.png" alt="FS8uzm.png" />
+</p>
+</div>
+
+<p>
+这种类型的例子包括 VMware Player，VirtualBox，QEME, QEME, Bochs, Parallels 等。
+</p>
+
+<p>
+<span class="underline">半虚拟化（Paravirtualization）</span>
+</p>
+
+<p>
+半虚拟化也称之为 Type 1 虚拟机管理程序，直接在硬件上运行，或者「裸金属」，并直接向其上运行的虚拟机提供虚拟化服务。它帮助操作系统，虚拟化硬件，和真正的硬件协作以实现最佳性能。这些管理程序通常占用很小的空间，并且自身不需要大量的资源。
+</p>
+
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/oPO6Um.png" alt="oPO6Um.png" />
+</p>
+</div>
+
+<p>
+这种类型的例子包括 Xen，KVM，etc。
+</p>
+
+<p>
+<span class="underline">基于容器的虚拟化</span>
+</p>
+
+<p>
+基于容器的虚拟化，也称之为操作系统级别的虚拟化，在单个操作系统内核中多个独立运行。它具有最佳的性能和密度，并具有动态资源管理功能。此类虚拟化提供的隔离虚拟执行环境成为容器，可以看成一组跟踪的进程。
+</p>
+
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/qTuWpm.png" alt="qTuWpm.png" />
+</p>
+</div>
+
+<p>
+Linux 内核版本 <code>2.6.24</code> 添加了 namespace 的特性，使得实现容器的理念成为了可能。容器将它的 ID 添加到每个进程，并向每个系统调用添加新的访问控制检查。它由 <code>clone()</code> 的系统调用访问，该调用允许创建由之前全局命名空间的单独实例。
+</p>
+
+<p>
+namespace 可以有多种不同的方式使用，但是最常见的方法是创建一个隔离的容器，该容器对容器外的对象没有可见性和访问权限。在容器内运行的进程似乎跟在普通的 Linux 系统上运行一样，尽管它们跟其他的命名空间中的进程共享底层内核，对于其他的对象也是如此。
+例如，在使用命名空间时，容器内的 root 用户不会被看做是容器外的 root 用户，从而增加了额外的安全性。
+</p>
+
+<p>
+Linux 控制组（cgroups）子系统，是另外一个容器虚拟化的主要组件，它用户对流程进行分组管理并管理其总资源消耗。它通常用户限制容器的内存和 CPU 消耗。由于容器化的 Linux 系统只有一个内核，内核可以完全的看到容器，资源分配和调度只有一个级别。
+</p>
+
+<p>
+有几个管理工具可用于 Linux 容器，包括 LXC，LXD，systemd-nspawn，lmctfy，Warden，Linux-VServer，OpenVZ，Docker 等等。
+</p>
+
+<p>
+<b><b>容器 vs 虚拟机</b></b>
+</p>
+
+<p>
+与虚拟机不同，容器不需要引导操作系统内核，所以容器可以在不到一秒的时间内创建。这个特性让基于容器的虚拟化比其他的虚拟化方法更加独特和可取。
+</p>
+
+<p>
+由于基于容器的虚拟化为主机增加了很少或者没有开销，因为基于容器的虚拟化具有更接近本机的性能。
+</p>
+
+<p>
+对于基于容器的虚拟化，与其他虚拟化不同，不需要其他软件。
+</p>
+
+<p>
+主机上的所有容器共享主机的调度程序，从而节省了额外资源的需求。
+</p>
+
+<p>
+与虚拟机镜像相比，容器（Docker 或者 LXC）镜像大小很小，因此容器镜像很容易分发。
+</p>
+
+<p>
+容器中的资源管理是通过 cgroups 实现的，cgroups 不允许容器消耗比实际分配给它们的更多资源。但是，到目前为止，主机的所有资源在容器中都是可见的，但是不能使用。如果在容器和主机上同时运行 <code>top</code> 或者 <code>htop</code> 输出的内容很类似。
+</p>
+
+<p>
+更新：
+</p>
+
+<p>
+<b>Docker 在非 Linux 系统中是如何运行的？</b>
+</p>
+
+<p>
+由于 Linux 内核中的一些特性使得容器实现成为了可能，那么在非 Linux 系统中是如何运行的呢？Mac 和 Windows 上的 Docker 都是使用 Linux 虚拟机来运行的，Docker Toolbox 用于在 Virtual Box VM 中运行容器。
+但是最新的 Docker 在 Windows 上使用 Hyper-V，Mac 下使用 Hypervisor.framework 。
+</p>
+
+<p>
+现在我来详细描述一下 Mac 下的 Docker 是如何运行容器的。
+</p>
+
+<p>
+Mac 下的 Docker 使用 <a href="https://github.com/moby/hyperkit">https://github.com/moby/hyperkit</a> 来仿真 hypervisor 功能和 Hyperkit 内核使用了 hypervisor.framework。hypervisor.framework 是 Mac 本机的 hypervisor 解决方案。Hyperkit 也使用了 VPNKit 和 DataKit 命名空间网络和文件系统。
+</p>
+
+<p>
+Docker 在 Mac 中运行的 Linux VM 是只读的。然而，你可以通过 bash 在内部运行：
+</p>
+
+<pre class="example">
+screen ~/Library/Containers/com.docker.docker/Data/vms/0/tty
+</pre>
+
+<p>
+现在，我们甚至可以检查这个 VM 的内核版本：
+</p>
+
+<pre class="example">
+# uname -a
+Linux linuxkit-025000000001 4.9.93-linuxkit-aufs #1 SMP Wed Jun 6 16:86_64 Linux
+</pre>
+
+<p>
+所有的容器都是运行在这个 VM 中的。
+</p>
+
+<p>
+hypervisor.framework 有很多的限制。因为 Docker 没有在 Mac 上暴露 <code>docker0</code> 网络接口。因此，你无法在主机访问容器。到目前为止， <code>docker0</code> 仅可以在 VM 内使用。
+</p>
+
+<p>
+Hyper-v 是 Windows 中的本机管理程序。它们还试图利用 Windows 10 的功能本地运行 Linux 系统。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2018-12-15 15:01 <br />Last updated: 2020-01-11 Sat 13:48 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+</div>
+</body>
+</html>

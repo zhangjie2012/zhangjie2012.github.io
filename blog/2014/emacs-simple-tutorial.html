@@ -1,0 +1,1120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2020-05-18 Mon 10:45 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Emacs 简易教程</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Emacs 简易教程</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#emacs24-的安装">1. Emacs24 的安装</a></li>
+<li><a href="#基本快捷键">2. 基本快捷键</a>
+<ul>
+<li><a href="#光标移动">2.1. 光标移动</a></li>
+<li><a href="#文档编辑">2.2. 文档编辑</a></li>
+<li><a href="#搜索">2.3. 搜索</a></li>
+<li><a href="#文件操作缓冲区">2.4. 文件操作(缓冲区)</a></li>
+<li><a href="#窗口windows操作">2.5. 窗口(WINDOWS)操作</a></li>
+<li><a href="#查阅命令">2.6. 查阅命令</a></li>
+<li><a href="#代码编辑">2.7. 代码编辑</a></li>
+<li><a href="#目录操作">2.8. 目录操作</a></li>
+<li><a href="#书签">2.9. 书签</a></li>
+<li><a href="#occur">2.10. Occur</a></li>
+<li><a href="#dired">2.11. Dired</a></li>
+<li><a href="#版本控制version-control">2.12. 版本控制(Version Control)</a></li>
+</ul>
+</li>
+<li><a href="#基本设置独立于插件">3. 基本设置(独立于插件)</a></li>
+<li><a href="#高级定制">4. 高级定制</a>
+<ul>
+<li><a href="#外观">4.1. 外观</a></li>
+<li><a href="#缓冲区使用优化">4.2. 缓冲区使用优化</a></li>
+<li><a href="#编辑优化">4.3. 编辑优化</a></li>
+<li><a href="#常用语言-mode">4.4. 常用语言 Mode</a></li>
+<li><a href="#c开发定制-xcscope-etags-c-mode">4.5. C++开发定制: xcscope + etags + c++-mode</a></li>
+</ul>
+</li>
+<li><a href="#学习资源">5. 学习资源</a></li>
+</ul>
+</div>
+</div>
+<p>
+更新记录:
+</p>
+
+<p>
+2018/06/22：本文以不再维护，请移步到我的 <a href="http://wiki.zhangjiee.com/tools/emacs.html">Emacs Wiki</a>。
+</p>
+
+<p>
+2015/01/20： 一开始我总是想让 Emacs 干所有的事情，后来我发现我装的插件严重拖累了 Emacs
+的使用速度，但是我却没有用过它。这也可能是很多新手经常会犯的错误，盲目的追求功能，而忽略了最原始的需求。这次更新文档会砍掉很多不常用的插件，适配最新的的配置文件。
+</p>
+
+<p>
+另外: 笔者是服务器开发，常用 Emacs 开发(C/C++, Python, shell&#x2026;)和写文章(markdown not org-mode)。我的配置文件：<a href="https://github.com/zhangjie2012/_emacs.d">https://github.com/zhangjie2012/_emacs.d</a>。
+</p>
+
+<hr />
+
+<p>
+最早开始文本编辑器的时候是 Vi(m) ，实在不习惯频繁的 Esc 和编辑模式切换，就选择了 Emacs。
+</p>
+
+<p>
+现在看来编辑器无谓好坏，只是个人习惯而已。Emacs 没有 Vi(m) 的编辑快感和编辑速度，但是它可以随意定制，用更少的键做更多的事情。
+</p>
+
+<p>
+世界上有三种程序员，一种是用 Vim 的，一种是用 Emacs 的，另外一种是用其它编辑器的。本文介绍 Emacs 的基本使用。
+</p>
+
+<div id="outline-container-org9e67204" class="outline-2">
+<h2 id="emacs24-的安装"><span class="section-number-2">1</span> Emacs24 的安装</h2>
+<div class="outline-text-2" id="text-emacs24-的安装">
+<p>
+安装过程:
+</p>
+
+<pre class="example">
+wget https://github.com/mirrors/emacs/archive/emacs-24.3.92.zip
+unzip emacs-24.3.92.zip
+cd emacs-24.3.93
+./autogen.sh
+./configure --without-makeinfo
+make -j2
+sudo make install
+</pre>
+
+<p>
+添加 <code>alias em</code>'env TERM=xterm-256color emacs -nw= 到 <code>~/.bashrc</code>
+中，这样就可以直接用 <code>em</code> 打开 Emacs 了。
+</p>
+
+<p>
+Emacs24 集成了很多插件，比之前的版本好用很多，而且很多新的插件都是基于
+24 的，所以建议用 Emacs24, 而非 Emacs23-，本文也仅仅针对 24 做适配。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge814efa" class="outline-2">
+<h2 id="基本快捷键"><span class="section-number-2">2</span> 基本快捷键</h2>
+<div class="outline-text-2" id="text-基本快捷键">
+<p>
+这里列出在没有打开任何 mode 的情况下，原生 Emacs 所支持的快捷键。
+</p>
+
+<ul class="org-ul">
+<li><code>C-</code>: Ctrl 键</li>
+<li><code>M-</code>: Alt/ESC 键,</li>
+<li><code>S-</code>: Shift 键</li>
+<li><code>C-g</code> : 撤销命令(没事多摁几下，我都是没事摁着玩的)</li>
+<li><code>C-z</code> : 挂起 Emacs</li>
+<li><code>C-x C-c</code>: 关闭 Emacs</li>
+</ul>
+</div>
+
+<div id="outline-container-org345b0a7" class="outline-3">
+<h3 id="光标移动"><span class="section-number-3">2.1</span> 光标移动</h3>
+<div class="outline-text-3" id="text-光标移动">
+<ul class="org-ul">
+<li><code>C-n</code> : 下一行</li>
+<li><code>C-p</code> : 上一行</li>
+<li><code>C-f</code> : 前进一个字符</li>
+<li><code>C-b</code> : 后退一个字符</li>
+<li><code>M-f</code> : 前进一个单词</li>
+<li><code>M-b</code> : 后退一个单词</li>
+<li><code>C-v</code> : 向下翻页</li>
+<li><code>M-v</code> : 向上翻页</li>
+<li><code>C-l</code> : 光标所在行移动到屏幕中央</li>
+<li><code>C-a</code> : 行首</li>
+<li><code>C-e</code> : 行尾</li>
+<li><code>M-a</code> : 句首</li>
+<li><code>M-e</code> : 句尾</li>
+<li><code>M-{</code> : 段首</li>
+<li><code>M-}</code> : 段尾</li>
+<li><code>M-&lt;</code> : 文件首</li>
+<li><code>M-&gt;</code> : 文件尾</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga426dac" class="outline-3">
+<h3 id="文档编辑"><span class="section-number-3">2.2</span> 文档编辑</h3>
+<div class="outline-text-3" id="text-文档编辑">
+<ul class="org-ul">
+<li><code>&lt;Backspace&gt;</code> : 向前删除一个字符</li>
+<li><code>C-d</code> <code>&lt;DEL&gt;</code> : 向后删除一个字符，我一般用 <code>C-d</code></li>
+<li><code>M-d</code> <code>M-&lt;DEL&gt;</code> : 向后删除一个单词</li>
+<li><code>C-k</code> : 删除光标到行尾，删除一行用 <code>C-a, C-k</code> (Vim 中的 dd)。</li>
+<li><code>M-k</code> : 删除光标到句尾</li>
+<li><code>C-@</code> : 标记(Mark set), 标记之后配合光标移动快捷键，可以选中一个区域</li>
+<li><code>M-w</code> : 复制</li>
+<li><code>C-w</code> : 剪切</li>
+<li><code>C-y</code> : 粘贴</li>
+<li><code>C-/</code> : 撤销(UNDO)</li>
+</ul>
+
+<p>
+大小写转换:
+</p>
+
+<ul class="org-ul">
+<li><code>M-l</code>: Convert following word to lower case (downcase-word).</li>
+<li><code>M-u</code>: Convert following word to upper case (upcase-word).</li>
+<li><code>M-c</code>: Capitalize the following word (capital-word).</li>
+<li><code>C-x C-l</code>: Convert region to lower case (downcase-region).</li>
+<li><code>C-x C-u</code>: Convert region to upper case (upcase-region).</li>
+</ul>
+
+<p>
+块操作:
+</p>
+
+<ul class="org-ul">
+<li><code>C-x r k</code>: Kill the text of the region-rectangle, saving its contents
+as the "last killed rectangle" (kill-rectangle).</li>
+<li><code>C-x r M-w</code>: Save the text of the region-rectangle as the "last killed
+rectangle" (copy-rectangle-as-kill).</li>
+<li><code>C-x r d</code>: Delete the text of the region-rectangle (delete-rectangle).</li>
+<li><code>C-x r y</code>: Yank the last killed rectangle with its upper left corner
+at point (yank-rectangle).</li>
+<li><code>C-x r o</code>: Insert blank space to fill the space of the
+region-rectangle (open-rectangle). This pushes the previous contents
+of the region-rectangle to the right.</li>
+<li><code>C-x r N</code>: Insert line numbers along the left edge of the
+region-rectangle (rectangle-number-lines). This pushes the previous
+contents of the region-rectangle to the right.</li>
+<li><code>C-x r c</code>: Clear the region-rectangle by replacing all of its contents
+with spaces (clear-rectangle).</li>
+<li><code>M-x delete-whitespace-rectangle</code>: Delete whitespace in each of the
+lines on the specified rectangle, starting from the left edge column
+of the rectangle.</li>
+<li><code>C-x r t string &lt;RET&gt;</code>: Replace rectangle contents with string on each
+line (string-rectangle).</li>
+<li><code>M-x string-insert-rectangle &lt;RET&gt; string &lt;RET&gt;</code>: Insert string on
+each line of the rectangle.</li>
+</ul>
+
+<p>
+删除空白字符(Deleting whitespace):
+</p>
+
+<ul class="org-ul">
+<li><code>M-\\</code> : 删除光标周围的空格和 tab。</li>
+<li><code>M-&lt;SPC&gt;</code> : 删除光标周围的空格和 tab，但是保留一个。</li>
+<li><code>C-x C-o</code> : 删除周围行附近的空行。</li>
+<li><code>M-^</code> : Join two lines by deleting the intervening newline, along with
+any indentation following it. With a prefix (C-u M-^) it joins the
+current with the next line.</li>
+</ul>
+
+<p>
+选中:
+</p>
+
+<ul class="org-ul">
+<li><code>M-h</code> : Move point to the beginning of the current paragraph, and set
+mark at the end.</li>
+<li><code>C-M-h</code> : Move point to the beginning of the current defun, and set
+mark at the end.</li>
+<li><code>C-x h</code> : Move point to the beginning of the buffer, and set mark at
+the end.</li>
+<li><code>C-x SPC</code> : Makes a rectangular region (new in Emacs 24.4).</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org82c1664" class="outline-3">
+<h3 id="搜索"><span class="section-number-3">2.3</span> 搜索</h3>
+<div class="outline-text-3" id="text-搜索">
+<ul class="org-ul">
+<li><code>C-s</code> : 向前搜索</li>
+<li><code>C-r</code> : 向后操作</li>
+<li><code>C-g</code> : 回到搜索开始前的位置</li>
+<li><code>M-%</code> : 询问并替换</li>
+<li><code>M-s .</code> : 当前单词搜索。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge78aaa0" class="outline-3">
+<h3 id="文件操作缓冲区"><span class="section-number-3">2.4</span> 文件操作(缓冲区)</h3>
+<div class="outline-text-3" id="text-文件操作缓冲区">
+<p>
+Emacs 可以打开很多文件，一个文件可以理解成一个
+buffer，你可以在多个文件中来回切换。
+</p>
+
+<ul class="org-ul">
+<li><code>C-x f</code> : 打开一个文件 -&gt; <code>find-file</code></li>
+<li><code>C-x s</code> : 保存</li>
+<li><code>C-x C-w</code> : 另存为</li>
+<li><code>C-x C-v</code> : 关闭当前缓冲区，并打开新文件</li>
+<li><code>C-x C-b</code> : 打开缓冲区列表</li>
+<li><code>C-x b</code> : 切回最近的 buffer -&gt; <code>switch-to-buffer</code></li>
+<li><code>C-x k</code> : 关闭当前缓冲区</li>
+<li><code>C-x C-b</code>, <code>d</code>, <code>x</code>: 关闭用 d 标记 buffer</li>
+<li><code>M-x find-file-at-point</code> , <code>M-x ffap</code></li>
+<li><code>C-x 5 0</code> : <code>delete-frame</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb79ebb9" class="outline-3">
+<h3 id="窗口windows操作"><span class="section-number-3">2.5</span> 窗口(WINDOWS)操作</h3>
+<div class="outline-text-3" id="text-窗口windows操作">
+<ul class="org-ul">
+<li><code>C-x 1</code> : 只保留当前窗口</li>
+<li><code>C-x 2</code> : 水平切分</li>
+<li><code>C-x 3</code> : 垂直切分</li>
+<li><code>C-x o</code> : 切换到另外一个窗口</li>
+<li><code>C-x 0</code> : 关闭当前窗口(并不是删除buffer)</li>
+<li><code>C-x 4 C-f</code> : 在另外一个窗口打开文件 -&gt; <code>find-file-other-window</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0db1987" class="outline-3">
+<h3 id="查阅命令"><span class="section-number-3">2.6</span> 查阅命令</h3>
+<div class="outline-text-3" id="text-查阅命令">
+<ul class="org-ul">
+<li><code>M-x man</code> :</li>
+<li><code>M-x info</code> : 所有的 Emacs 手册</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgea3e1f0" class="outline-3">
+<h3 id="代码编辑"><span class="section-number-3">2.7</span> 代码编辑</h3>
+<div class="outline-text-3" id="text-代码编辑">
+<ul class="org-ul">
+<li><code>M-;</code> : 块注释</li>
+<li><code>C-M-h</code> : 选中一个函数</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2e39990" class="outline-3">
+<h3 id="目录操作"><span class="section-number-3">2.8</span> 目录操作</h3>
+<div class="outline-text-3" id="text-目录操作">
+<ul class="org-ul">
+<li><code>M-x dired</code> : 打开一个目录</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2f099a8" class="outline-3">
+<h3 id="书签"><span class="section-number-3">2.9</span> 书签</h3>
+<div class="outline-text-3" id="text-书签">
+<ul class="org-ul">
+<li><code>C-x r m</code> : 设置一个书签 -&gt; <code>bookmark-set</code></li>
+<li><code>C-x r b</code> : 跳转到一个书签 -&gt; <code>bookmark-jump</code></li>
+<li><code>C-x r l</code> : 显示所有书签列表, 管理书签的方式和 <code>Direcd</code> 模式一样
+
+<ul class="org-ul">
+<li><code>RET</code> : 打开一个书签</li>
+<li><code>p</code>: 前一个书签</li>
+<li><code>n</code>: 后一个书签</li>
+<li><code>s</code> : 保存当前书签到一个文件中</li>
+<li><code>o</code> : 在另外一个窗口中打开文件</li>
+<li><code>r</code> : 重命名书签</li>
+<li><code>d</code> : 标记要删除的书签</li>
+<li><code>x</code> : 执行删除动作</li>
+<li><code>u</code> : 撤销标记</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org426b0bc" class="outline-3">
+<h3 id="occur"><span class="section-number-3">2.10</span> Occur</h3>
+<div class="outline-text-3" id="text-occur">
+<p>
+把所有的搜索结果都列到一个名为 <code>*Occur*</code> buffer 中。使用 <code>M-s o</code> 调用
+<code>occur</code> 函数，搜索当前文档。
+</p>
+
+<ul class="org-ul">
+<li><code>M-g n</code> : 下一个匹配项</li>
+<li><code>M-g p</code> : 上一个匹配项</li>
+<li><code>e</code> : 进入 =occur-edit-mode=，可以编辑搜索结果</li>
+<li><code>C-c C-c</code> : 退出编辑模式</li>
+<li><code>g</code> : 刷新搜索结果</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga4bdb56" class="outline-3">
+<h3 id="dired"><span class="section-number-3">2.11</span> Dired</h3>
+<div class="outline-text-3" id="text-dired">
+<ul class="org-ul">
+<li><code>C-x d</code> : 选个一个目录，在当前窗口打开</li>
+<li><code>C-x 4 d</code> : 选一个目录，在另外一个目录打开</li>
+<li><code>i</code> : 打开子目录</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org60c5326" class="outline-3">
+<h3 id="版本控制version-control"><span class="section-number-3">2.12</span> 版本控制(Version Control)</h3>
+<div class="outline-text-3" id="text-版本控制version-control">
+<ul class="org-ul">
+<li><code>c-x v +</code> , <code>M-x vc-update</code> : 更新文件</li>
+<li><code>C-x v v</code> , <code>M-x vc-next-action</code> : 提交当前文件</li>
+<li><code>C-x v =</code> , <code>M-x vc-diff</code></li>
+<li><code>C-x v ~</code> , <code>M-x vc-revision-other-window</code>: 显示指定版本</li>
+<li><code>C-x v l</code> , <code>M-x vc-print-log</code> : 查看日志</li>
+<li><code>C-x v u</code> , <code>M-x vc-revert</code></li>
+<li><code>C-x v C-h</code> : 查看所有可用的 vc 命令</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbad5aae" class="outline-2">
+<h2 id="基本设置独立于插件"><span class="section-number-2">3</span> 基本设置(独立于插件)</h2>
+<div class="outline-text-2" id="text-基本设置独立于插件">
+<p>
+Emacs 默认找的配置文件为 <code>~/.emacs</code> 或者
+<code>~/.emacs.d/init.el=。我用的是后者，这样就可以把所有的配置放到一个目录下面，方便管理。默认的
+Emacs 的快捷键有些不好用，比如 =c-x c-f</code>
+时，没有任何提示。再如窗口切换使用 =c-x o=，当 buffer
+多时，非常不方便，这一节介绍 emacs 通用的定制(不针对某种开发/编辑环境)。
+</p>
+
+<p>
+零散的设置:
+</p>
+
+<ol class="org-ol">
+<li>用 <code>y/n</code> 代替 <code>yes/no</code>: <code>(fset 'yes-or-no-p 'y-or-n-p)</code></li>
+<li>关闭自动保存: <code>(setq auto-save-default nil)</code></li>
+<li>关闭自动备份: <code>(setq make-backup-files nil)</code></li>
+<li>多个 Emacs 打开同一份文件时，会自动产生一个 .#xxx
+的文件，很烦人，去掉: <code>(setq create-lockfiles nil)</code></li>
+<li>屏蔽挂起键(经常按错): <code>global-unset-key (kbd "C-z"))</code></li>
+</ol>
+
+<p>
+设置编码为 UTF-8:
+</p>
+
+<pre class="example">
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+</pre>
+
+<p>
+打开 Eshell 绑定快捷键: <code>C-c e</code> 打开, <code>C-c l</code> 清空:
+</p>
+
+<pre class="example">
+(defun clear-eshell-buffer ()
+  (interactive)
+  (let ((inhibit-read-only t))
+    (delete-region (point-min) (point-max))))
+(global-set-key (kbd "C-c l") 'clear-eshell-buffer)
+(global-set-key (kbd "C-c e") 'eshell)
+</pre>
+
+<p>
+Tab 设置(空格替代，4字符):
+</p>
+
+<pre class="example">
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+</pre>
+
+<p>
+括号匹配、对齐、补全：
+</p>
+
+<pre class="example">
+(show-paren-mode t)
+(require 'electric)
+(electric-indent-mode t)
+;;(electric-pair-mode t)
+(electric-layout-mode t)
+</pre>
+
+<p>
+我不喜欢括号自动补全，所有就注释掉了。
+</p>
+
+<p>
+<b>Tip</b>: <code>M-x eval-buffer</code> 可以使配置文件立即生效，调试非常方便。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd85fd96" class="outline-2">
+<h2 id="高级定制"><span class="section-number-2">4</span> 高级定制</h2>
+<div class="outline-text-2" id="text-高级定制">
+<p>
+这一节针对不同的应用，介绍一些插件。
+</p>
+</div>
+
+<div id="outline-container-org67541e1" class="outline-3">
+<h3 id="外观"><span class="section-number-3">4.1</span> 外观</h3>
+<div class="outline-text-3" id="text-外观">
+<p>
+自动换行: <code>(global-visual-line-mode 1)</code>
+</p>
+
+<p>
+行号宽度定制:
+</p>
+
+<pre class="example">
+(setq linum-format "%3d|")
+;;(global-linum-mode 1)
+</pre>
+
+<p>
+默认情况下，不显示行号，需要的时候，=M-x linum-mode=。
+</p>
+
+<p>
+代码参考线:
+<a href="https://github.com/alpaker/Fill-Column-Indicator">fill-column-indicator</a>
+</p>
+
+<pre class="example">
+(require 'fill-column-indicator)
+(setq fci-rule-color "#D15FEE")
+(setq fci-rule-column 80)
+(define-globalized-minor-mode
+  global-fci-mode fci-mode (lambda () (fci-mode 1)))
+;;(global-fci-mode 1)
+(global-set-key (kbd "M-|") 'global-fci-mode)
+</pre>
+
+<p>
+默认不显示，快捷键绑定到 =M-|=，随时切换。
+</p>
+
+<p>
+主题: <a href="https://github.com/jordonbiondo/ample-theme">ample-theme</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org94f64ec" class="outline-3">
+<h3 id="缓冲区使用优化"><span class="section-number-3">4.2</span> 缓冲区使用优化</h3>
+<div class="outline-text-3" id="text-缓冲区使用优化">
+<p>
+使用 <a href="https://github.com/emacs-helm/helm">helm</a>, 最牛逼的 Emacs
+插件之一:
+</p>
+
+<pre class="example">
+(require 'helm)
+(require 'helm-config)
+(require 'helm-eshell)
+
+(add-hook 'eshell-mode-hook
+          #'(lambda ()
+              (define-key eshell-mode-map (kbd "C-c C-l")  'helm-eshell-history)))
+
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+(define-key helm-map (kbd "&lt;tab&gt;") 'helm-execute-persistent-action)
+(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+(define-key helm-map (kbd "C-z") 'helm-select-action)
+
+(when (executable-find "curl")
+  (setq helm-google-suggest-use-curl-p t))
+
+(setq helm-split-window-in-side-p           t
+      helm-move-to-line-cycle-in-source     t
+      helm-ff-search-library-in-sexp        t
+      helm-scroll-amount                    8
+      helm-ff-file-name-history-use-recentf t
+      )
+
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-c h o") 'helm-occur)
+(setq helm-M-x-fuzzy-match t)
+;;(helm-autoresize-mode 1)
+(helm-mode 1)
+</pre>
+
+<p>
+比较详细的一篇文档，<a href="http://tuhdo.github.io/helm-intro.html">A Package
+in a league of its own:
+Helm</a>，这里不再赘述了，简单演示一下几个常用的功能(其实 helm
+的功能都很常用):
+</p>
+
+
+<div class="figure">
+<p><img src="file:///img/wiki/helm.gif" alt="helm.gif" />
+</p>
+<p><span class="figure-number">Figure 1: </span>helm</p>
+</div>
+
+<p>
+Buffer
+切换(<a href="https://github.com/nschum/window-numbering.el">windows-numbering.el</a>):
+</p>
+
+<pre class="example">
+;; 使用 M-(1,2,3...9)窗口切换
+(require 'window-numbering)
+(setq window-numbering-assign-func
+      (lambda () (when (equal (buffer-name) "*Calculator*") 9)))
+(window-numbering-mode 1)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org0d5bcd6" class="outline-3">
+<h3 id="编辑优化"><span class="section-number-3">4.3</span> 编辑优化</h3>
+<div class="outline-text-3" id="text-编辑优化">
+<p>
+相同符号高亮(<a href="https://github.com/nschum/highlight-symbol.el">highlight-symbol.el</a>):
+</p>
+
+<pre class="example">
+(require 'highlight-symbol)
+(global-set-key (kbd "M--") 'highlight-symbol-at-point)
+(global-set-key (kbd "M-n") 'highlight-symbol-next)
+(global-set-key (kbd "M-p") 'highlight-symbol-prev)
+</pre>
+
+<p>
+自动补全(<a href="https://github.com/auto-complete/auto-complete">auto-complete</a>
+&amp; <a href="https://github.com/capitaomorte/yasnippet">yasnippet</a>):
+</p>
+
+<pre class="example">
+(require 'popup)
+
+(require 'auto-complete)
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories
+             "~/.emacs.d/auto-complete/dict")
+(ac-config-default)
+(setq ac-use-quick-help nil)
+(setq ac-use-menu-map t)
+(define-key ac-menu-map "\C-n" 'ac-next)
+(define-key ac-menu-map "\C-p" 'ac-previous)
+(global-set-key "\M-/" 'auto-complete)
+(add-to-list 'ac-modes 'protobuf-mode)
+
+(require 'yasnippet)
+;;(yas-global-mode 1)
+</pre>
+
+<p>
+C/C++
+头文件自动补全(<a href="https://github.com/mooz/auto-complete-c-headers">auto-complate-c-headers</a>):
+</p>
+
+<pre class="example">
+(defun my:ac-c-headers-init ()
+  (require 'auto-complete-c-headers)
+  (add-to-list 'ac-sources 'ac-source-c-headers)
+  (add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7")
+  (add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/x86_64-redhat-linux")
+  (add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/backward")
+  (add-to-list 'achead:include-directories '"/usr/local/include")
+  (add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include")
+  (add-to-list 'achead:include-directories '"/usr/include"))
+
+(add-hook 'c++-mode-hook 'my:ac-c-headers-init)
+(add-hook 'c-mode-hook 'my:ac-c-headers-init)
+</pre>
+
+<p>
+区域标记(<a href="https://github.com/magnars/expand-region.el">expand-region</a>)，Emacs
+这下牛逼了，我给绑定了一些快捷键:
+</p>
+
+<pre class="example">
+(require 'expand-region)
+(global-set-key (kbd "M-m") 'er/expand-region)
+(global-set-key (kbd "M-s s") 'er/mark-symbol)
+(global-set-key (kbd "M-s p") 'er/mark-outside-pairs)
+(global-set-key (kbd "M-s P") 'er/mark-inside-pairs)
+(global-set-key (kbd "M-s q") 'er/mark-outside-quotes)
+(global-set-key (kbd "M-s Q") 'er/mark-inside-quotes)
+(global-set-key (kbd "M-s m") 'er/mark-comment)
+(global-set-key (kbd "M-s f") 'er/mark-defun)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org3f729ae" class="outline-3">
+<h3 id="常用语言-mode"><span class="section-number-3">4.4</span> 常用语言 Mode</h3>
+<div class="outline-text-3" id="text-常用语言-mode">
+<p>
+Markdown: <a href="http://jblevins.org/projects/markdown-mode/">markdown-mode</a>
+</p>
+
+<pre class="example">
+(autoload 'markdown-mode "~/.emacs.d/lisp/markdown-mode/markdown-mode.el"
+  "Major mode for editing Markdown files" t)
+(setq auto-mode-alist
+      (cons '("\\.md" . markdown-mode) auto-mode-alist))
+(setq auto-mode-alist
+      (cons '("\\.markdown" . markdown-mode) auto-mode-alist))
+</pre>
+
+<p>
+Python: <a href="http://sourceforge.net/projects/python-mode/">python-mode</a>
+</p>
+
+<pre class="example">
+(require 'python-mode)
+</pre>
+
+<p>
+Google Protobuf Buffer:
+<a href="http://code.google.com/p/protobuf/source/browse/trunk/editors/protobuf-mode.el?r=227">protobuf-mode</a>
+</p>
+
+<pre class="example">
+(require 'protobuf-mode)
+(add-to-list 'auto-mode-alist '("\\.proto$" . protobuf-mode))
+</pre>
+
+<p>
+lua: <a href="https://github.com/immerrr/lua-mode/">lua-mode</a>
+</p>
+
+<pre class="example">
+(autoload 'lua-mode "lua-mode" "lua editing mode. " t)
+(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+(add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+</pre>
+
+<p>
+<a href="http://web-mode.org/">web-mode</a>:
+</p>
+
+<pre class="example">
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orge84b88e" class="outline-3">
+<h3 id="c开发定制-xcscope-etags-c-mode"><span class="section-number-3">4.5</span> C++开发定制: xcscope + etags + c++-mode</h3>
+<div class="outline-text-3" id="text-c开发定制-xcscope-etags-c-mode">
+<pre class="example">
+;; 编译与调试
+(global-set-key [(f5)] 'compile)
+
+(require 'xcscope)
+(cscope-setup)
+
+(global-set-key [(f9)] 'ff-find-other-file)
+
+(setq tab-stop-list ())
+(loop for x downfrom 40 to 1 do
+      (setq tab-stop-list (cons (* x 4) tab-stop-list)))
+
+(defconst my-c-style
+  '(
+    (c-tab-always-indent        . t)
+    (c-hanging-braces-alist     . ((substatement-open after)
+                                   (brace-list-open)))
+    (c-hanging-colons-alist     . ((member-init-intro before)
+                                   (inher-intro)'
+                                   (label after)
+                                   (acecss-label after)))
+    (c-cleanup-list             . (scope-operator
+                                   empty-defun-braces
+                                   defun-close-semi))
+    (c-offsets-alist            . ((arglist-close . c-lineup-arglist)
+                                   (case-label . 4)
+                                   (substatement-open . 0)
+                                   (block-open        . 0)
+                                   (knr-argdecl-intro . -)
+                                   (innamespace . -)
+                                   (inline-open . 0)
+                                   (inher-cont . c-lineup-multi-inher)
+                                   (arglist-cont-nonempty . +)
+                                   (template-args-cont . + )))
+    (c-echo-syntactic-information-p . t)
+    )
+  "My C Programming Style")
+
+;; offset customizations not in my-c-style
+(setq c-offsets-alist '((member-init-intro . ++)))
+
+;; Customizations for all modes in CC Mode.
+(defun my-c-mode-common-hook ()
+  ;; add my personal style and set it for the current buffer
+  (c-add-style "PERSONAL" my-c-style t)
+  ;; other customizations
+  (setq tab-width 4
+        indent-tabs-mode nil)
+  ;; we like auto-newline and hungry-delete
+  ;; (c-toggle-auto-hungry-state 1)
+  ;; key bindings for all supported languages.  We can put these in
+  ;; c-mode-base-map because c-mode-map, c++-mode-map, objc-mode-map,
+  ;; java-mode-map, idl-mode-map, and pike-mode-map inherit from it.
+  )
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+(add-hook 'c-mode-hook 'hs-minor-mode)
+
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
+;; http://stackoverflow.com/questions/14668744/emacs-indent-for-c-class-method
+(defun vlad-cc-style()
+  (c-set-offset 'inline-open '0)
+  )
+(add-hook 'c++-mode-hook 'vlad-cc-style)
+</pre>
+
+<p>
+<a href="https://github.com/dkogan/xcscope.el">xcscope.el</a> 使用:
+</p>
+
+<ul class="org-ul">
+<li><code>cscope-indexer -r</code> : 在根目录下递归生成数据库</li>
+<li><code>C-c s a</code> : Set initial directory;</li>
+<li><code>C-c s A</code> : Unset initial directory;</li>
+<li><code>C-c s I</code> : create list of files to index;</li>
+<li><code>C-c s s</code> : Find symbol;</li>
+<li><code>C-c s d</code> : Find global definition;</li>
+<li><code>C-c s c</code> : Find functions calling a function;</li>
+<li><code>C-c s C</code> : Find called functions (list functions called from a
+function);</li>
+<li><code>C-c s t</code> : Find text string;</li>
+<li><code>C-c s e</code> : Find egrep pattern;</li>
+<li><code>C-c s f</code> : Find a file;</li>
+<li><code>C-c s i</code> : Find files #including a file;</li>
+<li><code>C-c s b</code> : Display cscope buffer;</li>
+</ul>
+
+<p>
+etags 使用:
+</p>
+
+<p>
+搭配 <code>find</code> 来生成 tags:
+</p>
+
+<pre class="example">
+find . -name '*.c' -o -name '*.cpp' -o -name '*.h' -print | etags -
+</pre>
+
+<ul class="org-ul">
+<li><code>M-x visit-tags-table &lt;RET&gt; FILE &lt;RET&gt;</code> : 选择tags文件</li>
+<li><code>M-. [TAG] &lt;RET&gt;</code> : 访问标签</li>
+<li><code>M-*</code> : 返回</li>
+<li><code>C-u M-.</code> : 寻找标签的下一个定义</li>
+</ul>
+
+<p>
+<code>F5</code> 编译:
+</p>
+
+<ul class="org-ul">
+<li>C-x : 下一个编译错误。</li>
+<li><code>M-g p</code> : 上一个编译错误。</li>
+<li><code>g</code> : 重新编译</li>
+</ul>
+
+<p>
+其它：
+</p>
+
+<ul class="org-ul">
+<li><code>F9</code> : 在头文件和对应源文件之间跳转:
+<code>(global-set-key [(f9)] 'ff-find-other-file)</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2f179a3" class="outline-2">
+<h2 id="学习资源"><span class="section-number-2">5</span> 学习资源</h2>
+<div class="outline-text-2" id="text-学习资源">
+<p>
+一些学习资源推荐，也是本文档的参考资料。
+</p>
+
+<ul class="org-ul">
+<li><a href="http://tuhdo.github.io/index.html">Emacs Mini Mannual</a> : Emacs Mini
+手册</li>
+<li><a href="http://emacsthemes.caisah.info/">Emacs Themes</a> : 主题集合</li>
+<li><a href="http://melpa.milkbox.net/">MELPA</a> : 插件集合，同时也可以感受一下
+Emacs 的强大</li>
+<li><a href="http://www.gnu.org/software/emacs/manual/">GNU Emacs Manuals
+Online</a> : Emacs 官方手册</li>
+<li><a href="http://emacsredux.com/">Emacs Redux</a></li>
+<li><a href="http://jblevins.org/projects/markdown-mode/">Emacs Markdown Mode</a></li>
+<li><a href="https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/guide-zh.org">一年成为Emacs高手(像神一样使用编辑器)</a></li>
+<li><a href="http://www.jesshamrick.com/2012/09/18/emacs-as-a-python-ide/">Emacs
+as a Python IDE</a></li>
+<li><a href="http://jianlee.ylinux.org/Computer/Emacs/emacsBFE99F8FE883.html">Emacs快速参考</a></li>
+<li><a href="http://www.gnu.org/software/emacs/manual/html_node/emacs/Case.html">Case
+Conversion Commands</a></li>
+<li><a href="http://www.caole.net/diary/emacs_write_cpp.html">曹乐:
+在Emacs下用C/C++编程</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2014-12-01 00:00:00 <br />Last updated: 2019-10-24 Thu 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+</div>
+</body>
+</html>

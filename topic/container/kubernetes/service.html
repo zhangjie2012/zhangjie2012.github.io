@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-05-18 Mon 10:45 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kubernetes - Service</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Kubernetes - Service</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0f23829">1. 动机</a></li>
+<li><a href="#orgb4128f8">2. Service 资源</a></li>
+<li><a href="#org39e4ca5">3. 定义 Service</a>
+<ul>
+<li><a href="#org15caacb">3.1. 没有选择器的 Services</a></li>
+<li><a href="#orgbc891af">3.2. EndpointSlices</a></li>
+<li><a href="#org0f9427e">3.3. Application Protocol</a></li>
+</ul>
+</li>
+<li><a href="#orgde8050d">4. <span class="todo TODO">TODO</span> 虚拟 IPs 和服务代理</a>
+<ul>
+<li><a href="#org2efd559">4.1. 为什么不使用 DNS 轮询？</a></li>
+<li><a href="#orgbb85e2b">4.2. 使用空间代理模式（User space proxy mode）</a></li>
+<li><a href="#orgf2e2f56">4.3. <code>iptables</code> 代理模式</a></li>
+<li><a href="#orgc57deeb">4.4. IPVS 代理模式</a></li>
+</ul>
+</li>
+<li><a href="#orgc045095">5. <span class="todo TODO">TODO</span> 多端口 Services</a></li>
+<li><a href="#orgcb7af96">6. <span class="todo TODO">TODO</span> 选择自己的 IP 地址</a></li>
+<li><a href="#org714413a">7. <span class="todo TODO">TODO</span> 服务发现</a></li>
+<li><a href="#orgd60e1ca">8. <span class="todo TODO">TODO</span> Headless Services</a></li>
+<li><a href="#org4c1da79">9. <span class="todo TODO">TODO</span> Publishing Services (ServiceTypes)</a></li>
+<li><a href="#org9347d08">10. <span class="todo TODO">TODO</span> Shortcomming</a></li>
+<li><a href="#org2b0a50c">11. <span class="todo TODO">TODO</span> 虚拟 IP 实现</a></li>
+<li><a href="#orgabad526">12. <span class="todo TODO">TODO</span> API 对象</a></li>
+<li><a href="#orge9d87ec">13. <span class="todo TODO">TODO</span> 支持的协议</a></li>
+</ul>
+</div>
+</div>
+<p>
+Service 是一组 Pod 上的应用程序服务暴露的抽象方式。在 Kubernetes 中，你无需要修改应用程序即可使用服务发现机制（不入侵应用）。
+Kubernetes 为每一个 Pod 提供单独的 IP 并且为一组 Pod 提供单独的 DNS 名称，并且在 Pod 之间进行负载均衡。
+</p>
+
+<blockquote>
+<p>
+服务发现一般分为几种方式：
+</p>
+<ol class="org-ol">
+<li>应用程序自己写代码实现服务的注册和发现，比如说启动时写入到 etcd 中，然后 watch 变更</li>
+<li>在框架层面实现，比如 Dubbo</li>
+<li>在平台层面实现，比如 Kubernetes，Service Mesh 等</li>
+</ol>
+<p>
+前两种都是需要入侵业务的，而且一般很难跨技术栈。
+</p>
+</blockquote>
+
+<div id="outline-container-org0f23829" class="outline-2">
+<h2 id="org0f23829"><span class="section-number-2">1</span> 动机</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Kubernetes 的 Pod 不是一个持久的实体。使用 Deployment 运行应用时，它会动态的创建和销毁 Pods。
+</p>
+
+<p>
+虽然每一个 Pod 都有自己的 IP 地址，但是 Deployment 中的不同的时间段的 Pod 集合可能不同（有很多原因导致 Pod 重启）。
+所以，前端如何使用集群中的 Pod 集合？并且能都达到均衡的作用呢？
+</p>
+
+<p>
+答案是 <i>Services</i> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb4128f8" class="outline-2">
+<h2 id="orgb4128f8"><span class="section-number-2">2</span> Service 资源</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Service 是一种抽象，定义了 Pod 的逻辑集合和访问策略（有时称之为微服务）。Service 和目标 Pods 的关联通常有选择器来关联。
+</p>
+
+<p>
+前端不用关心 Pod 的 IP 地址到底是什么，也不用关心 Pod 是不是之前的 Pod。Service 为它们提供了统一的出口。
+前端只需要关心 Service 的地址就行了，而 Service 的地址是不会变的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org39e4ca5" class="outline-2">
+<h2 id="org39e4ca5"><span class="section-number-2">3</span> 定义 Service</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Service 和 Pod 一样，是一个 REST 对象，和其它的对象一样，你可以 <code>POST</code> 一个 Service 到 API server 来创建一个实例。
+Service 的名字必须是一个有效的 DNS 标签。
+</p>
+
+<p>
+假定你有一组 Pods，每个 Pod 监听 9376 的 TCP 端口，并且标签为 <code>app=MyApp</code> ：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
+<span style="color: #BA36A5;">kind</span>: Service
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: my-service
+<span style="color: #BA36A5;">spec</span>:
+  <span style="color: #BA36A5;">selector</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app</span>: MyApp
+  <span style="color: #BA36A5;">ports</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">- protocol</span>: TCP
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  port</span>: 80
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  targetPort</span>: 9376
+</pre>
+</div>
+
+<p>
+以上创建了一个叫做 <code>my-service</code> 的 service 对象。Kubernetes 为 Service 分配一个 IP 地址（有时称为"集群IP"），该地址为服务代理
+所用（见下面的虚拟 IP 和服务代理）。
+</p>
+
+<p>
+Service 控制器负责持续扫描与选择器相匹配的 Pod，然后更新 <code>my-service</code> 的 Endpoints 。
+</p>
+
+<pre class="example">
+*注意:* Service 可以把任何 =port= 映射到 =targetPort= 。默认为了方便， =targetPort= 通常和 =port= 相同。
+</pre>
+</div>
+
+<div id="outline-container-org15caacb" class="outline-3">
+<h3 id="org15caacb"><span class="section-number-3">3.1</span> 没有选择器的 Services</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+Service 最常见的是抽象对 Pod 集合的访问，但是他们也可以抽象其它类型的后端，比如：
+</p>
+
+<ul class="org-ul">
+<li>你想要在生产中使用外部的数据库集群，但是在测试环境中，使用自己的数据库。</li>
+<li>你想要将 Service 指向其他 Namespace 或者另外一个集群。</li>
+<li>你正在将工作负载迁移到 Kubernetes。为了做测试，你在 Kubernetes 中运行一部分后端。</li>
+</ul>
+
+<p>
+这种情况下，你可以定义一个 Service <i>不指定</i> Pod 选择器，如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
+<span style="color: #BA36A5;">kind</span>: Service
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: my-service
+<span style="color: #BA36A5;">spec</span>:
+  <span style="color: #BA36A5;">ports</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">- protocol</span>: TCP
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  port</span>: 80
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  targetPort</span>: 9376
+</pre>
+</div>
+
+<p>
+因为 Service 没有选择器，对应的 Endpoint 对象不会被创建。你可以手动将 Service 映射到其运行所在网络的地址和端口，手动添加
+Endpoint 对象：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
+<span style="color: #BA36A5;">kind</span>: Endpoints
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: my-service
+<span style="color: #BA36A5;">subsets</span>:
+  - <span style="color: #BA36A5;">addresses</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - ip</span>: 192.0.2.42
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">ports</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - port</span>: 9376
+</pre>
+</div>
+
+<p>
+Endpoints 对象必须是一个有效的 DNS 子域名。
+</p>
+
+<blockquote>
+<p>
+<b>注意：</b>
+</p>
+
+<p>
+Endpoint IPs <i>不可以</i> 为：回环地址（IPv4 的127.0.0.0/8，IPv6 的 ::1/128），或者本地链接（IPv4 的 169.254.0.0/16 和 224.0.0.0/24
+IPv6 的 fe80::/64）。
+</p>
+
+<p>
+Endpoint IP 地址不能是 Kubernetes Services 集群 IPs，因为 kube-proxy 不支持虚拟 IPs 作为目标。
+</p>
+</blockquote>
+
+<p>
+没有选择器的情况下访问 Service 和有选择器的访问一样。
+</p>
+
+<p>
+ExternalName Service 是 Service 的特例，它没有选择器，而是使用 DNS 名称代替。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbc891af" class="outline-3">
+<h3 id="orgbc891af"><span class="section-number-3">3.2</span> EndpointSlices</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+<a href="https://kubernetes.io/docs/concepts/services-networking/service/#endpointslices">https://kubernetes.io/docs/concepts/services-networking/service/#endpointslices</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0f9427e" class="outline-3">
+<h3 id="org0f9427e"><span class="section-number-3">3.3</span> Application Protocol</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+<a href="https://kubernetes.io/docs/concepts/services-networking/service/#application-protocol">https://kubernetes.io/docs/concepts/services-networking/service/#application-protocol</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgde8050d" class="outline-2">
+<h2 id="orgde8050d"><span class="section-number-2">4</span> <span class="todo TODO">TODO</span> 虚拟 IPs 和服务代理</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> 。 <code>kube-proxy</code> 的责任是实现除了 ExternalName 之外的 <code>Services</code> 的虚拟 IP。
+</p>
+</div>
+
+<div id="outline-container-org2efd559" class="outline-3">
+<h3 id="org2efd559"><span class="section-number-3">4.1</span> 为什么不使用 DNS 轮询？</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+经常会有人问，为什么 Kubernetes 要依赖于代理将流量转发到后端，而不是使用其他方式，比如说：是否可以配置具有多个 A 值的 DNS 记录，
+并依靠轮询名称进行解析呢？
+</p>
+
+<p>
+使用服务代理有以下几个原因：
+</p>
+
+<ul class="org-ul">
+<li>DNS 实现的历史悠久都不遵守记录的 TTLs，并且在查找结果过期后进行缓存。</li>
+<li>某些应用仅执行一次 DNS 查找，并无限期缓存结果。</li>
+<li>即使应用程序和程序库做了适当的重新解析，DNS 的低或者 0 TTLs 可能会给 DNS 带来高负载，从而使 DNS 变的难以管理。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbb85e2b" class="outline-3">
+<h3 id="orgbb85e2b"><span class="section-number-3">4.2</span> 使用空间代理模式（User space proxy mode）</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+在此模式下，Kube-proxy 监听 Kubernetes master 以添加或者删除 Service 和 Endpoint 对象。
+对于每一个 Service ，它都会在本地节点上打开一个端口（随机选择）。与此代理端口的连接将代理到 Service 后端 Pod 之一。
+在决定选择哪一个后端 Pod 时，kube-proxy 会考虑 Service 的 <code>SessionAffinity</code> 设置。
+</p>
+
+<p>
+最后，user-space 代理安装 iptables 规则，以捕获到 Service 的 <code>clusterIP</code> 和 <code>port</code> 的流量。规则将流量重定向到代理后端 Pod 的
+代理端口。
+</p>
+
+<p>
+默认情况下，user-proxy 模式下的 kube-proxy 通过轮询算法选择后端。
+</p>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/e351b830334b8622a700a8da6568cb081c464a9b/13020/images/docs/services-userspace-overview.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+<p><span class="figure-number">Figure 1: </span>from <a href="https://kubernetes.io/">https://kubernetes.io/</a></p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf2e2f56" class="outline-3">
+<h3 id="orgf2e2f56"><span class="section-number-3">4.3</span> <code>iptables</code> 代理模式</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+在这种模式下，kube-proxy 监听 Kubernetes 控制面板用于添加和删除 Service 和 Endpoint 对象。对于每一个 Services，它安装
+iptables 规则，用来捕获到 Service 的 <code>clusterIP</code> 和 <code>port</code> 的流量，然后将该流量重定向到 Services 的后端集合之一。
+对于每一个 Endpoint 对象，都会安装 iptables 规则来选择后端 Pod。
+</p>
+
+<p>
+默认情况下，iptables 模式下的 kube-proxy 会随机选择一个后端。
+</p>
+
+<p>
+使用 iptables 处理流有较低的系统开销，因为流量由 Linux netfilter 处理，而无需在用户空间和内核空间之间切换。这种方法也可能更可靠。
+</p>
+
+<p>
+如果 kube-proxy 在 iptables 模式下运行，并且所选择的第一个 Pod 没有响应，则连接失败。这和 userspace 模式不同在于：
+在这种情况下，kube-proxy 会检测与第一个 Pod 的连接失败，并会自动使用其它后端 Pod 重试。
+</p>
+
+<p>
+你可以使用 Pod 的可用检测（readiness）探针来检测后端 Pods 是不是正常运行，确保 kube-proxy 只看到经过测试后正常的后端。
+这样做可以避免流量通过 kube-proxy 发送到已知故障的 Pod。
+</p>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/27b2978647a8d7bdc2a96b213f0c0d3242ef9ce0/e8c9b/images/docs/services-iptables-overview.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+<p><span class="figure-number">Figure 2: </span>from <a href="https://kubernetes.io/">https://kubernetes.io/</a></p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc57deeb" class="outline-3">
+<h3 id="orgc57deeb"><span class="section-number-3">4.4</span> IPVS 代理模式</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+<code>Kubernetes v1.11</code> 之后支持的特性, <span class="underline">stable</span> 。
+</p>
+
+<p>
+在 <code>ipvs</code> 模式中，kube-proxy 监听 Kubernetes Services 和 Endpoints，调用 <code>netlink</code> 接口创建对应的 IPVS 规则并定期与 Kubernetes
+中的对象保持同步。这种控制循环可确保 IPVS 状态与所期望状态匹配。当访问 Service 时，IPVS 直接转发流量到一个后端 Pod 中。
+</p>
+
+<p>
+IPVS 代理模式基于 netfilter hook 函数与 iptables 模式类似，但是它使用哈希表作为基础数据结构，并在内核空间中工作。
+这意味着 kube-proxy 在 IPVS 模式重定向流量延迟比 iptables 模式下的 kube-proxy 还要低，在同步代理规则时具有更好的性能。
+与其他代理模式相比，IPVS 模式还支持更高网络流量吞吐量。
+</p>
+
+<p>
+IPVS 为后端 Pods 流量的负载均衡提供了更多的选项：
+</p>
+
+<ul class="org-ul">
+<li><code>rr</code> 轮询</li>
+<li><code>lc</code> 最小连接（打开连接的最小数量）</li>
+<li><code>dh</code> 目标 hashing</li>
+<li><code>sh</code> 源 hashing</li>
+<li><code>sed</code> 最短预期延迟</li>
+<li><code>nq</code> 永不排队（never queue）</li>
+</ul>
+
+<blockquote>
+<p>
+<b>注意：</b>
+使用 IPVS 模式的 kube-proxy，必须在启动 kube-proxy 之前使 IPVS Linux 在节点上可用。
+</p>
+
+<p>
+当 kube-proxy 在 IPVS 代理模式下启动，它会验证 IPVS 内核模块是否可用。如果 IPVS 内核模块没有被检测到，它会以 iptables 代理
+模式运行。
+</p>
+</blockquote>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/2d3d2b521cf7f9ff83238218dac1c019c270b1ed/9ac5c/images/docs/services-ipvs-overview.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+<p><span class="figure-number">Figure 3: </span>from <a href="https://kubernetes.io/">https://kubernetes.io/</a></p>
+</div>
+
+<p>
+在这些代理模式中，Service 的 IP 流量限制：在客户端不知道 Kubernetes 或者 Service 或者 Pod 的任何信息的情况下，将 Port 代理到合适的后端。
+</p>
+
+<p>
+如果你想确保每次都将来自特定的客户端的连接都传递给相同的 Pod，你可以通过设置客户端基于 IP 地址的会话亲和性
+<code>service.spec.sessionAffinity</code> 设置为 "ClientIP" （默认情况下是 "None"）。你也可以适当的设置
+<code>service.spec.sessionAffinityConfig.clientIP.timeoutSeconds</code> 来控制最大会话粘性时间。（默认是 10800，3小时）。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc045095" class="outline-2">
+<h2 id="orgc045095"><span class="section-number-2">5</span> <span class="todo TODO">TODO</span> 多端口 Services</h2>
+</div>
+
+<div id="outline-container-orgcb7af96" class="outline-2">
+<h2 id="orgcb7af96"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> 选择自己的 IP 地址</h2>
+</div>
+
+<div id="outline-container-org714413a" class="outline-2">
+<h2 id="org714413a"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> 服务发现</h2>
+</div>
+
+<div id="outline-container-orgd60e1ca" class="outline-2">
+<h2 id="orgd60e1ca"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> Headless Services</h2>
+</div>
+
+<div id="outline-container-org4c1da79" class="outline-2">
+<h2 id="org4c1da79"><span class="section-number-2">9</span> <span class="todo TODO">TODO</span> Publishing Services (ServiceTypes)</h2>
+</div>
+
+<div id="outline-container-org9347d08" class="outline-2">
+<h2 id="org9347d08"><span class="section-number-2">10</span> <span class="todo TODO">TODO</span> Shortcomming</h2>
+</div>
+
+<div id="outline-container-org2b0a50c" class="outline-2">
+<h2 id="org2b0a50c"><span class="section-number-2">11</span> <span class="todo TODO">TODO</span> 虚拟 IP 实现</h2>
+</div>
+
+<div id="outline-container-orgabad526" class="outline-2">
+<h2 id="orgabad526"><span class="section-number-2">12</span> <span class="todo TODO">TODO</span> API 对象</h2>
+</div>
+
+<div id="outline-container-orge9d87ec" class="outline-2">
+<h2 id="orge9d87ec"><span class="section-number-2">13</span> <span class="todo TODO">TODO</span> 支持的协议</h2>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2020-05-08 Fri 10:51 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+</div>
+</body>
+</html>

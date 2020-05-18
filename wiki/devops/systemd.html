@@ -1,0 +1,854 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-05-18 Mon 10:45 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>systemd</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">systemd</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org90972dc">1. 理解 systemd</a></li>
+<li><a href="#org00d76d6">2. 启动、暂停和查询 systemd 服务</a></li>
+<li><a href="#org9c106ff">3. 修改已经存在的系统服务</a></li>
+<li><a href="#org1e7184f">4. 创建新的 systemd 服务</a></li>
+<li><a href="#org6dd5e55">5. 转换 SysVinit 服务</a></li>
+<li><a href="#org18ca3cd">6. 常用的服务参数</a>
+<ul>
+<li><a href="#orgad8198a">6.1. Unit 参数</a></li>
+<li><a href="#org6c36146">6.2. Install 参数</a></li>
+<li><a href="#org0c57cc9">6.3. Service 参数</a></li>
+</ul>
+</li>
+<li><a href="#org34adc48">7. runlevels 和 targets 的映射关系</a></li>
+<li><a href="#orge63739c">8. 服务映射命令</a></li>
+</ul>
+</div>
+</div>
+<p>
+官方 Wiki：<a href="https://www.freedesktop.org/wiki/Software/systemd/">https://www.freedesktop.org/wiki/Software/systemd/</a>
+</p>
+
+<blockquote>
+<p>
+systemd 是 Linux 电脑操作系统之下的一套中央化系统及设置管理程序（init），包括有守护进程、程序库跟应用软件，由 Lennart Poettering 带头开发。
+其开发目标是提供更优秀的框架以表示系统服务间的依赖关系，并依此实现系统初始化时服务的并行启动，同时达到降低Shell的系统开销的效果，最终代替现在常用的 System V 与 BSD 风格 init 程序。
+</p>
+
+<p>
+&#x2013; <a href="https://zh.wikipedia.org/wiki/Systemd">https://zh.wikipedia.org/wiki/Systemd</a>
+</p>
+</blockquote>
+
+<p>
+值得注意的是 systemd 被众多的 Linux发行版 所支持，但并不是所有，比如 Ubuntu 15.04 之后的版本才支持。
+</p>
+
+<p>
+关于 Linux 系统初始化的发展可以看这三篇文章，可以更好的理解 systemd：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://www.ibm.com/developerworks/cn/linux/1407_liuming_init1/index.html">浅析 Linux 初始化 init 系统，第 1 部分 sysvinit</a>：串行启动，慢</li>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/1407_liuming_init2/index.html">浅析 Linux 初始化 init 系统，第 2 部分 UpStart</a>：采用事件驱动模型，启动更快，动态硬件插拔</li>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/1407_liuming_init3/index.html">浅析 Linux 初始化 init 系统，第 3 部分 Systemd</a>：采用 socket/D-Bus activation 等技术启动服务，并行启动更快</li>
+</ul>
+
+<p>
+下面的文档基本翻译自：Fedora 官方文档 <a href="https://docs.fedoraproject.org/quick-docs/en-US/understanding-and-administering-systemd.html">Understanding and administering systemd</a>。
+</p>
+
+<div id="outline-container-org90972dc" class="outline-2">
+<h2 id="org90972dc"><span class="section-number-2">1</span> 理解 systemd</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+systemd 是一个系统和 Linux 服务管理器，兼容 SysV 和 LSB 初始化脚本，systemd 提供了：
+</p>
+
+<ul class="org-ul">
+<li>更好的并行处理功能（Aggressive parallelization capabilities）；</li>
+<li>启动服务使用 socket 和 D-Bus 激活（Uses socket and D-Bus activation for starting services）；</li>
+<li>按需提供守护进程，使用 Linux cgroups 做进程追踪（Offers on-demand starting of daemons, keeps track of processes using Linux cgroups）；</li>
+<li>提供快照和恢复系统功能（Supports snapshotting and restoring of the system state）；</li>
+<li>维护挂载和自动挂载点（Maintains mount and automount points）；</li>
+<li>实现基于事务依赖性的服务控制逻辑（Implements an elaborate transactional dependency-based service control logic）；</li>
+</ul>
+
+<p>
+<code>systemctl</code> 命令是管理 systemd 的主要工具，它结合了 SysVinit 的 <code>service</code> 和 <code>chkconfig</code> 命令，用来开启和关闭服务。
+</p>
+
+<p>
+systemd 使用 units 作为资源和服务的表达方式，下面显示了 systemd 可以管理的 unit 类型：
+</p>
+
+<ul class="org-ul">
+<li><code>service</code> ：系统上运行的服务，包含服务的启动、重启、停止指令；</li>
+<li><code>socket</code> ：与服务关联的网络套接字（network socket）；</li>
+<li><code>device</code> ：专门用 systemd 管理的设备；</li>
+<li><code>mount</code> ：使用 systemd 管理的挂载点；</li>
+<li><code>automount</code> ：在引导程序上自动挂载的挂载点（A mountpoint automatically mounted on boot）；</li>
+<li><code>swap</code> ：系统上的交换空间（Swap space）；</li>
+<li><code>target</code> ：其它 units 的同步点。通常用于在系统启动时启动的服务，（对配置单元进行逻辑分组，更好的管理配置单元）；</li>
+<li><code>path</code> ：A path for path-based activation. For example, you can start services based on the state of a certain path, such as whether it exists or not；</li>
+<li><code>timer</code> ：计划任务（A timer to schedule activation of another unit）；</li>
+<li><code>snapshot</code> ：当前 systemd 状态的 snapshot。通常用于 systemd 临时更改之后回滚；</li>
+<li><code>slice</code> ：通过使用 Linux Control Group nodes（cgroups）限制资源；</li>
+<li><code>scope</code> ：systemd 总线接口信息。通常用于管理外部系统进程；</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org00d76d6" class="outline-2">
+<h2 id="org00d76d6"><span class="section-number-2">2</span> 启动、暂停和查询 systemd 服务</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+你可以使用 <code>systemctl</code> 执行各种管理任务来控制 systemd 服务。下面举几个例子：
+</p>
+
+<p>
+假定你有一个 <code>foo</code> 服务：
+</p>
+
+<ul class="org-ul">
+<li>激活服务： <code>systemctl start foo</code></li>
+<li>停止服务： <code>systemctl stop foo</code></li>
+<li>重启服务： <code>systemctl restart foo</code></li>
+<li>查看服务状态： <code>systemctl status foo</code></li>
+<li>服务开机自启动： <code>systemctl enable foo</code></li>
+<li>关闭服务开机自启动： <code>systemctl disable foo</code></li>
+<li>除非 unmasked，否则阻止服务手动启动甚至是手动启动： <code>systemctl mask foo</code></li>
+<li>检查服务是否已经设置开机自启动： <code>systemctl is-enabled foot</code></li>
+<li>重新加载已修改的配置文件： <code>systemctl daemon-reload</code> ，修改文件之后只有 <code>daemon-reload</code> ，再 reload 服务才能生效</li>
+<li>重置 systemd 状态： <code>systemctl reset-failed</code> ，某个单元出了问题之后，systemd 会一直记录他的退出代码让管理员来检查，直到服务重启或者执行这个命令才会消除（但有些时候该服务已经被管理员删掉了）</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9c106ff" class="outline-2">
+<h2 id="org9c106ff"><span class="section-number-2">3</span> 修改已经存在的系统服务</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+服务修改文件存放在 <code>/etc/systemd/system</code> 目录下，该目录以服务命名。例如，下面的程序修改 <code>httpd</code> 服务。
+</p>
+
+<ol class="org-ol">
+<li><p>
+以 <code>[SERVICE NAME].service.d</code> 的格式创建目录，比如 <code>httpd.service.d</code> ：
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">mkdir /etc/systemd/system/httpd.service.d/
+</pre>
+</div></li>
+<li><p>
+在该目录下创建配置文件：
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">vi /etc/systemd/system/httpd.service.d/custom.conf
+</pre>
+</div></li>
+<li><p>
+添加 custom 配置，比如：
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #707183;">[</span>Service<span style="color: #707183;">]</span>
+<span style="color: #BA36A5;">Restart</span>=always
+<span style="color: #BA36A5;">RestartSec</span>=30
+</pre>
+</div></li>
+<li>保存文件</li>
+<li><p>
+重启 <code>httpd</code> 服务：
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">systemctl restart httpd
+</pre>
+</div></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org1e7184f" class="outline-2">
+<h2 id="org1e7184f"><span class="section-number-2">4</span> 创建新的 systemd 服务</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+自定义的 unit 文件在 <code>/etc/systemd/system/</code> 目录下，以 <code>.service</code> 作为后缀。比如说 <code>foo</code> 服务使用 <code>/etc/systemd/system/foo.service</code> unit 文件。
+</p>
+
+<ol class="org-ol">
+<li>创建并且编辑一个新的配置文件： <code>vi /etc/systemd/system/foo.service</code></li>
+<li>接下来在文件中添加每个 section 参数：
+<ol class="org-ol">
+<li><code>[Unit]</code> section 指定最基本的服务信息。 <code>foo</code> 服务使用下面两个参数：
+<ul class="org-ul">
+<li><code>Description</code> ：unit 描述字符串，systemd 在用户界面 unit 名称旁边显示这个字符串；</li>
+<li><p>
+<code>Requires</code> ：定义该服务的依赖 unit 。当你激活 unit 的时候，systemd 会先激活 <code>Requires</code> 中的 units 列表；
+</p>
+<pre class="example">
+[Unit]
+Description=My custom service
+Requires=network.target
+</pre></li>
+</ul></li>
+<li><code>[Service]</code> section 提供控制服务所需的指令， <code>foo</code> 服务使用下面两个参数：
+<ul class="org-ul">
+<li><code>Type</code> ：定义 systemd 服务的类型，~foo~ 服务是一个 <code>simple</code> 服务（在不需要任何特殊条件下启动）</li>
+<li><p>
+<code>ExecStart</code> ：服务启动命令。包含命令的全路径和运行参数；
+</p>
+<pre class="example">
+[Service]
+Type=simple
+ExecStart=/usr/bin/sleep infinity
+</pre></li>
+</ul></li>
+<li><code>[Install]</code> 提供 systemd 如何安装服务的指令。 <code>foo</code> 服务使用如下参数：
+<ul class="org-ul">
+<li><code>WantedBy</code> 如果使用 <code>systemctl enable</code> 开启服务，由哪个服务来触发。大多数情况下用来在系统启动时启动服务， <code>foo.service</code> 使用 <code>multi-user.target</code> ，当系统启动时加载 <code>multi-user.target</code> 时跟随启动；</li>
+</ul></li>
+</ol></li>
+<li><p>
+完整的 <code>foo.service</code> 文件如下：
+</p>
+<pre class="example">
+[Unit]
+Description=My custom service
+Requires=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/sleep infinity
+
+[Install]
+WantedBy=multi-user.target
+</pre></li>
+<li>启动服务： <code>systemctl start foo</code> ；</li>
+<li><p>
+检查服务的运行状态： <code>systemctl status foo</code> ；
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ systemctl status foo
+&#9679; foo.service - My custom service
+   Loaded: loaded <span style="color: #707183;">(</span>/etc/systemd/system/foo.service; static; vendor preset: disabled<span style="color: #707183;">)</span>
+   Active: active <span style="color: #707183;">(</span>running<span style="color: #707183;">)</span> since Thu 2017-12-14 14:09:12 AEST; 6s ago
+ Main PID: 31837 <span style="color: #707183;">(</span>sleep<span style="color: #707183;">)</span>
+    Tasks: 1 <span style="color: #707183;">(</span><span style="color: #006FE0;">limit</span>: 4915<span style="color: #707183;">)</span>
+   CGroup: /system.slice/foo.service
+           &#9492;&#9472;31837 /usr/bin/sleep infinity
+
+Dec 14 14:09:12 dansmachine systemd<span style="color: #707183;">[</span>1<span style="color: #707183;">]</span>: Started My custom service.
+</pre>
+</div></li>
+</ol>
+</div>
+</div>
+
+
+<div id="outline-container-org6dd5e55" class="outline-2">
+<h2 id="org6dd5e55"><span class="section-number-2">5</span> 转换 SysVinit 服务</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+旧的 Fedora 使用 SysVinit 脚本管理服务，这一节提供怎样把 SysVinit 脚本转换成等价的 systemd 服务的方法。略。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org18ca3cd" class="outline-2">
+<h2 id="org18ca3cd"><span class="section-number-2">6</span> 常用的服务参数</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+这里只列出常用的参数，完整的参数可以通过 <code>man systemd.unit</code> 查看。
+</p>
+</div>
+
+<div id="outline-container-orgad8198a" class="outline-3">
+<h3 id="orgad8198a"><span class="section-number-3">6.1</span> Unit 参数</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+服务中的 <code>[Unit]</code> 块参数。
+</p>
+
+<ul class="org-ul">
+<li><code>Description</code>: 服务描述字符串；</li>
+<li><code>Documentation</code>: 空格分隔的 URIs 引用文档，只接受如下形式的 URIs: <code>http://</code> <code>https://</code> <code>file:</code> <code>info:</code> <code>man</code> ；</li>
+<li><code>Requires</code>: 依赖服务配置，该服务激活时，依赖的服务也会被激活。如果依赖的服务被激活失败，systemd 不会启动该服务。可以指定多个依赖服务，服务之间用空格分开；</li>
+<li><code>Wants</code>: 跟 Require 类似，除了依赖启动失败时不会影响当前服务；</li>
+<li><code>BindTo</code>: 跟 Require 类似，除了停止依赖 units 也停止服务；</li>
+<li><code>PartOf</code>: 跟 Require 类似，除了停止和重启依赖 units 也停止和重启服务；</li>
+<li><code>Conflicts</code> :空格分离的 unit 名称列表，如果他们运行，服务会被终止；</li>
+<li><code>Before~，~After</code>: 空格分隔的单元名称，用来配置服务之间的依赖顺序（属于更精确地依赖）；</li>
+<li><code>OnFailure</code>: 当服务进入失败状态时，启动的 unit 名称列表；</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6c36146" class="outline-3">
+<h3 id="org6c36146"><span class="section-number-3">6.2</span> Install 参数</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+服务中的 <code>[Install]</code> 参数。
+</p>
+
+<ul class="org-ul">
+<li><code>Alias</code>: A space-separated list of additional names this service shall be installed under. The names listed here must have the same suffix (i.e. type) as the service filename.</li>
+<li><code>RequiredBy</code>, <code>WantedBy</code>: 将服务定义为依赖于其他服务，一般用来作为触发服务的 target。类似于 <code>[Units]</code> 块中的 <code>Requires</code> 和 ~Wants~；</li>
+<li><code>Also</code>: 安装或者卸载此服务时同时安装和卸载的 unit；</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0c57cc9" class="outline-3">
+<h3 id="org0c57cc9"><span class="section-number-3">6.3</span> Service 参数</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+服务中的 <code>[Service]</code> 参数。
+</p>
+
+<ul class="org-ul">
+<li><code>Type</code>: 配置此服务所服务的进程启动类型:
+<ul class="org-ul">
+<li><code>simple</code>: 以简单的主进程方式启动，这是默认的方式；</li>
+<li><code>forking</code>: fork 一个进程，然后以作为主守护进程的一部分运行；</li>
+<li><code>oneshot</code>: 跟 <code>simple</code> 类似，except the process must exits before systemd starts follow-up services；</li>
+<li><code>dbus</code>: 跟 <code>simple</code> 类似，except the daemon acquires a name of the D-Bus bus；</li>
+<li><code>notify</code>: 跟 <code>simple</code> 类似, except the daemon sends a motification message using sd_notify or an equivalent call after starting up；</li>
+<li><code>idle</code>: 跟 <code>simple</code> 类似，except the execution of the service is delayed until all active jobs are dispatched.；</li>
+</ul></li>
+<li><code>RemainAfterExit</code>: 一个 boolean 值指定当它的进程退出时是否认为活跃，默认为 no；</li>
+<li><code>GuessMainPID</code>: 一个 boolean 值用来指定如果无法准确的确定 PID 时，否猜测服务的主 PID。只有当 <code>Type=forking</code> 时才有意义，默认值为 yes。</li>
+<li><code>PIDFile</code>: 指向守护进程 PID 文件的绝对文件路径。当使用 <code>Type=forking</code> 时推荐使用这个选项。当启动服务的时候 systemd 读取守护进程的主进程的 PID。systemd 不会写入这里配置的文件，虽然它会在服务关闭时移除文件。</li>
+<li><code>BusName</code>: 到达该服务的 D-Bus 的 bus 名称。当服务设置 <code>Type=dbus</code> 时需要强制设置；</li>
+<li><code>ExecStart</code>: 服务启动命令和参数；</li>
+<li><code>ExecStartPre~，~ExecStartPost</code>: 在 <code>ExecStart</code> 命令之前或者之后执行的额外命令；</li>
+<li><code>ExecReload</code>: 当服务重启时执行的命令；</li>
+<li><code>ExecStop</code>: 当服务停止时执行的命令；</li>
+<li><code>ExecStopPost</code>: 在服务停止时执行的额外命令；</li>
+<li><code>RestartSec</code>: 在重启服务的时候 sleep 的秒数；</li>
+<li><code>TimeoutStartSec</code>: 服务启动时等待的秒数；</li>
+<li><code>TimeoutStopSec</code>: 服务停止时等待的秒数；</li>
+<li><code>TimeoutSec</code>: 同时配置 <code>TimeoutStartSec</code> 和 <code>TimeoutStopSec</code> 的简单办法；</li>
+<li><code>RuntimeMaxSec</code>: 服务运行的最长时间，传递 infinity（默认值）表示没有运行时长限制；</li>
+<li><code>Restart</code>: 配置服务重启的时机（当服务进程退出、被杀掉、或者超时）:
+<ul class="org-ul">
+<li><code>no</code> - 服务不会被重启。默认选项；</li>
+<li><code>no-success</code> - 只有服务正常退出时（exit code 0）重启；</li>
+<li><code>no-failure</code> - 只有服务没有正常退出时（no-zero exit code）重启；</li>
+<li><code>on-abnormal</code> - 如果进程在被信号终止或者发生超时时终止；</li>
+<li><code>on-abort</code> - 进程正常退出时没有捕获信号</li>
+<li><code>always</code> - 总是重启；</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org34adc48" class="outline-2">
+<h2 id="org34adc48"><span class="section-number-2">7</span> runlevels 和 targets 的映射关系</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+systemd targets 跟 SysVinit runlevels 有相同的目标，但是行为有一点点不同。每个 target 都有一个名字而不是数字而且有特定的目的。systemd 通过继承另一个 target 并向其添加额外的服务来实现一些 targets。
+一些 systemd targets 模仿常见的 sysvinit runlevels，也就意味着你可以用 <code>telinit RUNLEVEL</code> 相似的命令来切换 targets。runlevels 在 vanilla Fedora 安装时被分配了一个特定的目的（0，1，3，5 和 5）跟特定的 systemd target 有 1:1 的映射关系。
+</p>
+
+<p>
+然而，在用户定义的 runlevels 2 和 4 不是这种情况，要使用这些运行级别，创建一个新的命名的 systemd targets 比如 <code>/etc/systemd/system/$YOURTARGET</code> 使用一个已经存在的 runlevels 做为基础，
+创建一个目录 <code>/etc/systemd/system/$YOURTARGET.wants</code> ，然后符号链接其他服务以启用该目录。
+</p>
+
+<p>
+下面是 SysVinit runlevels 和 systemd targets 的映射关系:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Sysvinit Runlevel</th>
+<th scope="col" class="org-left">systemd Target</th>
+<th scope="col" class="org-left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">0</td>
+<td class="org-left">runlevel0.target, poweroff.target</td>
+<td class="org-left">Halt the system.</td>
+</tr>
+
+<tr>
+<td class="org-right">1, s, single</td>
+<td class="org-left">runlevel1.target, rescue.target</td>
+<td class="org-left">Single user mode.</td>
+</tr>
+
+<tr>
+<td class="org-right">2, 4</td>
+<td class="org-left">runlevel2.target, runlevel4.target, multi-user.target</td>
+<td class="org-left">User-defined/Site-specific runlevels. By default, identical to 3.</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">runlevel3.target, multi-user.target</td>
+<td class="org-left">Multi-user, non-graphical. Users can usually login via multiple consoles or via the network.</td>
+</tr>
+
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">runlevel5.target, graphical.target</td>
+<td class="org-left">Multi-user, graphical. Usually has all the services of runlevel 3 plus a graphical login.</td>
+</tr>
+
+<tr>
+<td class="org-right">6</td>
+<td class="org-left">runlevel6.target, reboot.target</td>
+<td class="org-left">Reboot</td>
+</tr>
+
+<tr>
+<td class="org-right">emergency</td>
+<td class="org-left">emergency.target</td>
+<td class="org-left">Emergency shell</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orge63739c" class="outline-2">
+<h2 id="orge63739c"><span class="section-number-2">8</span> 服务映射命令</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+下表演示了 systemd 和 SysVinit 的等价命令。
+</p>
+
+<!-- This HTML table template is generated by emacs 26.3 -->
+<table border="1">
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;Sysvinit&nbsp;Command&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemd&nbsp;Command&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Notes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;service&nbsp;frobozz&nbsp;start&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;start&nbsp;frobozz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Used&nbsp;to&nbsp;start&nbsp;a&nbsp;service&nbsp;(not&nbsp;reboot&nbsp;persistent)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;service&nbsp;frobozz&nbsp;stop&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;stop&nbsp;frobozz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Used&nbsp;to&nbsp;stop&nbsp;a&nbsp;service&nbsp;(not&nbsp;reboot&nbsp;persistent)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;service&nbsp;frobozz&nbsp;restart&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;restart&nbsp;frobozz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Used&nbsp;to&nbsp;stop&nbsp;and&nbsp;then&nbsp;start&nbsp;a&nbsp;service&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;service&nbsp;frobozz&nbsp;reload&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;reload&nbsp;frobozz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;When&nbsp;supported,&nbsp;reloads&nbsp;the&nbsp;config&nbsp;file&nbsp;without&nbsp;interrupting&nbsp;pending&nbsp;operations.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;service&nbsp;frobozz&nbsp;condrestart&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;condrestart&nbsp;frobozz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Restarts&nbsp;if&nbsp;the&nbsp;service&nbsp;is&nbsp;already&nbsp;running.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;service&nbsp;frobozz&nbsp;status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;status&nbsp;frobozz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Tells&nbsp;whether&nbsp;a&nbsp;service&nbsp;is&nbsp;currently&nbsp;running.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;ls&nbsp;/etc/rc.d/init.d/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+	  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;or&nbsp;systemctl&nbsp;list-unit-files&nbsp;--type=service&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+	  &nbsp;or&nbsp;ls&nbsp;/lib/systemd/system/.service&nbsp;/etc/systemd/system/.service&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Used&nbsp;to&nbsp;list&nbsp;the&nbsp;services&nbsp;that&nbsp;can&nbsp;be&nbsp;started&nbsp;or&nbsp;stopped,&nbsp;Used&nbsp;to&nbsp;list&nbsp;all&nbsp;the&nbsp;services&nbsp;and&nbsp;other&nbsp;units&nbsp;<br />
+	  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;chkconfig&nbsp;frobozz&nbsp;on&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;enable&nbsp;frobozz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Turn&nbsp;the&nbsp;service&nbsp;on,&nbsp;for&nbsp;start&nbsp;at&nbsp;next&nbsp;boot,&nbsp;or&nbsp;other&nbsp;trigger.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;chkconfig&nbsp;frobozz&nbsp;off&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;disable&nbsp;frobozz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Turn&nbsp;the&nbsp;service&nbsp;off&nbsp;for&nbsp;the&nbsp;next&nbsp;reboot,&nbsp;or&nbsp;any&nbsp;other&nbsp;trigger.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;chkconfig&nbsp;frobozz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;is-enabled&nbsp;frobozz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Used&nbsp;to&nbsp;check&nbsp;whether&nbsp;a&nbsp;service&nbsp;is&nbsp;configured&nbsp;to&nbsp;start&nbsp;or&nbsp;not&nbsp;in&nbsp;the&nbsp;current&nbsp;environment.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;chkconfig&nbsp;--list&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;list-unit-files&nbsp;--type=service&nbsp;or&nbsp;ls&nbsp;/etc/systemd/system/*.wants/&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Print&nbsp;a&nbsp;table&nbsp;of&nbsp;services&nbsp;that&nbsp;lists&nbsp;which&nbsp;runlevels&nbsp;each&nbsp;is&nbsp;configured&nbsp;on&nbsp;or&nbsp;off&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;chkconfig&nbsp;--list&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;grep&nbsp;5:on&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;list-dependencies&nbsp;graphical.target&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;chkconfig&nbsp;frobozz&nbsp;--list&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;ls&nbsp;/etc/systemd/system/*.wants/frobozz.service&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Used&nbsp;to&nbsp;list&nbsp;what&nbsp;levels&nbsp;this&nbsp;service&nbsp;is&nbsp;configured&nbsp;on&nbsp;or&nbsp;off&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+	  &nbsp;chkconfig&nbsp;frobozz&nbsp;--add&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;systemctl&nbsp;daemon-reload&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+	  &nbsp;Used&nbsp;when&nbsp;you&nbsp;create&nbsp;a&nbsp;new&nbsp;service&nbsp;file&nbsp;or&nbsp;modify&nbsp;any&nbsp;configuration&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2018-06-01 15:50:40 <br />Last updated: 2019-09-11 Wed 17:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+</div>
+</body>
+</html>

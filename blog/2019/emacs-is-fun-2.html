@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2020-05-18 Mon 10:46 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Emacs 心路历程（下）</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Emacs 心路历程（下）</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#from-helm-to-ivy">1. From Helm to Ivy</a></li>
+<li><a href="#使用-projectile-管理多个工程">2. 使用 projectile 管理多个工程</a></li>
+<li><a href="#终端-vs-gui">3. 终端 vs GUI</a></li>
+<li><a href="#字体选择">4. 字体选择</a></li>
+<li><a href="#拥抱-abo-abo-全家桶">5. 拥抱 abo-abo 全家桶</a></li>
+<li><a href="#其它">6. 其它</a></li>
+<li><a href="#总结">7. 总结</a></li>
+</ul>
+</div>
+</div>
+<p>
+在使用 Emacs 过程中，从不缺折腾，每次折腾都让人想放弃使用它，但是折腾过后又会觉得很爽。
+隔一段时间我都会折腾一次，但是比较大范围的折腾，只有两次。
+</p>
+
+<hr />
+
+<p>
+第一次大范围的折腾以及后面的几年使用使得自己对 Emacs 得心应手。第二次大范围的折腾是在最近这一个月，
+其实最近这一个多月干了两件事情：一是家里的 MacOS 环境换到了 Ubuntu，二个是 Emacs 插件大换血。
+第一点不在本文的讨论范围就暂且不提。
+</p>
+
+<p>
+这次折腾 Emacs 是纯属有时间想玩一玩，没想到还玩出了一些心得。经过这次折腾，感觉自己对于 Emacs 使用上又上了一个台阶。
+</p>
+
+<div id="outline-container-orgfbaddc1" class="outline-2">
+<h2 id="from-helm-to-ivy"><span class="section-number-2">1</span> From Helm to Ivy</h2>
+<div class="outline-text-2" id="text-from-helm-to-ivy">
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/ivy.gif" alt="ivy.gif" />
+</p>
+</div>
+
+<p>
+如上文所说，我从 2014 年开始使用 <a href="https://github.com/emacs-helm/helm">helm</a>，到现在快五年了，helm 已经成了 Emacs 一个重要的组成部分。
+</p>
+
+<p>
+Ivy 一般指的是 Ivy + Counsel + Swiper 的统称，至于为啥叫 ivy，我没有去深究。ivy 比 helm 要迟几年。
+Helm 的前身是 <a href="https://www.emacswiki.org/emacs/everything.el">anything.el</a>，而我理解的 ivy 也是对 helm 有很多的借鉴，很多地方都很像，不同的在于 ivy
+使用的完全不同的架构思路。
+</p>
+
+<p>
+helm 是一个大一统的思路，据业内评论非常臃肿，而我个人使用下来也是这种感觉。helm 功能很丰富，
+但是 90% 以上的东西平时根本用不到，我梳理了一下常用 helm 的快捷键不超过五个。Ivy 就比较简单了，职责也比较清晰：
+</p>
+
+<ul class="org-ul">
+<li>Ivy, a generic completion mechanism for Emacs.</li>
+<li>Counsel, a collection of Ivy-enhanced versions of common Emacs commands.</li>
+<li>Swiper, an Ivy-enhanced alternative to isearch.</li>
+</ul>
+
+<p>
+helm 中我常用的功能 ivy 都已经覆盖到了，对于 helm 和 ivy 的对比，我做不出很理性的分析（毕竟看不懂 LISP，
+架构啥的也就是人家说一说，我听一听），社区对此的争论比较多，比如 <a href="https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/">From helm, to ivy</a> 说的：
+</p>
+
+<blockquote>
+<p>
+You can do anything with Helm. But you don't need to. Just because you
+can does not mean you should. After a year of using it, I can tell you
+that I have only used a third or less of Helm's abilities. Some
+functions I thought were great, I re-discovered by reading this post
+yesterday. Most of the time, I used simple commands to switch buffers,
+or list files.
+</p>
+</blockquote>
+
+<p>
+这篇文章写的挺好的，还有 reddit 上的讨论：<a href="https://www.reddit.com/r/emacs/comments/7vcrwo/helm_vs_ivy_what_are_the_differences_what_are_the/">Helm vs Ivy: What are the differences, what are the advantages?</a> 。
+</p>
+
+<p>
+对我来说，切换到 ivy 的理由很简单：因为大家都说 ivy 好，哈哈。但是过程是有点痛苦的，毕竟所有的快捷键全部都不一样了。
+尝试了有两周之后，有如下体会：
+</p>
+
+<ul class="org-ul">
+<li><code>helm-mini</code> VS <code>ivy-switch-buffer=，=helm-find-files</code> VS <code>counsel-find-files</code> ，helm 比 ivy
+要好用，说不出来的感觉（但并不是已经适应了 helm 的原因）</li>
+<li>在 buffer 切换上 helm 更剩一筹，helm 只会切换本次 Emacs 打开之后的
+buffer，而 ivy 会将最近的 buffer 全部显示这一点上应该是设计理念上的不同，可能是习惯了 helm，
+ivy 总感觉 buffer 很乱xs</li>
+<li>本文件搜索，helm 用的是 <code>helm-swoop</code> ，我绑定了 <code>C-h o</code> 快捷键，而 ivy
+用的是 Swiper，Swiper 只干一件事情就是搜索，可以绑定到 <code>C-s</code> 上，这两个对比半斤八两</li>
+<li>显示最近的拷贝记录，helm 用的是 <code>helm-show-kill-ring</code> ，ivy 用的是 <code>counsel-yank-pop</code> ，
+之前我以为 ivy 没有，就提了 <a href="https://github.com/abo-abo/swiper/issues/2090">issue</a>，结果已经有了。UI 上 helm 更好看一些</li>
+
+<li>ivy 比较爽的有两个函数（后来才知道 helm 也有类似的功能，可能是藏的太深了，我一直没有发现）
+<ul class="org-ul">
+<li><code>counsel-git</code> ：在本 git 工程中查找文件 =C-c g =，有了这个以后基本上就不需要前面的 buffer
+切换了，极大的提高了效率</li>
+<li><code>counsel-git-grep</code> ：在本 git 工程中搜索 <code>C-c j</code> ，等价于 <code>counsel-ag</code>
+只不过一个用的是 grep ，一个是 ag，这个也很好用</li>
+</ul></li>
+</ul>
+
+<p>
+ivy 提供的功能大多都是常用的，不常用的也没做，尽管 UI 整体比 helm 差一些，但是我更喜欢 ivy 一些，
+而且确实比 helm 要轻量级很多，从启动速度上就可以感觉出来。
+</p>
+
+<p>
+整体对比 helm 和 ivy 并没有那么大的差距，速度之说，差个零点几秒也无伤大雅，要说快的话 ido+smex 才是最快的，
+就看个人喜好和怎么权衡了。对于 Emacser：ido + smex、helm、ivy，三个框架，选一个用就是了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org30d1771" class="outline-2">
+<h2 id="使用-projectile-管理多个工程"><span class="section-number-2">2</span> 使用 projectile 管理多个工程</h2>
+<div class="outline-text-2" id="text-使用-projectile-管理多个工程">
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/projectile.gif" alt="projectile.gif" />
+</p>
+</div>
+
+<p>
+不管是使用 Emacs 还是其他的编码工具，用的时间长了，都会有固定的工作流。我之前的工作流是这样的：
+</p>
+
+<ul class="org-ul">
+<li>使用终端的 Emacs</li>
+<li>一个页签，一个 project</li>
+</ul>
+
+<p>
+因为这几年一直都是同时写前后端：Javascript(React) + Python(Django) 或者 JavaScript(React) + Go
+这样的组合，还有段时间做多集群测试，同时打开三四个 Emacs。
+</p>
+
+<p>
+这样带来的问题是，终端下项目切换很麻烦（主要是项目运行本身也有 <code>npm run start</code> 这样的页签需要占用），
+Mac 下用 <code>Command + 1/2/3</code> 这样的方式切换，有的时候都搞到 <code>Command + 7/8</code> 了。
+</p>
+
+<p>
+还有一个问题是，我经常会打开 Emacs 一个项目不会关闭，好几周不关闭一次也是常事，前几年经常会遇到 Emacs
+运行时间过长 crash 的 bug，再加上 helm 在 Emacs 关闭之后，buffer 就都不存在了。在项目比较大的情况下，
+重新打开项目再找到最近编辑的 buffer，还有点费时间。
+</p>
+
+<p>
+对于第一个问题的解决方案是使用 <a href="https://github.com/bbatsov/projectile">projectile</a>，projectile 支持在多个项目之间切换，项目的标识是：
+</p>
+
+<ul class="org-ul">
+<li>在版本管理系统下的项目，自动识别</li>
+<li>添加了 <code>.projectile</code> 的目录</li>
+</ul>
+
+<p>
+因为 projectile 默认搭配的是 ido，所以又有人开发了 ivy 的 projectile UI，即 <a href="https://github.com/ericdanan/counsel-projectile">counsel-projectile</a>。
+</p>
+
+<p>
+projectile 提供了在本项目下的常用操作，比如：
+</p>
+
+<ul class="org-ul">
+<li>切换项目： <code>C-c p p</code></li>
+<li>本项目中打开文件： <code>C-c p f</code></li>
+<li>本项目中切换 buffer： <code>C-c p b</code></li>
+<li>本项目中搜索： <code>C-c p s g</code> 或者 <code>C-c p s s</code></li>
+</ul>
+
+<p>
+这些都非常实用，因为在同时管理多个项目的前提下，打开的 buffer 可能会很多，很容易「串」，
+所以所有的操作都限定在当前项目中就很重要了。
+</p>
+
+<p>
+使用 projectile 的时候，就不需要同时打开多个 Emacs，一个 Emacs 就足够了。
+</p>
+
+<p>
+对于之前说的第二个问题是使用 Emacs daemon 和 client 的方式，client 挂了没关系，只要 daemon 在就行了。
+所以不用担心 Emacs UI 挂掉。这种方式我还没有尝试过，准备试试。
+不过 Emacs 打开时间长了 crash 在 24 版本经常出现，但是在 26 就很少了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org480bc05" class="outline-2">
+<h2 id="终端-vs-gui"><span class="section-number-2">3</span> 终端 vs GUI</h2>
+<div class="outline-text-2" id="text-终端-vs-gui">
+<p>
+对于使用终端版本的 Emacs 还是 GUI 版本的 Emacs，争议也很大。我从开始用
+Emacs 就是使用终端的，后来结合自己的工作流（同时打开多个 Emacs
+的需求，以及要与终端命令完美配合），这段时间坚持使用了两周的 GUI
+版本。体会如下：
+</p>
+
+<ul class="org-ul">
+<li>GUI 版本可以完美使用 Emacs  所有的快捷键，而终端不行，终端要考虑终端模拟器自身的快捷键是否冲突</li>
+
+<li><p>
+GUI 版本可以与系统的剪切板完美融合，比如在 Mac 环境下，在浏览器  <code>Ctrl + c</code> 复制，在 Emacs 下使用 <code>C-y</code> 粘贴，反之亦然。
+</p>
+
+<p>
+终端的 Emacs 与外接的复制和粘贴，与 Emacs 都无关，全部依赖终端。之前经常遇到的问题是，无法将终端下的 Emacs
+某个文件内容全部拷贝出来（通过 Emacs 的方式）
+</p></li>
+
+<li>GUI 支持鼠标操作</li>
+<li>GUI 版本的 UI 要比终端要舒适的多，色彩支持也好，而且支持打开图片</li>
+<li>GUI 有个致命的问题，找一个等宽等高的美观的中文字体很难
+终端的 Emacs 编码和字体的宽高是由终端控制的，跟 Emacs 自身没关系</li>
+</ul>
+
+<p>
+对于字体问题，下面会单独讨论，这里只对比终端与 GUI。网上也有一些对比和讨论：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://www.reddit.com/r/emacs/comments/4nwvex/gui_vs_terminal_version_of_emacs_recommendations/">GUI vs. terminal version of emacs - recommendations?</a></li>
+<li><a href="https://irreal.org/blog/?p=5835">Terminal vs. GUI Emacs</a></li>
+<li><a href="https://blog.aaronbieber.com/2016/12/29/don-t-use-terminal-emacs.html">Don't Use Terminal Emacs</a>
+评论的第一条就是哥用了终端 Emacs 25 年了~</li>
+<li><a href="http://ergoemacs.org/emacs/emacs_gui_vs_terminal.html">Emacs: GUI Emacs vs Terminal Emacs</a></li>
+</ul>
+
+<p>
+整体来看支持 GUI 的要远大于终端，我个人体会下来也是这样，但是没有合适的中文字体，所以暂时不能用 GUI。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0788c47" class="outline-2">
+<h2 id="字体选择"><span class="section-number-2">4</span> 字体选择</h2>
+<div class="outline-text-2" id="text-字体选择">
+<p>
+编码等宽字体是一个老生常谈的问题，对于字体和主题，前几年我做过无数的尝试，浪费了不少时间。
+</p>
+
+<p>
+我自己从入行到现在坚持使用一段时间的等宽字体：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/Fixedsys">Fixedsys</a>： 12号，这款经典的字体是 VC++6.0 的标配，也是最初开始写代码的时候的字体</li>
+<li><a href="https://zh.wikipedia.org/wiki/Consolas">Consolas</a>： 切换到 VS 系列 IDE 的时候，一直用的 Consolas，用了有 3 年左右</li>
+<li><a href="https://github.com/adobe-fonts/source-code-pro">Source Code Pro</a>： 从 2014 年开始，一直用到现在（支持各种平台：Windows、MacOS、Linux）</li>
+</ul>
+
+<p>
+对于网上推荐的那些等宽字体，比如早期的 Windows 下的 Courier new，MacOS
+下默认的 Monaco、XCode 默认的 Menlo，以及 Ubuntu 下经典的 Ubuntu
+Mono、Droid Sans Mono、DejaVu Sans Mono 我都做过尝试。
+</p>
+
+<p>
+各有优劣，比如在推崇的 <code>L l I i</code> 两个字符的区分上，敢拿出去比较的都是比较好的，但是 Source Code Pro
+在长相上绝对是最美的，不过最近发现 <a href="https://github.com/tonsky/FiraCode">Fira Code</a> 也很不错，足够跟 Source Code Pro 相媲美，
+Github 上 35,796 个 Star 啊（2019-06-20），值得一推。
+</p>
+
+<p>
+接下来说，GUI 下的 Emacs 字体选择，在 GUI 下大部分等宽字体中英文都不是等宽的，比如 Monaco 和 Fira Code：
+</p>
+
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/emacs-font-gui.gif" alt="emacs-font-gui.gif" />
+</p>
+</div>
+
+<p>
+我尝试下来只有 Ubuntu Mono 和 <a href="https://www.fontsquirrel.com/fonts/m-1m">M+1M</a> 是等宽的，可惜不是等高的，中英文输入的时候，行会抖动。下面是 M+1M
+字体演示：
+</p>
+
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/emacs-font-gui-2.gif" alt="emacs-font-gui-2.gif" />
+</p>
+</div>
+
+<p>
+唯一一款等宽并且等高的字体是：<a href="http://wenq.org/wqy2/index.cgi">文泉驿正黑</a>，这个字体看 chenbin 的 <a href="https://github.com/redguardtoo/emacs.d/issues/299">issue</a> 里提到的。
+</p>
+
+<p>
+文泉驿在 Ubuntu 下不算丑，但是在 MacOS 下实在是有点丑，但它的确是既等宽又等高的，MacOS 下如下图：
+</p>
+
+
+<div class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/emacs-font-gui-3.gif" alt="emacs-font-gui-3.gif" />
+</p>
+</div>
+
+<p>
+如你所见，很丑。
+</p>
+
+<p>
+下面是在 Ubuntu 下的文泉驿正黑：
+</p>
+
+
+<div class="figure">
+<p><img src="https://microblog-1252349778.cos.ap-shanghai.myqcloud.com/2019/emacs-wqy.png" alt="emacs-wqy.png" />
+</p>
+</div>
+
+<p>
+看着还不错吧，我目前主要的工作环境是 MacOS，GUI 下的等宽等高是刚需，文泉驿太丑，所以还是继续使用终端吧。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9eeba53" class="outline-2">
+<h2 id="拥抱-abo-abo-全家桶"><span class="section-number-2">5</span> 拥抱 abo-abo 全家桶</h2>
+<div class="outline-text-2" id="text-拥抱-abo-abo-全家桶">
+<p>
+ivy 是 <a href="https://github.com/abo-abo">abo-abo</a> 写的，后来发现这哥们写了很多的 Emacs 插件（他的 <a href="https://oremacs.com/">blog</a> 在 Emacs 圈里也挺有名的）。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://github.com/abo-abo/avy">avy</a>，快速定位鼠标位置，我之前用的是 <a href="https://github.com/winterTTr/ace-jump-mode">ace-jump-mode</a>，avy 比 ace 功能要强大一些，支持行跳转 <code>avy-goto-line</code> 。
+不过凭良心讲，ace 和 avy 基本上没啥区别，但是因为对 abo-abo 的热爱，所以就···</li>
+<li><p>
+<a href="https://github.com/abo-abo/ace-window">ace-window</a>：多窗口切换，以前我用的是 <a href="https://github.com/deb0ch/emacs-winum">emacs-winum</a>
+</p>
+
+<p>
+winnum 用的是 <code>Meta + 1/2/3</code> 切换，而 ace-window 用的是 <code>M-o 1/2/3</code> ，因为 <code>Meta + 1/2/3</code>
+的方式经常会跟终端模拟器快捷键冲突，困扰了我很多年，但是又没有办法，终于释放了
+</p></li>
+</ul>
+
+<p>
+还有个比较出名的插件是 <a href="https://github.com/abo-abo/hydra">hydra</a>，就是我一直没搞明白到底有啥用，所以就先不用了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org596e228" class="outline-2">
+<h2 id="其它"><span class="section-number-2">6</span> 其它</h2>
+<div class="outline-text-2" id="text-其它">
+<p>
+这次也添加了 git 插件 <a href="https://magit.vc/">magit</a>，以前觉得太臃肿复杂了，所以就没用。这次装上之后，强制自己使用它，感觉还是很方便的。
+快捷键只需要记住 <code>C-x g</code> ，然后按 <code>?</code> 就行了，不用死记硬背。
+</p>
+
+<p>
+<a href="https://github.com/Malabarba/beacon">beacon</a> 是一个高亮鼠标周围的插件，这是在看视频的时候发现有人用，挺好玩的，也挺有用的。多个窗口切换的时候，
+切换过去，鼠标的位置通常不明显。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org714f4aa" class="outline-2">
+<h2 id="总结"><span class="section-number-2">7</span> 总结</h2>
+<div class="outline-text-2" id="text-总结">
+<p>
+这次折腾 Emacs 收获挺大的，除了 Emacs 自身之外，还有：
+</p>
+
+<ul class="org-ul">
+<li>心态很重要，不能固守残缺，要拥抱新的东西</li>
+<li>还是那句话，被很多人追捧的东西，一定有其独到的地方，要先尝试，再下定论</li>
+</ul>
+
+<p>
+不得不佩服国外这些做技术的，他们对技术的热爱和坚持让我觉得汗颜，就比如 abo-abo，如果你觉得没啥的话，
+还可以看另外一个网站：<a href="https://planet.emacslife.com/">Planet Emacslife</a>，据说有八九千篇文章；还有 <a href="http://ergoemacs.org/">ErgoEmacs</a>。
+</p>
+
+<p>
+向他们学习，也希望自己有一天可以不为了生活而做技术。
+</p>
+
+<hr />
+
+<p>
+Emacs 使用可以看的我写的 <a href="http://wiki.zhangjiee.com/programming/code-env-emacs.html">Wiki</a>，所有 Emacs 折腾遇到的问题和心得都会第一时间更新到 Wiki 中。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2019-06-19 21:20:00 <br />Last updated: 2020-03-10 Tue 09:46 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+</div>
+</body>
+</html>

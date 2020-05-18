@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2020-05-18 Mon 10:46 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>gRPC 学习笔记</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">gRPC 学习笔记</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgb48067e">1. Go 生成代码参考</a>
+<ul>
+<li><a href="#orgd543523">1.1. 服务器接口生成的方法</a>
+<ul>
+<li><a href="#org1942e6c">1.1.1. 一元方法(Unary methods)</a></li>
+<li><a href="#org9e68a91">1.1.2. 服务器流方法(Server-streaming methods)</a></li>
+<li><a href="#org28aa8f7">1.1.3. 客户端流方法(Client-streaming methods)</a></li>
+<li><a href="#org1f7612f">1.1.4. 双向流（Bidi-streaming methods）</a></li>
+</ul>
+</li>
+<li><a href="#org603c019">1.2. 客户端接口生成的方法</a>
+<ul>
+<li><a href="#org50fef1c">1.2.1. 一元方法(Unary Methods)</a></li>
+<li><a href="#org4a091c6">1.2.2. 服务端流方法(Server-Streaming methods)</a></li>
+<li><a href="#org9bef547">1.2.3. 客户端流方法(Client-Streaming methods)</a></li>
+<li><a href="#org45c6692">1.2.4. 双向流方法(Bidi-Streaming methods)</a></li>
+</ul>
+</li>
+<li><a href="#orgd215384">1.3. 包和命名空间</a></li>
+</ul>
+</li>
+<li><a href="#org2040082">2. gPRC-Go</a></li>
+</ul>
+</div>
+</div>
+<p>
+官方文档：<a href="https://grpc.io/docs/">https://grpc.io/docs/</a>
+</p>
+
+<p>
+用户场景：
+</p>
+
+<p>
+可以为 iOS 和 Android 生成库，基于 HTTP/2 作为传输协议，轻松穿越代理和防火墙。除此之外，是微服务通信的理想选择，
+不仅是因为核心协议高效，而且因为该框架具有可插拔的身份验证，负载均衡等等。Google 内部作为微服务的通信协议。
+</p>
+
+<hr />
+
+<p>
+gRPC 使用 protobuf 作为接口定义语言（IDL）和通信格式。
+</p>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="https://grpc.io/img/landing-2.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+<p><span class="figure-number">Figure 1: </span><a href="https://grpc.io/docs/guides/">https://grpc.io/docs/guides/</a></p>
+</div>
+
+<p>
+<b>Protocol Buffers</b>
+</p>
+
+<p>
+Protocol Buffers: <a href="https://developers.google.com/protocol-buffers/docs/overview">https://developers.google.com/protocol-buffers/docs/overview</a>
+</p>
+
+<p>
+是谷歌成熟的开源的序列化结构化数据格式。
+</p>
+
+<p>
+安装：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">apt install protobuf-compiler
+go get -u github.com/golang/protobuf/protoc-gen-go <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">for go</span>
+</pre>
+</div>
+
+<p>
+<b>Protocol buffer versions</b>
+</p>
+
+<p>
+使用 proto3。
+</p>
+
+<hr />
+
+<p>
+gRPC 概念：<a href="https://grpc.io/docs/guides/concepts/">https://grpc.io/docs/guides/concepts/</a>
+</p>
+
+<pre class="example">
+service HelloService {
+  rpc SayHello (HelloRequest) returns (HelloResponse);
+}
+
+message HelloRequest {
+  string greeting = 1;
+}
+
+message HelloResponse {
+  string reply = 1;
+}
+</pre>
+
+<p>
+gRPC 支持四种类型的服务调用方法：
+</p>
+
+<ul class="org-ul">
+<li><p>
+一元 RPCs：客户端向服务器发送单个请求，并获得响应。跟函数调用一样。
+</p>
+<pre class="example">
+rpc SayHello(HelloRequest) returns (HelloResponse);
+</pre></li>
+<li><p>
+服务器流 RPCs：客户端向服务器发送请求，服务器返回一系列的消息。客户端从返回的流中读取消息，直到没有更多的消息为止。gRPC 保证单个 RPC 调用中的消息顺序是一致的。
+</p>
+<pre class="example">
+rpc LotsOfReplies(HelloRequest) returns (stream HelloResponse);
+</pre></li>
+<li><p>
+客户端流 RPCs：客户端向服务器发送一系列的消息，客户端写完消息之后，等待服务器读取消息并返回响应。同样，gRPC 保证消息的顺序。
+</p>
+<pre class="example">
+rpc LotsOfGreetings(stream HelloRequest) returns (HelloResponse);
+</pre></li>
+<li><p>
+双向流 RPCs：双方都使用读写流发送一系列消息。两个流独立运行，因此客户端和服务器可以按照自己喜欢的顺序读写：比如，服务器可以在写入响应之前等待接收所有的客户端消息，
+或者交替的读取一条消息然后编写一条消息，或者其它的读写组合。每个流中的消息顺序都会被保留。
+</p>
+<pre class="example">
+rpc BidiHello(stream HelloRequest) returns (stream HelloResponse);
+</pre></li>
+</ul>
+
+<p>
+<b>使用 API</b>
+</p>
+
+<ol class="org-ol">
+<li>在 <code>.proto</code> 文件中定义服务（service）</li>
+<li>gRPC 提供 protobuf 编译工具生成客户端和服务端的代码</li>
+<li>通常在客户端调用 API，然后在服务端做出响应
+<ul class="org-ul">
+<li>服务端：实现服务声明的方法，运行 gRPC 服务器处理客户端调用。gRPC 基础设施对请求解码，执行服务代码，然后编码服务回包；</li>
+<li>客户端：按照协议约定的调用参数发起调用，gRPC 在请求发送到服务器后返回；</li>
+</ul></li>
+</ol>
+
+<p>
+<b>RPC 生命周期</b>
+</p>
+
+<p>
+<b>Metadata</b>
+</p>
+
+<p>
+Metadata 以键值对的列表形式提供有关特定 RPC 调用信息（比如身份验证信息），key 和 value 一般是字符串，但也可以是二进制数据。Metadata 对于 gRPC 本身是不透明的-
+它允许客户端向服务器提供与调用相关的信息，反之亦然。
+</p>
+
+<hr />
+
+<p>
+<b>Go gPRC 环境安装</b>
+</p>
+
+<p>
+<a href="https://grpc.io/docs/quickstart/go/">https://grpc.io/docs/quickstart/go/</a>
+</p>
+
+<hr />
+
+<div id="outline-container-orgb48067e" class="outline-2">
+<h2 id="orgb48067e"><span class="section-number-2">1</span> Go 生成代码参考</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<a href="https://grpc.io/docs/reference/go/generated-code/">https://grpc.io/docs/reference/go/generated-code/</a>
+</p>
+
+<p>
+生成 Go 的 protobuf package 文件需要在使用 protoc 编译 <code>.proto</code> 文件时使用 <code>protoc-gen-go</code> 插件。
+</p>
+</div>
+
+<div id="outline-container-orgd543523" class="outline-3">
+<h3 id="orgd543523"><span class="section-number-3">1.1</span> 服务器接口生成的方法</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+在 Server 端， <code>.proto</code> 文件中的每一个 <code>service Bar</code> 都会生成如下的函数：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">RegisterBarServer</span><span style="color: #707183;">(</span>s *<span style="color: #6434A3;">grpc.Server</span>, svr <span style="color: #6434A3;">BarServer</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+在服务器启动之前，应用程序要自己实现一个 <code>BarServer</code> 接口的具体实现，然后把它注册到 <code>grpc.Server</code> 实例中。
+</p>
+</div>
+
+<div id="outline-container-org1942e6c" class="outline-4">
+<h4 id="org1942e6c"><span class="section-number-4">1.1.1</span> 一元方法(Unary methods)</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+这些方法在生成服务接口的时候有如下的签名：
+</p>
+
+<pre class="example">
+Foo(context.Context, *MsgA) (*MsgB, error)
+</pre>
+
+<p>
+<code>MsgA</code> 是客户端请求的 protobuf 消息， <code>MsgB</code> 是从服务器返回的 protobuf 消息。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9e68a91" class="outline-4">
+<h4 id="org9e68a91"><span class="section-number-4">1.1.2</span> 服务器流方法(Server-streaming methods)</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+这些方法在生成服务接口的时候有如下的签名：
+</p>
+
+<pre class="example">
+Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
+</pre>
+
+<p>
+<code>MsgA</code> 是来自客户端的单个请求， <code>&lt;ServiceName&gt;_FooServer</code> 表示 <code>MsgB</code> 的 server-to-client流。
+</p>
+
+<p>
+<code>&lt;ServiceName&gt;_FooServer</code> 是一个内嵌 <code>grpc.ServerStream</code> 的如下接口：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooServer</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+  <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*MsgB<span style="color: #7388D6;">)</span> error
+  grpc.ServerStream
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+服务端的处理器通过 <code>Send</code> 方法向客户端不断的发送 protobuf 消息，流的结束以处理器的 <code>handler</code> 方法为准。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org28aa8f7" class="outline-4">
+<h4 id="org28aa8f7"><span class="section-number-4">1.1.3</span> 客户端流方法(Client-streaming methods)</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+这些方法在生成服务接口的时候有如下的签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooServer<span style="color: #707183;">)</span> error
+</pre>
+</div>
+
+<p>
+<code>&lt;ServiceName&gt;_FooServer</code> 既可以用来读取从客户端到服务器的消息流，也可以用来发送单个服务器的响应消息。
+</p>
+
+<p>
+<code>&lt;ServiceName&gt;_FooServer</code> 是一个内嵌 <code>grpc.ServerStream</code> 的如下接口：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooServer</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+    <span style="color: #006699;">SendAndClose</span><span style="color: #7388D6;">(</span>*MsgA<span style="color: #7388D6;">)</span> error
+    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*MsgB, error<span style="color: #7388D6;">)</span>
+    grpc.ServerStream
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+服务端可以重复的调用 <code>Recv</code> 来获取从客户端发送过来的全部消息。 <code>Recv</code> 一旦返回 <code>(nil, io.EOF)</code> 说明流结束了。
+服务端回复消息通过调用 <code>SendAndClose</code> 方法。注意 <code>SendAndClose</code> 只能被调用一次。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1f7612f" class="outline-4">
+<h4 id="org1f7612f"><span class="section-number-4">1.1.4</span> 双向流（Bidi-streaming methods）</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<p>
+这些方法在生成服务接口的时候有如下的签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooServer<span style="color: #707183;">)</span> error
+</pre>
+</div>
+
+<p>
+<code>&lt;ServiceName&gt;_FooServer</code> 既可以访问从客户端到服务器的流也可以访问从服务器到客户端的流。 <code>&lt;ServiceName&gt;_FooServer</code> 内嵌了
+<code>grpc.ServerSteam</code> 如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooServer</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+    <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*MsgA<span style="color: #7388D6;">)</span> error
+    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*MsgB, error<span style="color: #7388D6;">)</span>
+    grpc.ServerStream
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+服务器端的处理程序可以重复调用 <code>Recv</code> 获取从客户端发来的消息流。 <code>Recv</code> 返回 <code>(nil, io.EOF)</code> 表示客户端流结束了。
+回复的流通过重复调用 <code>Send</code> 方法来实现， <code>return</code> 表示发送结束。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org603c019" class="outline-3">
+<h3 id="org603c019"><span class="section-number-3">1.2</span> 客户端接口生成的方法</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+在客户端测， <code>proto</code> 文件中的每一个 <code>service Bar</code> 也都会生成一个函数: <code>func BarClient(cc *grpc.ClientConn) BarClient</code> ，
+它会返回 <code>BarClient</code> 接口的具体实现（此接口实现也会存在于生成的 <code>.pb.go</code> 文件中）。
+</p>
+</div>
+
+<div id="outline-container-org50fef1c" class="outline-4">
+<h4 id="org50fef1c"><span class="section-number-4">1.2.1</span> 一元方法(Unary Methods)</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+这些方法生成的客户端存根具有以下签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #707183;">(</span>ctx context.Context, in *MsgA, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>*MsgB, error<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+<code>MsgA</code> 是客户端的请求， <code>MsgB</code> 是服务器的回包。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4a091c6" class="outline-4">
+<h4 id="org4a091c6"><span class="section-number-4">1.2.2</span> 服务端流方法(Server-Streaming methods)</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+这些方法生成的客户端存根具有以下签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>ctx context.Context, in *MsgA, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooClient, error<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+<code>&lt;ServiceName&gt;_FooClient</code> 表示服务器到客户端的 <code>MsgB</code> 的消息流。该流是由内嵌一个 <code>gprc.ClientStream</code> 的接口：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooClient</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*MsgB, error<span style="color: #7388D6;">)</span>
+    grpc.ClientStream
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+客户端重复调用 <code>Recv</code> 方法来返回服务器回复的消息。当 <code>Recv</code> 接受到 <code>(nil, io.EOF)</code> 表示流结束。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9bef547" class="outline-4">
+<h4 id="org9bef547"><span class="section-number-4">1.2.3</span> 客户端流方法(Client-Streaming methods)</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+这些方法生成的客户端存根具有以下签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>ctx context.Context, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooClient, error<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+<code>&lt;ServieName&gt;_FooClient</code> 表示客户端到服务器的 <code>MsgA</code> 消息流。
+</p>
+
+<p>
+<code>&lt;ServieName&gt;_FooClient</code> 是一个内嵌了 <code>grpc.ClientStream</code> 的如下接口：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooClient</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+    <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*MsgA<span style="color: #7388D6;">)</span> error
+    <span style="color: #006699;">CloseAndRecv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*MsgA, error<span style="color: #7388D6;">)</span>
+    grpc.ClientStream
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+客户端可以重复调用 <code>Send</code> 方法想服务器发送消息，最后调用 <code>CloseAndRecv()</code> 结束发送等待服务器回包。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org45c6692" class="outline-4">
+<h4 id="org45c6692"><span class="section-number-4">1.2.4</span> 双向流方法(Bidi-Streaming methods)</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<p>
+这些方法生成的客户端存根具有以下签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>ctx context.Context, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooClient, error<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+<code>&lt;ServiceName&gt;_FooClient</code> 表示客户端到服务器和服务器到客户端的双向流。它是内嵌了 <code>grpc.ClientStream</code> 的如下接口：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooClient</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+    <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*MsgA<span style="color: #7388D6;">)</span> error
+    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*MsgB, error<span style="color: #7388D6;">)</span>
+    grpc.ClientStream
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+客户端重复调用 <code>Send</code> 方法发送消息，同时可以重复调用 <code>Recv</code> 方法接受消息。
+</p>
+
+<p>
+服务器到客户端的流通过返回 <code>(nil, io.EOF)</code> 终结，客户端到服务器的流通过客户端调用 <code>CloseSend</code> 来结束。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd215384" class="outline-3">
+<h3 id="orgd215384"><span class="section-number-3">1.3</span> 包和命名空间</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+当 <code>protoc</code> 编译器调用 <code>-go_out=plugins=grpc:</code>  时， <code>proto package</code> 会被转换成 Go 的包，跟 <code>protoc-gen-go</code> 插件不加 <code>grpc</code>
+效果相同。
+</p>
+
+<p>
+因此，如果 <code>foo.proto</code> 在 <code>package foo</code> 中声明，那么 <code>foo.pb.go</code> 生成的文件也会在 Go 的包 <code>foo</code> 包中。
+</p>
+
+<hr />
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2040082" class="outline-2">
+<h2 id="org2040082"><span class="section-number-2">2</span> gPRC-Go</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+官方 Repo: <a href="https://github.com/grpc/grpc-go">https://github.com/grpc/grpc-go</a>
+</p>
+
+<ul class="org-ul">
+<li>API 文档：<a href="https://pkg.go.dev/google.golang.org/grpc">https://pkg.go.dev/google.golang.org/grpc</a></li>
+<li>专题文档：<a href="https://github.com/grpc/grpc-go/tree/master/Documentation">https://github.com/grpc/grpc-go/tree/master/Documentation</a></li>
+<li>样例：<a href="https://github.com/grpc/grpc-go/tree/master/examples">https://github.com/grpc/grpc-go/tree/master/examples</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-05-12 21:40:41 <br />Last updated: 2020-05-18 Mon 10:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+</div>
+</body>
+</html>
