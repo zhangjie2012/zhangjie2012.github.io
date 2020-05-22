@@ -1,0 +1,670 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-05-22 Fri 10:22 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Git</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Git</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7e97ab3">1. Git 基础</a>
+<ul>
+<li><a href="#orgbaa73c4">1.1. 环境配置</a></li>
+<li><a href="#org7ae5050">1.2. 基本操作</a></li>
+<li><a href="#org9da10f9">1.3. 分支</a></li>
+<li><a href="#orge88aecc">1.4. 标签</a>
+<ul>
+<li><a href="#org2a37460">1.4.1. 查看标签</a></li>
+<li><a href="#org3195f11">1.4.2. 创建标签</a></li>
+<li><a href="#orgb5d16ac">1.4.3. 推送标签</a></li>
+<li><a href="#org3d83588">1.4.4. 创建分支</a></li>
+<li><a href="#orgd2f019d">1.4.5. 删除标签</a></li>
+</ul>
+</li>
+<li><a href="#org0e055ea">1.5. 代码回退</a></li>
+<li><a href="#org156e944">1.6. 子模块</a></li>
+<li><a href="#orgb1bcd11">1.7. 合并改动</a></li>
+<li><a href="#org9da5ef6">1.8. 代理</a></li>
+</ul>
+</li>
+<li><a href="#org20a39ef">2. 知识点</a>
+<ul>
+<li><a href="#org0b0b2be">2.1. 文件的几种状态</a></li>
+<li><a href="#orgc3bd018">2.2. 快照和差异</a></li>
+</ul>
+</li>
+<li><a href="#org999ac62">3. 学习资源</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7e97ab3" class="outline-2">
+<h2 id="org7e97ab3"><span class="section-number-2">1</span> Git 基础</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgbaa73c4" class="outline-3">
+<h3 id="orgbaa73c4"><span class="section-number-3">1.1</span> 环境配置</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li><code>git config user.name your_name</code> : 设置你的用户名, 提交会显示</li>
+<li><code>git config user.email your_email</code> : 设置你的邮箱</li>
+<li><code>git config core.quotepath false</code> : 解决中文文件名显示为数字问题</li>
+<li><code>git config --list</code> : 查看现有的配置</li>
+<li><code>git config color.ui=always</code> 设置 color，Emacs eshell 中 git diff 高亮</li>
+</ul>
+
+<p>
+几个 alias 方便操作:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status
+</pre>
+</div>
+
+<p>
+<code>git config</code> 加上 <code>--global</code> 表示全局配置，如果不加的话则会被认为是当前仓库的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7ae5050" class="outline-3">
+<h3 id="org7ae5050"><span class="section-number-3">1.2</span> 基本操作</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li><code>git init</code>: 初始化一个 git 仓库</li>
+<li><code>git add &lt;filename&gt;</code> : 添加一个文件到 git 仓库中</li>
+<li><code>git commit -m "commit message"</code>: 提交到本地</li>
+<li><code>git push [remote-name] [branch-name]</code> : 把本地的提交记录推送到远端分支</li>
+<li><code>git pull</code>: 更新仓库 <code>git pull = git fetch + git merge</code></li>
+<li><code>git pull --rebase</code>: 更新仓库 <code>git pull = git fetch + git rebase</code> ，You should use <code>git pull --rebase</code> when your changes do not deserve a separate branch <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup></li>
+<li><code>git checkout -- &lt;file&gt;</code> : 还原未暂存（staged）的文件</li>
+<li><code>git reset HEAD &lt;file&gt;...</code> : 取消暂存，那么还原一个暂存文件，应该是先 <code>reset</code> 后 <code>checkout</code></li>
+<li><code>git stash</code> : 隐藏本地提交记录, 恢复的时候 <code>git stash pop</code> 。这样可以在本地和远程有冲突的情况下，更新其他文件</li>
+<li><code>git stash --list</code>: 查看储藏文件状态</li>
+<li><code>git log</code>: 查看提交日志
+<ul class="org-ul">
+<li><code>--stat</code> ：显示每次更新的文件修改统计信息</li>
+<li><code>--shortstat</code> ：只显示 &#x2013;stat 中最后的行数修改添加移除统计</li>
+<li><code>--name-status</code>: 查看改动文件</li>
+<li><code>--online</code> ：只显示一行， <code>--pretty=online</code> 的简写</li>
+<li><code>--pretty=format:"xxx"</code> ：设置日志输出格式</li>
+<li><code>-p</code>: 显示更多提交记录详情（类似 <code>git diff</code> ），~git log -p -2~ 显示最近两次</li>
+<li><code>--author</code> ：仅显示指定作者相关的提交</li>
+<li><code>--since, --after, --until, --before</code> ：仅显示指定时间之后、之前的提交</li>
+</ul></li>
+<li><code>git shortlog -sn</code> 提交统计<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9da10f9" class="outline-3">
+<h3 id="org9da10f9"><span class="section-number-3">1.3</span> 分支</h3>
+<div class="outline-text-3" id="text-1-3">
+<ul class="org-ul">
+<li><code>git branch</code>: 查看所有本地分支
+<ul class="org-ul">
+<li><code>-v</code> 显示更多信息</li>
+<li><code>-a</code> 查看本地和远端分支</li>
+<li><code>&lt;branch-name&gt;</code> : 基于当前 commit 新建一个分支，但是不切换到新分支</li>
+</ul></li>
+<li><code>git checkout &lt;branch-name&gt;</code> ：切换分支
+<ul class="org-ul">
+<li><code>-b &lt;branch-name&gt;</code> ：新建并切换分支</li>
+<li><code>-d &lt;branch -name&gt;</code> ：删除本地分支</li>
+<li><code>-b &lt;local-branch-name&gt; origin/&lt;origin-branch-name&gt;</code> : 基于某个远程分支新建一个分支开发</li>
+<li><code>--track origin/&lt;origin-branch-name&gt;</code> : 跟踪远程分支（创建跟踪远程分支，Git 在 <code>git push</code> 的时候不需要指定 <code>origin</code> 和 <code>branch-name</code> ，其实当我们 <code>clone</code> 一个 repo 到本地的时候， <code>master</code> 分支就是 origin/master 的跟踪分支，所以提交的时候直接 <code>git push</code> ）。</li>
+</ul></li>
+<li><code>git push origin &lt;branch-name&gt;</code> : 推送本地分支</li>
+<li><code>git push origin :&lt;origin-branch-name&gt;</code> : 删除远程分支</li>
+</ul>
+
+<p>
+<span class="underline">如何放弃所有本地提交/改动，强制更新？</span>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">git fetch --all
+git reset --hard origin/master
+git pull
+</pre>
+</div>
+
+<p>
+<span class="underline">远端分支被别人删除，自己本地 git br -a 还是能看到怎么办？</span>
+</p>
+
+<p>
+<code>git remote prune origin</code> <sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge88aecc" class="outline-3">
+<h3 id="orge88aecc"><span class="section-number-3">1.4</span> 标签</h3>
+<div class="outline-text-3" id="text-1-4">
+</div>
+<div id="outline-container-org2a37460" class="outline-4">
+<h4 id="org2a37460"><span class="section-number-4">1.4.1</span> 查看标签</h4>
+<div class="outline-text-4" id="text-1-4-1">
+<ul class="org-ul">
+<li><code>git tag</code> 列出所有标签，标签多时可模糊匹配， <code>git tag -l 'v0.1.*'</code></li>
+<li><code>git show v0.1</code> 可查看标签明细，对于轻量标签只是指向某次提交记录的引用，而附注标签则会显示附注等相关信息</li>
+<li>查看标签对应的 hash 值（提交记录）：
+<ul class="org-ul">
+<li><code>git show-ref --tags</code></li>
+<li><code>git log --oneline --decorate --tags --no-walk</code></li>
+<li><code>git log --tags --no-walk --date=iso-local --pretty='%C(auto)%h %cd%d %s</code> 在上面的基础上显示创建时间</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3195f11" class="outline-4">
+<h4 id="org3195f11"><span class="section-number-4">1.4.2</span> 创建标签</h4>
+<div class="outline-text-4" id="text-1-4-2">
+<p>
+标签分两种：轻量标签和附注标签，轻量标签是不会改变的标签，只是一个特定提交的引用。而附注标签是一个提交记录，包含附注信息和提交人的信息（名字、电子邮件、日志等）。
+</p>
+
+<ul class="org-ul">
+<li><code>git tag v1.0</code> ：创建轻量标签</li>
+<li><code>git tag -a v1.0 -m 'tag remark info'</code> ：创建附注标签，和提交更改类似，指定 <code>tag</code> 命令的 <code>-a</code> 选项</li>
+</ul>
+
+<p>
+标签可以相对于最新的提交创建，也可以相对于某次提交记录，只需要在创建标签时添加提交记录的校验值（ <code>git log --pretty=oneline</code> 快速查看提交记录）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb5d16ac" class="outline-4">
+<h4 id="orgb5d16ac"><span class="section-number-4">1.4.3</span> 推送标签</h4>
+<div class="outline-text-4" id="text-1-4-3">
+<p>
+<code>git tag</code> 设置的标签只是在本地有效，如果想要和别人共享的话（版本发布），需要推送到远端分支。
+</p>
+
+<p>
+<code>git push origin v1.0</code> 会把 <code>v1.0</code> 推送到远端服务器。带有 <code>--tags</code> 的 <code>git push</code> 命令会将所有本地的 tag 推送到远端。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3d83588" class="outline-4">
+<h4 id="org3d83588"><span class="section-number-4">1.4.4</span> 创建分支</h4>
+<div class="outline-text-4" id="text-1-4-4">
+<p>
+可以基于某个 tag 创建分支， <code>git checkout -b branch_name v0.1</code> 。
+</p>
+
+<p>
+其实这个很好理解，不管是轻量标签还是附注标签，本质上对应的都是某一次的提交记录。既然可以通过提交记录创建分支，自然就可以通过某个 tag 创建分支。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd2f019d" class="outline-4">
+<h4 id="orgd2f019d"><span class="section-number-4">1.4.5</span> 删除标签</h4>
+<div class="outline-text-4" id="text-1-4-5">
+<ul class="org-ul">
+<li><code>git tag -d v0.1</code> ：删除本地标签</li>
+<li><code>git push origin :v0.1</code> ：删除远端标签</li>
+</ul>
+
+<p>
+可以看到分支和标签非常类似，一些操作命令也很像，那么分支和标签的区别是什么？<a href="https://stackoverflow.com/questions/1457103/how-is-a-tag-different-from-a-branch-in-git-which-should-i-use-here">How is a tag different from a branch in Git? Which should I use, here?</a>：一句话，tag 一般代表发布节点，不会被修改；branch 一般针对不同功能的开发分支，这更像是一种约定。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0e055ea" class="outline-3">
+<h3 id="org0e055ea"><span class="section-number-3">1.5</span> 代码回退</h3>
+<div class="outline-text-3" id="text-1-5">
+<ol class="org-ol">
+<li>使用 <code>git log</code> 查看提交的 hash 值</li>
+<li><code>git reset --hard hash</code></li>
+</ol>
+
+<p>
+可在本地回退到某一次提交，撤掉回退 <code>git pull</code> 即可。
+</p>
+
+<p>
+如果想回退到远端分支的某一次提交，需要强制推送到远端分支: <code>git push origin master -f</code> 。
+</p>
+
+<p>
+回退未纳入版本管理的文件和目录： <code>git clean -fd</code>, <code>f</code> 表示文件， <code>d</code> 表示目录<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org156e944" class="outline-3">
+<h3 id="org156e944"><span class="section-number-3">1.6</span> 子模块</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+当一个项目引用另外一个 Git 项目时，你又不想只直接把另外一个项目的代码作为本项目的一部分（这样的话，就没法实时更新依赖项目了），Git 为此提供了 submodule 工具。
+</p>
+
+<p>
+将 xxx 项目添加到 yyy 目录下: <code>git submodule add git://xxx.git yyy/xxx</code>
+</p>
+
+<p>
+添加完之后，在本项目目录下会新增一个 <code>.gitmodules</code> 文件，用来记录本地子项目目录和远端 url 的对应关系。之后你需要将子模块映射关系提交到本项目远端。
+</p>
+
+<p>
+克隆一个带子模块的项目时，得到的是一个空项目，你需要运行两个命令：
+</p>
+
+<ul class="org-ul">
+<li><code>git submodule init</code> ：初始化本地配置文件</li>
+<li><code>git submodule update</code> ：拉取子模块</li>
+<li><code>git submodule update --remote --merge</code> ：更新 submodule</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb1bcd11" class="outline-3">
+<h3 id="orgb1bcd11"><span class="section-number-3">1.7</span> 合并改动</h3>
+<div class="outline-text-3" id="text-1-7">
+<ul class="org-ul">
+<li>切换到接受合并的分支上： <code>git checkout master</code></li>
+<li>执行合并命令： <code>git merge dev1</code></li>
+</ul>
+
+<p>
+<b>冲突处理</b>
+</p>
+
+<p>
+撤销合并: <code>git merge --abort</code>
+</p>
+
+<p>
+<b>合并单次提交</b>
+</p>
+
+<p>
+<code>git cherry-pick commit-id</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9da5ef6" class="outline-3">
+<h3 id="org9da5ef6"><span class="section-number-3">1.8</span> 代理</h3>
+<div class="outline-text-3" id="text-1-8">
+<p>
+http.https 协议：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">git config --global http.https://github.com.proxy socks5://127.0.0.1:1080
+git config --global --unset http.https://github.com.proxy // &#21462;&#28040;&#20195;&#29702;
+</pre>
+</div>
+
+<p>
+对于 ssh 协议，在 <code>~/.ssh/config</code> 中添加：
+</p>
+
+<pre class="example">
+Host github.com
+ProxyCommand nc -X 5 -x 127.0.0.1:1080 %h %p
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org20a39ef" class="outline-2">
+<h2 id="org20a39ef"><span class="section-number-2">2</span> 知识点</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+基本命令让你快速的上手使用 Git，知识点能让你更好的理解 Git。
+</p>
+</div>
+
+<div id="outline-container-org0b0b2be" class="outline-3">
+<h3 id="org0b0b2be"><span class="section-number-3">2.1</span> 文件的几种状态</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li>untracked：未被跟踪的，没有纳入 Git 版本控制，使用 <code>git add &lt;filename&gt;</code> 纳入版本控制</li>
+<li>unmodified：未修改的，已经纳入版本控制，但是没有修改过的文件</li>
+<li>modified：对纳入版本控制的文件做了修改，git 将标记为 modified</li>
+<li>staged：暂存的文件，简单理解: 暂存文件就是 add 之后，commit 之前的文件状态</li>
+</ul>
+
+<p>
+理解这几种文件状态对于理解 Git 是非常关键的（至少可以看懂一些错误提示了）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc3bd018" class="outline-3">
+<h3 id="orgc3bd018"><span class="section-number-3">2.2</span> 快照和差异</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+详细可看：<a href="http://iissnan.com/progit/html/zh/ch1_3.html">Pro Git: Git基础</a> 中有讲到 <b>直接记录快照，而非差异比较</b> ，这里只讲我个人的理解。
+</p>
+
+<p>
+Git 关心的是文件数据整体的变化，其他版本管理系统（以 svn 为例）关心的某个具体文件的*差异*。这个差异是好理解的，也就是两个版本具体文件的不同点，比如某一行的某个字符发生了改变。
+</p>
+
+<p>
+Git 不保存文件提交前后的差异，不变的文件不会发生任何改变，对于变化的文件，前后两次提交则保存两个文件。举个例子：
+</p>
+
+<p>
+SVN:
+</p>
+
+<ol class="org-ol">
+<li>新建 3 个文件 a, b, c，做第一次提交 -&gt;  <code>version1 : file_a file_b file_c</code></li>
+<li>修改文件 b， 做第二次提交(真正提交的是 修改后的文件 b 和修改前的 <code>file_b</code> 的 diff) -&gt; <code>version2: diff_b_2_1</code></li>
+<li>当我要 checkout version2 的时候，实际上得到的是 <code>file_a file_b+diff_b_2_1 file_c</code></li>
+</ol>
+
+<p>
+Git:
+</p>
+
+<ol class="org-ol">
+<li>新建 3 个文件 a, b, c，做第一次提交 -&gt;  <code>version1 : file_a file_b file_c</code></li>
+<li>修改文件 b (得到~file_b1~), 做第二次提交 -&gt; <code>version2: file_a file_b1 file_c</code></li>
+<li>当我要用 version2 的时候，实际上得到的是 <code>file_a file_b1 file_c</code></li>
+</ol>
+
+<p>
+上面的 <code>file_a file_b1 file_c</code> 就是 version2 的 <b>快照</b> 。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org999ac62" class="outline-2">
+<h2 id="org999ac62"><span class="section-number-2">3</span> 学习资源</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><a href="http://iissnan.com/progit/">Pro Git</a></li>
+<li><a href="https://github.com/aseaday/git-style-guide">Git 风格指南</a></li>
+</ul>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://stackoverflow.com/questions/2472254/when-should-i-use-git-pull-rebase">https://stackoverflow.com/questions/2472254/when-should-i-use-git-pull-rebase</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://github.blog/2020-04-09-github-protips-tips-tricks-hacks-and-secrets-from-lee-reilly/#9-a-numbers-game">https://github.blog/2020-04-09-github-protips-tips-tricks-hacks-and-secrets-from-lee-reilly/#9-a-numbers-game</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://stackoverflow.com/questions/5094293/git-remote-branch-deleted-but-still-appears-in-branch-a">https://stackoverflow.com/questions/5094293/git-remote-branch-deleted-but-still-appears-in-branch-a</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://koukia.ca/how-to-remove-local-untracked-files-from-the-current-git-branch-571c6ce9b6b1">https://koukia.ca/how-to-remove-local-untracked-files-from-the-current-git-branch-571c6ce9b6b1</a>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2014-04-05 00:00 <br />Last updated: 2020-05-11 Mon 10:13 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+</div>
+</body>
+</html>

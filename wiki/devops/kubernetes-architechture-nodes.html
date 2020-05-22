@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-05-22 Fri 10:21 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kubernetes 节点</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Kubernetes 节点</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org49b9622">1. 节点状态</a>
+<ul>
+<li><a href="#org660ffaa">1.1. 地址（Addresses）</a></li>
+<li><a href="#orgf909a79">1.2. 条件（Conditions）</a></li>
+<li><a href="#org53e659f">1.3. 容量和可分配（Capacity and Allocatable）</a></li>
+<li><a href="#org303c957">1.4. 信息（info）</a></li>
+</ul>
+</li>
+<li><a href="#org9d6934d">2. 管理</a>
+<ul>
+<li><a href="#org76127af">2.1. 节点控制器（Node Controller）</a></li>
+<li><a href="#orgd976087">2.2. 心跳机制</a></li>
+<li><a href="#orgf76a9e6">2.3. 可靠性</a></li>
+<li><a href="#org1a0c67b">2.4. 手动管理节点</a></li>
+<li><a href="#orgcbd47f5">2.5. 节点容量</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+集群中节点（Node）可以是一个虚拟机或者物理机，节点是执行工作的机器。每个节点都包含用于运行 pods 的必要服务，并由 master 组件管理。
+节点上运行的服务包括：容器运行时、kubelet 和 kube-proxy。
+</p>
+
+<div id="outline-container-org49b9622" class="outline-2">
+<h2 id="org49b9622"><span class="section-number-2">1</span> 节点状态</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+一个节点包含：地址、条件、容量和可分配、信息。可通过 <code>kubectl describe node &lt;node-name&gt;</code> 查看详细信息。
+</p>
+</div>
+
+<div id="outline-container-org660ffaa" class="outline-3">
+<h3 id="org660ffaa"><span class="section-number-3">1.1</span> 地址（Addresses）</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+包含：
+</p>
+
+<ul class="org-ul">
+<li>HostName：由节点的内核指定。可以通过 kubelet 的 <code>--hostname-override</code> 参数覆盖</li>
+<li>ExternalIP：外部路由的节点 IP 地址（从集群外可访问）</li>
+<li>InternalIP：集群内部路由的节点 IP 地址</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf909a79" class="outline-3">
+<h3 id="orgf909a79"><span class="section-number-3">1.2</span> 条件（Conditions）</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+<code>conditions</code> 描述 <code>Running</code> 节点的状态。Conditions 的 Type 包括：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">条件</td>
+<td class="org-left">描述</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>OutOfDisk</code></td>
+<td class="org-left"><code>True</code> 表示节点空间不足以添加新的 pods，否则为 <code>False</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>Ready</code></td>
+<td class="org-left">节点状态是否健康， <code>True</code> 健康状态可以接受新的 pods； <code>False</code> 不健康； <code>Unknown</code> 表示最近 40s 内没收到新的消息</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>MemoryPressure</code></td>
+<td class="org-left"><code>True</code> 表示内存存在压力，即节点剩余内存较低</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>PIDPressure</code></td>
+<td class="org-left"><code>True</code> 表示节点进程存在压力，即进程过多</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>DiskPressure</code></td>
+<td class="org-left"><code>True</code> 表示存在磁盘压力，即磁盘空间剩余较低</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>NetworkUnavailable</code></td>
+<td class="org-left"><code>True</code> 表示节点网络配置不正确</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+如果节点的 <code>Ready</code> 条件处于 <code>Unknown</code> 或者 <code>False</code> 超过了 <code>pod-eviction-timeout</code> 时间。
+节点上所有的 Pods 都会被节点控制器删除（迁移）。默认的删除超时时间为 <b>5 分钟</b> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org53e659f" class="outline-3">
+<h3 id="org53e659f"><span class="section-number-3">1.3</span> 容量和可分配（Capacity and Allocatable）</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+描述节点上的可用资源：CPU、内存和可以调度到该节点上的 Pods 最大数量。
+</p>
+
+<ul class="org-ul">
+<li><code>Capacity</code> 显示节点的资源总量</li>
+<li><code>Allocatable</code> 显示可提供给 Pod 消耗的资源总量</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org303c957" class="outline-3">
+<h3 id="org303c957"><span class="section-number-3">1.4</span> 信息（info）</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+节点的通用信息（System Info），包含：内核版本、系统、容器运行时以及 Kubernetes 版本信息等。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org9d6934d" class="outline-2">
+<h2 id="org9d6934d"><span class="section-number-2">2</span> 管理</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+节点（Node）并不是由 Kubernetes 创建的（外部云厂商创建）。Kubernetes 中的创建节点只是创建一个对象（包含节点的信息：name，label 等）。
+创建之后，开始检查节点是否可用。对象如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><span style="color: #707183;">{</span>
+  <span style="color: #008000;">"kind"</span>: <span style="color: #008000;">"Node"</span>,
+  <span style="color: #008000;">"apiVersion"</span>: <span style="color: #008000;">"v1"</span>,
+  <span style="color: #008000;">"metadata"</span>: <span style="color: #7388D6;">{</span>
+    <span style="color: #008000;">"name"</span>: <span style="color: #008000;">"10.240.79.157"</span>,
+    <span style="color: #008000;">"labels"</span>: <span style="color: #909183;">{</span>
+      <span style="color: #008000;">"name"</span>: <span style="color: #008000;">"my-first-k8s-node"</span>
+    <span style="color: #909183;">}</span>
+  <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+创建之后，Kubernetes 会基于 <code>metadata</code> 执行健康检查，验证节点。如果节点可用（符合 Pod 的运行条件），会把 Pod 调度到此节点上；
+否则会一直检查直到管理员显示删除节点对象。
+</p>
+
+<p>
+一共由三个组件会与 Kubernetes 接口交互：节点控制器、kubelet 和 kubectl。
+</p>
+</div>
+
+<div id="outline-container-org76127af" class="outline-3">
+<h3 id="org76127af"><span class="section-number-3">2.1</span> 节点控制器（Node Controller）</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+节点控制器是 master 的一个组件，专门用来管理节点。
+</p>
+
+<ul class="org-ul">
+<li>维护可用节点列表，如果节点不健康会从节点列表中删除。</li>
+<li>监控节点健康状态。不能访问情况时设置 NodeStatus 的 NodeReady 状态为 ConditionUnknown。如果节点持续不可访问，
+优雅删除节点上所有的 Pods。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd976087" class="outline-3">
+<h3 id="orgd976087"><span class="section-number-3">2.2</span> 心跳机制</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+心跳由两种形式： <code>NodeStatus</code> 和 <code>Lease</code> 对象。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf76a9e6" class="outline-3">
+<h3 id="orgf76a9e6"><span class="section-number-3">2.3</span> 可靠性</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+节点控制器驱逐 Pod 策略根据不健康节点占比动态调整。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1a0c67b" class="outline-3">
+<h3 id="org1a0c67b"><span class="section-number-3">2.4</span> 手动管理节点</h3>
+<div class="outline-text-3" id="text-2-4">
+<ul class="org-ul">
+<li>管理员可以手动修改节点资源：节点 labels 以及标记为不可调度。</li>
+<li>可以使用节点上的 <code>labels</code> 和 Pod 的 <code>nodeSelector</code> 一起来控制资源调度（匹配时才调度，设置 Pod 调度到指定节点上）。</li>
+<li><p>
+标记一个节点不可调度可防止新建 Pod 调度到该节点上，但不会影响任何已经在它之上的 pods；
+重启节点等操作之前这是一个有用的步骤。
+</p>
+
+<p>
+标记一个节点不可调度： <code>kubectl cordon $NODENAME</code> 。
+</p></li>
+</ul>
+
+<p>
+<b>注意</b>  由 DaemonSet 控制器创建的 Pod 会绕过 Kubernetes 调度程序，并且不会遵守节点不可调度的设置；
+这个假定是守护程序应该属于宿主机，即便是机器资源耗尽的情况下。
+</p>
+
+<p>
+<b>警告</b> <code>kubectl cordon</code> 会将节点标记为不可调度，service controller 会把该节点上之前 LoadBalancer 中的目标移出，
+以保证流量不会进入到标记的节点上。
+</p>
+</div>
+</div>
+<div id="outline-container-orgcbd47f5" class="outline-3">
+<h3 id="orgcbd47f5"><span class="section-number-3">2.5</span> 节点容量</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+节点的容量（CPU 数量和内存容量）是节点对象的一部分。调度器会控制节点上的资源足够 Pods 使用；但是这只包含 kubelet 启动的所有容器，
+其它容器运行时启动的容器或者容器外部的运行进程不包括在内。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-02-06 13:11:04 <br />Last updated: 2020-04-09 Thu 10:09 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+</div>
+</body>
+</html>

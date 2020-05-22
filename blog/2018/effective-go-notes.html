@@ -1,0 +1,770 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2020-05-22 Fri 10:23 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Effective Go 精简版</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Effective Go 精简版</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#引言">1. 引言</a></li>
+<li><a href="#格式化">2. 格式化</a></li>
+<li><a href="#注释">3. 注释</a></li>
+<li><a href="#命名">4. 命名</a>
+<ul>
+<li><a href="#包命名">4.1. 包命名</a></li>
+<li><a href="#gettersetter-命名">4.2. Getter、Setter 命名</a></li>
+<li><a href="#接口命名">4.3. 接口命名</a></li>
+<li><a href="#驼峰命名">4.4. 驼峰命名</a></li>
+</ul>
+</li>
+<li><a href="#分号">5. 分号</a></li>
+<li><a href="#控制结构">6. 控制结构</a>
+<ul>
+<li><a href="#switch">6.1. Switch</a></li>
+</ul>
+</li>
+<li><a href="#函数">7. 函数</a></li>
+<li><a href="#数据">8. 数据</a>
+<ul>
+<li><a href="#数组">8.1. 数组</a></li>
+<li><a href="#切片">8.2. 切片</a></li>
+<li><a href="#映射map">8.3. 映射（Map）</a></li>
+<li><a href="#初始化">8.4. 初始化</a></li>
+</ul>
+</li>
+<li><a href="#方法">9. 方法</a>
+<ul>
+<li><a href="#指针-vs-值">9.1. 指针 vs 值</a></li>
+</ul>
+</li>
+<li><a href="#接口">10. 接口</a></li>
+<li><a href="#空白标识符">11. 空白标识符</a></li>
+<li><a href="#内嵌">12. 内嵌</a></li>
+<li><a href="#并发">13. 并发</a>
+<ul>
+<li><a href="#goroutines">13.1. Goroutines</a></li>
+<li><a href="#管道channels">13.2. 管道（Channels）</a></li>
+</ul>
+</li>
+<li><a href="#错误">14. 错误</a>
+<ul>
+<li><a href="#panic">14.1. Panic</a></li>
+<li><a href="#recover">14.2. Recover</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+花了一段时间看完了官方的
+<a href="https://golang.org/doc/effective_go.html">Effective Go</a>
+文档，今天又把 <a href="https://go-zh.org/doc/effective_go.html">中文翻译</a>
+的过了一遍。
+</p>
+
+<p>
+对于 Effective 系列的书，我还是停留在五六年前看过的
+<a href="https://book.douban.com/subject/1842426/">Effective
+C++</a>、<a href="https://book.douban.com/subject/1457891/">More Effective C++</a>
+和 <a href="https://book.douban.com/subject/1792179/">Effective
+STL</a>，其内容深层次的剖析的 C++
+语言中的众多核心特性（指针、内存分配、面向对象、泛型编程等），看完之后让人茅塞顿开、叹息不已。
+</p>
+
+<p>
+然而带着对 Go 语言的疑惑（指针、内存模型、并发等）来看 Effective
+Go，并没有得到我想要的东西，对于深层次的东西都是一带而过的，有些失望，可能是
+Go 语言本身并没有 C++ 那么复杂，也可能是我预期太高了一些。
+</p>
+
+<p>
+总体来看 Effective Go 比较基础，可作为 Go 入门之后的第二本书（而
+Effective C++ 没有一定的 C++
+基础不建议阅读，也看不懂），更像是一个如何更好些 Go 语言的语言规范。
+</p>
+
+<p>
+作为一个 C/C++ 出身的程序员，这篇文章主要整理了在写 Go
+程序过程中可能会迷惑的、出问题地方（基于 Effective Go）。
+</p>
+
+<hr />
+
+<div id="outline-container-org7543f68" class="outline-2">
+<h2 id="引言"><span class="section-number-2">1</span> 引言</h2>
+<div class="outline-text-2" id="text-引言">
+<p>
+Go
+是一门全新的语言，尽管它借鉴了很多已有语言的许多理念，但它有自己的语言特性。虽然你也可以用写
+C++ 或者 Java 的方式来写 Go 语言，但程序可能不能令人满意。所以想要把 Go
+程序写好了，需要了解它的特性、风格，即以 Go 的方式来思考
+Go，才能写出更好的 Go 程序。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1435e45" class="outline-2">
+<h2 id="格式化"><span class="section-number-2">2</span> 格式化</h2>
+<div class="outline-text-2" id="text-格式化">
+<p>
+Go 提供了 gofmt
+工具来按照标准来格式化代码，尝试解决同一种语言编码风格混乱的问题，所有人都遵循相同的风格，也不用在编码风格上再浪费时间。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgec65ce9" class="outline-2">
+<h2 id="注释"><span class="section-number-2">3</span> 注释</h2>
+<div class="outline-text-2" id="text-注释">
+<p>
+Go 语言支持 C 风格的注释 <code>/**/</code> 和 <code>//</code> ，块注释一般用于给包做注释。
+</p>
+
+<p>
+<b>包注释</b> 一般放于包子句 <code>package xxx</code>
+的前面，包含多个包文件的包，包注释放于任意一个文件中即可。
+</p>
+
+<p>
+在包中，顶级声明前面的注释称作该声明的*文档注释*，程序中，每个导出的名称（首字母大写）都应该有文档注释。第一句应当以被声明的东西开头（以便查找文档），并且是一个完整的句子作为摘要。
+</p>
+
+<p>
+同样，Go 提供了 godoc 用来提取工程中的文档。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0f82808" class="outline-2">
+<h2 id="命名"><span class="section-number-2">4</span> 命名</h2>
+<div class="outline-text-2" id="text-命名">
+</div>
+
+<div id="outline-container-org793fdad" class="outline-3">
+<h3 id="包命名"><span class="section-number-3">4.1</span> 包命名</h3>
+<div class="outline-text-3" id="text-包命名">
+<p>
+包的名字应该简洁明了，易于理解：
+</p>
+
+<ul class="org-ul">
+<li>使用小写的单个单词来命名，不使用下划线或驼峰记法</li>
+<li>不需要保证在所有源码中保持唯一（导入时需要使用包的全路径），即便是同一个源文件中出现了两个相同的包名，也可以使用别名的方式解决冲突</li>
+<li>使用包的内容，一般通过包名来引用（可避免命名冲突）</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6ea5bb0" class="outline-3">
+<h3 id="gettersetter-命名"><span class="section-number-3">4.2</span> Getter、Setter 命名</h3>
+<div class="outline-text-3" id="text-gettersetter-命名">
+<p>
+Go 不在语言层面提供 getter 和 setter 的支持，你可以自己做封装。通常
+getter 直接用变量名命名（首字母大写），而不是 =GetXxx=，setter 使用
+=SetXxx=。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9352e73" class="outline-3">
+<h3 id="接口命名"><span class="section-number-3">4.3</span> 接口命名</h3>
+<div class="outline-text-3" id="text-接口命名">
+<p>
+如果只有一个方法的接口，应该在该方法的名称加上 -er 后缀来命名，比如
+Reader、Writer。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcde2abd" class="outline-3">
+<h3 id="驼峰命名"><span class="section-number-3">4.4</span> 驼峰命名</h3>
+<div class="outline-text-3" id="text-驼峰命名">
+<p>
+Go 使用驼峰的方式来命名，MinxedCaps 或者 mixedCaps。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbff6453" class="outline-2">
+<h2 id="分号"><span class="section-number-2">5</span> 分号</h2>
+<div class="outline-text-2" id="text-分号">
+<p>
+Go 语言和 C 一样，已分号作为语句的结尾，但与 C
+不同的是，分号并不会在源码中出现，Go
+的词法分析器会根据规则自动插入分号。也因为这样代码块 <code>{}</code> 中的前一个 <code>{</code>
+放在上一行的结尾（如果放在下一行，Go
+会在上一行自动加上分号），还有多值分行初始化时，最后一行同样要添加一个逗号。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9bc45d3" class="outline-2">
+<h2 id="控制结构"><span class="section-number-2">6</span> 控制结构</h2>
+<div class="outline-text-2" id="text-控制结构">
+<ul class="org-ul">
+<li>Go 没有 while 循环，只有通用的 for 循环（可以满足 while 的需求）</li>
+<li>if、switch、for
+支持一个可选的初始化语句，常见的用法：=if _, err := func(); err != nil=</li>
+<li>Go 没有逗号操作符，所以可以使用平行复制的方式 <code>i, j = j, i</code></li>
+<li><code>++</code> 和 <code>--</code> 是语句*而非*表达式</li>
+</ul>
+</div>
+
+<div id="outline-container-org5a290db" class="outline-3">
+<h3 id="switch"><span class="section-number-3">6.1</span> Switch</h3>
+<div class="outline-text-3" id="text-switch">
+<p>
+Go 中的 switch 比 C 更通用（而且解决 C 的很多潜在问题）：
+</p>
+
+<ul class="org-ul">
+<li>switch 表达式无需常量或者整数</li>
+<li>case 语句会逐一进行求值直到匹配为止（C 并不是这样，C
+是找到一个匹配的入口，如果没遇到 break 则会一直往下执行，不管下面的
+case 条件是否满足）</li>
+<li>if-else-if-else 可以使用 switch 替换</li>
+<li>Go 的 break 可以指定一个可选的 Label（类似 C 中的 goto 语句，但是 C
+中的 goto 可能会导致资源泄露，所以一般不用）</li>
+<li>switch 配合类型断言语法，可做类型选择</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7036446" class="outline-2">
+<h2 id="函数"><span class="section-number-2">7</span> 函数</h2>
+<div class="outline-text-2" id="text-函数">
+<ul class="org-ul">
+<li>Go 支持多值返回，通常第二个值表示错误码</li>
+<li>返回值可添加命名形参，在函数开始执行时初始化为零值，有命名形参时，返回时
+return 空即可</li>
+<li><code>defer</code> 语法可以让函数延迟到代码块结束时调用，一般用来释放资源：
+
+<ul class="org-ul">
+<li>被延迟调用的函数参数是立即计算值，而不是调用时</li>
+<li>Deferred 函数式后入先出的执行顺序（LIFO）</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf5f7c6f" class="outline-2">
+<h2 id="数据"><span class="section-number-2">8</span> 数据</h2>
+<div class="outline-text-2" id="text-数据">
+<p>
+Go 有两种内置的内存分配原语：=new= 和 =make=。
+</p>
+
+<ul class="org-ul">
+<li><code>new</code>
+跟其它编程语言不同的地方在于它申请的内存不会被_初始化_，它只是全部设置为_零值_（译者：文档有点歧义，实际上
+Go 的 new
+是会初始化内存的，只不过初始化成了对应类型的零值，这里表达的应该是类似
+C++ 中的 new 会自动调用构造函数）。返回的是 T*</li>
+<li><code>make(T, args)</code> 和 <code>new(T)</code> 有不同的设计目标，make 只用来创建
+slices、maps 和 channels，并且返回的是_初始化_的（非零值）的类型
+T（而不是*T），原因是这三种类型在后台实现时必须进行初始化。比如：切片实际包含三个字段：指向数据的指针、长度和容量，在初始化这些数据之前
+slice 是 =nil=。对于 slices、maps 和 channels，make
+会初始化其内部结构数据。</li>
+</ul>
+
+<p>
+*注意*：=make= 只能用于 slices、maps 和 channels
+并且返回的是对象，而不是指针。
+</p>
+</div>
+
+<div id="outline-container-org2e4041f" class="outline-3">
+<h3 id="数组"><span class="section-number-3">8.1</span> 数组</h3>
+<div class="outline-text-3" id="text-数组">
+<p>
+Go 的数组与 C 不同点：
+</p>
+
+<ul class="org-ul">
+<li>数组是值，赋值时会把所有的数据拷贝一份</li>
+<li>如果把数组传递给函数，函数拿到的是数组的 copy ，而不是指针</li>
+<li>数组的大小是类型的一部分。=[10]int= 和 <code>[20]int</code>
+是不同的（可参考<a href="file:///in-c-arrays-why-is-this-true-a5-5a.html">这篇文章</a>）</li>
+</ul>
+
+<p>
+如果你想要和 C 一样传递数组给函数，你需要使用数组的指针，但通常使用
+slice 来代替 array。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd842495" class="outline-3">
+<h3 id="切片"><span class="section-number-3">8.2</span> 切片</h3>
+<div class="outline-text-3" id="text-切片">
+<p>
+请查看我之前写的 <a href="understand-go-array-and-slice.html">理解 Go 的
+Array 和 slice</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdef87b1" class="outline-3">
+<h3 id="映射map"><span class="section-number-3">8.3</span> 映射（Map）</h3>
+<div class="outline-text-3" id="text-映射map">
+<ul class="org-ul">
+<li>将 map 传递给函数，在函数内部修改 map 会修改调用方的 map</li>
+
+<li><p>
+访问一个 key 不存在的值，会返回 value 类型的零值（所以 set 可以使用
+value 类型为 bool 来实现，不存在时值为
+false）；当需要程序上判断一个值是否存在时，可以通过访问时返回的第二个值来判断，如下：
+</p>
+
+<pre class="example">
+func offset(tz string) int {
+    if seconds, ok := timeZone[tz]; ok {
+        return seconds
+    }
+    log.Println("unknown time zone:", tz)
+    return 0
+}
+</pre></li>
+
+<li>删除 map 中的某个 key 使用内置的 <code>delete</code> 函数，即便 key
+已经已经被删掉了，再执行一次也是安全的</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org628106e" class="outline-3">
+<h3 id="初始化"><span class="section-number-3">8.4</span> 初始化</h3>
+<div class="outline-text-3" id="text-初始化">
+<ul class="org-ul">
+<li>常量：在 Go
+中常量仅仅值的是不变的值。他们由编译期间创建，可以为数字、字符、字符串或者布尔类型，因为编译期间的限制，表达式必须是常量表达式，由编译器来计算值（函数调用是运行时）</li>
+<li>init 函数：每个源文件都可以定义自己的 <code>init</code>
+函数，而且可以有多个。=init=
+函数即不接受参数也不返回任何值，而且不能被主动调用，在包导入时会自动调用执行，在
+<code>main</code> 函数之前执行。=init=
+最常见的用法是用来完成初始化表达式未能完成的初始化工作，还可用作状态检查与修复、注册、只被执行一次的运算等</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4c2e590" class="outline-2">
+<h2 id="方法"><span class="section-number-2">9</span> 方法</h2>
+<div class="outline-text-2" id="text-方法">
+</div>
+
+<div id="outline-container-orgd7e18e3" class="outline-3">
+<h3 id="指针-vs-值"><span class="section-number-3">9.1</span> 指针 vs 值</h3>
+<div class="outline-text-3" id="text-指针-vs-值">
+<p>
+对于指针和值接收器调用原则为：值接收器关联的函数可以被指针和值调用，而指针方法只能被指针调用。语言为了避免这种错误，就添加了一个例外，当值是有地址的时候，出现值调用指针方法的时候，语言会自动插入地址运算。（换句话说，都可以相互调用，只不过区别在于是否修改调用方的值）
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcf2663d" class="outline-2">
+<h2 id="接口"><span class="section-number-2">10</span> 接口</h2>
+<div class="outline-text-2" id="text-接口">
+<ul class="org-ul">
+<li>Go
+中的接口和实现不像其它语言一样，没有显式的关联关系，它只是定义了一个规范，谁有它的*行为*，谁就是它</li>
+<li>如果一个类型仅仅实现了一个接口，并且除此之外没有其它需要导出的方法，那这个类型也不需要导出（在这种情况下构造函数返回一个接口值，而非类型），这其实是一种很好的抽象（关注行为，而非数据）。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org42febfb" class="outline-2">
+<h2 id="空白标识符"><span class="section-number-2">11</span> 空白标识符</h2>
+<div class="outline-text-2" id="text-空白标识符">
+<ul class="org-ul">
+<li>空白标识符可被赋予或声明为任何类型的任何值，而其值会被无害地丢弃，类似
+Unix 中的 <code>/dev/null</code> 文件，只写不读</li>
+<li>导入包时，别名设置为空白标识符，可解决需要使用导入包的 init
+，但本文件又不需要包内容的情况（Go 不允许导入不使用的包）</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org79eb22c" class="outline-2">
+<h2 id="内嵌"><span class="section-number-2">12</span> 内嵌</h2>
+<div class="outline-text-2" id="text-内嵌">
+<p>
+Go
+语言不提供类型子类这样的东西，但是它提供了在接口或者结构体中内嵌的接口或结构体的方法。
+</p>
+
+<p>
+内嵌的接口和结构体可以接口/结构体名称直接访问，如果想要直接访问时字段名为类型名。比如：
+</p>
+
+<pre class="example">
+type Job struct {
+    Command string
+    *log.Logger
+}
+</pre>
+
+<p>
+访问 log.Logger 的成员可以直接通过 Job
+的对象来访问，当然也可以用显示调用的方式来访问：=job.Logger.Logf=，访问忽略包名（log）即可。
+</p>
+
+<p>
+内嵌引来的问题是名称冲突，解决规则很简单：
+</p>
+
+<ul class="org-ul">
+<li>首先，上层的字段会覆盖到深层的字段</li>
+<li>其次，如果在相同级别上出现了两个名字相同的字段（这样通常是错误的），但如果内部不使用的情况下，不会出问题</li>
+</ul>
+
+<p>
+笔者：尽可能用组合代替继承。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgab17d54" class="outline-2">
+<h2 id="并发"><span class="section-number-2">13</span> 并发</h2>
+<div class="outline-text-2" id="text-并发">
+</div>
+
+<div id="outline-container-org26614e8" class="outline-3">
+<h3 id="goroutines"><span class="section-number-3">13.1</span> Goroutines</h3>
+<div class="outline-text-3" id="text-goroutines">
+<ul class="org-ul">
+<li>goroutines
+是并发运行在同一地址空间的函数，比线程更轻量级（消耗只有栈空间的分配）</li>
+<li>在多线程操作系统上实现多路复用，如果一个线程阻塞（比如等待
+I/O），就会在其它线程上运行（隐藏了线程创建和管理的复杂性，本质上底层是线程调度的）</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5441f2b" class="outline-3">
+<h3 id="管道channels"><span class="section-number-3">13.2</span> 管道（Channels）</h3>
+<div class="outline-text-3" id="text-管道channels">
+<p>
+管道和 maps 类似，使用 <code>make</code>
+分配，返回一个底层数据结构的引用。可以提供一个可选的整型参数，用来设置管道的大小。默认值是
+0，作为无缓冲或者同步管道。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge488d08" class="outline-2">
+<h2 id="错误"><span class="section-number-2">14</span> 错误</h2>
+<div class="outline-text-2" id="text-错误">
+</div>
+
+<div id="outline-container-org6202d46" class="outline-3">
+<h3 id="panic"><span class="section-number-3">14.1</span> Panic</h3>
+<div class="outline-text-3" id="text-panic">
+<p>
+通常情况下，出错的时候应该向调用者返回一个 =error=，比如 Read
+方法会返回字节数量和
+error。但是有时候会遇到错误无法恢复，程序无法正常运行的情况。
+</p>
+
+<p>
+Go 提供了内建函数 <code>panic</code>
+用来创建一个运行时的错误将停止程序的运行，它有一个任意类型的参数（经常是个
+string
+在程序快挂的时候输出），一般用来表示处理逻辑上不可能发生的事情，比如无限循环竟然退出了：
+</p>
+
+<pre class="example">
+// A toy implementation of cube root using Newton's method.
+func CubeRoot(x float64) float64 {
+    z := x/3   // Arbitrary initial value
+    for i := 0; i &lt; 1e6; i++ {
+        prevz := z
+        z -= (z*z*z-x) / (3*z*z)
+        if veryClose(z, prevz) {
+            return z
+        }
+    }
+    // A million iterations has not converged; something is wrong.
+    panic(fmt.Sprintf("CubeRoot(%g) did not converge", x))
+}
+</pre>
+
+<p>
+一般情况下库函数应该避免使用 <code>panic</code>
+。如果程序出现了问题，应该尽可能的自愈然后继续运行。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge15d96f" class="outline-3">
+<h3 id="recover"><span class="section-number-3">14.2</span> Recover</h3>
+<div class="outline-text-3" id="text-recover">
+<p>
+当 <code>panic</code>
+调用时，包含隐式的运行时错误，比如越界访问，断言失败等，它会立即停止运行然后展开
+goroutine 的堆栈，接下来运行 defer 函数。但是可以通过 <code>recover</code> 重新获得
+goroutine 的控制并恢复正常运行。代码只能放在 defer 函数中（只有 defer
+函数在这个时候才能正常运行）。
+</p>
+
+<p>
+recover 只会关闭当前的 goroutine（干净的退出），而不会影响其它正在执行的
+goroutines。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2018-08-03 14:11:00 <br />Last updated: 2019-09-18 Wed 21:32 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+</div>
+</body>
+</html>

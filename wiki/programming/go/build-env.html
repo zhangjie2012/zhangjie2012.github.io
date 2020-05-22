@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-05-22 Fri 10:22 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>构建环境</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">构建环境</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3583b77">1. 安装 Go</a>
+<ul>
+<li><a href="#orgbf417bd">1.1. Linux, macOS, and FreeBSD tarballs</a></li>
+<li><a href="#org57ab125">1.2. 检测是否安装成功</a></li>
+</ul>
+</li>
+<li><a href="#org765615e">2. 卸载</a></li>
+<li><a href="#org268eafc">3. 插件和 IDE</a></li>
+<li><a href="#org6b8df51">4. 跨平台编译</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3583b77" class="outline-2">
+<h2 id="org3583b77"><span class="section-number-2">1</span> 安装 Go</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgbf417bd" class="outline-3">
+<h3 id="orgbf417bd"><span class="section-number-3">1.1</span> Linux, macOS, and FreeBSD tarballs</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+<pre class="src src-shell">wget https://dl.google.com/go/go1.13.6.darwin-amd64.tar.gz --no-check-certificate
+sudo tar -C /usr/local -xzf go1.13.6.darwin-amd64.tar.gz
+</pre>
+</div>
+
+<p>
+将 <code>/usr/local/go/bin</code> 添加到系统 <code>PATH</code> 环境变量，在 <code>/etc/profile</code> 或者 <code>$HOME/.profile</code> 中添加
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:/usr/local/go/bin
+</pre>
+</div>
+
+<p>
+默认的工作目录是 <code>$HOME/go</code> ，如果是不同的目录需要 <a href="https://github.com/golang/go/wiki/SettingGOPATH">设置一下 GOPATH 环境变量</a>。
+</p>
+
+<p>
+<code>go get</code> 安装的二进制包会放到 <code>$HOME/go/bin</code> 下面。所以，还要在 <code>.bashrc/.zshrc</code> 中添加路径：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:$<span style="color: #707183;">(</span>go env GOPATH<span style="color: #707183;">)</span>/bin
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org57ab125" class="outline-3">
+<h3 id="org57ab125"><span class="section-number-3">1.2</span> 检测是否安装成功</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+在工作目录下创建 <code>src/hello</code> 目录，然后创建 <code>hello.go</code> ：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">package</span> main
+
+<span style="color: #0000FF;">import</span> <span style="color: #008000;">"fmt"</span>
+
+<span style="color: #0000FF;">func</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+    fmt.<span style="color: #006699;">Printf</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"hello, world\n"</span><span style="color: #7388D6;">)</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+<code>go run hello.go</code> 看到 <code>hello, world</code> 表示安装成功。
+</p>
+
+<p>
+<b>注意</b> 如果存在旧版本的 Go 需要先卸载才行。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org765615e" class="outline-2">
+<h2 id="org765615e"><span class="section-number-2">2</span> 卸载</h2>
+<div class="outline-text-2" id="text-2">
+<ol class="org-ol">
+<li>删除 <code>/usr/local/go</code> 目录</li>
+<li>编辑 <code>/etc/profile</code> 或者 <code>$HOME/profile</code> 移除 <code>PATH</code> 环境变量中的 go bin 路径</li>
+<li>删除工作目录</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org268eafc" class="outline-2">
+<h2 id="org268eafc"><span class="section-number-2">3</span> 插件和 IDE</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+见 <a href="../../../topic/emacs/ide.html">Emacs IDE</a> 内容。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6b8df51" class="outline-2">
+<h2 id="org6b8df51"><span class="section-number-2">4</span> 跨平台编译</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+1.5 版本之后，Go 支持跨平台编译（碉堡的一个功能），在编译之前指定 <code>$GOOS</code> 和 <code>$GOARCH</code> 两个环境变量即可。这两个环境变量分别表示的目标的操作系统和编译体系架构的名称。常用的值：
+</p>
+
+<ul class="org-ul">
+<li><code>GOOS</code>: <code>android</code> <code>darwin</code> <code>freebsd</code> <code>linux</code> <code>windows</code></li>
+<li><code>GOARCH</code>: <code>arm</code> <code>amd64</code> <code>386</code></li>
+</ul>
+
+<p>
+完整的可选值在 <a href="https://golang.org/doc/install/source#environment">Optional environment variables</a>。
+</p>
+
+<p>
+比如在 MacOS 上编译 CentOS7 下的二进制包:  <code>GOOS=linux GOARCH=amd64 go build main</code> 。
+</p>
+
+<p>
+相关的 Stackoverflow 帖子：<a href="https://stackoverflow.com/questions/20728767/all-possible-goos-value">All possible GOOS value?</a> 中说明在 Go 1.7 之后，可以使用 <code>go tool dist list -json</code> 来显示可选的值（不加 <code>-json</code> 参数将显示为文本）。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2017-12-07 09:41:24 <br />Last updated: 2020-05-15 Fri 10:05 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2020-05-22 Fri 10:22 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>C++ setf 方法</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">C++ setf 方法</h1>
+<p>
+一直以来，我对 C++
+的流操作说望而生畏一点都不为过，能不用则不用，我一般用 C 的流操作代替
+C++ 的。为什么呢？习惯了 C
+式的格式化输出，我相信大多数人和我感觉一样；习惯了 fprintf fread fwrite
+ftell fseek &#x2026; 面对C++的 fstream
+的操作方式是在不感冒。我是一个很安分的人，如果可以用我会的方法去解决掉这个问题，我很不情愿去用另外一种方法，即便是另外一种方法比较新、比较好。这算是个缺点吧，容易固步自封。以前整理过一篇文章：《<a href="http://www.cnblogs.com/chinazhangjie/archive/2010/08/19/1803057.html">C/C++输入输出流总结</a>》，主要列出了接口，没有细节说明。
+</p>
+
+<p>
+嗯，废话不多说了，说一下本文吧。本文算是一篇半翻译文章吧，<a href="http://www.cplusplus.com/reference/iostream/ios_base/setf/">setf</a>
+的说明文档，加上我一些个人的理解和扩展。
+</p>
+
+<p>
+<b>std::ios_base::setf</b>
+</p>
+
+<pre class="example">
+fmtflags setf ( fmtflags fmtfl );
+fmtflags setf ( fmtflags fmtfl, fmtflags mask );
+</pre>
+
+<p>
+设置指定格式的标记
+</p>
+
+<ul class="org-ul">
+<li>第一个方法用 fmtfl
+设置流的格式标记，但是不会减少之前的流标志，也就是说相当于在原来流标志的基础上加上
+fmtfl ，即 flags (fmtfl | flags())。</li>
+<li>第二个方法使用 fmtfl 和 mask 两个共同设定流格式标记，清除 mask
+标签中不属于 fmtl 中的标签，即 flags((fmtfl &amp; mask | (flags() &amp;
+~mask)).</li>
+</ul>
+
+<p>
+这两个函数都返回在调用之前流中的格式标记。
+</p>
+
+<p>
+流的格式标记影响数据在输入输出函数中的显示方式。
+<a href="http://www.cplusplus.com/reference/iostream/ios_base/fmtflags/">ios_base::fmtflags</a>
+列出了这个函数的可能参数值。
+</p>
+
+<ul class="org-ul">
+<li>第一个 setf 方法通常用来设置单一的格式标记：boolalpha, showbase,
+showpoint, showpos, shipws, unitbuf 和 uppercase，可以直接使用
+<a href="http://www.cplusplus.com/reference/iostream/ios_base/unsetf/">unsetf</a>
+来取消设置。</li>
+<li>第二种 setf 方法通常用来设置选择的标记中的一种，使用位掩码作为 mask
+参数。</li>
+</ul>
+
+<p>
+参数化操作符
+<a href="http://www.cplusplus.com/reference/iostream/manipulators/setiosflags/">setioflag</a>
+和这个方法实现的效果类似，是这个方法的单参版本。
+</p>
+
+<p>
+<b>参数</b>
+</p>
+
+<pre class="example">
+fmtfl
+    设置格式化标签。如果使用第二个方法的话，仅仅用 fmtfl 和 mask 设置流格式标志中；设置在 mask 中的 fmtfl 标志。
+mask
+    要修改的标志掩码
+</pre>
+
+<p>
+<b>返回值</b>
+</p>
+
+<p>
+返回调用之前的格式化标志
+</p>
+
+<p>
+<b>使用示例：</b>
+</p>
+
+<pre class="example">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main()
+{
+    // read/write bool elements as alphabetic strings (true and false).
+    cout.setf(ios_base::boolalpha);
+    bool b = true;
+    cout &lt;&lt; b &lt;&lt; endl;
+    b = false;
+    cout &lt;&lt; b &lt;&lt; endl;
+
+    // write floating-point values including always the decimal point.
+    cout.setf(ios_base::showpoint);
+    float f = 10.0;
+    cout &lt;&lt; f &lt;&lt; endl;
+    // write non-negative numerical values preceded by a plus sign (+).
+    cout.setf(ios_base::showpos);
+    cout &lt;&lt; f &lt;&lt; endl;
+    // write floating-point values in scientific notation.
+    cout.setf(ios_base::scientific, ios_base::floatfield);
+    cout &lt;&lt; f &lt;&lt; endl;
+
+    // using fmtflags as class member constants:
+    cout.setf (ios_base::hex , ios_base::basefield);
+    cout.setf (ios_base::showbase);
+    cout &lt;&lt; 100 &lt;&lt; endl;
+}
+</pre>
+
+<p>
+例子举得不够充分，的确。因为要牵扯到其他流操作的方法，我就没用。关心的自己研究一下，我只是抛砖引玉。我明白了很多，这就够了;至于你明白多少，如果你想去明白，我想我说的够了，如果你不想去明白，我说多少也是白搭。
+</p>
+
+<p>
+我说几点可以学习的设计思想吧，个人理解：
+</p>
+
+<p>
+1、这种标志的方式很常见，通常都称为 mask or
+flag，定义为一些很容易区分的二进制数据，比如：
+</p>
+
+<pre class="example">
+#define NORTH 0x00000001 -&gt; 00000000 00000000 00000000 00000001
+#define SOUTH 0x00000002 -&gt; 00000000 00000000 00000000 00000010
+#define EAST  0x00000004 -&gt; 00000000 00000000 00000000 00000100
+#define WEST  0x00000008 -&gt; 00000000 00000000 00000000 00001000
+</pre>
+
+<p>
+以前我做的一个项目，就是这么做的。这么定义的好处是什么呢？非常容易计算。假如给你一个加和
+<code>00000000 0000000 0000000 00001001</code> ，我很容易就可以知道是 NORTH 和 WEST
+两个方向。
+</p>
+
+<p>
+搞 Windows 程序的朋友应该知道 Windows API 中有很多 flag
+这样的参数，它们也是这样的，这样设置很容易进行位运算(|,^,&amp;,~等)，容易区分。这也是一个很不错的方法，平时做项目的时候也可以使用这个思想。
+</p>
+
+<p>
+2、setf
+的返回值是设置之前的流格式标志。为什么要这么做呢？答案是"恢复现场"。这是一个很好的习惯，就好像你要租一块场地来举办活动，举办完之后，应该恢复原样，让别人感觉这个事情从来没有发生过。Windows程序员应该会会心的一笑，C++程序员也会会心的一笑。这也算是一个思想吧，我没有看过类似的书籍，也不知道具体应该称作什么。"你应该为你做的事情负责"。
+</p>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2012-10-07 14:46:16 <br />Last updated: 2019-09-18 Wed 21:14 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+</div>
+</body>
+</html>
