@@ -3,12 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-05-29 Fri 14:55 -->
+<!-- 2020-06-02 Tue 14:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>QWERTY</title>
+<title>gRPC 拦截器</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -243,32 +245,91 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">QWERTY</h1>
+<h1 class="title">gRPC 拦截器</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org8306738">1. 拦截器</a></li>
+<li><a href="#org11bd48f">2. Session 与认证</a></li>
+<li><a href="#org5919e7e">3. go-grpc-middleware</a></li>
+</ul>
+</div>
+</div>
 
-<div id="outline-container-orgc7e0a4e" class="outline-2">
-<h2 id="orgc7e0a4e">Entry</h2>
-<div class="outline-text-2" id="text-orgc7e0a4e">
-<dl class="org-dl">
-<dt><a href="blog/index.html">Blog</a></dt><dd>网络日志，偏技术和思考，知识放 Wiki，非技术的都放在了 Youth 里</dd>
-<dt><a href="wiki/index.html">Wiki</a></dt><dd>偏向于工具化，比较散的知识点</dd>
-<dt>Topic</dt><dd>技术专题，比较聚集的知识面
-<ul class="org-ul">
-<li><a href="topic/emacs/index.html">Emacs</a> 使用 Emacs 是一种信仰</li>
-<li><a href="topic/container/index.html">容器化</a> 容器、Docker、Kubernetes 等</li>
-<li><a href="topic/grpc/index.html">gRPC</a></li>
-</ul></dd>
-<dt><a href="reading/read-books.html">Read</a>、<a href="reading/unread-books.html">Unreading</a></dt><dd>读过的和打算读的书，包括电子书</dd>
-<dt><a href="reading/links.html">Links</a></dt><dd>各种资源链接收集：博客、DevoOps、设计、技术学习，搬运工</dd>
-<dt><a href="other/resume.html">Resume</a></dt><dd>简历</dd>
-</dl>
-
-<hr />
+<div id="outline-container-org8306738" class="outline-2">
+<h2 id="org8306738"><span class="section-number-2">1</span> 拦截器</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+一个生产化的后端服务是少不了中间件的，做一些认证、tracing、度量指标统计等操作。gRPC 提供了 interceptor 特性，可以用来实现服务中间件。
+</p>
 
 <p>
-<a href="https://github.com/zhangjie2012">Github</a> | <a href="sitemap.html">sitemap</a>
+根据 gRPC 支持的四种 RPC 调用方式（一元、客户端流、服务端流、双向流），gRPC 提供了两种拦截器（事实上是客户端和服务器分别两种，但都差不多，这里只说服务端）：
+</p>
+
+<ul class="org-ul">
+<li><p>
+<code>UnaryServerInterceptor</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">func</span><span style="color: #707183;">(</span>ctx <span style="color: #6434A3;">context.Context</span>, req <span style="color: #0000FF;">interface</span><span style="color: #7388D6;">{}</span>, info *<span style="color: #6434A3;">UnaryServerInfo</span>, handler <span style="color: #6434A3;">UnaryHandler</span><span style="color: #707183;">)</span> <span style="color: #707183;">(</span>resp <span style="color: #0000FF;">interface</span><span style="color: #7388D6;">{}</span>, err <span style="color: #6434A3;">error</span><span style="color: #707183;">)</span>
+</pre>
+</div></li>
+<li><p>
+<code>StreamServerInterceptor</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">func</span><span style="color: #707183;">(</span>srv <span style="color: #0000FF;">interface</span><span style="color: #7388D6;">{}</span>, ss <span style="color: #6434A3;">ServerStream</span>, info *<span style="color: #6434A3;">StreamServerInfo</span>, handler <span style="color: #6434A3;">StreamHandler</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">error</span>
+</pre>
+</div></li>
+</ul>
+
+<p>
+说明：
+</p>
+
+<ul class="org-ul">
+<li><code>UnaryServerInfo</code> 包含两个字段， <code>FullMethod</code> 表示 RPC method 全路径名称，另外一个 <code>Server</code> 是 register 时的参数，是自己定义的</li>
+<li><code>handler</code> 是下游要执行的处理器，需要手动调用</li>
+</ul>
+
+<p>
+可以注册多个拦截器，具体见：<a href="https://github.com/grpc/grpc-go/tree/master/examples/features/interceptor">https://github.com/grpc/grpc-go/tree/master/examples/features/interceptor</a>
 </p>
 </div>
 </div>
+
+<div id="outline-container-org11bd48f" class="outline-2">
+<h2 id="org11bd48f"><span class="section-number-2">2</span> Session 与认证</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+拦截器配合 <a href="https://pkg.go.dev/google.golang.org/grpc@v1.29.1/metadata?tab=doc">metadata</a> 做认证。
+</p>
+
+<ol class="org-ol">
+<li><code>FromIncomingContext</code> 获取 token 信息，判断 token 是否有效</li>
+<li>token 兑换成用户相关信息， <code>NewIncomingContext</code> 携带用户信息，然后传递给 handler</li>
+<li>handler 从 metadata 用获取用户信息</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org5919e7e" class="outline-2">
+<h2 id="org5919e7e"><span class="section-number-2">3</span> <a href="https://github.com/grpc-ecosystem/go-grpc-middleware">go-grpc-middleware</a></h2>
+<div class="outline-text-2" id="text-3">
+<p>
+官方封装了一些常用的 middlware：auth、log、monitor、recovery，可以开箱即用。
+</p>
+
+<p>
+<i>但仔细看的话，发现这些自己实现也是比较简单的，甚至不建议用。</i>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-05-29 15:52:54 <br />Last updated: 2020-05-29 Fri 18:28 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 </div>
 </body>
 </html>
