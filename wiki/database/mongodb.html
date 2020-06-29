@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-05-22 Fri 10:21 -->
+<!-- 2020-06-29 Mon 11:04 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>MongoDB</title>
@@ -342,7 +342,21 @@ MongoDB 中常使用 <code>mongodump</code> 来备份数据，使用 <code>mongo
 </ul>
 
 <p>
-<b>注意</b>: 这两个命令特别坑的地方在于，如果不指定路径会自动选择当前目录下文件，一般命令不加任何参数会自动提示 <code>help</code> ，而这两个命令不会。所以备份和恢复两个命令一定不能搞混了，有一次我备份数据的时候使用了 mongorestore 导致旧的数据恢复了。
+<b>注意</b>: 这两个命令特别坑的地方在于，如果不指定路径会自动选择当前目录下文件，一般命令不加任何参数会自动提示 <code>help</code> ，而这两个命令不会。
+所以备份和恢复两个命令一定不能搞混了，有一次我备份数据的时候使用了 mongorestore 导致旧的数据恢复了。
+</p>
+
+<p>
+mongorestore 报错：
+</p>
+
+<pre class="example">
+error connecting to host: could not connect to server: connection() : auth error: sasl conversation error:
+ unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.=
+</pre>
+
+<p>
+加上 <code>--authenticationDatabase=admin</code> 就可以了，具体原因还未知。
 </p>
 </div>
 </div>
@@ -380,7 +394,7 @@ A: <code>storageSize</code> 是实际数据库所有占用大小的总和，不�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-07-09 12:02:46 <br />Last updated: 2019-09-19 Thu 16:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2018-07-09 12:02:46 <br />Last updated: 2020-06-26 Fri 06:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>

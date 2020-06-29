@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-05-22 Fri 10:22 -->
+<!-- 2020-06-29 Mon 15:52 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>使用 Go 构建 Web 服务技术栈</title>
@@ -261,16 +261,18 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#org78c6460">1.2. 最佳实践</a>
 <ul>
-<li><a href="#org30424ce">1.2.1. 流程流转</a></li>
-<li><a href="#org6b6c25f">1.2.2. 使用配置文件，而不是参数注入</a></li>
-<li><a href="#org4eeffc9">1.2.3. 服务优雅关闭</a></li>
-<li><a href="#org829122f">1.2.4. 使用 API 分组</a></li>
-<li><a href="#orge693d88">1.2.5. 使用 prometheus_client 暴露 API metrics</a></li>
+<li><a href="#orgd157109">1.2.1. 服务名称</a></li>
+<li><a href="#org30424ce">1.2.2. 流程流转</a></li>
+<li><a href="#org6b6c25f">1.2.3. 使用配置文件，而不是参数注入</a></li>
+<li><a href="#org4eeffc9">1.2.4. 服务优雅关闭</a></li>
+<li><a href="#org829122f">1.2.5. 使用 API 分组</a></li>
+<li><a href="#org9bcad3a">1.2.6. 日志</a></li>
+<li><a href="#org1f1ed0f">1.2.7. 监控：使用 prometheus_client 暴露 API metrics</a></li>
 </ul>
 </li>
 <li><a href="#org6734aee">1.3. 常用库选型</a>
 <ul>
-<li><a href="#org9bcad3a">1.3.1. 日志</a></li>
+<li><a href="#org9278aca">1.3.1. 日志</a></li>
 <li><a href="#org231cda2">1.3.2. MySQL</a></li>
 <li><a href="#org545fcb5">1.3.3. MongoDB</a></li>
 </ul>
@@ -282,6 +284,7 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#orge9c641a">3.1. 直接部署到主机上</a></li>
 <li><a href="#org5c22760">3.2. 部署到容器环境下</a></li>
+<li><a href="#org7067535">3.3. 版本号</a></li>
 </ul>
 </li>
 </ul>
@@ -334,18 +337,18 @@ Go 的 <code>net/http</code> 库比较丰富，借助 <a href="https://github.co
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go">router := mux.<span style="color: #006699;">NewRouter</span><span style="color: #707183;">()</span>
-router.<span style="color: #006699;">HandleFunc</span><span style="color: #707183;">(</span><span style="color: #008000;">"/"</span>, <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span>resp <span style="color: #6434A3;">http.ResponseWriter</span>, req *<span style="color: #6434A3;">http.Request</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
+<pre class="src src-go"><span style="color: #BA36A5;">router</span> := mux.<span style="color: #006699;">NewRouter</span><span style="color: #707183;">()</span>
+router.<span style="color: #006699;">HandleFunc</span><span style="color: #707183;">(</span><span style="color: #008000;">"/"</span>, <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span><span style="color: #BA36A5;">resp</span> <span style="color: #6434A3;">http.ResponseWriter</span>, <span style="color: #BA36A5;">req</span> *<span style="color: #6434A3;">http.Request</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
     resp.<span style="color: #006699;">Write</span><span style="color: #909183;">(</span><span style="color: #709870;">[]</span><span style="color: #006699;">byte</span><span style="color: #709870;">(</span><span style="color: #008000;">"ok"</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span>
 <span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>
 
-httpServer := &amp;http.<span style="color: #6434A3;">Server</span><span style="color: #707183;">{</span>
+<span style="color: #BA36A5;">httpServer</span> := &amp;<span style="color: #6434A3;">http.Server</span><span style="color: #707183;">{</span>
     <span style="color: #D0372D;">Addr</span>:    <span style="color: #008000;">":8080"</span>,
     <span style="color: #D0372D;">Handler</span>: router,
 <span style="color: #707183;">}</span>
 
 <span style="color: #0000FF;">go</span> <span style="color: #0000FF;">func</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">if</span> err := s.HTTPServer.<span style="color: #006699;">ListenAndServe</span><span style="color: #7388D6;">()</span>; err != <span style="color: #D0372D;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">if</span> <span style="color: #BA36A5;">err</span> := s.HTTPServer.<span style="color: #006699;">ListenAndServe</span><span style="color: #7388D6;">()</span>; err != <span style="color: #D0372D;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #7388D6;">{</span>
         log.<span style="color: #006699;">Fatalf</span><span style="color: #909183;">(</span><span style="color: #008000;">"server error, %s\n"</span>, err<span style="color: #909183;">)</span>
     <span style="color: #7388D6;">}</span>
 <span style="color: #707183;">}()</span>
@@ -362,19 +365,19 @@ httpServer := &amp;http.<span style="color: #6434A3;">Server</span><span style="
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go">router := gin.<span style="color: #006699;">New</span><span style="color: #707183;">()</span>
+<pre class="src src-go"><span style="color: #BA36A5;">router</span> := gin.<span style="color: #006699;">New</span><span style="color: #707183;">()</span>
 
-router.<span style="color: #006699;">GET</span><span style="color: #707183;">(</span><span style="color: #008000;">"/"</span>, <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span>c *<span style="color: #6434A3;">gin.Context</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
+router.<span style="color: #006699;">GET</span><span style="color: #707183;">(</span><span style="color: #008000;">"/"</span>, <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span><span style="color: #BA36A5;">c</span> *<span style="color: #6434A3;">gin.Context</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
     c.<span style="color: #006699;">String</span><span style="color: #909183;">(</span>http.StatusOK, <span style="color: #008000;">"ok"</span><span style="color: #909183;">)</span>
 <span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>
 
-srv := &amp;http.<span style="color: #6434A3;">Server</span><span style="color: #707183;">{</span>
+<span style="color: #BA36A5;">srv</span> := &amp;<span style="color: #6434A3;">http.Server</span><span style="color: #707183;">{</span>
     <span style="color: #D0372D;">Addr</span>:    <span style="color: #008000;">":8080"</span>,
     <span style="color: #D0372D;">Handler</span>: router,
 <span style="color: #707183;">}</span>
 
 <span style="color: #0000FF;">go</span> <span style="color: #0000FF;">func</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">if</span> err := server.HttpServer.<span style="color: #006699;">ListenAndServe</span><span style="color: #7388D6;">()</span>; err != <span style="color: #D0372D;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">if</span> <span style="color: #BA36A5;">err</span> := server.HttpServer.<span style="color: #006699;">ListenAndServe</span><span style="color: #7388D6;">()</span>; err != <span style="color: #D0372D;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #7388D6;">{</span>
         log.<span style="color: #006699;">Fatalf</span><span style="color: #909183;">(</span><span style="color: #008000;">"server failure : %s\n"</span>, err<span style="color: #909183;">)</span>
     <span style="color: #7388D6;">}</span>
 <span style="color: #707183;">}()</span>
@@ -392,8 +395,8 @@ srv := &amp;http.<span style="color: #6434A3;">Server</span><span style="color: 
 
 <div class="org-src-container">
 <pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">AuthRequired</span><span style="color: #707183;">()</span> <span style="color: #6434A3;">gin.HandlerFunc</span> <span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">return</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span>c *<span style="color: #6434A3;">gin.Context</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
-        token := c.Request.Header.<span style="color: #006699;">Get</span><span style="color: #909183;">(</span><span style="color: #008000;">"X-Login-Token"</span><span style="color: #909183;">)</span>
+    <span style="color: #0000FF;">return</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span><span style="color: #BA36A5;">c</span> *<span style="color: #6434A3;">gin.Context</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #BA36A5;">token</span> := c.Request.Header.<span style="color: #006699;">Get</span><span style="color: #909183;">(</span><span style="color: #008000;">"X-Login-Token"</span><span style="color: #909183;">)</span>
         <span style="color: #0000FF;">if</span> token != <span style="color: #008000;">"xxx"</span> <span style="color: #909183;">{</span>
             c.<span style="color: #006699;">String</span><span style="color: #709870;">(</span>http.StatusUnauthorized, <span style="color: #008000;">"login required"</span><span style="color: #709870;">)</span>
             c.<span style="color: #006699;">Abort</span><span style="color: #709870;">()</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">must abort to next handler</span>
@@ -406,7 +409,7 @@ srv := &amp;http.<span style="color: #6434A3;">Server</span><span style="color: 
     <span style="color: #7388D6;">}</span>
 <span style="color: #707183;">}</span>
 
-apiv1 := r.<span style="color: #006699;">Group</span><span style="color: #707183;">(</span><span style="color: #008000;">"/api/v1"</span><span style="color: #707183;">)</span>
+<span style="color: #BA36A5;">apiv1</span> := r.<span style="color: #006699;">Group</span><span style="color: #707183;">(</span><span style="color: #008000;">"/api/v1"</span><span style="color: #707183;">)</span>
 apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</span><span style="color: #006699;">AuthRequired</span><span style="color: #7388D6;">()</span><span style="color: #707183;">)</span>
 </pre>
 </div>
@@ -436,9 +439,18 @@ apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</s
 <h3 id="org78c6460"><span class="section-number-3">1.2</span> 最佳实践</h3>
 <div class="outline-text-3" id="text-1-2">
 </div>
-<div id="outline-container-org30424ce" class="outline-4">
-<h4 id="org30424ce"><span class="section-number-4">1.2.1</span> 流程流转</h4>
+<div id="outline-container-orgd157109" class="outline-4">
+<h4 id="orgd157109"><span class="section-number-4">1.2.1</span> 服务名称</h4>
 <div class="outline-text-4" id="text-1-2-1">
+<p>
+一个服务应该有一个唯一标识：应用ID 或者应用名等，它在组织内部应该是唯一的，这种做法对于基建是很友好的（大部分公司也是这么做的）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org30424ce" class="outline-4">
+<h4 id="org30424ce"><span class="section-number-4">1.2.2</span> 流程流转</h4>
+<div class="outline-text-4" id="text-1-2-2">
 <ol class="org-ol">
 <li><code>main</code> 统一流转
 <ol class="org-ol">
@@ -462,8 +474,8 @@ apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</s
 </div>
 
 <div id="outline-container-org6b6c25f" class="outline-4">
-<h4 id="org6b6c25f"><span class="section-number-4">1.2.2</span> 使用配置文件，而不是参数注入</h4>
-<div class="outline-text-4" id="text-1-2-2">
+<h4 id="org6b6c25f"><span class="section-number-4">1.2.3</span> 使用配置文件，而不是参数注入</h4>
+<div class="outline-text-4" id="text-1-2-3">
 <p>
 配置文件选择 JSON、YAML，一般使用 YAML，全部参数注入在参数情况下，启动服务会变的复杂。
 </p>
@@ -472,12 +484,12 @@ apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</s
 <pre class="src src-go"><span style="color: #0000FF;">package</span> options
 
 <span style="color: #0000FF;">type</span> <span style="color: #6434A3;">ServerConfig</span> <span style="color: #0000FF;">struct</span> <span style="color: #707183;">{</span>
-    Host string <span style="color: #008000;">`yaml:"host"`</span>
-    Port string <span style="color: #008000;">`yaml:"port"`</span>
+    Host <span style="color: #6434A3;">string</span> <span style="color: #008000;">`yaml:"host"`</span>
+    Port <span style="color: #6434A3;">string</span> <span style="color: #008000;">`yaml:"port"`</span>
 <span style="color: #707183;">}</span>
 
 <span style="color: #0000FF;">func</span> <span style="color: #006699;">flagParse</span><span style="color: #707183;">()</span> <span style="color: #6434A3;">string</span> <span style="color: #707183;">{</span>
-    configFile := <span style="color: #008000;">""</span>
+    <span style="color: #BA36A5;">configFile</span> := <span style="color: #008000;">""</span>
     flag.<span style="color: #006699;">StringVar</span><span style="color: #7388D6;">(</span>&amp;configFile, <span style="color: #008000;">"config-file"</span>, <span style="color: #008000;">"/etc/xxx-server/config.yaml"</span>, <span style="color: #008000;">"server configure file"</span><span style="color: #7388D6;">)</span>
     flag.<span style="color: #006699;">Parse</span><span style="color: #7388D6;">()</span>
 
@@ -485,13 +497,13 @@ apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</s
     <span style="color: #0000FF;">return</span> configFile
 <span style="color: #707183;">}</span>
 
-<span style="color: #0000FF;">func</span> <span style="color: #006699;">parseConfigFile</span><span style="color: #707183;">(</span>configFile <span style="color: #6434A3;">string</span><span style="color: #707183;">)</span> <span style="color: #707183;">(</span>*<span style="color: #6434A3;">ServerConfig</span>, <span style="color: #6434A3;">error</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-    file, err := ioutil.<span style="color: #006699;">ReadFile</span><span style="color: #7388D6;">(</span>configFile<span style="color: #7388D6;">)</span>
+<span style="color: #0000FF;">func</span> <span style="color: #006699;">parseConfigFile</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">configFile</span> <span style="color: #6434A3;">string</span><span style="color: #707183;">)</span> <span style="color: #707183;">(</span>*<span style="color: #6434A3;">ServerConfig</span>, <span style="color: #6434A3;">error</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #BA36A5;">file</span>, <span style="color: #BA36A5;">err</span> := ioutil.<span style="color: #006699;">ReadFile</span><span style="color: #7388D6;">(</span>configFile<span style="color: #7388D6;">)</span>
     <span style="color: #0000FF;">if</span> err != <span style="color: #D0372D;">nil</span> <span style="color: #7388D6;">{</span>
         <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">nil</span>, err
     <span style="color: #7388D6;">}</span>
 
-    cfg := &amp;<span style="color: #6434A3;">ServerConfig</span><span style="color: #7388D6;">{}</span>
+    <span style="color: #BA36A5;">cfg</span> := &amp;<span style="color: #6434A3;">ServerConfig</span><span style="color: #7388D6;">{}</span>
     err = yaml.<span style="color: #006699;">Unmarshal</span><span style="color: #7388D6;">(</span>file, cfg<span style="color: #7388D6;">)</span>
     <span style="color: #0000FF;">if</span> err != <span style="color: #D0372D;">nil</span> <span style="color: #7388D6;">{</span>
         <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">nil</span>, err
@@ -501,11 +513,11 @@ apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</s
     <span style="color: #0000FF;">return</span> cfg, <span style="color: #D0372D;">nil</span>
 <span style="color: #707183;">}</span>
 
-<span style="color: #0000FF;">var</span> cfg *ServerConfig
+<span style="color: #0000FF;">var</span> <span style="color: #BA36A5;">cfg</span> *<span style="color: #6434A3;">ServerConfig</span>
 
 <span style="color: #0000FF;">func</span> <span style="color: #006699;">InitServerConfig</span><span style="color: #707183;">()</span> <span style="color: #6434A3;">error</span> <span style="color: #707183;">{</span>
-    configFile := <span style="color: #006699;">flagParse</span><span style="color: #7388D6;">()</span>
-    cfg_, err := <span style="color: #006699;">parseConfigFile</span><span style="color: #7388D6;">(</span>configFile<span style="color: #7388D6;">)</span>
+    <span style="color: #BA36A5;">configFile</span> := <span style="color: #006699;">flagParse</span><span style="color: #7388D6;">()</span>
+    <span style="color: #BA36A5;">cfg_</span>, <span style="color: #BA36A5;">err</span> := <span style="color: #006699;">parseConfigFile</span><span style="color: #7388D6;">(</span>configFile<span style="color: #7388D6;">)</span>
     <span style="color: #0000FF;">if</span> err != <span style="color: #D0372D;">nil</span> <span style="color: #7388D6;">{</span>
         <span style="color: #0000FF;">return</span> err
     <span style="color: #7388D6;">}</span>
@@ -527,28 +539,28 @@ apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</s
 </div>
 
 <div id="outline-container-org4eeffc9" class="outline-4">
-<h4 id="org4eeffc9"><span class="section-number-4">1.2.3</span> 服务优雅关闭</h4>
-<div class="outline-text-4" id="text-1-2-3">
+<h4 id="org4eeffc9"><span class="section-number-4">1.2.4</span> 服务优雅关闭</h4>
+<div class="outline-text-4" id="text-1-2-4">
 <p>
 优雅关闭一般指的是，关闭服务时把该处理的请求处理完毕，相关的资源正常清理结束之后再程序自动运行结束。而不是直接杀进程。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go">quit := <span style="color: #006FE0;">make</span><span style="color: #707183;">(</span><span style="color: #0000FF;">chan</span> <span style="color: #6434A3;">os.Signal</span><span style="color: #707183;">)</span>
+<pre class="src src-go"><span style="color: #BA36A5;">quit</span> := <span style="color: #006FE0;">make</span><span style="color: #707183;">(</span><span style="color: #0000FF;">chan</span> <span style="color: #6434A3;">os.Signal</span><span style="color: #707183;">)</span>
 signal.<span style="color: #006699;">Notify</span><span style="color: #707183;">(</span>quit, syscall.SIGINT, syscall.SIGTERM<span style="color: #707183;">)</span>
 &lt;-quit
 logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(</span><span style="color: #008000;">"recv shutdown server signal..."</span><span style="color: #707183;">)</span>
 
-<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span>server *<span style="color: #6434A3;">APIServer</span><span style="color: #707183;">)</span> <span style="color: #006699;">StopServer</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">server</span> *<span style="color: #6434A3;">APIServer</span><span style="color: #707183;">)</span> <span style="color: #006699;">StopServer</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
     <span style="color: #0000FF;">defer</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
         <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&#28165;&#29702;&#20854;&#23427;&#36164;&#28304;</span>
     <span style="color: #7388D6;">}()</span>
 
-    waiting := 5 * time.Second
-    ctx, cancel := context.<span style="color: #006699;">WithTimeout</span><span style="color: #7388D6;">(</span>context.<span style="color: #006699;">Background</span><span style="color: #909183;">()</span>, waiting<span style="color: #7388D6;">)</span>
+    <span style="color: #BA36A5;">waiting</span> := 5 * time.Second
+    <span style="color: #BA36A5;">ctx</span>, <span style="color: #BA36A5;">cancel</span> := context.<span style="color: #006699;">WithTimeout</span><span style="color: #7388D6;">(</span>context.<span style="color: #006699;">Background</span><span style="color: #909183;">()</span>, waiting<span style="color: #7388D6;">)</span>
     <span style="color: #0000FF;">defer</span> <span style="color: #006699;">cancel</span><span style="color: #7388D6;">()</span>
 
-    <span style="color: #0000FF;">if</span> err := server.HttpServer.<span style="color: #006699;">Shutdown</span><span style="color: #7388D6;">(</span>ctx<span style="color: #7388D6;">)</span>; err != <span style="color: #D0372D;">nil</span> <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">if</span> <span style="color: #BA36A5;">err</span> := server.HttpServer.<span style="color: #006699;">Shutdown</span><span style="color: #7388D6;">(</span>ctx<span style="color: #7388D6;">)</span>; err != <span style="color: #D0372D;">nil</span> <span style="color: #7388D6;">{</span>
         logrus.<span style="color: #006699;">Fatalf</span><span style="color: #909183;">(</span><span style="color: #008000;">"server shutdown failure, error=%s"</span>, err<span style="color: #909183;">)</span>
     <span style="color: #7388D6;">}</span>
 
@@ -569,8 +581,8 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 </div>
 
 <div id="outline-container-org829122f" class="outline-4">
-<h4 id="org829122f"><span class="section-number-4">1.2.4</span> 使用 API 分组</h4>
-<div class="outline-text-4" id="text-1-2-4">
+<h4 id="org829122f"><span class="section-number-4">1.2.5</span> 使用 API 分组</h4>
+<div class="outline-text-4" id="text-1-2-5">
 <p>
 不管是 mux 还是 gin 都支持 API 分组，mux 隐式一些是 <code>subPath</code> ，而 gin 直接叫 <code>Group</code> 。
 </p>
@@ -581,9 +593,18 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 </div>
 </div>
 
-<div id="outline-container-orge693d88" class="outline-4">
-<h4 id="orge693d88"><span class="section-number-4">1.2.5</span> 使用 prometheus_client 暴露 API metrics</h4>
-<div class="outline-text-4" id="text-1-2-5">
+<div id="outline-container-org9bcad3a" class="outline-4">
+<h4 id="org9bcad3a"><span class="section-number-4">1.2.6</span> 日志</h4>
+<div class="outline-text-4" id="text-1-2-6">
+<p>
+根据云原生倡导，日志统一打印到标准输出。 日志收集和查看是基建需要做的事情，程序应与此解耦。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1f1ed0f" class="outline-4">
+<h4 id="org1f1ed0f"><span class="section-number-4">1.2.7</span> 监控：使用 prometheus_client 暴露 API metrics</h4>
+<div class="outline-text-4" id="text-1-2-7">
 <p>
 对接 promethues 之后可以很方便的监控 API 调用情况，调用耗时、状态码等等。因为 Prometheus 是 pull 的模式，所以服务很好解耦，
 不会依赖 promethues server。
@@ -595,8 +616,8 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 
 <div class="org-src-container">
 <pre class="src src-go"><span style="color: #0000FF;">var</span> <span style="color: #707183;">(</span>
-    APICalledLatency = prometheus.<span style="color: #006699;">NewSummaryVec</span><span style="color: #7388D6;">(</span>
-        prometheus.<span style="color: #6434A3;">SummaryOpts</span><span style="color: #909183;">{</span>
+    <span style="color: #BA36A5;">APICalledLatency</span> = prometheus.<span style="color: #006699;">NewSummaryVec</span><span style="color: #7388D6;">(</span>
+        <span style="color: #6434A3;">prometheus.SummaryOpts</span><span style="color: #909183;">{</span>
             <span style="color: #D0372D;">Name</span>: <span style="color: #008000;">"metaserver_api_called_latency"</span>,
             <span style="color: #D0372D;">Help</span>: <span style="color: #008000;">"Latency in microseconds"</span>,
         <span style="color: #909183;">}</span>,
@@ -608,18 +629,18 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
     prometheus.<span style="color: #006699;">MustRegister</span><span style="color: #7388D6;">(</span>APICalledLatency<span style="color: #7388D6;">)</span>
 <span style="color: #707183;">}</span>
 
-<span style="color: #0000FF;">func</span> <span style="color: #006699;">SinceInMicroseconds</span><span style="color: #707183;">(</span>start <span style="color: #6434A3;">time.Time</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">float64</span> <span style="color: #707183;">{</span>
+<span style="color: #0000FF;">func</span> <span style="color: #006699;">SinceInMicroseconds</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">start</span> <span style="color: #6434A3;">time.Time</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">float64</span> <span style="color: #707183;">{</span>
     <span style="color: #0000FF;">return</span> <span style="color: #006699;">float64</span><span style="color: #7388D6;">(</span>time.<span style="color: #006699;">Since</span><span style="color: #909183;">(</span>start<span style="color: #909183;">)</span>.<span style="color: #006699;">Nanoseconds</span><span style="color: #909183;">()</span> / time.Microsecond.<span style="color: #006699;">Nanoseconds</span><span style="color: #909183;">()</span><span style="color: #7388D6;">)</span>
 <span style="color: #707183;">}</span>
 
 <span style="color: #0000FF;">func</span> <span style="color: #006699;">metricsExport</span><span style="color: #707183;">()</span> <span style="color: #6434A3;">gin.HandlerFunc</span> <span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">return</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span>c *<span style="color: #6434A3;">gin.Context</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
-        start := time.<span style="color: #006699;">Now</span><span style="color: #909183;">()</span>
+    <span style="color: #0000FF;">return</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span><span style="color: #BA36A5;">c</span> *<span style="color: #6434A3;">gin.Context</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #BA36A5;">start</span> := time.<span style="color: #006699;">Now</span><span style="color: #909183;">()</span>
         <span style="color: #0000FF;">defer</span> <span style="color: #0000FF;">func</span><span style="color: #909183;">()</span> <span style="color: #909183;">{</span>
-            cost := <span style="color: #006699;">SinceInMicroseconds</span><span style="color: #709870;">(</span>start<span style="color: #709870;">)</span>
-            api := c.Request.URL.Path
-            method := c.Request.Method
-            status := strconv.<span style="color: #006699;">Itoa</span><span style="color: #709870;">(</span>c.Writer.<span style="color: #006699;">Status</span><span style="color: #907373;">()</span><span style="color: #709870;">)</span>
+            <span style="color: #BA36A5;">cost</span> := <span style="color: #006699;">SinceInMicroseconds</span><span style="color: #709870;">(</span>start<span style="color: #709870;">)</span>
+            <span style="color: #BA36A5;">api</span> := c.Request.URL.Path
+            <span style="color: #BA36A5;">method</span> := c.Request.Method
+            <span style="color: #BA36A5;">status</span> := strconv.<span style="color: #006699;">Itoa</span><span style="color: #709870;">(</span>c.Writer.<span style="color: #006699;">Status</span><span style="color: #907373;">()</span><span style="color: #709870;">)</span>
 
             <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">set ignore itself in here</span>
             <span style="color: #0000FF;">if</span> api == <span style="color: #008000;">"/metrics"</span> <span style="color: #709870;">{</span>
@@ -648,6 +669,7 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 </div>
 </div>
 
+
 <div id="outline-container-org6734aee" class="outline-3">
 <h3 id="org6734aee"><span class="section-number-3">1.3</span> 常用库选型</h3>
 <div class="outline-text-3" id="text-1-3">
@@ -656,8 +678,8 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 </p>
 </div>
 
-<div id="outline-container-org9bcad3a" class="outline-4">
-<h4 id="org9bcad3a"><span class="section-number-4">1.3.1</span> 日志</h4>
+<div id="outline-container-org9278aca" class="outline-4">
+<h4 id="org9278aca"><span class="section-number-4">1.3.1</span> 日志</h4>
 <div class="outline-text-4" id="text-1-3-1">
 <p>
 使用 <a href="https://github.com/sirupsen/logrus">logrus</a>，基本设置：
@@ -665,13 +687,13 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 
 <div class="org-src-container">
 <pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">init</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-    logrus.<span style="color: #006699;">SetFormatter</span><span style="color: #7388D6;">(</span>&amp;logrus.<span style="color: #6434A3;">TextFormatter</span><span style="color: #909183;">{</span>
+    logrus.<span style="color: #006699;">SetFormatter</span><span style="color: #7388D6;">(</span>&amp;<span style="color: #6434A3;">logrus.TextFormatter</span><span style="color: #909183;">{</span>
         <span style="color: #D0372D;">ForceColors</span>:     <span style="color: #D0372D;">false</span>,
         <span style="color: #D0372D;">DisableColors</span>:   <span style="color: #D0372D;">true</span>,
         <span style="color: #D0372D;">FullTimestamp</span>:   <span style="color: #D0372D;">true</span>,
         <span style="color: #D0372D;">TimestampFormat</span>: <span style="color: #008000;">"2006-01-02 15:04:05.000"</span>,
-        <span style="color: #D0372D;">CallerPrettyfier</span>: <span style="color: #0000FF;">func</span><span style="color: #709870;">(</span>frame *<span style="color: #6434A3;">runtime.Frame</span><span style="color: #709870;">)</span> <span style="color: #709870;">(</span>function <span style="color: #6434A3;">string</span>, file <span style="color: #6434A3;">string</span><span style="color: #709870;">)</span> <span style="color: #709870;">{</span>
-            ss := strings.<span style="color: #006699;">Split</span><span style="color: #907373;">(</span>frame.Function, <span style="color: #008000;">"."</span><span style="color: #907373;">)</span>
+        <span style="color: #D0372D;">CallerPrettyfier</span>: <span style="color: #0000FF;">func</span><span style="color: #709870;">(</span><span style="color: #BA36A5;">frame</span> *<span style="color: #6434A3;">runtime.Frame</span><span style="color: #709870;">)</span> <span style="color: #709870;">(</span><span style="color: #BA36A5;">function</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">file</span> <span style="color: #6434A3;">string</span><span style="color: #709870;">)</span> <span style="color: #709870;">{</span>
+            <span style="color: #BA36A5;">ss</span> := strings.<span style="color: #006699;">Split</span><span style="color: #907373;">(</span>frame.Function, <span style="color: #008000;">"."</span><span style="color: #907373;">)</span>
             function = ss<span style="color: #907373;">[</span><span style="color: #006FE0;">len</span><span style="color: #6276BA;">(</span>ss<span style="color: #6276BA;">)</span>-1<span style="color: #907373;">]</span>
             file = fmt.<span style="color: #006699;">Sprintf</span><span style="color: #907373;">(</span><span style="color: #008000;">"%s:%d"</span>, filepath.<span style="color: #006699;">Base</span><span style="color: #6276BA;">(</span>frame.File<span style="color: #6276BA;">)</span>, frame.Line<span style="color: #907373;">)</span>
             <span style="color: #0000FF;">return</span> function, file
@@ -679,7 +701,7 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
     <span style="color: #909183;">}</span><span style="color: #7388D6;">)</span>
     logrus.<span style="color: #006699;">SetOutput</span><span style="color: #7388D6;">(</span>os.Stdout<span style="color: #7388D6;">)</span>
 
-    debug := os.<span style="color: #006699;">Getenv</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"DEBUG"</span><span style="color: #7388D6;">)</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&#27809;&#26377;&#26126;&#30830;&#20851;&#38381;&#65292;&#21017;&#40664;&#35748;&#25171;&#24320;</span>
+    <span style="color: #BA36A5;">debug</span> := os.<span style="color: #006699;">Getenv</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"DEBUG"</span><span style="color: #7388D6;">)</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&#27809;&#26377;&#26126;&#30830;&#20851;&#38381;&#65292;&#21017;&#40664;&#35748;&#25171;&#24320;</span>
     <span style="color: #0000FF;">if</span> debug == <span style="color: #008000;">""</span> || debug == <span style="color: #008000;">"true"</span> || debug == <span style="color: #008000;">"1"</span> <span style="color: #7388D6;">{</span>
         logrus.<span style="color: #006699;">SetReportCaller</span><span style="color: #909183;">(</span><span style="color: #D0372D;">true</span><span style="color: #909183;">)</span>
         logrus.<span style="color: #006699;">SetLevel</span><span style="color: #909183;">(</span>logrus.TraceLevel<span style="color: #909183;">)</span>
@@ -723,14 +745,14 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go">ds := goqu.<span style="color: #006699;">Insert</span><span style="color: #707183;">(</span><span style="color: #008000;">"user"</span><span style="color: #707183;">)</span>.
+<pre class="src src-go"><span style="color: #BA36A5;">ds</span> := goqu.<span style="color: #006699;">Insert</span><span style="color: #707183;">(</span><span style="color: #008000;">"user"</span><span style="color: #707183;">)</span>.
     <span style="color: #006699;">Cols</span><span style="color: #707183;">(</span><span style="color: #008000;">"first_name"</span>, <span style="color: #008000;">"last_name"</span><span style="color: #707183;">)</span>.
     <span style="color: #006699;">Vals</span><span style="color: #707183;">(</span>
-        goqu.<span style="color: #6434A3;">Vals</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"Greg"</span>, <span style="color: #008000;">"Farley"</span><span style="color: #7388D6;">}</span>,
-        goqu.<span style="color: #6434A3;">Vals</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"Jimmy"</span>, <span style="color: #008000;">"Stewart"</span><span style="color: #7388D6;">}</span>,
-        goqu.<span style="color: #6434A3;">Vals</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"Jeff"</span>, <span style="color: #008000;">"Jeffers"</span><span style="color: #7388D6;">}</span>,
+        <span style="color: #6434A3;">goqu.Vals</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"Greg"</span>, <span style="color: #008000;">"Farley"</span><span style="color: #7388D6;">}</span>,
+        <span style="color: #6434A3;">goqu.Vals</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"Jimmy"</span>, <span style="color: #008000;">"Stewart"</span><span style="color: #7388D6;">}</span>,
+        <span style="color: #6434A3;">goqu.Vals</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"Jeff"</span>, <span style="color: #008000;">"Jeffers"</span><span style="color: #7388D6;">}</span>,
     <span style="color: #707183;">)</span>
-insertSQL, args, _ := ds.<span style="color: #006699;">ToSQL</span><span style="color: #707183;">()</span>
+<span style="color: #BA36A5;">insertSQL</span>, <span style="color: #BA36A5;">args</span>, <span style="color: #BA36A5;">_</span> := ds.<span style="color: #006699;">ToSQL</span><span style="color: #707183;">()</span>
 fmt.<span style="color: #006699;">Println</span><span style="color: #707183;">(</span>insertSQL, args<span style="color: #707183;">)</span>
 </pre>
 </div>
@@ -753,7 +775,7 @@ fmt.<span style="color: #006699;">Println</span><span style="color: #707183;">(<
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go">sql, args, err := sq.
+<pre class="src src-go"><span style="color: #BA36A5;">sql</span>, <span style="color: #BA36A5;">args</span>, <span style="color: #BA36A5;">err</span> := sq.
     <span style="color: #006699;">Insert</span><span style="color: #707183;">(</span><span style="color: #008000;">"users"</span><span style="color: #707183;">)</span>.<span style="color: #006699;">Columns</span><span style="color: #707183;">(</span><span style="color: #008000;">"name"</span>, <span style="color: #008000;">"age"</span><span style="color: #707183;">)</span>.
     <span style="color: #006699;">Values</span><span style="color: #707183;">(</span><span style="color: #008000;">"moe"</span>, 13<span style="color: #707183;">)</span>.<span style="color: #006699;">Values</span><span style="color: #707183;">(</span><span style="color: #008000;">"larry"</span>, sq.<span style="color: #006699;">Expr</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"? + 5"</span>, 12<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>.
     <span style="color: #006699;">ToSql</span><span style="color: #707183;">()</span>
@@ -773,9 +795,9 @@ fmt.<span style="color: #006699;">Println</span><span style="color: #707183;">(<
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go">stooges := users.<span style="color: #006699;">Where</span><span style="color: #707183;">(</span>sq.<span style="color: #6434A3;">Eq</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"username"</span>: <span style="color: #909183;">[]</span><span style="color: #6434A3;">string</span><span style="color: #909183;">{</span><span style="color: #008000;">"moe"</span>, <span style="color: #008000;">"larry"</span>, <span style="color: #008000;">"curly"</span>, <span style="color: #008000;">"shemp"</span><span style="color: #909183;">}</span><span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>
-three_stooges := stooges.<span style="color: #006699;">Limit</span><span style="color: #707183;">(</span>3<span style="color: #707183;">)</span>
-rows, err := three_stooges.<span style="color: #006699;">RunWith</span><span style="color: #707183;">(</span>db<span style="color: #707183;">)</span>.<span style="color: #006699;">Query</span><span style="color: #707183;">()</span>
+<pre class="src src-go"><span style="color: #BA36A5;">stooges</span> := users.<span style="color: #006699;">Where</span><span style="color: #707183;">(</span><span style="color: #6434A3;">sq.Eq</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"username"</span>: <span style="color: #909183;">[]</span><span style="color: #6434A3;">string</span><span style="color: #909183;">{</span><span style="color: #008000;">"moe"</span>, <span style="color: #008000;">"larry"</span>, <span style="color: #008000;">"curly"</span>, <span style="color: #008000;">"shemp"</span><span style="color: #909183;">}</span><span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>
+<span style="color: #BA36A5;">three_stooges</span> := stooges.<span style="color: #006699;">Limit</span><span style="color: #707183;">(</span>3<span style="color: #707183;">)</span>
+<span style="color: #BA36A5;">rows</span>, <span style="color: #BA36A5;">err</span> := three_stooges.<span style="color: #006699;">RunWith</span><span style="color: #707183;">(</span>db<span style="color: #707183;">)</span>.<span style="color: #006699;">Query</span><span style="color: #707183;">()</span>
 </pre>
 </div>
 
@@ -784,7 +806,7 @@ rows, err := three_stooges.<span style="color: #006699;">RunWith</span><span sty
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go">rows, err := db.<span style="color: #006699;">Query</span><span style="color: #707183;">(</span><span style="color: #008000;">"SELECT * FROM users WHERE username IN (?,?,?,?) LIMIT 3"</span>,
+<pre class="src src-go"><span style="color: #BA36A5;">rows</span>, <span style="color: #BA36A5;">err</span> := db.<span style="color: #006699;">Query</span><span style="color: #707183;">(</span><span style="color: #008000;">"SELECT * FROM users WHERE username IN (?,?,?,?) LIMIT 3"</span>,
     <span style="color: #008000;">"moe"</span>, <span style="color: #008000;">"larry"</span>, <span style="color: #008000;">"curly"</span>, <span style="color: #008000;">"shemp"</span><span style="color: #707183;">)</span>
 </pre>
 </div>
@@ -923,10 +945,54 @@ WantedBy=multi-user.target
 </p>
 </div>
 </div>
+
+<div id="outline-container-org7067535" class="outline-3">
+<h3 id="org7067535"><span class="section-number-3">3.3</span> 版本号</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+如果使用 Docker 部署时，版本号通常放到 docker tag 中。如果使用二进制文件直接部署的话，把版本号放在二进制名称上是一种办法，
+但是很不优雅，这样每次发布都需要修改 systemd unit 的内容。最好的办法就是把版本信息打到二进制包中，通过执行某个参数时自动打印。
+</p>
+
+<p>
+Go build <code>-ldflags</code> 支持注入变量，比如：
+</p>
+
+<p>
+<code>go build -ldflags -X main.Version=1.0.0 -X main.BuildTime=2020-06-29 15:29:45</code>
+</p>
+
+<p>
+将在模块 <code>main</code> 中寻找变量 <code>Version</code> 和 <code>BuildTime</code> ，然后动态赋值。可以这样写 makefile：
+</p>
+
+<pre class="example">
+VERSION=`git rev-parse HEAD`
+BUILD_TIME=`date +'%Y-%m-%d %H:%M:%S'`
+LDFLAGS=-ldflags "-X 'main.Version=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}'"
+
+build:
+	go build ${LDFLAGS} -o xxx *.go
+</pre>
+
+<p>
+然后在 <code>main</code> 中声明变量:
+</p>
+
+<pre class="example">
+Version   string = ""
+BuildTime string = ""
+</pre>
+
+<p>
+程序开始打印变量即可。
+</p>
+</div>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2020-05-13 Wed 17:45 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2020-06-29 Mon 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>

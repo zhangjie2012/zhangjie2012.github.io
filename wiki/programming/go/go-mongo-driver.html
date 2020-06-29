@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-06-15 Mon 15:05 -->
+<!-- 2020-06-29 Mon 15:52 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>QWERTY</title>
+<title>Go Mongo Driver</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="admin" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,7 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -243,32 +245,117 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">QWERTY</h1>
+<h1 class="title">Go Mongo Driver</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5325bae">1. interface{} decode to bson.M</a></li>
+<li><a href="#orgaf17608">2. 分页、排序</a></li>
+<li><a href="#orgd8bd961">3. 只取 Document 中的一部分</a></li>
+</ul>
+</div>
+</div>
+<p>
+以下内容均基于 Go MongoDB Client: <code>go.mongodb.org/mongo-driver</code>
+</p>
 
-<div id="outline-container-orgc7e0a4e" class="outline-2">
-<h2 id="orgc7e0a4e">Entry</h2>
-<div class="outline-text-2" id="text-orgc7e0a4e">
-<dl class="org-dl">
-<dt><a href="blog/index.html">Blog</a></dt><dd>网络日志，偏技术和思考</dd>
-<dt><a href="wiki/index.html">Wiki</a></dt><dd>偏向于工具化，比较散的知识点</dd>
-<dt>Topic</dt><dd>技术专题，比较聚集的知识面
-<ul class="org-ul">
-<li><a href="topic/emacs/index.html">Emacs</a> 使用 Emacs 是一种信仰 <i>核心已完结，缓慢补充</i></li>
-<li><a href="topic/container/index.html">容器化</a> 容器、Docker、Kubernetes 等 <i>持续更新中，差的很远</i></li>
-<li><a href="topic/grpc/index.html">gRPC</a> <i>核心已完结，缓慢补充</i></li>
-</ul></dd>
-<dt><a href="reading/read-books.html">Read</a>、<a href="reading/unread-books.html">Unreading</a></dt><dd>读过的和打算读的书，包括电子书</dd>
-<dt><a href="reading/links.html">Links</a></dt><dd>各种资源链接收集：博客、DevoOps、设计、技术学习，搬运工</dd>
-<dt><a href="other/resume.html">Resume</a></dt><dd>简历</dd>
-</dl>
-
-<hr />
+<div id="outline-container-org5325bae" class="outline-2">
+<h2 id="org5325bae"><span class="section-number-2">1</span> interface{} decode to bson.M</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+业务场景是这样的：在插入 MongoDB 时，会插入一个前端给的 JSON，而后端对 JSON 的具体格式并不确定，希望怎么插入就怎么输出。
+所以，后端（Go）就声明成了一个 <code>interface{}</code> ，insert 之后没有任何问题，在 MongoDB 中存储的也达到了期望。
+</p>
 
 <p>
-<a href="https://github.com/zhangjie2012">Github</a> | <a href="sitemap.html">sitemap</a>
+但是在查询时，发现返回的值并不是插入的 JSON，而被拆解成了 <code>{"Key": "xxx", "Value": "yyy"}</code> 这种方式，而实际上的格式是：
+<code>{"xxx": "yyy"}</code> 。
+</p>
+
+<p>
+有人给 MongoDB 提过 issue， <a href="https://jira.mongodb.org/browse/GODRIVER-988">https://jira.mongodb.org/browse/GODRIVER-988</a> ，问题是相同的。解决办法是：在初始连接 MongoDB 的时候设置解析方式，
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #BA36A5;">tM</span> := reflect.<span style="color: #006699;">TypeOf</span><span style="color: #707183;">(</span><span style="color: #6434A3;">bson.M</span><span style="color: #7388D6;">{}</span><span style="color: #707183;">)</span>
+<span style="color: #BA36A5;">reg</span> := bson.<span style="color: #006699;">NewRegistryBuilder</span><span style="color: #707183;">()</span>.<span style="color: #006699;">RegisterTypeMapEntry</span><span style="color: #707183;">(</span>bsontype.EmbeddedDocument, tM<span style="color: #707183;">)</span>.<span style="color: #006699;">Build</span><span style="color: #707183;">()</span>
+<span style="color: #BA36A5;">client</span>, <span style="color: #BA36A5;">err</span> := mongo.<span style="color: #006699;">Connect</span><span style="color: #707183;">(</span>ctx, options.<span style="color: #006699;">Client</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">ApplyURI</span><span style="color: #7388D6;">(</span>uri<span style="color: #7388D6;">)</span>.<span style="color: #006699;">SetRegistry</span><span style="color: #7388D6;">(</span>reg<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+查看 <code>RegisterTypeMapEntry</code> 的定义，发现在它已经在注释中说明了解析逻辑：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">RegisterTypeMapEntry will register the provided type to the BSON type. The primary usage for this</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">mapping is decoding situations where an empty interface is used and a default type needs to be</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">created and decoded into.</span>
+<span style="color: #8D8D84;">//</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">By default, BSON documents will decode into interface{} values as bson.D. To change the default type for BSON</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">documents, a type map entry for bsontype.EmbeddedDocument should be registered. For example, to force BSON documents</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">to decode to bson.Raw, use the following code:</span>
+<span style="color: #8D8D84;">//  </span><span style="color: #8D8D84; font-style: italic;">rb.RegisterTypeMapEntry(bsontype.EmbeddedDocument, reflect.TypeOf(bson.Raw{}))</span>
+<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">rb</span> *<span style="color: #6434A3;">RegistryBuilder</span><span style="color: #707183;">)</span> <span style="color: #006699;">RegisterTypeMapEntry</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">bt</span> <span style="color: #6434A3;">bsontype.Type</span>, <span style="color: #BA36A5;">rt</span> <span style="color: #6434A3;">reflect.Type</span><span style="color: #707183;">)</span> *<span style="color: #6434A3;">RegistryBuilder</span> <span style="color: #707183;">{</span>
+    rb.typeMap<span style="color: #7388D6;">[</span>bt<span style="color: #7388D6;">]</span> = rt
+    <span style="color: #0000FF;">return</span> rb
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+默认情况下，BSON 文档的 <code>interface{}</code> 值是 <code>bson.D</code> ，即 <code>bson.D{{"foo", "bar"}, {"hello", "world"}, {"pi", 3.14159}}</code> 这种一对一对的形式。
+而我们期望的是 <code>bson.M</code> ，格式是 <code>bson.M{"foo": "bar", "hello": "world", "pi": 3.14159}</code> 。所以改成 bson.M 就可以了。
+</p>
+
+<p>
+如果希望是字节流的话，可以改成 <code>bson.Raw{}</code> 。
 </p>
 </div>
 </div>
+
+<div id="outline-container-orgaf17608" class="outline-2">
+<h2 id="orgaf17608"><span class="section-number-2">2</span> 分页、排序</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+MongoDB 在查询时的选项都是有 <code>FindOptions</code> 控制的。分页通过 <code>FindOptions</code> 的 <code>Skip</code> 和 <code>Limit</code> 来实现：
+</p>
+
+<ul class="org-ul">
+<li><code>Limit</code> 表示当前页的大小</li>
+<li><code>Skip</code> 表示跳过多少个元素</li>
+</ul>
+
+<p>
+排序通过 <code>Sort</code> 来实现。整体如下：
+</p>
+
+<pre class="example">
+options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.M{"create_timestamp": -1})
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgd8bd961" class="outline-2">
+<h2 id="orgd8bd961"><span class="section-number-2">3</span> 只取 Document 中的一部分</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+很多时候，把 Document 中的所有的字段全部取出来性能是很低下的，而且真实的业务场景也是需要其中的部分字段。
+</p>
+
+<p>
+<code>FindOptions</code> 中的 <code>Projection</code> 是用来限制查询返回的字段的，默认值为 nil，即全部。 <code>true</code> 表示字段显示，反之 <code>false</code> 表示不显示。
+</p>
+
+<p>
+如： <code>options.Find().SetProjection(bson.M{"timestamp": true})</code> 表示只显示返回 timestamp 字段（返回的结构依然是存储的结构，只不过其它的字段全部为 nil）。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-06-29 14:43:51 <br />Last updated: 2020-06-29 Mon 14:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>
