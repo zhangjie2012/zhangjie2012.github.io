@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-06-29 Mon 11:04 -->
+<!-- 2020-07-06 Mon 17:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DevOps - 日志收集 ELK</title>
@@ -417,7 +417,15 @@ ELK 技术栈现在也有很多人称为 EFK。
 <div id="outline-container-org5238cea" class="outline-2">
 <h2 id="org5238cea"><span class="section-number-2">3</span> 组件</h2>
 <div class="outline-text-2" id="text-3">
+<p>
+beats 的 目录结构，以及默认的配置。
+</p>
+
+<p>
+<a href="https://www.elastic.co/guide/en/beats/journalbeat/current/directory-layout.html">https://www.elastic.co/guide/en/beats/journalbeat/current/directory-layout.html</a>
+</p>
 </div>
+
 <div id="outline-container-org85c4de8" class="outline-3">
 <h3 id="org85c4de8"><span class="section-number-3">3.1</span> Journalbeat</h3>
 <div class="outline-text-3" id="text-3-1">
@@ -426,19 +434,71 @@ ELK 技术栈现在也有很多人称为 EFK。
 </p>
 
 <p>
-安装：
+<b>安装：</b>
 </p>
 
 <pre class="example">
 curl -L -O https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-7.8.0-x86_64.rpm
 sudo rpm -vi journalbeat-7.8.0-x86_64.rpm
 </pre>
+
+<p>
+<b>配置：</b>
+</p>
+
+<p>
+配置文件路径： <code>/etc/journalbeat/</code> ，一些重要的选项：
+</p>
+
+<p>
+<code>journalbeat.inputs</code> 控制日志输入。
+</p>
+
+<p>
+<code>seek</code> 选项控制 Journalbeat 开始读取日志的位置，有三个可选值，默认是 cursor：
+</p>
+
+<ul class="org-ul">
+<li><code>head</code> 每次都从头开始读，重启之后还是从头开始读；</li>
+<li><code>tail</code> 跟 tail 指令一样，每次都从最后开始读，重启之后也是从最后开始读，可能会导致日志重复。</li>
+<li><code>cursor</code> 首次读取从文件开头开始读取，但是重启之后还是从最后一次读取的位置继续开始。</li>
+</ul>
+
+<p>
+<code>include_matches</code> 选项用于过滤收集的日志（否则所有的 journalctl 的日志都会被收集）。格式是 <code>field=value</code> 的列表。不支持正则表达式。
+引用字段，支持两种方式：
+</p>
+
+<ul class="org-ul">
+<li>systemd journal 使用的字段名，比如： <code>CONTAINER_TAG=redis</code></li>
+<li>Journalbeat 翻译后的字段，比如： <code>container.image.tag=redis</code></li>
+</ul>
+
+<p>
+字段的对应关系（支持的过滤关键字）：<a href="https://www.elastic.co/guide/en/beats/journalbeat/current/configuration-journalbeat-options.html#translated-fields">https://www.elastic.co/guide/en/beats/journalbeat/current/configuration-journalbeat-options.html#translated-fields</a>
+</p>
+
+<p>
+比较常用的几个字段：
+</p>
+
+<ul class="org-ul">
+<li><code>_SYSTEMD_UNIT</code> systemd unit</li>
+</ul>
+
+<p>
+输出：journalbeat 支持多种输出, Elasticsearch, LogStash, Kafka, Redis, File, Console, Elastic Cloud 等。
+</p>
+
+<p>
+<a href="https://www.elastic.co/guide/en/beats/journalbeat/current/configuring-output.html">https://www.elastic.co/guide/en/beats/journalbeat/current/configuring-output.html</a>
+</p>
 </div>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-04-11 15:48 <br />Last updated: 2020-06-26 Fri 06:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
+<p class="postamble">First created: 2019-04-11 15:48 <br />Last updated: 2020-07-06 Mon 14:07 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>

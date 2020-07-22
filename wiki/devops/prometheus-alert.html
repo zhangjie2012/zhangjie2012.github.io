@@ -6,7 +6,7 @@
 <!-- 2020-07-22 Wed 17:37 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ant Design</title>
+<title>Prometheus alert</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="admin" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -245,107 +245,101 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Ant Design</h1>
+<h1 class="title">Prometheus alert</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgf6b3df9">1. FAQ</a>
+<li><a href="#org89ed220">1. AlertManager</a>
 <ul>
-<li><a href="#org3bbca66">1.1. 表格内嵌表格，无数据时不显示 icon</a></li>
-<li><a href="#orgc0848cf">1.2. 表格水平滚动条，显示时多了一个空白列</a></li>
-<li><a href="#org09a41aa">1.3. 表单 required 校验时，提示 "xxx is not string"</a></li>
+<li><a href="#org1e3f433">1.1. Grouping 分组</a></li>
+<li><a href="#orge4d1053">1.2. Inhibition 抑制</a></li>
+<li><a href="#org476db63">1.3. Silences 静默</a></li>
+<li><a href="#org89f3a43">1.4. Client behavior 客户端行为</a></li>
+<li><a href="#org08249fe">1.5. Hign Availability 高可用</a></li>
 </ul>
 </li>
-<li><a href="#org35edc4c">2. 资源</a></li>
 </ul>
 </div>
 </div>
 <p>
-antd v4 发布了，以下如无特殊说明，均为 3.x 版本。
+告警和 Prometheus 是两部分：
 </p>
 
-<div id="outline-container-orgf6b3df9" class="outline-2">
-<h2 id="orgf6b3df9"><span class="section-number-2">1</span> FAQ</h2>
-<div class="outline-text-2" id="text-1">
-</div>
-<div id="outline-container-org3bbca66" class="outline-3">
-<h3 id="org3bbca66"><span class="section-number-3">1.1</span> 表格内嵌表格，无数据时不显示 icon</h3>
-<div class="outline-text-3" id="text-1-1">
-<div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">function</span> <span style="color: #006699;">expandIcon</span><span style="color: #707183;">(</span><span style="color: #7388D6;">{</span> expanded, expandable, record, onExpand <span style="color: #7388D6;">}</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-  <span style="color: #0000FF;">if</span> <span style="color: #7388D6;">(</span>!expandable || record.canExpanded === <span style="color: #D0372D;">false</span><span style="color: #7388D6;">)</span> <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">null</span>;
-
-  <span style="color: #0000FF;">return</span> <span style="color: #7388D6;">(</span>
-    &lt;a onClick=<span style="color: #909183;">{</span>e =&gt; onExpand<span style="color: #709870;">(</span>record, e<span style="color: #709870;">)</span><span style="color: #909183;">}</span>&gt;
-      <span style="color: #909183;">{</span>expanded ? &lt;Icon type=<span style="color: #008000;">"minus-square"</span> /&gt; : &lt;Icon type=<span style="color: #008000;">"plus-square"</span> /&gt;<span style="color: #909183;">}</span>
-    &lt;/a&gt;
-    <span style="color: #7388D6;">)</span>;
-<span style="color: #707183;">}</span>
-</pre>
-</div>
+<ol class="org-ol">
+<li>Prometheus server 发送告警到 Alertmanager；</li>
+<li>AlertManager 管理告警，告警策略包括静默，抑制，聚合，然后发送通知（通过邮件、on-call 通知系统、聊天平台等）；</li>
+</ol>
 
 <p>
-<a href="https://codesandbox.io/s/8x2j898pp2">https://codesandbox.io/s/8x2j898pp2</a>
+主要流程：
+</p>
+
+<ol class="org-ol">
+<li>安装和配置 Alertmanager</li>
+<li>配置 Prometheus 向 Alertmanager 通知</li>
+<li>配置 Prometheus 告警规则</li>
+</ol>
+
+<div id="outline-container-org89ed220" class="outline-2">
+<h2 id="org89ed220"><span class="section-number-2">1</span> AlertManager</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<a href="https://github.com/prometheus/alertmanager">https://github.com/prometheus/alertmanager</a>
+</p>
+
+<p>
+Alertmanager 负责处理由客户端发送过来的告警。它负责将重复数据杉树，分组和路由到正确的接收者；它还负责静默和禁止告警。
+核心概念：
+</p>
+</div>
+
+<div id="outline-container-org1e3f433" class="outline-3">
+<h3 id="org1e3f433"><span class="section-number-3">1.1</span> Grouping 分组</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+分组将类似的告警分类为单个通知，这在有较大的事故中比较有用（许多系统同时发出告警）。
+</p>
+
+<p>
+作为用户，在这种情况下只希望看到一个页面，仍然可以准确的查看受影响的服务实例。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc0848cf" class="outline-3">
-<h3 id="orgc0848cf"><span class="section-number-3">1.2</span> 表格水平滚动条，显示时多了一个空白列</h3>
+<div id="outline-container-orge4d1053" class="outline-3">
+<h3 id="orge4d1053"><span class="section-number-3">1.2</span> Inhibition 抑制</h3>
 <div class="outline-text-3" id="text-1-2">
-<ol class="org-ol">
-<li>列设置固定宽度，比如 <code>width: 980</code> ，注意是数值不是字符串</li>
-<li>设置 scroll，比如 <code>scroll={{ x: 1600 }}</code> x 的值对应的屏幕的大小，1600 的意思是超过 1600 宽度的屏幕才开始滚动。
-另外 x 可以设置成 <code>max-content</code> 来自适应滚动<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。</li>
-</ol>
+<p>
+如果某些其它的警告已经触发，则抑制某些警告的通知。
+</p>
+
+<p>
+比如：一个集群不可用的告警触发了，那么集群内部的告警将收到抑制，这可以防止与实际问题无关的成百上千的告警。
+</p>
 </div>
 </div>
-<div id="outline-container-org09a41aa" class="outline-3">
-<h3 id="org09a41aa"><span class="section-number-3">1.3</span> 表单 required 校验时，提示 "xxx is not string"</h3>
+
+<div id="outline-container-org476db63" class="outline-3">
+<h3 id="org476db63"><span class="section-number-3">1.3</span> Silences 静默</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
-如果设置了 <code>required: true</code> ，会校验值是否有效，但是默认似乎是 <code>string</code> 类型，如果值不是 <code>string</code> 类型，需要手动设置值类型 <code>type</code> 。
+静默是指在一段时间内不接收通知。
 </p>
-
-<p>
-<code>type</code> 可选值有：<a href="https://github.com/yiminghe/async-validator#type">https://github.com/yiminghe/async-validator#type</a>
-</p>
-
-<p>
-比如：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-js">rules: <span style="color: #707183;">[</span><span style="color: #7388D6;">{</span> require: <span style="color: #D0372D;">true</span>, type: <span style="color: #008000;">'integer'</span> <span style="color: #7388D6;">}</span><span style="color: #707183;">]</span>
-</pre>
-</div>
-</div>
 </div>
 </div>
 
+<div id="outline-container-org89f3a43" class="outline-3">
+<h3 id="org89f3a43"><span class="section-number-3">1.4</span> Client behavior 客户端行为</h3>
+</div>
 
-<div id="outline-container-org35edc4c" class="outline-2">
-<h2 id="org35edc4c"><span class="section-number-2">2</span> 资源</h2>
-<div class="outline-text-2" id="text-2">
-<ul class="org-ul">
-<li>定制主题：<a href="https://ant.design/docs/react/customize-theme-cn">https://ant.design/docs/react/customize-theme-cn</a></li>
-</ul>
+<div id="outline-container-org08249fe" class="outline-3">
+<h3 id="org08249fe"><span class="section-number-3">1.5</span> Hign Availability 高可用</h3>
 </div>
 </div>
-<div id="footnotes">
-<h2 class="footnotes">Footnotes: </h2>
-<div id="text-footnotes">
-
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
-<a href="https://github.com/ant-design/ant-design/issues/10189">https://github.com/ant-design/ant-design/issues/10189</a>
-</p></div></div>
-
-
 </div>
-</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-12-10 18:01:01 <br />Last updated: 2020-07-14 Tue 14:26 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
+<p class="postamble">First created: 2020-07-09 11:09:08 <br />Last updated: 2020-07-09 Thu 15:45 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>
