@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-05-22 Fri 10:22 -->
+<!-- 2020-08-03 Mon 12:24 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 包选择与对比</title>
@@ -270,6 +270,7 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
+
 <div id="outline-container-orge5bdce6" class="outline-2">
 <h2 id="orge5bdce6"><span class="section-number-2">1</span> 日志</h2>
 <div class="outline-text-2" id="text-1">
@@ -323,23 +324,23 @@ google 类似 C++ 日志版本的 Go 版本，性能较好，使用也比较简�
 <div class="org-src-container">
 <pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">init</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
     <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">TEXT</span>
-    logrus.<span style="color: #006699;">SetFormatter</span><span style="color: #7388D6;">(</span>&amp;logrus.<span style="color: #6434A3;">TextFormatter</span><span style="color: #909183;">{</span>
+    logrus.<span style="color: #006699;">SetFormatter</span><span style="color: #7388D6;">(</span>&amp;<span style="color: #6434A3;">logrus.TextFormatter</span><span style="color: #909183;">{</span>
         <span style="color: #D0372D;">ForceColors</span>:     <span style="color: #D0372D;">false</span>,
         <span style="color: #D0372D;">DisableColors</span>:   <span style="color: #D0372D;">true</span>,
         <span style="color: #D0372D;">FullTimestamp</span>:   <span style="color: #D0372D;">true</span>,
         <span style="color: #D0372D;">TimestampFormat</span>: <span style="color: #008000;">"2006-01-02 15:04:05.000"</span>,
-        <span style="color: #D0372D;">CallerPrettyfier</span>: <span style="color: #0000FF;">func</span><span style="color: #709870;">(</span>frame *<span style="color: #6434A3;">runtime.Frame</span><span style="color: #709870;">)</span> <span style="color: #709870;">(</span>function <span style="color: #6434A3;">string</span>, file <span style="color: #6434A3;">string</span><span style="color: #709870;">)</span> <span style="color: #709870;">{</span>
-            ss := strings.<span style="color: #006699;">Split</span><span style="color: #907373;">(</span>frame.Function, <span style="color: #008000;">"."</span><span style="color: #907373;">)</span>
+        <span style="color: #D0372D;">CallerPrettyfier</span>: <span style="color: #0000FF;">func</span><span style="color: #709870;">(</span><span style="color: #BA36A5;">frame</span> *<span style="color: #6434A3;">runtime.Frame</span><span style="color: #709870;">)</span> <span style="color: #709870;">(</span><span style="color: #BA36A5;">function</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">file</span> <span style="color: #6434A3;">string</span><span style="color: #709870;">)</span> <span style="color: #709870;">{</span>
+            <span style="color: #BA36A5;">ss</span> := strings.<span style="color: #006699;">Split</span><span style="color: #907373;">(</span>frame.Function, <span style="color: #008000;">"."</span><span style="color: #907373;">)</span>
             function = ss<span style="color: #907373;">[</span><span style="color: #006FE0;">len</span><span style="color: #6276BA;">(</span>ss<span style="color: #6276BA;">)</span>-1<span style="color: #907373;">]</span>
             file = fmt.<span style="color: #006699;">Sprintf</span><span style="color: #907373;">(</span><span style="color: #008000;">"%s:%d"</span>, filepath.<span style="color: #006699;">Base</span><span style="color: #6276BA;">(</span>frame.File<span style="color: #6276BA;">)</span>, frame.Line<span style="color: #907373;">)</span>
             <span style="color: #0000FF;">return</span> function, file
         <span style="color: #709870;">}</span>,
     <span style="color: #909183;">}</span><span style="color: #7388D6;">)</span>
     <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">JSON</span>
-    logrus.<span style="color: #006699;">SetFormatter</span><span style="color: #7388D6;">(</span>&amp;logrus.<span style="color: #6434A3;">JSONFormatter</span><span style="color: #909183;">{</span>
+    logrus.<span style="color: #006699;">SetFormatter</span><span style="color: #7388D6;">(</span>&amp;<span style="color: #6434A3;">logrus.JSONFormatter</span><span style="color: #909183;">{</span>
         <span style="color: #D0372D;">TimestampFormat</span>: <span style="color: #008000;">"2006-01-02 15:04:05.000"</span>,
-        <span style="color: #D0372D;">CallerPrettyfier</span>: <span style="color: #0000FF;">func</span><span style="color: #709870;">(</span>frame *<span style="color: #6434A3;">runtime.Frame</span><span style="color: #709870;">)</span> <span style="color: #709870;">(</span>function <span style="color: #6434A3;">string</span>, file <span style="color: #6434A3;">string</span><span style="color: #709870;">)</span> <span style="color: #709870;">{</span>
-            ss := strings.<span style="color: #006699;">Split</span><span style="color: #907373;">(</span>frame.Function, <span style="color: #008000;">"."</span><span style="color: #907373;">)</span>
+        <span style="color: #D0372D;">CallerPrettyfier</span>: <span style="color: #0000FF;">func</span><span style="color: #709870;">(</span><span style="color: #BA36A5;">frame</span> *<span style="color: #6434A3;">runtime.Frame</span><span style="color: #709870;">)</span> <span style="color: #709870;">(</span><span style="color: #BA36A5;">function</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">file</span> <span style="color: #6434A3;">string</span><span style="color: #709870;">)</span> <span style="color: #709870;">{</span>
+            <span style="color: #BA36A5;">ss</span> := strings.<span style="color: #006699;">Split</span><span style="color: #907373;">(</span>frame.Function, <span style="color: #008000;">"."</span><span style="color: #907373;">)</span>
             function = ss<span style="color: #907373;">[</span><span style="color: #006FE0;">len</span><span style="color: #6276BA;">(</span>ss<span style="color: #6276BA;">)</span>-1<span style="color: #907373;">]</span>
             file = fmt.<span style="color: #006699;">Sprintf</span><span style="color: #907373;">(</span><span style="color: #008000;">"%s:%d"</span>, filepath.<span style="color: #006699;">Base</span><span style="color: #6276BA;">(</span>frame.File<span style="color: #6276BA;">)</span>, frame.Line<span style="color: #907373;">)</span>
             <span style="color: #0000FF;">return</span> function, file
@@ -420,6 +421,7 @@ redis go clients: <a href="https://redis.io/clients#go">https://redis.io/clients
 </ol>
 </div>
 </div>
+
 <div id="outline-container-org52bf2bb" class="outline-2">
 <h2 id="org52bf2bb"><span class="section-number-2">3</span> Mongo</h2>
 <div class="outline-text-2" id="text-3">
@@ -461,9 +463,9 @@ maxTimeMS
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">yieldIndexModel</span><span style="color: #707183;">(</span>key <span style="color: #6434A3;">string</span>, unique <span style="color: #6434A3;">bool</span>, order <span style="color: #6434A3;">int</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">mongo.IndexModel</span> <span style="color: #707183;">{</span>
-    keys := bsonx.<span style="color: #6434A3;">Doc</span><span style="color: #7388D6;">{</span><span style="color: #909183;">{</span>Key: key, Value: bsonx.<span style="color: #006699;">Int32</span><span style="color: #709870;">(</span><span style="color: #006699;">int32</span><span style="color: #907373;">(</span>order<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">}</span><span style="color: #7388D6;">}</span>
-    index := mongo.<span style="color: #6434A3;">IndexModel</span><span style="color: #7388D6;">{</span>
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">yieldIndexModel</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">key</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">unique</span> <span style="color: #6434A3;">bool</span>, <span style="color: #BA36A5;">order</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">mongo.IndexModel</span> <span style="color: #707183;">{</span>
+    <span style="color: #BA36A5;">keys</span> := <span style="color: #6434A3;">bsonx.Doc</span><span style="color: #7388D6;">{</span><span style="color: #909183;">{</span><span style="color: #D0372D;">Key</span>: key, <span style="color: #D0372D;">Value</span>: bsonx.<span style="color: #006699;">Int32</span><span style="color: #709870;">(</span><span style="color: #006699;">int32</span><span style="color: #907373;">(</span>order<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">}</span><span style="color: #7388D6;">}</span>
+    <span style="color: #BA36A5;">index</span> := <span style="color: #6434A3;">mongo.IndexModel</span><span style="color: #7388D6;">{</span>
         <span style="color: #D0372D;">Keys</span>: keys,
     <span style="color: #7388D6;">}</span>
     <span style="color: #0000FF;">if</span> unique <span style="color: #7388D6;">{</span>
@@ -472,16 +474,16 @@ maxTimeMS
     <span style="color: #0000FF;">return</span> index
 <span style="color: #707183;">}</span>
 
-<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span>sc *<span style="color: #6434A3;">StorageClient</span><span style="color: #707183;">)</span> <span style="color: #006699;">BuildIndex</span><span style="color: #707183;">(</span>name <span style="color: #6434A3;">string</span>, key <span style="color: #6434A3;">string</span>, unique <span style="color: #6434A3;">bool</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">error</span> <span style="color: #707183;">{</span>
-    db, err := sc.<span style="color: #006699;">GetDatabase</span><span style="color: #7388D6;">()</span>
+<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">sc</span> *<span style="color: #6434A3;">StorageClient</span><span style="color: #707183;">)</span> <span style="color: #006699;">BuildIndex</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">name</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">key</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">unique</span> <span style="color: #6434A3;">bool</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">error</span> <span style="color: #707183;">{</span>
+    <span style="color: #BA36A5;">db</span>, <span style="color: #BA36A5;">err</span> := sc.<span style="color: #006699;">GetDatabase</span><span style="color: #7388D6;">()</span>
     <span style="color: #0000FF;">if</span> err != <span style="color: #D0372D;">nil</span> <span style="color: #7388D6;">{</span>
         <span style="color: #0000FF;">return</span> err
     <span style="color: #7388D6;">}</span>
 
-    collection := db.<span style="color: #006699;">Collection</span><span style="color: #7388D6;">(</span>name<span style="color: #7388D6;">)</span>
-    opts := options.<span style="color: #006699;">CreateIndexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">SetMaxTime</span><span style="color: #7388D6;">(</span>20 * time.Second<span style="color: #7388D6;">)</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">set max build time</span>
-    indexModel := <span style="color: #006699;">yieldIndexModel</span><span style="color: #7388D6;">(</span>key, unique, ASCENDING<span style="color: #7388D6;">)</span>
-    indexName, err := collection.<span style="color: #006699;">Indexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">CreateOne</span><span style="color: #7388D6;">(</span>context.<span style="color: #006699;">Background</span><span style="color: #909183;">()</span>, indexModel, opts<span style="color: #7388D6;">)</span>
+    <span style="color: #BA36A5;">collection</span> := db.<span style="color: #006699;">Collection</span><span style="color: #7388D6;">(</span>name<span style="color: #7388D6;">)</span>
+    <span style="color: #BA36A5;">opts</span> := options.<span style="color: #006699;">CreateIndexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">SetMaxTime</span><span style="color: #7388D6;">(</span>20 * time.Second<span style="color: #7388D6;">)</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">set max build time</span>
+    <span style="color: #BA36A5;">indexModel</span> := <span style="color: #006699;">yieldIndexModel</span><span style="color: #7388D6;">(</span>key, unique, ASCENDING<span style="color: #7388D6;">)</span>
+    <span style="color: #BA36A5;">indexName</span>, <span style="color: #BA36A5;">err</span> := collection.<span style="color: #006699;">Indexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">CreateOne</span><span style="color: #7388D6;">(</span>context.<span style="color: #006699;">Background</span><span style="color: #909183;">()</span>, indexModel, opts<span style="color: #7388D6;">)</span>
 
     <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">...</span>
 <span style="color: #707183;">}</span>
@@ -562,7 +564,7 @@ original session to wait.
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-03-14 17:50:00 <br />Last updated: 2020-05-15 Fri 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2019-03-14 17:50:00 <br />Last updated: 2020-08-03 Mon 11:32 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>
