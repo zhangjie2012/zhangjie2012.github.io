@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-05-22 Fri 10:23 -->
+<!-- 2020-08-04 Tue 11:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes informer controller 原理笔记</title>
@@ -262,51 +262,31 @@ for the JavaScript code in this tag.
 
 <ul class="org-ul">
 <li>controller Run 时：
-
 <ul class="org-ul">
 <li>ListAndWatch
-
 <ol class="org-ol">
 <li>List 从 K8s 中强制同步，并根据获取到的数据覆盖 Queue 中的数据</li>
-<li>Watch 监听数据的 <code>Add=，=Modified=，=Delete=，然后
-       =Add=，=Update=，=Delete</code> 对象到 Queue 中</li>
+<li>Watch 监听数据的 <code>Add</code> <code>Modified</code> <code>Delete</code> ，然后 <code>Add</code> <code>Update</code> <code>Delete</code> 对象到 Queue 中</li>
 </ol></li>
-
 <li>ProcessLoop
-
 <ol class="org-ol">
 <li>从 Queue 中 Pop 数据</li>
-<li>对取出来的数据执行 process 函数，他是个 callback
-函数，实际执行的是 <code>HandleDeltas=（在 sharedIndexInformer =Run</code>
-中绑定）</li>
+<li>对取出来的数据执行 process 函数，他是个 callback 函数，实际执行的是 <code>HandleDeltas</code> （在 sharedIndexInformer <code>Run</code> 中绑定）</li>
 </ol></li>
 </ul></li>
-
 <li>HandlerDeltas 处理流程：
-
 <ul class="org-ul">
-<li>判断事件类型（在 controller Run
-中不区分数据类型），Sync、Added、Updated、Deleted</li>
-<li>封装成各种 <code>Notification=，将数据发送给：=listener.add(obj)</code></li>
+<li>判断事件类型（在 controller Run 中不区分数据类型），Sync、Added、Updated、Deleted</li>
+<li>封装成各种 <code>Notification</code> ，将数据发送给： <code>listener.add(obj)</code></li>
 </ul></li>
-
-<li>listener 封装了用户自定义的
-<code>AddEventer=、=UpdateEventer=、=DeleteEventer</code>
-等回调函数，干事情的是下面两个函数：
-
+<li>listener 封装了用户自定义的 <code>AddEventer</code> <code>UpdateEventer</code> <code>DeleteEventer</code> 等回调函数，干事情的是下面两个函数：
 <ul class="org-ul">
 <li><code>pop</code> 干了两件事情
-
 <ul class="org-ul">
-<li>在 HandlerDeltas 中添加的数据会放到 <code>addCh</code> 管道中，阻塞的从
-<code>addCh</code> 中取数据，然后将数据添加到 <code>RingGrowing</code> 中 <code>&gt;
-      =WriteOne=，并将数据给了 =nextCh</code></li>
+<li>在 HandlerDeltas 中添加的数据会放到 <code>addCh</code> 管道中，阻塞的从 <code>addCh</code> 中取数据，然后将数据添加到 <code>RingGrowing</code> 中 <code>&gt; =WriteOne</code> ，并将数据给了 <code>nextCh</code></li>
 <li>从 <code>RingGrowing</code> 中取一个数据删除 <code>ReadOne</code></li>
 </ul></li>
-
-<li><code>run</code> 就比较简单了，等待 <code>nextCh</code>
-中的数据，然后回掉之前用户自己注册的
-<code>AddEventer=、=UpdateEventer=、=DeleteEventer</code></li>
+<li><code>run</code> 就比较简单了，等待 <code>nextCh</code> 中的数据，然后回掉之前用户自己注册的 <code>AddEventer=、=UpdateEventer=、=DeleteEventer</code></li>
 </ul></li>
 </ul>
 
@@ -316,20 +296,16 @@ for the JavaScript code in this tag.
 
 <ol class="org-ol">
 <li>从 K8s 中获取到的数据，缓存在 Queue 中，内容不区分类型的</li>
-<li>listener 中的 <code>RingGrowing=，订阅前一个 Queue
-   中的数据，内容被封装成了各种 =Notification</code></li>
+<li>listener 中的 <code>RingGrowing</code> ，订阅前一个 Queue 中的数据，内容被封装成了各种 <code>Notification</code></li>
 </ol>
 
 <p>
-理解了两个队列之后，就好理解 <code>WaitForCacheSync</code> 函数，他阻塞到 Cache
-同步完成，那么完成的标准是什么呢？
+理解了两个队列之后，就好理解 <code>WaitForCacheSync</code> 函数，他阻塞到 Cache 同步完成，那么完成的标准是什么呢？
 </p>
 
 <blockquote>
 <p>
-ListAndWatcher 中 List 成功之后，会替换掉 Queue
-中的所有数据，首次的所有数据全部分发给 listener 中的 <code>RingGrowing</code>
-队列，分发完成则认为是同步完成。
+ListAndWatcher 中 List 成功之后，会替换掉 Queue 中的所有数据，首次的所有数据全部分发给 listener 中的 <code>RingGrowing</code> 队列，分发完成则认为是同步完成。
 </p>
 </blockquote>
 
@@ -340,16 +316,13 @@ ListAndWatcher 中 List 成功之后，会替换掉 Queue
 </p>
 
 <ul class="org-ul">
-<li><a href="https://github.com/kubernetes/sample-controller/blob/master/docs/controller-client-go.md">client-go
-under the hood</a></li>
-<li><a href="https://engineering.bitnami.com/articles/a-deep-dive-into-kubernetes-controllers.html">A
-deep dive into Kubernetes controllers</a></li>
-<li><a href="https://engineering.bitnami.com/articles/kubewatch-an-example-of-kubernetes-custom-controller.html">Kubewatch,
-an example of Kubernetes custom controller</a></li>
+<li><a href="https://github.com/kubernetes/sample-controller/blob/master/docs/controller-client-go.md">client-go under the hood</a></li>
+<li><a href="https://engineering.bitnami.com/articles/a-deep-dive-into-kubernetes-controllers.html">A deep dive into Kubernetes controllers</a></li>
+<li><a href="https://engineering.bitnami.com/articles/kubewatch-an-example-of-kubernetes-custom-controller.html">Kubewatch, an example of Kubernetes custom controller</a></li>
 </ul>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-06-27 22:07:00 <br />Last updated: 2019-09-18 Wed 21:37 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2019-06-27 22:07:00 <br />Last updated: 2020-08-04 Tue 11:44 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 </div>
 </body>
 </html>
