@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-05-22 Fri 10:23 -->
+<!-- 2020-08-20 Thu 15:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 的异常处理：defer, panic, recover</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -273,11 +273,11 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
 
 <div class="org-src-container">
 <pre class="src src-go"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">go/net/http.go</span>
-<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span>c *<span style="color: #6434A3;">conn</span><span style="color: #707183;">)</span> <span style="color: #006699;">serve</span><span style="color: #707183;">(</span>ctx <span style="color: #6434A3;">context.Context</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">c</span> *<span style="color: #6434A3;">conn</span><span style="color: #707183;">)</span> <span style="color: #006699;">serve</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">ctx</span> <span style="color: #6434A3;">context.Context</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
     <span style="color: #0000FF;">defer</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #0000FF;">if</span> err := <span style="color: #006FE0;">recover</span><span style="color: #909183;">()</span>; err != <span style="color: #D0372D;">nil</span> &amp;&amp; err != ErrAbortHandler <span style="color: #909183;">{</span>
-            <span style="color: #0000FF;">const</span> size = 64 &lt;&lt; 10
-            buf := <span style="color: #006FE0;">make</span><span style="color: #709870;">(</span><span style="color: #907373;">[]</span><span style="color: #6434A3;">byte</span>, size<span style="color: #709870;">)</span>
+        <span style="color: #0000FF;">if</span> <span style="color: #BA36A5;">err</span> := <span style="color: #006FE0;">recover</span><span style="color: #909183;">()</span>; err != <span style="color: #D0372D;">nil</span> &amp;&amp; err != ErrAbortHandler <span style="color: #909183;">{</span>
+            <span style="color: #0000FF;">const</span> <span style="color: #D0372D;">size</span> = 64 &lt;&lt; 10
+            <span style="color: #BA36A5;">buf</span> := <span style="color: #006FE0;">make</span><span style="color: #709870;">(</span><span style="color: #907373;">[]</span><span style="color: #6434A3;">byte</span>, size<span style="color: #709870;">)</span>
             buf = buf<span style="color: #709870;">[</span>:runtime.<span style="color: #006699;">Stack</span><span style="color: #907373;">(</span>buf, <span style="color: #D0372D;">false</span><span style="color: #907373;">)</span><span style="color: #709870;">]</span>
             c.server.<span style="color: #006699;">logf</span><span style="color: #709870;">(</span><span style="color: #008000;">"http: panic serving %v: %v\n%s"</span>, c.remoteAddr, err, buf<span style="color: #709870;">)</span>
         <span style="color: #909183;">}</span>
@@ -323,7 +323,7 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
 </p>
 <div class="org-src-container">
 <pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">a</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-    i := 0
+    <span style="color: #BA36A5;">i</span> := 0
     <span style="color: #0000FF;">defer</span> fmt.<span style="color: #006699;">Println</span><span style="color: #7388D6;">(</span>i<span style="color: #7388D6;">)</span>
     i++
     <span style="color: #0000FF;">return</span>
@@ -336,7 +336,7 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
 <code>defer</code> 函数可以读写函数的命名返回值；
 </p>
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">c</span><span style="color: #707183;">()</span> <span style="color: #707183;">(</span>i <span style="color: #6434A3;">int</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">c</span><span style="color: #707183;">()</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">i</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
     <span style="color: #0000FF;">defer</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span> i++ <span style="color: #7388D6;">}()</span>
     <span style="color: #0000FF;">return</span> 1
 <span style="color: #707183;">}</span>
@@ -346,7 +346,7 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
 </ol>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-03-01 17:50:00 <br />Last updated: 2019-12-25 Wed 21:51 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2018-03-01 17:50:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 </div>
 </body>
 </html>

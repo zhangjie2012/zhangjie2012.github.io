@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-05-22 Fri 10:22 -->
+<!-- 2020-08-20 Thu 15:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 项目布局标准</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -250,53 +250,53 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org043075e">Go 项目布局标准（Standard Go Project Layout）</a>
+<li><a href="#org85d6fd1">Go 项目布局标准（Standard Go Project Layout）</a>
 <ul>
-<li><a href="#orga7067a2">Go 目录</a>
+<li><a href="#org97dc323">Go 目录</a>
 <ul>
-<li><a href="#orgbce1f10"><code>/cmd</code></a></li>
-<li><a href="#org6a0b734"><code>/internal</code></a></li>
-<li><a href="#orgc1aaae6"><code>/pkg</code></a></li>
-<li><a href="#orgbf6fafe"><code>/vendor</code></a></li>
+<li><a href="#org2623ecb"><code>/cmd</code></a></li>
+<li><a href="#org5f6ee8f"><code>/internal</code></a></li>
+<li><a href="#org651e14e"><code>/pkg</code></a></li>
+<li><a href="#org6384308"><code>/vendor</code></a></li>
 </ul>
 </li>
-<li><a href="#orgc535b71">服务应用程序目录</a>
+<li><a href="#orgb40217f">服务应用程序目录</a>
 <ul>
-<li><a href="#org2736041"><code>/api</code></a></li>
+<li><a href="#org1efa6af"><code>/api</code></a></li>
 </ul>
 </li>
-<li><a href="#org6ad4d7c">Web 应用程序目录</a>
+<li><a href="#org9e0d459">Web 应用程序目录</a>
 <ul>
-<li><a href="#org0d33ecf"><code>/web</code></a></li>
+<li><a href="#org2976b80"><code>/web</code></a></li>
 </ul>
 </li>
-<li><a href="#org1ff2f30">通用的应用程序目录</a>
+<li><a href="#org4332293">通用的应用程序目录</a>
 <ul>
-<li><a href="#org3e4a6a6"><code>/configs</code></a></li>
-<li><a href="#orgcb2577d"><code>/init</code></a></li>
-<li><a href="#orgd8f3f18"><code>/scripts</code></a></li>
-<li><a href="#org40afc8f"><code>/build</code></a></li>
-<li><a href="#orgba1dfd2"><code>/deployment</code></a></li>
-<li><a href="#orgd9e3d17"><code>/test</code></a></li>
+<li><a href="#orge3bb93f"><code>/configs</code></a></li>
+<li><a href="#org29af122"><code>/init</code></a></li>
+<li><a href="#org429c730"><code>/scripts</code></a></li>
+<li><a href="#org3fda0ef"><code>/build</code></a></li>
+<li><a href="#orgd461d7b"><code>/deployment</code></a></li>
+<li><a href="#org9221dd9"><code>/test</code></a></li>
 </ul>
 </li>
-<li><a href="#orgb204a08">其他目录</a>
+<li><a href="#orga72ac63">其他目录</a>
 <ul>
-<li><a href="#org9ccd6e5"><code>/docs</code></a></li>
-<li><a href="#orgc5ee2b5"><code>/tools</code></a></li>
-<li><a href="#org2527e15"><code>/examples</code></a></li>
-<li><a href="#org6b6e7be"><code>/third_party</code></a></li>
-<li><a href="#orgc473270"><code>/githooks</code></a></li>
-<li><a href="#org75eb0a1"><code>/assets</code></a></li>
-<li><a href="#orgbf0d5c4"><code>/website</code></a></li>
+<li><a href="#org786ba63"><code>/docs</code></a></li>
+<li><a href="#org5d43a92"><code>/tools</code></a></li>
+<li><a href="#org705e0c0"><code>/examples</code></a></li>
+<li><a href="#org542f846"><code>/third_party</code></a></li>
+<li><a href="#orga4ed08c"><code>/githooks</code></a></li>
+<li><a href="#org2fc9329"><code>/assets</code></a></li>
+<li><a href="#orgcdcf5fd"><code>/website</code></a></li>
 </ul>
 </li>
-<li><a href="#orge95a87c">你不应该使用的目录</a>
+<li><a href="#orgc6cbb32">你不应该使用的目录</a>
 <ul>
-<li><a href="#org52f5b50"><code>/src</code></a></li>
+<li><a href="#org96eb523"><code>/src</code></a></li>
 </ul>
 </li>
-<li><a href="#org5c69fab">徽章（Badges）</a></li>
+<li><a href="#org6ec86da">徽章（Badges）</a></li>
 </ul>
 </li>
 </ul>
@@ -316,9 +316,9 @@ for the JavaScript code in this tag.
 
 <hr />
 
-<div id="outline-container-org043075e" class="outline-2">
-<h2 id="org043075e">Go 项目布局标准（Standard Go Project Layout）</h2>
-<div class="outline-text-2" id="text-org043075e">
+<div id="outline-container-org85d6fd1" class="outline-2">
+<h2 id="org85d6fd1">Go 项目布局标准（Standard Go Project Layout）</h2>
+<div class="outline-text-2" id="text-org85d6fd1">
 <p>
 这 <i>不是</i> Go 官方团队定义的标准；但是它参考了 Go 生态中常见的布局模式（以前的和新兴的）。
 </p>
@@ -363,13 +363,13 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 
-<div id="outline-container-orga7067a2" class="outline-3">
-<h3 id="orga7067a2">Go 目录</h3>
-<div class="outline-text-3" id="text-orga7067a2">
+<div id="outline-container-org97dc323" class="outline-3">
+<h3 id="org97dc323">Go 目录</h3>
+<div class="outline-text-3" id="text-org97dc323">
 </div>
-<div id="outline-container-orgbce1f10" class="outline-4">
-<h4 id="orgbce1f10"><code>/cmd</code></h4>
-<div class="outline-text-4" id="text-orgbce1f10">
+<div id="outline-container-org2623ecb" class="outline-4">
+<h4 id="org2623ecb"><code>/cmd</code></h4>
+<div class="outline-text-4" id="text-org2623ecb">
 <p>
 项目的主应用目录。目录中名称一般与可执行文件相对应（比如： <code>/cmd/myapp</code> ）。
 </p>
@@ -389,9 +389,9 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org6a0b734" class="outline-4">
-<h4 id="org6a0b734"><code>/internal</code></h4>
-<div class="outline-text-4" id="text-org6a0b734">
+<div id="outline-container-org5f6ee8f" class="outline-4">
+<h4 id="org5f6ee8f"><code>/internal</code></h4>
+<div class="outline-text-4" id="text-org5f6ee8f">
 <p>
 私有的应用和库代码。这些是是不希望被其他应用程序或者库导入的代码。
 注意，这种布局方式是 Go 编译器强制限制的，查看 Go 1.4 的 <a href="https://golang.org/doc/go1.4#internalpackages">发布日志</a>，而且不只是顶部的 <code>internal</code> 目录，所有子目录中的 <code>internal</code> 目录都受限制。
@@ -408,9 +408,9 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgc1aaae6" class="outline-4">
-<h4 id="orgc1aaae6"><code>/pkg</code></h4>
-<div class="outline-text-4" id="text-orgc1aaae6">
+<div id="outline-container-org651e14e" class="outline-4">
+<h4 id="org651e14e"><code>/pkg</code></h4>
+<div class="outline-text-4" id="text-org651e14e">
 <p>
 外部应用可以使用的库代码（比如 <code>/pkg/mypubliclib</code> ）。其它项目想要导入他们，然后正常的工作，所以将内容放到这里请三思。
 注意 <code>/internal</code> 是更好的方式来确保你的私有代码不被别人使用，因为它是 Go 强制执行的。
@@ -432,9 +432,9 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgbf6fafe" class="outline-4">
-<h4 id="orgbf6fafe"><code>/vendor</code></h4>
-<div class="outline-text-4" id="text-orgbf6fafe">
+<div id="outline-container-org6384308" class="outline-4">
+<h4 id="org6384308"><code>/vendor</code></h4>
+<div class="outline-text-4" id="text-org6384308">
 <p>
 应用程序依赖包（手动管理或者使用包管理工具类似 <a href="https://github.com/golang/dep">dep</a> 或者新版本中内置的，但仍旧在实验阶段的 <a href="https://github.com/golang/go/wiki/Modules">modules</a> 特性）。
 </p>
@@ -451,13 +451,13 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgc535b71" class="outline-3">
-<h3 id="orgc535b71">服务应用程序目录</h3>
-<div class="outline-text-3" id="text-orgc535b71">
+<div id="outline-container-orgb40217f" class="outline-3">
+<h3 id="orgb40217f">服务应用程序目录</h3>
+<div class="outline-text-3" id="text-orgb40217f">
 </div>
-<div id="outline-container-org2736041" class="outline-4">
-<h4 id="org2736041"><code>/api</code></h4>
-<div class="outline-text-4" id="text-org2736041">
+<div id="outline-container-org1efa6af" class="outline-4">
+<h4 id="org1efa6af"><code>/api</code></h4>
+<div class="outline-text-4" id="text-org1efa6af">
 <p>
 OpenAPI/Swagger 规范，JSON 模式（schema）文件，协议定义文件。
 </p>
@@ -469,13 +469,13 @@ OpenAPI/Swagger 规范，JSON 模式（schema）文件，协议定义文件。
 </div>
 </div>
 
-<div id="outline-container-org6ad4d7c" class="outline-3">
-<h3 id="org6ad4d7c">Web 应用程序目录</h3>
-<div class="outline-text-3" id="text-org6ad4d7c">
+<div id="outline-container-org9e0d459" class="outline-3">
+<h3 id="org9e0d459">Web 应用程序目录</h3>
+<div class="outline-text-3" id="text-org9e0d459">
 </div>
-<div id="outline-container-org0d33ecf" class="outline-4">
-<h4 id="org0d33ecf"><code>/web</code></h4>
-<div class="outline-text-4" id="text-org0d33ecf">
+<div id="outline-container-org2976b80" class="outline-4">
+<h4 id="org2976b80"><code>/web</code></h4>
+<div class="outline-text-4" id="text-org2976b80">
 <p>
 Web 应用程序特定组件：静态网站资源，服务端模板和单网页应用（SPAs）。
 </p>
@@ -483,13 +483,13 @@ Web 应用程序特定组件：静态网站资源，服务端模板和单网页�
 </div>
 </div>
 
-<div id="outline-container-org1ff2f30" class="outline-3">
-<h3 id="org1ff2f30">通用的应用程序目录</h3>
-<div class="outline-text-3" id="text-org1ff2f30">
+<div id="outline-container-org4332293" class="outline-3">
+<h3 id="org4332293">通用的应用程序目录</h3>
+<div class="outline-text-3" id="text-org4332293">
 </div>
-<div id="outline-container-org3e4a6a6" class="outline-4">
-<h4 id="org3e4a6a6"><code>/configs</code></h4>
-<div class="outline-text-4" id="text-org3e4a6a6">
+<div id="outline-container-orge3bb93f" class="outline-4">
+<h4 id="orge3bb93f"><code>/configs</code></h4>
+<div class="outline-text-4" id="text-orge3bb93f">
 <p>
 配置文件模板和默认的配置项。
 </p>
@@ -500,18 +500,18 @@ Web 应用程序特定组件：静态网站资源，服务端模板和单网页�
 </div>
 </div>
 
-<div id="outline-container-orgcb2577d" class="outline-4">
-<h4 id="orgcb2577d"><code>/init</code></h4>
-<div class="outline-text-4" id="text-orgcb2577d">
+<div id="outline-container-org29af122" class="outline-4">
+<h4 id="org29af122"><code>/init</code></h4>
+<div class="outline-text-4" id="text-org29af122">
 <p>
 系统初始化（systemd, upstart, sysv）和进程管理（runit, supervisord）配置。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd8f3f18" class="outline-4">
-<h4 id="orgd8f3f18"><code>/scripts</code></h4>
-<div class="outline-text-4" id="text-orgd8f3f18">
+<div id="outline-container-org429c730" class="outline-4">
+<h4 id="org429c730"><code>/scripts</code></h4>
+<div class="outline-text-4" id="text-org429c730">
 <p>
 用于构建、安装、分析等操作脚本。
 </p>
@@ -526,9 +526,9 @@ Web 应用程序特定组件：静态网站资源，服务端模板和单网页�
 </div>
 </div>
 
-<div id="outline-container-org40afc8f" class="outline-4">
-<h4 id="org40afc8f"><code>/build</code></h4>
-<div class="outline-text-4" id="text-org40afc8f">
+<div id="outline-container-org3fda0ef" class="outline-4">
+<h4 id="org3fda0ef"><code>/build</code></h4>
+<div class="outline-text-4" id="text-org3fda0ef">
 <p>
 打包和持续集成。
 </p>
@@ -543,18 +543,18 @@ Put your CI (travis, circle, drone) configurations and scripts in the <code>/bui
 </div>
 </div>
 
-<div id="outline-container-orgba1dfd2" class="outline-4">
-<h4 id="orgba1dfd2"><code>/deployment</code></h4>
-<div class="outline-text-4" id="text-orgba1dfd2">
+<div id="outline-container-orgd461d7b" class="outline-4">
+<h4 id="orgd461d7b"><code>/deployment</code></h4>
+<div class="outline-text-4" id="text-orgd461d7b">
 <p>
 IaaS, PaaS，系统和容器编排文件和模板（docker-compose, kubernetes/helm, mesos, terraform, bosh）。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd9e3d17" class="outline-4">
-<h4 id="orgd9e3d17"><code>/test</code></h4>
-<div class="outline-text-4" id="text-orgd9e3d17">
+<div id="outline-container-org9221dd9" class="outline-4">
+<h4 id="org9221dd9"><code>/test</code></h4>
+<div class="outline-text-4" id="text-org9221dd9">
 <p>
 其他外部测试应用程序和测试数据。较大的项目需要一个数据目录，如果你想让 Go 忽略掉他的话，可以命名为 <code>/test/data</code> 或者 <code>/test/testdata</code> 。
 Go 还会忽略以 <code>.</code> 或者 <code>_</code> 开头的文件。
@@ -567,13 +567,13 @@ Go 还会忽略以 <code>.</code> 或者 <code>_</code> 开头的文件。
 </div>
 </div>
 
-<div id="outline-container-orgb204a08" class="outline-3">
-<h3 id="orgb204a08">其他目录</h3>
-<div class="outline-text-3" id="text-orgb204a08">
+<div id="outline-container-orga72ac63" class="outline-3">
+<h3 id="orga72ac63">其他目录</h3>
+<div class="outline-text-3" id="text-orga72ac63">
 </div>
-<div id="outline-container-org9ccd6e5" class="outline-4">
-<h4 id="org9ccd6e5"><code>/docs</code></h4>
-<div class="outline-text-4" id="text-org9ccd6e5">
+<div id="outline-container-org786ba63" class="outline-4">
+<h4 id="org786ba63"><code>/docs</code></h4>
+<div class="outline-text-4" id="text-org786ba63">
 <p>
 设计和用户文档（除了 godoc 生成的文档之外）。
 </p>
@@ -584,9 +584,9 @@ Go 还会忽略以 <code>.</code> 或者 <code>_</code> 开头的文件。
 </div>
 </div>
 
-<div id="outline-container-orgc5ee2b5" class="outline-4">
-<h4 id="orgc5ee2b5"><code>/tools</code></h4>
-<div class="outline-text-4" id="text-orgc5ee2b5">
+<div id="outline-container-org5d43a92" class="outline-4">
+<h4 id="org5d43a92"><code>/tools</code></h4>
+<div class="outline-text-4" id="text-org5d43a92">
 <p>
 此项目的支持工具。注意，这些工具可以从 <code>/pkg</code> 和 <code>/internal</code> 目录中导入代码。
 </p>
@@ -597,9 +597,9 @@ Go 还会忽略以 <code>.</code> 或者 <code>_</code> 开头的文件。
 </div>
 </div>
 
-<div id="outline-container-org2527e15" class="outline-4">
-<h4 id="org2527e15"><code>/examples</code></h4>
-<div class="outline-text-4" id="text-org2527e15">
+<div id="outline-container-org705e0c0" class="outline-4">
+<h4 id="org705e0c0"><code>/examples</code></h4>
+<div class="outline-text-4" id="text-org705e0c0">
 <p>
 你的应用程序或者公共库的范例。
 </p>
@@ -610,36 +610,36 @@ Go 还会忽略以 <code>.</code> 或者 <code>_</code> 开头的文件。
 </div>
 </div>
 
-<div id="outline-container-org6b6e7be" class="outline-4">
-<h4 id="org6b6e7be"><code>/third_party</code></h4>
-<div class="outline-text-4" id="text-org6b6e7be">
+<div id="outline-container-org542f846" class="outline-4">
+<h4 id="org542f846"><code>/third_party</code></h4>
+<div class="outline-text-4" id="text-org542f846">
 <p>
 外部帮助工具，交叉代码和其他第三方工具（比如：Swagger UI）。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc473270" class="outline-4">
-<h4 id="orgc473270"><code>/githooks</code></h4>
-<div class="outline-text-4" id="text-orgc473270">
+<div id="outline-container-orga4ed08c" class="outline-4">
+<h4 id="orga4ed08c"><code>/githooks</code></h4>
+<div class="outline-text-4" id="text-orga4ed08c">
 <p>
 Git hooks.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org75eb0a1" class="outline-4">
-<h4 id="org75eb0a1"><code>/assets</code></h4>
-<div class="outline-text-4" id="text-org75eb0a1">
+<div id="outline-container-org2fc9329" class="outline-4">
+<h4 id="org2fc9329"><code>/assets</code></h4>
+<div class="outline-text-4" id="text-org2fc9329">
 <p>
 与项目一起的其他资源文件（图片，logos 等等）。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgbf0d5c4" class="outline-4">
-<h4 id="orgbf0d5c4"><code>/website</code></h4>
-<div class="outline-text-4" id="text-orgbf0d5c4">
+<div id="outline-container-orgcdcf5fd" class="outline-4">
+<h4 id="orgcdcf5fd"><code>/website</code></h4>
+<div class="outline-text-4" id="text-orgcdcf5fd">
 <p>
 如果你不使用 github pages，就在这里放置项目的网站数据。
 </p>
@@ -651,13 +651,13 @@ Git hooks.
 </div>
 </div>
 
-<div id="outline-container-orge95a87c" class="outline-3">
-<h3 id="orge95a87c">你不应该使用的目录</h3>
-<div class="outline-text-3" id="text-orge95a87c">
+<div id="outline-container-orgc6cbb32" class="outline-3">
+<h3 id="orgc6cbb32">你不应该使用的目录</h3>
+<div class="outline-text-3" id="text-orgc6cbb32">
 </div>
-<div id="outline-container-org52f5b50" class="outline-4">
-<h4 id="org52f5b50"><code>/src</code></h4>
-<div class="outline-text-4" id="text-org52f5b50">
+<div id="outline-container-org96eb523" class="outline-4">
+<h4 id="org96eb523"><code>/src</code></h4>
+<div class="outline-text-4" id="text-org96eb523">
 <p>
 一些 Go 项目包含 <code>src</code> 目录，通常是 Java 世界中的程序员干的。但是你如果想省点事的话，千万不要这么干（除非你想让你的 Go 项目看起来像是 Java）。
 </p>
@@ -674,9 +674,9 @@ Git hooks.
 </div>
 </div>
 
-<div id="outline-container-org5c69fab" class="outline-3">
-<h3 id="org5c69fab">徽章（Badges）</h3>
-<div class="outline-text-3" id="text-org5c69fab">
+<div id="outline-container-org6ec86da" class="outline-3">
+<h3 id="org6ec86da">徽章（Badges）</h3>
+<div class="outline-text-3" id="text-org6ec86da">
 <ul class="org-ul">
 <li><a href="https://goreportcard.com/">Go Report Card</a> - 它会使用 <code>gofmt</code> <code>go vet</code> <code>gocyclo</code> <code>golint</code> <code>ineffassign</code> <code>license</code> 和 <code>misspell</code> 。
 替换 <code>github.com/golang-standards/project-layout</code> 作为你的项目参考。</li>
@@ -694,7 +694,7 @@ Git hooks.
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-06-09 17:08:00 <br />Last updated: 2020-02-25 Tue 11:20 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2019-06-09 17:08:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>

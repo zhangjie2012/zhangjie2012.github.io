@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-05-22 Fri 10:23 -->
+<!-- 2020-08-20 Thu 15:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ingress-nginx 工作原理（下）：服务启动、运行和停止</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -250,10 +250,10 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb904b16">1. 服务启动</a></li>
-<li><a href="#org80067b0">2. 服务运行</a></li>
-<li><a href="#orgaab0863">3. 服务终止</a></li>
-<li><a href="#orge08f5ec">4. syncIngress</a></li>
+<li><a href="#org6520ba5">1. 服务启动</a></li>
+<li><a href="#orgd709824">2. 服务运行</a></li>
+<li><a href="#org6cfb7b0">3. 服务终止</a></li>
+<li><a href="#orgcaa5161">4. syncIngress</a></li>
 </ul>
 </div>
 </div>
@@ -261,8 +261,8 @@ for the JavaScript code in this tag.
 接上文。
 </p>
 
-<div id="outline-container-orgb904b16" class="outline-2">
-<h2 id="orgb904b16"><span class="section-number-2">1</span> 服务启动</h2>
+<div id="outline-container-org6520ba5" class="outline-2">
+<h2 id="org6520ba5"><span class="section-number-2">1</span> 服务启动</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 在 main 中 <code>ngx.Start()</code> 将启动服务。
@@ -360,8 +360,8 @@ func (n *NGINXController) Start() {
 </div>
 </div>
 
-<div id="outline-container-org80067b0" class="outline-2">
-<h2 id="org80067b0"><span class="section-number-2">2</span> 服务运行</h2>
+<div id="outline-container-orgd709824" class="outline-2">
+<h2 id="orgd709824"><span class="section-number-2">2</span> 服务运行</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 服务正常运行是不断从 K8s 接受资源变更事件，然后转换成 nginx 新配置，进而 reload nginx 的过程。也就是上面 <code>for ... select</code> 中
@@ -379,8 +379,8 @@ func (n *NGINXController) Start() {
 </div>
 </div>
 
-<div id="outline-container-orgaab0863" class="outline-2">
-<h2 id="orgaab0863"><span class="section-number-2">3</span> 服务终止</h2>
+<div id="outline-container-org6cfb7b0" class="outline-2">
+<h2 id="org6cfb7b0"><span class="section-number-2">3</span> 服务终止</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 上面的 <code>for ... select</code> 中的 <code>case &lt;-n.stopCh</code> ，等 <code>stopCh</code> 有数据时，for 循环 break，服务正常结束。
@@ -461,8 +461,8 @@ mux.HandleFunc("/stop", func(w http.ResponseWriter, r *http.Request) {
 </div>
 </div>
 
-<div id="outline-container-orge08f5ec" class="outline-2">
-<h2 id="orge08f5ec"><span class="section-number-2">4</span> syncIngress</h2>
+<div id="outline-container-orgcaa5161" class="outline-2">
+<h2 id="orgcaa5161"><span class="section-number-2">4</span> syncIngress</h2>
 <div class="outline-text-2" id="text-4">
 <pre class="example">
 // ingress/controller/controller.go
@@ -586,7 +586,7 @@ store.syncSecrets(ing)
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2019-12-25 Wed 22:01 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 </div>
 </body>
 </html>

@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-05-22 Fri 10:22 -->
+<!-- 2020-08-20 Thu 15:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Job</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -250,27 +250,27 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org372a27e">1. 例子</a></li>
-<li><a href="#org0d9cd69">2. 书写 Job 规范</a>
+<li><a href="#org25a1d34">1. 例子</a></li>
+<li><a href="#org7d30ab2">2. 书写 Job 规范</a>
 <ul>
-<li><a href="#org9a55d6c">2.1. Pod Template</a></li>
-<li><a href="#orgf237f01">2.2. Pod Selector</a></li>
-<li><a href="#org740b2cd">2.3. 并行（Parallel）Jobs</a></li>
-<li><a href="#org2e45bba">2.4. 控制并行</a></li>
+<li><a href="#orgbcb3e7c">2.1. Pod Template</a></li>
+<li><a href="#orgfb5603c">2.2. Pod Selector</a></li>
+<li><a href="#orgf0036f5">2.3. 并行（Parallel）Jobs</a></li>
+<li><a href="#orgc77491c">2.4. 控制并行</a></li>
 </ul>
 </li>
-<li><a href="#orgd57bdfe">3. 处理 Pod 和容器失败</a>
+<li><a href="#org860a772">3. 处理 Pod 和容器失败</a>
 <ul>
-<li><a href="#orgd9856b0">3.1. Pod 回退（backoff）失败策略</a></li>
+<li><a href="#org3be97e7">3.1. Pod 回退（backoff）失败策略</a></li>
 </ul>
 </li>
-<li><a href="#org4f7a98d">4. Job 终止和清理</a>
+<li><a href="#org4d587e5">4. Job 终止和清理</a>
 <ul>
-<li><a href="#org6084635">4.1. 已完成的 Jobs 实行 TTL 机制</a></li>
+<li><a href="#orgf4105e2">4.1. 已完成的 Jobs 实行 TTL 机制</a></li>
 </ul>
 </li>
-<li><a href="#org06894bb">5. Job 模式（Patterns）</a></li>
-<li><a href="#orge46d024">6. 高级用法</a></li>
+<li><a href="#org4883c2d">5. Job 模式（Patterns）</a></li>
+<li><a href="#org7c336f1">6. 高级用法</a></li>
 </ul>
 </div>
 </div>
@@ -287,15 +287,15 @@ Job 创建一个或者多个 Pods 并确保指定数量的 Pod 成功终止。�
 你也可以使用 Job 并行运行多个 Pods。
 </p>
 
-<div id="outline-container-org372a27e" class="outline-2">
-<h2 id="org372a27e"><span class="section-number-2">1</span> 例子</h2>
+<div id="outline-container-org25a1d34" class="outline-2">
+<h2 id="org25a1d34"><span class="section-number-2">1</span> 例子</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 下面是一份 Job 的配置，它计算 ᴨ 的小数点后 2000 位，然后打印出来了，大约需要 10s 才能完成。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml" id="org21b5bf5">controllers/job.yaml
+<pre class="src src-yaml" id="org0b70c20">controllers/job.yaml
 
 <span style="color: #BA36A5;">apiVersion</span>: batch/v1
 <span style="color: #BA36A5;">kind</span>: Job
@@ -319,12 +319,12 @@ Job 创建一个或者多个 Pods 并确保指定数量的 Pod 成功终止。�
 </div>
 </div>
 
-<div id="outline-container-org0d9cd69" class="outline-2">
-<h2 id="org0d9cd69"><span class="section-number-2">2</span> 书写 Job 规范</h2>
+<div id="outline-container-org7d30ab2" class="outline-2">
+<h2 id="org7d30ab2"><span class="section-number-2">2</span> 书写 Job 规范</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org9a55d6c" class="outline-3">
-<h3 id="org9a55d6c"><span class="section-number-3">2.1</span> Pod Template</h3>
+<div id="outline-container-orgbcb3e7c" class="outline-3">
+<h3 id="orgbcb3e7c"><span class="section-number-3">2.1</span> Pod Template</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 <code>.spec.template</code> 是 <code>.spec</code> 中唯一需要的字段。
@@ -340,8 +340,8 @@ Job 创建一个或者多个 Pods 并确保指定数量的 Pod 成功终止。�
 </div>
 </div>
 
-<div id="outline-container-orgf237f01" class="outline-3">
-<h3 id="orgf237f01"><span class="section-number-3">2.2</span> Pod Selector</h3>
+<div id="outline-container-orgfb5603c" class="outline-3">
+<h3 id="orgfb5603c"><span class="section-number-3">2.2</span> Pod Selector</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 <code>.spec.selector</code> 字段是可选的。大部分情况下你不都不需要指定它。
@@ -349,8 +349,8 @@ Job 创建一个或者多个 Pods 并确保指定数量的 Pod 成功终止。�
 </div>
 </div>
 
-<div id="outline-container-org740b2cd" class="outline-3">
-<h3 id="org740b2cd"><span class="section-number-3">2.3</span> 并行（Parallel）Jobs</h3>
+<div id="outline-container-orgf0036f5" class="outline-3">
+<h3 id="orgf0036f5"><span class="section-number-3">2.3</span> 并行（Parallel）Jobs</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 适合作为 Job 运行的主要三种类型任务：
@@ -381,8 +381,8 @@ Job 创建一个或者多个 Pods 并确保指定数量的 Pod 成功终止。�
 </div>
 </div>
 
-<div id="outline-container-org2e45bba" class="outline-3">
-<h3 id="org2e45bba"><span class="section-number-3">2.4</span> 控制并行</h3>
+<div id="outline-container-orgc77491c" class="outline-3">
+<h3 id="orgc77491c"><span class="section-number-3">2.4</span> 控制并行</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 <code>.spec.parallelism</code> 可以被设置为任何非负值，如果未指定，默认是 1。如果指定为 0，它会暂停等待到值增加之后才开始执行。
@@ -404,8 +404,8 @@ Job 创建一个或者多个 Pods 并确保指定数量的 Pod 成功终止。�
 </div>
 </div>
 
-<div id="outline-container-orgd57bdfe" class="outline-2">
-<h2 id="orgd57bdfe"><span class="section-number-2">3</span> 处理 Pod 和容器失败</h2>
+<div id="outline-container-org860a772" class="outline-2">
+<h2 id="org860a772"><span class="section-number-2">3</span> 处理 Pod 和容器失败</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Pod 中的容器可能有多种原因失败，比如说由于进程非 0 码退出，或者容器因为超出了内存限制而被杀，等等。
@@ -429,8 +429,8 @@ Pod 中的容器可能有多种原因失败，比如说由于进程非 0 码退�
 </p>
 </div>
 
-<div id="outline-container-orgd9856b0" class="outline-3">
-<h3 id="orgd9856b0"><span class="section-number-3">3.1</span> Pod 回退（backoff）失败策略</h3>
+<div id="outline-container-org3be97e7" class="outline-3">
+<h3 id="org3be97e7"><span class="section-number-3">3.1</span> Pod 回退（backoff）失败策略</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 在某些情况下，由于配置等逻辑错误，你需要在重试一些次数之后再使 Job 失败。为此，设置 <code>.spec.backoffLimit</code> 指定重启次数，
@@ -448,8 +448,8 @@ Pod 中的容器可能有多种原因失败，比如说由于进程非 0 码退�
 </div>
 </div>
 
-<div id="outline-container-org4f7a98d" class="outline-2">
-<h2 id="org4f7a98d"><span class="section-number-2">4</span> Job 终止和清理</h2>
+<div id="outline-container-org4d587e5" class="outline-2">
+<h2 id="org4d587e5"><span class="section-number-2">4</span> Job 终止和清理</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 已经结束的 Job 通常不再需要再完成作业。一直留在系统中会给 API server 带来压力。如果 Job 有上级控制器直接管理，比如说 CronJobs，
@@ -457,8 +457,8 @@ CronJobs 可以基于指定的基于容量的清理策略来清理 Jobs。
 </p>
 </div>
 
-<div id="outline-container-org6084635" class="outline-3">
-<h3 id="org6084635"><span class="section-number-3">4.1</span> 已完成的 Jobs 实行 TTL 机制</h3>
+<div id="outline-container-orgf4105e2" class="outline-3">
+<h3 id="orgf4105e2"><span class="section-number-3">4.1</span> 已完成的 Jobs 实行 TTL 机制</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 另外一种清理完成 Jobs（ <code>Complete</code> 或者 <code>Failed</code> ）是使用 TTL 机制来回收完成的资源，通过在 Job 中指定 <code>.spec.ttlSecondAfterFinished</code> 字段。
@@ -467,8 +467,8 @@ CronJobs 可以基于指定的基于容量的清理策略来清理 Jobs。
 </div>
 </div>
 
-<div id="outline-container-org06894bb" class="outline-2">
-<h2 id="org06894bb"><span class="section-number-2">5</span> Job 模式（Patterns）</h2>
+<div id="outline-container-org4883c2d" class="outline-2">
+<h2 id="org4883c2d"><span class="section-number-2">5</span> Job 模式（Patterns）</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#job-patterns">https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#job-patterns</a>
@@ -476,8 +476,8 @@ CronJobs 可以基于指定的基于容量的清理策略来清理 Jobs。
 </div>
 </div>
 
-<div id="outline-container-orge46d024" class="outline-2">
-<h2 id="orge46d024"><span class="section-number-2">6</span> 高级用法</h2>
+<div id="outline-container-org7c336f1" class="outline-2">
+<h2 id="org7c336f1"><span class="section-number-2">6</span> 高级用法</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#advanced-usage">https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#advanced-usage</a>
@@ -486,7 +486,7 @@ CronJobs 可以基于指定的基于容量的清理策略来清理 Jobs。
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-14 14:54:18 <br />Last updated: 2020-04-20 Mon 10:21 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-04-14 14:54:18 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>

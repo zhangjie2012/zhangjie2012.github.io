@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-03 Mon 12:24 -->
+<!-- 2020-08-20 Thu 15:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 包选择与对比</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -250,29 +250,29 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge5bdce6">1. 日志</a>
+<li><a href="#org968f097">1. 日志</a>
 <ul>
-<li><a href="#org465ad2d">1.1. 标准库</a></li>
-<li><a href="#org699e837">1.2. google/glog</a></li>
-<li><a href="#org8110c23">1.3. sirupsen/logrus</a></li>
-<li><a href="#orgc9614ff">1.4. uber-go/zap</a></li>
-<li><a href="#orgb2533bd">1.5. 结论</a></li>
+<li><a href="#orgb051646">1.1. 标准库</a></li>
+<li><a href="#org79aed6f">1.2. google/glog</a></li>
+<li><a href="#org557d97a">1.3. sirupsen/logrus</a></li>
+<li><a href="#org891bb1c">1.4. uber-go/zap</a></li>
+<li><a href="#org46712ef">1.5. 结论</a></li>
 </ul>
 </li>
-<li><a href="#org0d4c60b">2. Redis</a></li>
-<li><a href="#org52bf2bb">3. Mongo</a>
+<li><a href="#org2255756">2. Redis</a></li>
+<li><a href="#org556d471">3. Mongo</a>
 <ul>
-<li><a href="#org019730c">3.1. mongo-go-driver 构建索引报错：</a></li>
-<li><a href="#orgf41414b">3.2. mgo.v2 中的连接池</a></li>
+<li><a href="#orgab6f1a7">3.1. mongo-go-driver 构建索引报错：</a></li>
+<li><a href="#org7ccbecc">3.2. mgo.v2 中的连接池</a></li>
 </ul>
 </li>
-<li><a href="#org74b257d">4. MySQL</a></li>
+<li><a href="#org52c5300">4. MySQL</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge5bdce6" class="outline-2">
-<h2 id="orge5bdce6"><span class="section-number-2">1</span> 日志</h2>
+<div id="outline-container-org968f097" class="outline-2">
+<h2 id="org968f097"><span class="section-number-2">1</span> 日志</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 可能是 Go 尚年轻，行业对 Go 的应用领域还比较宽泛，也可能是开源的缘故，Go package 普遍造轮子的现象比较明显。
@@ -283,8 +283,8 @@ for the JavaScript code in this tag.
 </p>
 </div>
 
-<div id="outline-container-org465ad2d" class="outline-3">
-<h3 id="org465ad2d"><span class="section-number-3">1.1</span> 标准库</h3>
+<div id="outline-container-orgb051646" class="outline-3">
+<h3 id="orgb051646"><span class="section-number-3">1.1</span> 标准库</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 功能较少，不同级别的日志区分不开，小的测试项目可以取代 fmt 来 debug。
@@ -292,8 +292,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org699e837" class="outline-3">
-<h3 id="org699e837"><span class="section-number-3">1.2</span> <a href="https://github.com/golang/glog">google/glog</a></h3>
+<div id="outline-container-org79aed6f" class="outline-3">
+<h3 id="org79aed6f"><span class="section-number-3">1.2</span> <a href="https://github.com/golang/glog">google/glog</a></h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 google 类似 C++ 日志版本的 Go 版本，性能较好，使用也比较简单。
@@ -306,8 +306,8 @@ google 类似 C++ 日志版本的 Go 版本，性能较好，使用也比较简�
 </div>
 </div>
 
-<div id="outline-container-org8110c23" class="outline-3">
-<h3 id="org8110c23"><span class="section-number-3">1.3</span> <a href="https://github.com/sirupsen/logrus">sirupsen/logrus</a></h3>
+<div id="outline-container-org557d97a" class="outline-3">
+<h3 id="org557d97a"><span class="section-number-3">1.3</span> <a href="https://github.com/sirupsen/logrus">sirupsen/logrus</a></h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 结构化的，可插拔的日志系统。
@@ -366,8 +366,8 @@ google 类似 C++ 日志版本的 Go 版本，性能较好，使用也比较简�
 </div>
 </div>
 
-<div id="outline-container-orgc9614ff" class="outline-3">
-<h3 id="orgc9614ff"><span class="section-number-3">1.4</span> <a href="https://github.com/uber-go/zap">uber-go/zap</a></h3>
+<div id="outline-container-org891bb1c" class="outline-3">
+<h3 id="org891bb1c"><span class="section-number-3">1.4</span> <a href="https://github.com/uber-go/zap">uber-go/zap</a></h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 Uber 开源的日志系统。
@@ -384,8 +384,8 @@ Uber 开源的日志系统。
 </div>
 </div>
 
-<div id="outline-container-orgb2533bd" class="outline-3">
-<h3 id="orgb2533bd"><span class="section-number-3">1.5</span> 结论</h3>
+<div id="outline-container-org46712ef" class="outline-3">
+<h3 id="org46712ef"><span class="section-number-3">1.5</span> 结论</h3>
 <div class="outline-text-3" id="text-1-5">
 <ul class="org-ul">
 <li>高性能的系统，推荐使用 zap；</li>
@@ -395,8 +395,8 @@ Uber 开源的日志系统。
 </div>
 </div>
 
-<div id="outline-container-org0d4c60b" class="outline-2">
-<h2 id="org0d4c60b"><span class="section-number-2">2</span> Redis</h2>
+<div id="outline-container-org2255756" class="outline-2">
+<h2 id="org2255756"><span class="section-number-2">2</span> Redis</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 redis go clients: <a href="https://redis.io/clients#go">https://redis.io/clients#go</a>
@@ -422,8 +422,8 @@ redis go clients: <a href="https://redis.io/clients#go">https://redis.io/clients
 </div>
 </div>
 
-<div id="outline-container-org52bf2bb" class="outline-2">
-<h2 id="org52bf2bb"><span class="section-number-2">3</span> Mongo</h2>
+<div id="outline-container-org556d471" class="outline-2">
+<h2 id="org556d471"><span class="section-number-2">3</span> Mongo</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 MongoDB 官方在 2018 年的 2 月 14 日发布了 MongoDB Go Driver Alpha 版本，四天前发布了第一个正式版本，算是很晚了。
@@ -448,8 +448,8 @@ MongoDB 官方在 2018 年的 2 月 14 日发布了 MongoDB Go Driver Alpha 版�
 </ul>
 </div>
 
-<div id="outline-container-org019730c" class="outline-3">
-<h3 id="org019730c"><span class="section-number-3">3.1</span> <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a> 构建索引报错：</h3>
+<div id="outline-container-orgab6f1a7" class="outline-3">
+<h3 id="orgab6f1a7"><span class="section-number-3">3.1</span> <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a> 构建索引报错：</h3>
 <div class="outline-text-3" id="text-3-1">
 <blockquote>
 <p>
@@ -500,8 +500,8 @@ maxTimeMS
 </div>
 </div>
 
-<div id="outline-container-orgf41414b" class="outline-3">
-<h3 id="orgf41414b"><span class="section-number-3">3.2</span> mgo.v2 中的连接池</h3>
+<div id="outline-container-org7ccbecc" class="outline-3">
+<h3 id="org7ccbecc"><span class="section-number-3">3.2</span> mgo.v2 中的连接池</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 <code>mgo.Session</code> 的所有方法是并发安全的，支持多个协程同时访问。但是并不意味着可以并行的创建和它们。
@@ -546,8 +546,8 @@ original session to wait.
 </div>
 </div>
 </div>
-<div id="outline-container-org74b257d" class="outline-2">
-<h2 id="org74b257d"><span class="section-number-2">4</span> MySQL</h2>
+<div id="outline-container-org52c5300" class="outline-2">
+<h2 id="org52c5300"><span class="section-number-2">4</span> MySQL</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 跟 Java，Python 的相对成熟的语言相差甚远，可能是 Go 的应用场景限制，基本上就是手写 SQL 语句 <a href="https://godoc.org/github.com/go-sql-driver/mysql">go-sql-driver</a> 。
@@ -564,7 +564,7 @@ original session to wait.
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-03-14 17:50:00 <br />Last updated: 2020-08-03 Mon 11:32 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
+<p class="postamble">First created: 2019-03-14 17:50:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>

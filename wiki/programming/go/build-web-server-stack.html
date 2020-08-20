@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-06-29 Mon 15:52 -->
+<!-- 2020-08-20 Thu 15:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>使用 Go 构建 Web 服务技术栈</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -250,41 +250,41 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd9f72d0">1. 开发</a>
+<li><a href="#org95c8d81">1. 开发</a>
 <ul>
-<li><a href="#orge1ab931">1.1. 框架选择</a>
+<li><a href="#org573e03b">1.1. 框架选择</a>
 <ul>
-<li><a href="#org5b664ea">1.1.1. 原生</a></li>
-<li><a href="#orgdc4fd31">1.1.2. gin</a></li>
-<li><a href="#org3c9bd90">1.1.3. 结论</a></li>
+<li><a href="#orgbc3586d">1.1.1. 原生</a></li>
+<li><a href="#orgff56ea1">1.1.2. gin</a></li>
+<li><a href="#orge0d49e1">1.1.3. 结论</a></li>
 </ul>
 </li>
-<li><a href="#org78c6460">1.2. 最佳实践</a>
+<li><a href="#org1475041">1.2. 最佳实践</a>
 <ul>
-<li><a href="#orgd157109">1.2.1. 服务名称</a></li>
-<li><a href="#org30424ce">1.2.2. 流程流转</a></li>
-<li><a href="#org6b6c25f">1.2.3. 使用配置文件，而不是参数注入</a></li>
-<li><a href="#org4eeffc9">1.2.4. 服务优雅关闭</a></li>
-<li><a href="#org829122f">1.2.5. 使用 API 分组</a></li>
-<li><a href="#org9bcad3a">1.2.6. 日志</a></li>
-<li><a href="#org1f1ed0f">1.2.7. 监控：使用 prometheus_client 暴露 API metrics</a></li>
+<li><a href="#orgcd45088">1.2.1. 服务名称</a></li>
+<li><a href="#org3f37cbb">1.2.2. 流程流转</a></li>
+<li><a href="#orgc0314de">1.2.3. 使用配置文件，而不是参数注入</a></li>
+<li><a href="#orgb91b1d4">1.2.4. 服务优雅关闭</a></li>
+<li><a href="#orgdf2dd55">1.2.5. 使用 API 分组</a></li>
+<li><a href="#org99bd2ea">1.2.6. 日志</a></li>
+<li><a href="#org8a66ae3">1.2.7. 监控：使用 prometheus_client 暴露 API metrics</a></li>
 </ul>
 </li>
-<li><a href="#org6734aee">1.3. 常用库选型</a>
+<li><a href="#org4745845">1.3. 常用库选型</a>
 <ul>
-<li><a href="#org9278aca">1.3.1. 日志</a></li>
-<li><a href="#org231cda2">1.3.2. MySQL</a></li>
-<li><a href="#org545fcb5">1.3.3. MongoDB</a></li>
+<li><a href="#org60fdead">1.3.1. 日志</a></li>
+<li><a href="#org9d4c1a4">1.3.2. MySQL</a></li>
+<li><a href="#orgc70e9af">1.3.3. MongoDB</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgdd06b75">2. 打包</a></li>
-<li><a href="#orgc6e11bd">3. 部署</a>
+<li><a href="#org7397415">2. 打包</a></li>
+<li><a href="#orga2f70bc">3. 部署</a>
 <ul>
-<li><a href="#orge9c641a">3.1. 直接部署到主机上</a></li>
-<li><a href="#org5c22760">3.2. 部署到容器环境下</a></li>
-<li><a href="#org7067535">3.3. 版本号</a></li>
+<li><a href="#orgede673f">3.1. 直接部署到主机上</a></li>
+<li><a href="#orgc99c208">3.2. 部署到容器环境下</a></li>
+<li><a href="#orgebd6a44">3.3. 版本号</a></li>
 </ul>
 </li>
 </ul>
@@ -294,8 +294,8 @@ for the JavaScript code in this tag.
 <i>本文将梳理使用 Go 构建一个 Web server 的方方面面，随时更新.</i>
 </p>
 
-<div id="outline-container-orgd9f72d0" class="outline-2">
-<h2 id="orgd9f72d0"><span class="section-number-2">1</span> 开发</h2>
+<div id="outline-container-org95c8d81" class="outline-2">
+<h2 id="org95c8d81"><span class="section-number-2">1</span> 开发</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 项目布局结构可参考 <a href="https://github.com/golang-standards/project-layout">project-layout</a> 中的说明，<a href="build-web-server-stack.html">这里</a> 是我的翻译。核心目录：
@@ -325,12 +325,12 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 
-<div id="outline-container-orge1ab931" class="outline-3">
-<h3 id="orge1ab931"><span class="section-number-3">1.1</span> 框架选择</h3>
+<div id="outline-container-org573e03b" class="outline-3">
+<h3 id="org573e03b"><span class="section-number-3">1.1</span> 框架选择</h3>
 <div class="outline-text-3" id="text-1-1">
 </div>
-<div id="outline-container-org5b664ea" class="outline-4">
-<h4 id="org5b664ea"><span class="section-number-4">1.1.1</span> 原生</h4>
+<div id="outline-container-orgbc3586d" class="outline-4">
+<h4 id="orgbc3586d"><span class="section-number-4">1.1.1</span> 原生</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <p>
 Go 的 <code>net/http</code> 库比较丰富，借助 <a href="https://github.com/gorilla/mux">mux</a> 即可自己完成一个 server 基本需求。
@@ -357,8 +357,8 @@ router.<span style="color: #006699;">HandleFunc</span><span style="color: #70718
 </div>
 </div>
 
-<div id="outline-container-orgdc4fd31" class="outline-4">
-<h4 id="orgdc4fd31"><span class="section-number-4">1.1.2</span> gin</h4>
+<div id="outline-container-orgff56ea1" class="outline-4">
+<h4 id="orgff56ea1"><span class="section-number-4">1.1.2</span> gin</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <p>
 <a href="https://github.com/gin-gonic/gin">gin</a> 是一个 Go 的 Web 框架，当然很多的其它框架。
@@ -416,8 +416,8 @@ apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</s
 </div>
 </div>
 
-<div id="outline-container-org3c9bd90" class="outline-4">
-<h4 id="org3c9bd90"><span class="section-number-4">1.1.3</span> 结论</h4>
+<div id="outline-container-orge0d49e1" class="outline-4">
+<h4 id="orge0d49e1"><span class="section-number-4">1.1.3</span> 结论</h4>
 <div class="outline-text-4" id="text-1-1-3">
 <p>
 使用原生的库还是框架，我的思路是：
@@ -435,12 +435,12 @@ apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</s
 </div>
 </div>
 
-<div id="outline-container-org78c6460" class="outline-3">
-<h3 id="org78c6460"><span class="section-number-3">1.2</span> 最佳实践</h3>
+<div id="outline-container-org1475041" class="outline-3">
+<h3 id="org1475041"><span class="section-number-3">1.2</span> 最佳实践</h3>
 <div class="outline-text-3" id="text-1-2">
 </div>
-<div id="outline-container-orgd157109" class="outline-4">
-<h4 id="orgd157109"><span class="section-number-4">1.2.1</span> 服务名称</h4>
+<div id="outline-container-orgcd45088" class="outline-4">
+<h4 id="orgcd45088"><span class="section-number-4">1.2.1</span> 服务名称</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
 一个服务应该有一个唯一标识：应用ID 或者应用名等，它在组织内部应该是唯一的，这种做法对于基建是很友好的（大部分公司也是这么做的）。
@@ -448,8 +448,8 @@ apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</s
 </div>
 </div>
 
-<div id="outline-container-org30424ce" class="outline-4">
-<h4 id="org30424ce"><span class="section-number-4">1.2.2</span> 流程流转</h4>
+<div id="outline-container-org3f37cbb" class="outline-4">
+<h4 id="org3f37cbb"><span class="section-number-4">1.2.2</span> 流程流转</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <ol class="org-ol">
 <li><code>main</code> 统一流转
@@ -473,8 +473,8 @@ apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</s
 </div>
 </div>
 
-<div id="outline-container-org6b6c25f" class="outline-4">
-<h4 id="org6b6c25f"><span class="section-number-4">1.2.3</span> 使用配置文件，而不是参数注入</h4>
+<div id="outline-container-orgc0314de" class="outline-4">
+<h4 id="orgc0314de"><span class="section-number-4">1.2.3</span> 使用配置文件，而不是参数注入</h4>
 <div class="outline-text-4" id="text-1-2-3">
 <p>
 配置文件选择 JSON、YAML，一般使用 YAML，全部参数注入在参数情况下，启动服务会变的复杂。
@@ -538,8 +538,8 @@ apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</s
 </div>
 </div>
 
-<div id="outline-container-org4eeffc9" class="outline-4">
-<h4 id="org4eeffc9"><span class="section-number-4">1.2.4</span> 服务优雅关闭</h4>
+<div id="outline-container-orgb91b1d4" class="outline-4">
+<h4 id="orgb91b1d4"><span class="section-number-4">1.2.4</span> 服务优雅关闭</h4>
 <div class="outline-text-4" id="text-1-2-4">
 <p>
 优雅关闭一般指的是，关闭服务时把该处理的请求处理完毕，相关的资源正常清理结束之后再程序自动运行结束。而不是直接杀进程。
@@ -580,8 +580,8 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 </div>
 </div>
 
-<div id="outline-container-org829122f" class="outline-4">
-<h4 id="org829122f"><span class="section-number-4">1.2.5</span> 使用 API 分组</h4>
+<div id="outline-container-orgdf2dd55" class="outline-4">
+<h4 id="orgdf2dd55"><span class="section-number-4">1.2.5</span> 使用 API 分组</h4>
 <div class="outline-text-4" id="text-1-2-5">
 <p>
 不管是 mux 还是 gin 都支持 API 分组，mux 隐式一些是 <code>subPath</code> ，而 gin 直接叫 <code>Group</code> 。
@@ -593,8 +593,8 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 </div>
 </div>
 
-<div id="outline-container-org9bcad3a" class="outline-4">
-<h4 id="org9bcad3a"><span class="section-number-4">1.2.6</span> 日志</h4>
+<div id="outline-container-org99bd2ea" class="outline-4">
+<h4 id="org99bd2ea"><span class="section-number-4">1.2.6</span> 日志</h4>
 <div class="outline-text-4" id="text-1-2-6">
 <p>
 根据云原生倡导，日志统一打印到标准输出。 日志收集和查看是基建需要做的事情，程序应与此解耦。
@@ -602,8 +602,8 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 </div>
 </div>
 
-<div id="outline-container-org1f1ed0f" class="outline-4">
-<h4 id="org1f1ed0f"><span class="section-number-4">1.2.7</span> 监控：使用 prometheus_client 暴露 API metrics</h4>
+<div id="outline-container-org8a66ae3" class="outline-4">
+<h4 id="org8a66ae3"><span class="section-number-4">1.2.7</span> 监控：使用 prometheus_client 暴露 API metrics</h4>
 <div class="outline-text-4" id="text-1-2-7">
 <p>
 对接 promethues 之后可以很方便的监控 API 调用情况，调用耗时、状态码等等。因为 Prometheus 是 pull 的模式，所以服务很好解耦，
@@ -670,16 +670,16 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 </div>
 
 
-<div id="outline-container-org6734aee" class="outline-3">
-<h3 id="org6734aee"><span class="section-number-3">1.3</span> 常用库选型</h3>
+<div id="outline-container-org4745845" class="outline-3">
+<h3 id="org4745845"><span class="section-number-3">1.3</span> 常用库选型</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 <a href="packages.html">Go 包选择与对比</a> 中有一些列举，说到的这里就不赘述了。
 </p>
 </div>
 
-<div id="outline-container-org9278aca" class="outline-4">
-<h4 id="org9278aca"><span class="section-number-4">1.3.1</span> 日志</h4>
+<div id="outline-container-org60fdead" class="outline-4">
+<h4 id="org60fdead"><span class="section-number-4">1.3.1</span> 日志</h4>
 <div class="outline-text-4" id="text-1-3-1">
 <p>
 使用 <a href="https://github.com/sirupsen/logrus">logrus</a>，基本设置：
@@ -715,8 +715,8 @@ logrus.<span style="color: #006699;">Infof</span><span style="color: #707183;">(
 </div>
 </div>
 
-<div id="outline-container-org231cda2" class="outline-4">
-<h4 id="org231cda2"><span class="section-number-4">1.3.2</span> MySQL</h4>
+<div id="outline-container-org9d4c1a4" class="outline-4">
+<h4 id="org9d4c1a4"><span class="section-number-4">1.3.2</span> MySQL</h4>
 <div class="outline-text-4" id="text-1-3-2">
 <p>
 使用 <a href="https://github.com/go-sql-driver/mysql">go-sql-driver/mysql</a>，但是它是一个驱动，使用使用 SQL 的 CRUD，还是要看 Go 的标准库 <a href="https://golang.org/pkg/database/sql/">database/sql</a>。
@@ -830,8 +830,8 @@ goqu 和 squirrel 是社区比较出名的两个 SQL 构建器。我自己使用
 </div>
 </div>
 
-<div id="outline-container-org545fcb5" class="outline-4">
-<h4 id="org545fcb5"><span class="section-number-4">1.3.3</span> MongoDB</h4>
+<div id="outline-container-orgc70e9af" class="outline-4">
+<h4 id="orgc70e9af"><span class="section-number-4">1.3.3</span> MongoDB</h4>
 <div class="outline-text-4" id="text-1-3-3">
 <p>
 建议使用官方提供的库：<a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a>，开发已经一两年了，正式版本发布有六七个月了。
@@ -843,8 +843,8 @@ goqu 和 squirrel 是社区比较出名的两个 SQL 构建器。我自己使用
 </div>
 </div>
 
-<div id="outline-container-orgdd06b75" class="outline-2">
-<h2 id="orgdd06b75"><span class="section-number-2">2</span> 打包</h2>
+<div id="outline-container-org7397415" class="outline-2">
+<h2 id="org7397415"><span class="section-number-2">2</span> 打包</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Go 支持跨平台编译，参考 <a href="build-env.html">构建环境</a> 中的说明。
@@ -891,12 +891,12 @@ CMD <span style="color: #707183;">[</span><span style="color: #008000;">"/hello"
 </div>
 </div>
 
-<div id="outline-container-orgc6e11bd" class="outline-2">
-<h2 id="orgc6e11bd"><span class="section-number-2">3</span> 部署</h2>
+<div id="outline-container-orga2f70bc" class="outline-2">
+<h2 id="orga2f70bc"><span class="section-number-2">3</span> 部署</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orge9c641a" class="outline-3">
-<h3 id="orge9c641a"><span class="section-number-3">3.1</span> 直接部署到主机上</h3>
+<div id="outline-container-orgede673f" class="outline-3">
+<h3 id="orgede673f"><span class="section-number-3">3.1</span> 直接部署到主机上</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 构建对应平台的二进制包，Ubuntu 15.04 之后，以及 CentOS7 之后都使用 <a href="https://wiki.archlinux.org/index.php/Systemd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">systemd</a> 作为默认的系统和服务管理器了。
@@ -911,7 +911,7 @@ CMD <span style="color: #707183;">[</span><span style="color: #008000;">"/hello"
 比如：
 </p>
 
-<pre class="example" id="org7970e4a">
+<pre class="example" id="org39a2faf">
 [Unit]
 Description=Command Scheduler
 After=auditd.service systemd-user-sessions.service time-sync.target
@@ -937,8 +937,8 @@ WantedBy=multi-user.target
 </div>
 </div>
 
-<div id="outline-container-org5c22760" class="outline-3">
-<h3 id="org5c22760"><span class="section-number-3">3.2</span> 部署到容器环境下</h3>
+<div id="outline-container-orgc99c208" class="outline-3">
+<h3 id="orgc99c208"><span class="section-number-3">3.2</span> 部署到容器环境下</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 在有容器运行时的情况下，建议使用容器部署。
@@ -946,8 +946,8 @@ WantedBy=multi-user.target
 </div>
 </div>
 
-<div id="outline-container-org7067535" class="outline-3">
-<h3 id="org7067535"><span class="section-number-3">3.3</span> 版本号</h3>
+<div id="outline-container-orgebd6a44" class="outline-3">
+<h3 id="orgebd6a44"><span class="section-number-3">3.3</span> 版本号</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 如果使用 Docker 部署时，版本号通常放到 docker tag 中。如果使用二进制文件直接部署的话，把版本号放在二进制名称上是一种办法，
@@ -992,7 +992,7 @@ BuildTime string = ""
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2020-06-29 Mon 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>

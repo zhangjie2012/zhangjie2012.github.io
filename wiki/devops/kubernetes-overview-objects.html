@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-05-22 Fri 10:21 -->
+<!-- 2020-08-20 Thu 15:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 对象</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -250,57 +250,57 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org09a466d">1. 命名空间</a>
+<li><a href="#org1ac607a">1. 命名空间</a>
 <ul>
-<li><a href="#orgd95693a">1.1. 用途</a></li>
-<li><a href="#org694c301">1.2. 使用</a></li>
-<li><a href="#orgd6f694b">1.3. 命名空间和 DNS</a></li>
-<li><a href="#org60e6456">1.4. 并非所有对象都在命名空间中</a></li>
+<li><a href="#orgec2e9b1">1.1. 用途</a></li>
+<li><a href="#orge459e2e">1.2. 使用</a></li>
+<li><a href="#org2f06907">1.3. 命名空间和 DNS</a></li>
+<li><a href="#org7469b6e">1.4. 并非所有对象都在命名空间中</a></li>
 </ul>
 </li>
-<li><a href="#org06d9d3f">2. 标签和选择器</a>
+<li><a href="#orgb5dbfb4">2. 标签和选择器</a>
 <ul>
-<li><a href="#org33777e6">2.1. 动机</a></li>
-<li><a href="#orgf98a0c9">2.2. 语法和字符集</a></li>
-<li><a href="#orgfbbd83b">2.3. 标签选择器</a></li>
-<li><a href="#org9e03d4f">2.4. API</a></li>
+<li><a href="#org5fdfcef">2.1. 动机</a></li>
+<li><a href="#org9c50027">2.2. 语法和字符集</a></li>
+<li><a href="#orgdbc3f94">2.3. 标签选择器</a></li>
+<li><a href="#orgdd999ae">2.4. API</a></li>
 </ul>
 </li>
-<li><a href="#orgcb4fa2b">3. 字段选择器</a>
+<li><a href="#orgefadf29">3. 字段选择器</a>
 <ul>
-<li><a href="#org1944f70">3.1. 支持的字段</a></li>
-<li><a href="#org385fd3c">3.2. 支持的运算符</a></li>
-<li><a href="#orgab6acd0">3.3. 链式选择器</a></li>
-<li><a href="#org626bd35">3.4. 多种资源类型</a></li>
+<li><a href="#org9b267bb">3.1. 支持的字段</a></li>
+<li><a href="#orgde63079">3.2. 支持的运算符</a></li>
+<li><a href="#orge56d25b">3.3. 链式选择器</a></li>
+<li><a href="#org88c60e9">3.4. 多种资源类型</a></li>
 </ul>
 </li>
-<li><a href="#org30ddc1c">4. 推荐使用的标签</a>
+<li><a href="#orgca33d12">4. 推荐使用的标签</a>
 <ul>
-<li><a href="#org9d061a5">4.1. 一个简单的无状态服务</a></li>
-<li><a href="#orga8bf6a6">4.2. 有状态服务</a></li>
+<li><a href="#org1c39684">4.1. 一个简单的无状态服务</a></li>
+<li><a href="#org376d460">4.2. 有状态服务</a></li>
 </ul>
 </li>
-<li><a href="#orgc380fa0">5. 理解 Kubernetes 对象</a>
+<li><a href="#orgdcb0a2f">5. 理解 Kubernetes 对象</a>
 <ul>
-<li><a href="#orgb372552">5.1. 对象规约（Spec）和状态（Status）</a></li>
-<li><a href="#org3086d4b">5.2. 描述 Kubernetes 对象</a></li>
-<li><a href="#org4d07615">5.3. 必须字段</a></li>
+<li><a href="#org37f9aa7">5.1. 对象规约（Spec）和状态（Status）</a></li>
+<li><a href="#orgbcc51e6">5.2. 描述 Kubernetes 对象</a></li>
+<li><a href="#org8628600">5.3. 必须字段</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org09a466d" class="outline-2">
-<h2 id="org09a466d"><span class="section-number-2">1</span> 命名空间</h2>
+<div id="outline-container-org1ac607a" class="outline-2">
+<h2 id="org1ac607a"><span class="section-number-2">1</span> 命名空间</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 同一个物理机群支持划分出多个虚拟集群，这些虚拟集群被称为命名空间（namespace）。
 </p>
 </div>
 
-<div id="outline-container-orgd95693a" class="outline-3">
-<h3 id="orgd95693a"><span class="section-number-3">1.1</span> 用途</h3>
+<div id="outline-container-orgec2e9b1" class="outline-3">
+<h3 id="orgec2e9b1"><span class="section-number-3">1.1</span> 用途</h3>
 <div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
 <li>命名空间用于很多跨多个团队或者项目的用户场景。几个或者几十个用户的集群，不需要考虑命名空间。</li>
@@ -311,8 +311,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org694c301" class="outline-3">
-<h3 id="org694c301"><span class="section-number-3">1.2</span> 使用</h3>
+<div id="outline-container-orge459e2e" class="outline-3">
+<h3 id="orge459e2e"><span class="section-number-3">1.2</span> 使用</h3>
 <div class="outline-text-3" id="text-1-2">
 <div class="org-src-container">
 <pre class="src src-shell">kubectl get namespaces
@@ -335,8 +335,8 @@ Kubernetes 会创建三个初始的空间：
 </div>
 </div>
 
-<div id="outline-container-orgd6f694b" class="outline-3">
-<h3 id="orgd6f694b"><span class="section-number-3">1.3</span> 命名空间和 DNS</h3>
+<div id="outline-container-org2f06907" class="outline-3">
+<h3 id="org2f06907"><span class="section-number-3">1.3</span> 命名空间和 DNS</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 当创建一个 Service 时，Kubernetes 会创建一个对应的 DNS 条目，形式为： <code>&lt;service-name&gt;.&lt;namespace-name&gt;.svc.cluster.local</code> 。
@@ -345,8 +345,8 @@ Kubernetes 会创建三个初始的空间：
 </div>
 </div>
 
-<div id="outline-container-org60e6456" class="outline-3">
-<h3 id="org60e6456"><span class="section-number-3">1.4</span> 并非所有对象都在命名空间中</h3>
+<div id="outline-container-org7469b6e" class="outline-3">
+<h3 id="org7469b6e"><span class="section-number-3">1.4</span> 并非所有对象都在命名空间中</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 在查询资源时，可通过指定 <code>-namespace=true/false</code> 来查看哪些资源不在命名空间中。
@@ -364,8 +364,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 
-<div id="outline-container-org06d9d3f" class="outline-2">
-<h2 id="org06d9d3f"><span class="section-number-2">2</span> 标签和选择器</h2>
+<div id="outline-container-orgb5dbfb4" class="outline-2">
+<h2 id="orgb5dbfb4"><span class="section-number-2">2</span> 标签和选择器</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 <i>标签</i> 是附加到 Kubernetes 对象（比如 Pods）上的键值对。
@@ -393,8 +393,8 @@ kubectl api-resources --namespaced=false
 </p>
 </div>
 
-<div id="outline-container-org33777e6" class="outline-3">
-<h3 id="org33777e6"><span class="section-number-3">2.1</span> 动机</h3>
+<div id="outline-container-org5fdfcef" class="outline-3">
+<h3 id="org5fdfcef"><span class="section-number-3">2.1</span> 动机</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 标签使用户能够以松散耦合的方式将他们自己的组织结构映射到系统对象，而无需客户端存储这些映射。
@@ -406,8 +406,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 
-<div id="outline-container-orgf98a0c9" class="outline-3">
-<h3 id="orgf98a0c9"><span class="section-number-3">2.2</span> 语法和字符集</h3>
+<div id="outline-container-org9c50027" class="outline-3">
+<h3 id="org9c50027"><span class="section-number-3">2.2</span> 语法和字符集</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 <i>键值对。</i>
@@ -429,8 +429,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 
-<div id="outline-container-orgfbbd83b" class="outline-3">
-<h3 id="orgfbbd83b"><span class="section-number-3">2.3</span> 标签选择器</h3>
+<div id="outline-container-orgdbc3f94" class="outline-3">
+<h3 id="orgdbc3f94"><span class="section-number-3">2.3</span> 标签选择器</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 通过标签选择器，用户可以识别一组对象。API 目前支持两种类型的选择器：
@@ -459,13 +459,13 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 
-<div id="outline-container-org9e03d4f" class="outline-3">
-<h3 id="org9e03d4f"><span class="section-number-3">2.4</span> API</h3>
+<div id="outline-container-orgdd999ae" class="outline-3">
+<h3 id="orgdd999ae"><span class="section-number-3">2.4</span> API</h3>
 </div>
 </div>
 
-<div id="outline-container-orgcb4fa2b" class="outline-2">
-<h2 id="orgcb4fa2b"><span class="section-number-2">3</span> 字段选择器</h2>
+<div id="outline-container-orgefadf29" class="outline-2">
+<h2 id="orgefadf29"><span class="section-number-2">3</span> 字段选择器</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 字段选择器允许用户根据一个或者多个资源字段值筛选资源。比如 <code>metadata.name=my-service</code> ， <code>status.phase=Pending</code> 。
@@ -481,8 +481,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 
-<div id="outline-container-org1944f70" class="outline-3">
-<h3 id="org1944f70"><span class="section-number-3">3.1</span> 支持的字段</h3>
+<div id="outline-container-org9b267bb" class="outline-3">
+<h3 id="org9b267bb"><span class="section-number-3">3.1</span> 支持的字段</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 不同的资源类型（deployment，pod 等）支持不同的字段选择器，所有的资源都支持 <code>metadata.name</code> 和  <code>metadata.namespace</code> 。
@@ -490,8 +490,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 
-<div id="outline-container-org385fd3c" class="outline-3">
-<h3 id="org385fd3c"><span class="section-number-3">3.2</span> 支持的运算符</h3>
+<div id="outline-container-orgde63079" class="outline-3">
+<h3 id="orgde63079"><span class="section-number-3">3.2</span> 支持的运算符</h3>
 <div class="outline-text-3" id="text-3-2">
 <ul class="org-ul">
 <li>相等： <code>=</code> 和 <code>==</code> <i>两者意义相同</i></li>
@@ -500,8 +500,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 
-<div id="outline-container-orgab6acd0" class="outline-3">
-<h3 id="orgab6acd0"><span class="section-number-3">3.3</span> 链式选择器</h3>
+<div id="outline-container-orge56d25b" class="outline-3">
+<h3 id="orge56d25b"><span class="section-number-3">3.3</span> 链式选择器</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 通过逗号分隔组成一个选择链，逗号表示 <i>与</i> 。
@@ -509,8 +509,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 
-<div id="outline-container-org626bd35" class="outline-3">
-<h3 id="org626bd35"><span class="section-number-3">3.4</span> 多种资源类型</h3>
+<div id="outline-container-org88c60e9" class="outline-3">
+<h3 id="org88c60e9"><span class="section-number-3">3.4</span> 多种资源类型</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 多种资源类型中逗号分隔，可以 <i>同时</i> 筛选。比如：
@@ -524,8 +524,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 
-<div id="outline-container-org30ddc1c" class="outline-2">
-<h2 id="org30ddc1c"><span class="section-number-2">4</span> 推荐使用的标签</h2>
+<div id="outline-container-orgca33d12" class="outline-2">
+<h2 id="orgca33d12"><span class="section-number-2">4</span> 推荐使用的标签</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 <a href="https://kubernetes.io/zh/docs/concepts/overview/working-with-objects/common-labels/">https://kubernetes.io/zh/docs/concepts/overview/working-with-objects/common-labels/</a>
@@ -550,8 +550,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 
-<div id="outline-container-org9d061a5" class="outline-3">
-<h3 id="org9d061a5"><span class="section-number-3">4.1</span> 一个简单的无状态服务</h3>
+<div id="outline-container-org1c39684" class="outline-3">
+<h3 id="org1c39684"><span class="section-number-3">4.1</span> 一个简单的无状态服务</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 <b>Deployment</b>
@@ -586,8 +586,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 
-<div id="outline-container-orga8bf6a6" class="outline-3">
-<h3 id="orga8bf6a6"><span class="section-number-3">4.2</span> 有状态服务</h3>
+<div id="outline-container-org376d460" class="outline-3">
+<h3 id="org376d460"><span class="section-number-3">4.2</span> 有状态服务</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 <b>StatefulSet</b>
@@ -629,8 +629,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 </div>
-<div id="outline-container-orgc380fa0" class="outline-2">
-<h2 id="orgc380fa0"><span class="section-number-2">5</span> 理解 Kubernetes 对象</h2>
+<div id="outline-container-orgdcb0a2f" class="outline-2">
+<h2 id="orgdcb0a2f"><span class="section-number-2">5</span> 理解 Kubernetes 对象</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Kubernetes 使用 <i>对象</i> 来表示整个集群的状态。它们描述了：
@@ -655,8 +655,8 @@ Kubernetes 对象的操作（CRUD） 都需要使用 Kubernetes API。kubectl �
 </p>
 </div>
 
-<div id="outline-container-orgb372552" class="outline-3">
-<h3 id="orgb372552"><span class="section-number-3">5.1</span> 对象规约（Spec）和状态（Status）</h3>
+<div id="outline-container-org37f9aa7" class="outline-3">
+<h3 id="org37f9aa7"><span class="section-number-3">5.1</span> 对象规约（Spec）和状态（Status）</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 每个 Kubernetes 对象包含两个嵌套的字段，它们负责管理对象的配置：一个是对象 Spec；一个是 Status；
@@ -673,8 +673,8 @@ Kubernetes 对象的操作（CRUD） 都需要使用 Kubernetes API。kubectl �
 </div>
 </div>
 
-<div id="outline-container-org3086d4b" class="outline-3">
-<h3 id="org3086d4b"><span class="section-number-3">5.2</span> 描述 Kubernetes 对象</h3>
+<div id="outline-container-orgbcc51e6" class="outline-3">
+<h3 id="orgbcc51e6"><span class="section-number-3">5.2</span> 描述 Kubernetes 对象</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 创建 Kubernetes 对象时，必须提供对象的 Spec，描述对象的期望状态，以及关于对象的一些基本信息（名称，空间等）。
@@ -708,8 +708,8 @@ API 请求必须在 body 中包含 JSON 信息。kubectl 使用 yaml 格式，�
 </div>
 </div>
 
-<div id="outline-container-org4d07615" class="outline-3">
-<h3 id="org4d07615"><span class="section-number-3">5.3</span> 必须字段</h3>
+<div id="outline-container-org8628600" class="outline-3">
+<h3 id="org8628600"><span class="section-number-3">5.3</span> 必须字段</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 创建 Kubernetes 对象中对应的 .yaml 文件，需要配置如下字段：
@@ -726,7 +726,7 @@ API 请求必须在 body 中包含 JSON 信息。kubectl 使用 yaml 格式，�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-05 12:25:24 <br />Last updated: 2020-02-06 Thu 12:57 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-02-05 12:25:24 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>

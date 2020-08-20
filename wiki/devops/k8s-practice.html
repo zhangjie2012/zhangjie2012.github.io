@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-05-22 Fri 10:22 -->
+<!-- 2020-08-20 Thu 15:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 实践</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -250,30 +250,30 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc310b59">1. 实例关联节点</a>
+<li><a href="#orgd0c42a8">1. 实例关联节点</a>
 <ul>
-<li><a href="#orga156f95">1.1. nodeSelector</a>
+<li><a href="#org754aaed">1.1. nodeSelector</a>
 <ul>
-<li><a href="#org69bd8df">1.1.1. 给节点添加标签</a></li>
-<li><a href="#org09c9c70">1.1.2. 添加 nodeSelector 字段到实例配置中</a></li>
+<li><a href="#orgf184fea">1.1.1. 给节点添加标签</a></li>
+<li><a href="#orgab77d91">1.1.2. 添加 nodeSelector 字段到实例配置中</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgdacd5fd">2. 应用自查和调试</a>
+<li><a href="#org4baec6a">2. 应用自查和调试</a>
 <ul>
-<li><a href="#org390d837">2.1. 查看详细信息</a></li>
-<li><a href="#org7fc9ad2">2.2. 查看事件</a></li>
-<li><a href="#org22d9cd1">2.3. 查看日志</a></li>
-<li><a href="#orgd590585">2.4. 进入容器</a></li>
+<li><a href="#orgced8894">2.1. 查看详细信息</a></li>
+<li><a href="#org21c981a">2.2. 查看事件</a></li>
+<li><a href="#org4724224">2.3. 查看日志</a></li>
+<li><a href="#orgc2d9a36">2.4. 进入容器</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc310b59" class="outline-2">
-<h2 id="orgc310b59"><span class="section-number-2">1</span> 实例关联节点</h2>
+<div id="outline-container-orgd0c42a8" class="outline-2">
+<h2 id="orgd0c42a8"><span class="section-number-2">1</span> 实例关联节点</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 名词对应关系：
@@ -294,16 +294,16 @@ for the JavaScript code in this tag.
 </p>
 </div>
 
-<div id="outline-container-orga156f95" class="outline-3">
-<h3 id="orga156f95"><span class="section-number-3">1.1</span> nodeSelector</h3>
+<div id="outline-container-org754aaed" class="outline-3">
+<h3 id="org754aaed"><span class="section-number-3">1.1</span> nodeSelector</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 <code>nodeSelector</code> 是最简单的约束形式， <code>nodeSelector</code> 的 PodSpec 的一个字段，它是键值对的映射。实例要想在节点上运行，节点必须要与实例相关的键值对作为标签（还可以包含其他标签）。常见的做法是一对键值对。
 </p>
 </div>
 
-<div id="outline-container-org69bd8df" class="outline-4">
-<h4 id="org69bd8df"><span class="section-number-4">1.1.1</span> 给节点添加标签</h4>
+<div id="outline-container-orgf184fea" class="outline-4">
+<h4 id="orgf184fea"><span class="section-number-4">1.1.1</span> 给节点添加标签</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <ol class="org-ol">
 <li><code>kubectl get node</code> 找到集群的节点</li>
@@ -321,8 +321,8 @@ kubectl label nodes kubernetes-foo-node-1.c.a-robinson.internal disktype=ssd
 </div>
 </div>
 
-<div id="outline-container-org09c9c70" class="outline-4">
-<h4 id="org09c9c70"><span class="section-number-4">1.1.2</span> 添加 nodeSelector 字段到实例配置中</h4>
+<div id="outline-container-orgab77d91" class="outline-4">
+<h4 id="orgab77d91"><span class="section-number-4">1.1.2</span> 添加 nodeSelector 字段到实例配置中</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <p>
 找到运行实例的配置文件，并添加 nodeSelector 字段：
@@ -353,12 +353,12 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-orgdacd5fd" class="outline-2">
-<h2 id="orgdacd5fd"><span class="section-number-2">2</span> 应用自查和调试</h2>
+<div id="outline-container-org4baec6a" class="outline-2">
+<h2 id="org4baec6a"><span class="section-number-2">2</span> 应用自查和调试</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org390d837" class="outline-3">
-<h3 id="org390d837"><span class="section-number-3">2.1</span> 查看详细信息</h3>
+<div id="outline-container-orgced8894" class="outline-3">
+<h3 id="orgced8894"><span class="section-number-3">2.1</span> 查看详细信息</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 <code>kubectl describe node/deployment/service/pod/ingress/...</code>
@@ -366,8 +366,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-org7fc9ad2" class="outline-3">
-<h3 id="org7fc9ad2"><span class="section-number-3">2.2</span> 查看事件</h3>
+<div id="outline-container-org21c981a" class="outline-3">
+<h3 id="org21c981a"><span class="section-number-3">2.2</span> 查看事件</h3>
 <div class="outline-text-3" id="text-2-2">
 <ul class="org-ul">
 <li><code>kubectl get events</code> 查看 node 事件</li>
@@ -388,8 +388,8 @@ kubectl get events --namespace=test --field-selector involvedObject.name=test-33
 </div>
 </div>
 
-<div id="outline-container-org22d9cd1" class="outline-3">
-<h3 id="org22d9cd1"><span class="section-number-3">2.3</span> 查看日志</h3>
+<div id="outline-container-org4724224" class="outline-3">
+<h3 id="org4724224"><span class="section-number-3">2.3</span> 查看日志</h3>
 <div class="outline-text-3" id="text-2-3">
 <pre class="example">
 kubectl logs -f --namespace=k2 pod-name
@@ -397,8 +397,8 @@ kubectl logs -f --namespace=k2 pod-name
 </div>
 </div>
 
-<div id="outline-container-orgd590585" class="outline-3">
-<h3 id="orgd590585"><span class="section-number-3">2.4</span> 进入容器</h3>
+<div id="outline-container-orgc2d9a36" class="outline-3">
+<h3 id="orgc2d9a36"><span class="section-number-3">2.4</span> 进入容器</h3>
 <div class="outline-text-3" id="text-2-4">
 <pre class="example">
 kubectl exec -it --namespace=xxx pod-name
@@ -408,7 +408,7 @@ kubectl exec -it --namespace=xxx pod-name
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-12-04 15:04 <br />Last updated: 2020-01-20 Mon 16:32 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2018-12-04 15:04 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>

@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-05-29 Fri 14:55 -->
+<!-- 2020-08-20 Thu 15:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>gRPC 负载均衡</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -250,35 +250,35 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org98effdf">1. 常用负载均衡方法</a>
+<li><a href="#org13aae04">1. 常用负载均衡方法</a>
 <ul>
-<li><a href="#org202168e">1.1. 代理模式</a></li>
-<li><a href="#orgd7c2d51">1.2. 客户端的均衡</a></li>
-<li><a href="#org43d2e88">1.3. 额外的负载均衡服务</a></li>
+<li><a href="#org0b457d4">1.1. 代理模式</a></li>
+<li><a href="#orga864055">1.2. 客户端的均衡</a></li>
+<li><a href="#org688d41f">1.3. 额外的负载均衡服务</a></li>
 </ul>
 </li>
-<li><a href="#orgb944d32">2. gRPC Load Balancing 2017</a>
+<li><a href="#org21bc6bf">2. gRPC Load Balancing 2017</a>
 <ul>
-<li><a href="#org9a949e3">2.1. 代理的负载均衡器选项</a></li>
-<li><a href="#org091ec87">2.2. 客户端和服务器的负载均衡对比</a></li>
-<li><a href="#org9ea8795">2.3. 最佳实践</a></li>
+<li><a href="#org6240930">2.1. 代理的负载均衡器选项</a></li>
+<li><a href="#org4953d56">2.2. 客户端和服务器的负载均衡对比</a></li>
+<li><a href="#orgaf297c3">2.3. 最佳实践</a></li>
 </ul>
 </li>
-<li><a href="#org2a84eb3">3. Nginx gRPC 支持</a></li>
+<li><a href="#org0bf2f06">3. Nginx gRPC 支持</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org98effdf" class="outline-2">
-<h2 id="org98effdf"><span class="section-number-2">1</span> 常用负载均衡方法</h2>
+<div id="outline-container-org13aae04" class="outline-2">
+<h2 id="org13aae04"><span class="section-number-2">1</span> 常用负载均衡方法</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 来自：<a href="https://github.com/grpc/grpc/blob/master/doc/load-balancing.md#approaches-to-load-balancing">https://github.com/grpc/grpc/blob/master/doc/load-balancing.md#approaches-to-load-balancing</a>
 </p>
 </div>
 
-<div id="outline-container-org202168e" class="outline-3">
-<h3 id="org202168e"><span class="section-number-3">1.1</span> 代理模式</h3>
+<div id="outline-container-org0b457d4" class="outline-3">
+<h3 id="org0b457d4"><span class="section-number-3">1.1</span> 代理模式</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 在客户端和服务器之间提供一层服务转发代理，代理需要拥有将 RPC 的请求和响应临时副本，会消耗更多的资源。
@@ -287,8 +287,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgd7c2d51" class="outline-3">
-<h3 id="orgd7c2d51"><span class="section-number-3">1.2</span> 客户端的均衡</h3>
+<div id="outline-container-orga864055" class="outline-3">
+<h3 id="orga864055"><span class="section-number-3">1.2</span> 客户端的均衡</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 把负载均衡的逻辑放在客户端中。客户端自己实现负载均衡策略（比如：轮询，随机分发等）来选择一个后端服务。在这种情况下，客户端通过 name resolution 系统
@@ -306,8 +306,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org43d2e88" class="outline-3">
-<h3 id="org43d2e88"><span class="section-number-3">1.3</span> 额外的负载均衡服务</h3>
+<div id="outline-container-org688d41f" class="outline-3">
+<h3 id="org688d41f"><span class="section-number-3">1.3</span> 额外的负载均衡服务</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 客户端向负载均衡服务发出请求，负载均衡服务负责维护服务器列表的维护，以及实现各种复杂的负载均衡策略，而且通过健康检测和服务器的负载来合理的处理服务器可用性。
@@ -328,12 +328,12 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgb944d32" class="outline-2">
-<h2 id="orgb944d32"><span class="section-number-2">2</span> <a href="https://grpc.io/blog/grpc-load-balancing/">gRPC Load Balancing</a> 2017</h2>
+<div id="outline-container-org21bc6bf" class="outline-2">
+<h2 id="org21bc6bf"><span class="section-number-2">2</span> <a href="https://grpc.io/blog/grpc-load-balancing/">gRPC Load Balancing</a> 2017</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org9a949e3" class="outline-3">
-<h3 id="org9a949e3"><span class="section-number-3">2.1</span> 代理的负载均衡器选项</h3>
+<div id="outline-container-org6240930" class="outline-3">
+<h3 id="org6240930"><span class="section-number-3">2.1</span> 代理的负载均衡器选项</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 代理分为：L3/L4（传输层）代理或者 L7（应用层）代理。
@@ -397,8 +397,8 @@ LB 可以在多个后端之间分配来自同一个客户端的流。
 </div>
 </div>
 
-<div id="outline-container-org091ec87" class="outline-3">
-<h3 id="org091ec87"><span class="section-number-3">2.2</span> 客户端和服务器的负载均衡对比</h3>
+<div id="outline-container-org4953d56" class="outline-3">
+<h3 id="org4953d56"><span class="section-number-3">2.2</span> 客户端和服务器的负载均衡对比</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 （略），一般不会选择客户端。
@@ -406,8 +406,8 @@ LB 可以在多个后端之间分配来自同一个客户端的流。
 </div>
 </div>
 
-<div id="outline-container-org9ea8795" class="outline-3">
-<h3 id="org9ea8795"><span class="section-number-3">2.3</span> 最佳实践</h3>
+<div id="outline-container-orgaf297c3" class="outline-3">
+<h3 id="orgaf297c3"><span class="section-number-3">2.3</span> 最佳实践</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 <b>场景 1</b>
@@ -487,8 +487,8 @@ LB 可以在多个后端之间分配来自同一个客户端的流。
 </div>
 </div>
 
-<div id="outline-container-org2a84eb3" class="outline-2">
-<h2 id="org2a84eb3"><span class="section-number-2">3</span> Nginx gRPC 支持</h2>
+<div id="outline-container-org0bf2f06" class="outline-2">
+<h2 id="org0bf2f06"><span class="section-number-2">3</span> Nginx gRPC 支持</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 <a href="https://www.nginx.com/blog/nginx-1-13-10-grpc/">https://www.nginx.com/blog/nginx-1-13-10-grpc/</a>
@@ -512,7 +512,7 @@ Nginx 作为 client 和 server 之间的 proxy，跟之前支持 HTTP 和 TCP �
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-28 11:17:11 <br />Last updated: 2020-05-29 Fri 14:45 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2020-05-28 11:17:11 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 </div>
 </body>
 </html>

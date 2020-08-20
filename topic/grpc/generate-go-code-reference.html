@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-05-22 Fri 10:22 -->
+<!-- 2020-08-20 Thu 15:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>gPPC 生成 Go 代码参考文档</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -250,24 +250,24 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4ac3265">1. 命令行</a></li>
-<li><a href="#orgfcc70b0">2. 服务器接口生成的方法</a>
+<li><a href="#orgf56aa7c">1. 命令行</a></li>
+<li><a href="#orgc81f396">2. 服务器接口生成的方法</a>
 <ul>
-<li><a href="#org70e6272">2.1. 一元方法(Unary methods)</a></li>
-<li><a href="#orgfb3b131">2.2. 服务器流方法(Server-streaming methods)</a></li>
-<li><a href="#org7bbac92">2.3. 客户端流方法(Client-streaming methods)</a></li>
-<li><a href="#orge4c6a13">2.4. 双向流（Bidi-streaming methods）</a></li>
+<li><a href="#orgfb8cbd4">2.1. 一元方法(Unary methods)</a></li>
+<li><a href="#org09e9830">2.2. 服务器流方法(Server-streaming methods)</a></li>
+<li><a href="#org8c3e7f2">2.3. 客户端流方法(Client-streaming methods)</a></li>
+<li><a href="#org9441557">2.4. 双向流（Bidi-streaming methods）</a></li>
 </ul>
 </li>
-<li><a href="#org7be85ad">3. 客户端接口生成的方法</a>
+<li><a href="#orgc654c82">3. 客户端接口生成的方法</a>
 <ul>
-<li><a href="#orgf8a674a">3.1. 一元方法(Unary Methods)</a></li>
-<li><a href="#org182628c">3.2. 服务端流方法(Server-Streaming methods)</a></li>
-<li><a href="#orgbd65b60">3.3. 客户端流方法(Client-Streaming methods)</a></li>
-<li><a href="#orgbb964a4">3.4. 双向流方法(Bidi-Streaming methods)</a></li>
+<li><a href="#org7031573">3.1. 一元方法(Unary Methods)</a></li>
+<li><a href="#org90cea5e">3.2. 服务端流方法(Server-Streaming methods)</a></li>
+<li><a href="#org5eceacd">3.3. 客户端流方法(Client-Streaming methods)</a></li>
+<li><a href="#org7f36621">3.4. 双向流方法(Bidi-Streaming methods)</a></li>
 </ul>
 </li>
-<li><a href="#orgcb1b3a4">4. 包和命名空间</a></li>
+<li><a href="#orgfca416a">4. 包和命名空间</a></li>
 </ul>
 </div>
 </div>
@@ -279,8 +279,8 @@ for the JavaScript code in this tag.
 生成 Go 的 protobuf package 文件需要在使用 protoc 编译 <code>.proto</code> 文件时使用 <code>protoc-gen-go</code> 插件。
 </p>
 
-<div id="outline-container-org4ac3265" class="outline-2">
-<h2 id="org4ac3265"><span class="section-number-2">1</span> 命令行</h2>
+<div id="outline-container-orgf56aa7c" class="outline-2">
+<h2 id="orgf56aa7c"><span class="section-number-2">1</span> 命令行</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 使用 protobuf 编译器：
@@ -293,15 +293,15 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgfcc70b0" class="outline-2">
-<h2 id="orgfcc70b0"><span class="section-number-2">2</span> 服务器接口生成的方法</h2>
+<div id="outline-container-orgc81f396" class="outline-2">
+<h2 id="orgc81f396"><span class="section-number-2">2</span> 服务器接口生成的方法</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 在 Server 端， <code>.proto</code> 文件中的每一个 <code>service Bar</code> 都会生成如下的函数：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">RegisterBarServer</span><span style="color: #707183;">(</span>s *<span style="color: #6434A3;">grpc.Server</span>, svr <span style="color: #6434A3;">BarServer</span><span style="color: #707183;">)</span>
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">RegisterBarServer</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">s</span> *<span style="color: #6434A3;">grpc.Server</span>, <span style="color: #BA36A5;">svr</span> <span style="color: #6434A3;">BarServer</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -310,8 +310,8 @@ for the JavaScript code in this tag.
 </p>
 </div>
 
-<div id="outline-container-org70e6272" class="outline-3">
-<h3 id="org70e6272"><span class="section-number-3">2.1</span> 一元方法(Unary methods)</h3>
+<div id="outline-container-orgfb8cbd4" class="outline-3">
+<h3 id="orgfb8cbd4"><span class="section-number-3">2.1</span> 一元方法(Unary methods)</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 这些方法在生成服务接口的时候有如下的签名：
@@ -327,8 +327,8 @@ Foo(context.Context, *MsgA) (*MsgB, error)
 </div>
 </div>
 
-<div id="outline-container-orgfb3b131" class="outline-3">
-<h3 id="orgfb3b131"><span class="section-number-3">2.2</span> 服务器流方法(Server-streaming methods)</h3>
+<div id="outline-container-org09e9830" class="outline-3">
+<h3 id="org09e9830"><span class="section-number-3">2.2</span> 服务器流方法(Server-streaming methods)</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 这些方法在生成服务接口的时候有如下的签名：
@@ -347,8 +347,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooServer</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
-  <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*MsgB<span style="color: #7388D6;">)</span> error
+<pre class="src src-go"><span style="color: #0000FF;">type</span> &lt;ServiceName&gt;_FooServer <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+  <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*<span style="color: #6434A3;">MsgB</span><span style="color: #7388D6;">)</span> <span style="color: #6434A3;">error</span>
   grpc.ServerStream
 <span style="color: #707183;">}</span>
 </pre>
@@ -360,15 +360,15 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-org7bbac92" class="outline-3">
-<h3 id="org7bbac92"><span class="section-number-3">2.3</span> 客户端流方法(Client-streaming methods)</h3>
+<div id="outline-container-org8c3e7f2" class="outline-3">
+<h3 id="org8c3e7f2"><span class="section-number-3">2.3</span> 客户端流方法(Client-streaming methods)</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 这些方法在生成服务接口的时候有如下的签名：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooServer<span style="color: #707183;">)</span> error
+<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooServer<span style="color: #707183;">)</span> <span style="color: #6434A3;">error</span>
 </pre>
 </div>
 
@@ -381,9 +381,9 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooServer</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
-    <span style="color: #006699;">SendAndClose</span><span style="color: #7388D6;">(</span>*MsgA<span style="color: #7388D6;">)</span> error
-    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*MsgB, error<span style="color: #7388D6;">)</span>
+<pre class="src src-go"><span style="color: #0000FF;">type</span> &lt;ServiceName&gt;_FooServer <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+    <span style="color: #006699;">SendAndClose</span><span style="color: #7388D6;">(</span>*<span style="color: #6434A3;">MsgA</span><span style="color: #7388D6;">)</span> <span style="color: #6434A3;">error</span>
+    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*<span style="color: #6434A3;">MsgB</span>, <span style="color: #6434A3;">error</span><span style="color: #7388D6;">)</span>
     grpc.ServerStream
 <span style="color: #707183;">}</span>
 </pre>
@@ -396,15 +396,15 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-orge4c6a13" class="outline-3">
-<h3 id="orge4c6a13"><span class="section-number-3">2.4</span> 双向流（Bidi-streaming methods）</h3>
+<div id="outline-container-org9441557" class="outline-3">
+<h3 id="org9441557"><span class="section-number-3">2.4</span> 双向流（Bidi-streaming methods）</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 这些方法在生成服务接口的时候有如下的签名：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooServer<span style="color: #707183;">)</span> error
+<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooServer<span style="color: #707183;">)</span> <span style="color: #6434A3;">error</span>
 </pre>
 </div>
 
@@ -414,9 +414,9 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooServer</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
-    <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*MsgA<span style="color: #7388D6;">)</span> error
-    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*MsgB, error<span style="color: #7388D6;">)</span>
+<pre class="src src-go"><span style="color: #0000FF;">type</span> &lt;ServiceName&gt;_FooServer <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+    <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*<span style="color: #6434A3;">MsgA</span><span style="color: #7388D6;">)</span> <span style="color: #6434A3;">error</span>
+    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*<span style="color: #6434A3;">MsgB</span>, <span style="color: #6434A3;">error</span><span style="color: #7388D6;">)</span>
     grpc.ServerStream
 <span style="color: #707183;">}</span>
 </pre>
@@ -430,8 +430,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-org7be85ad" class="outline-2">
-<h2 id="org7be85ad"><span class="section-number-2">3</span> 客户端接口生成的方法</h2>
+<div id="outline-container-orgc654c82" class="outline-2">
+<h2 id="orgc654c82"><span class="section-number-2">3</span> 客户端接口生成的方法</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 在客户端测， <code>proto</code> 文件中的每一个 <code>service Bar</code> 也都会生成一个函数: <code>func BarClient(cc *grpc.ClientConn) BarClient</code> ，
@@ -439,15 +439,15 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </p>
 </div>
 
-<div id="outline-container-orgf8a674a" class="outline-3">
-<h3 id="orgf8a674a"><span class="section-number-3">3.1</span> 一元方法(Unary Methods)</h3>
+<div id="outline-container-org7031573" class="outline-3">
+<h3 id="org7031573"><span class="section-number-3">3.1</span> 一元方法(Unary Methods)</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 这些方法生成的客户端存根具有以下签名：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #707183;">(</span>ctx context.Context, in *MsgA, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>*MsgB, error<span style="color: #707183;">)</span>
+<pre class="src src-go"><span style="color: #707183;">(</span>ctx <span style="color: #6434A3;">context.Context</span>, in *<span style="color: #6434A3;">MsgA</span>, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>*<span style="color: #6434A3;">MsgB</span>, <span style="color: #6434A3;">error</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -457,15 +457,15 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-org182628c" class="outline-3">
-<h3 id="org182628c"><span class="section-number-3">3.2</span> 服务端流方法(Server-Streaming methods)</h3>
+<div id="outline-container-org90cea5e" class="outline-3">
+<h3 id="org90cea5e"><span class="section-number-3">3.2</span> 服务端流方法(Server-Streaming methods)</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 这些方法生成的客户端存根具有以下签名：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>ctx context.Context, in *MsgA, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooClient, error<span style="color: #707183;">)</span>
+<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>ctx <span style="color: #6434A3;">context.Context</span>, in *<span style="color: #6434A3;">MsgA</span>, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooClient, <span style="color: #BA36A5;">error</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -474,8 +474,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooClient</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
-    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*MsgB, error<span style="color: #7388D6;">)</span>
+<pre class="src src-go"><span style="color: #0000FF;">type</span> &lt;ServiceName&gt;_FooClient <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*<span style="color: #6434A3;">MsgB</span>, <span style="color: #6434A3;">error</span><span style="color: #7388D6;">)</span>
     grpc.ClientStream
 <span style="color: #707183;">}</span>
 </pre>
@@ -487,15 +487,15 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-orgbd65b60" class="outline-3">
-<h3 id="orgbd65b60"><span class="section-number-3">3.3</span> 客户端流方法(Client-Streaming methods)</h3>
+<div id="outline-container-org5eceacd" class="outline-3">
+<h3 id="org5eceacd"><span class="section-number-3">3.3</span> 客户端流方法(Client-Streaming methods)</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 这些方法生成的客户端存根具有以下签名：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>ctx context.Context, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooClient, error<span style="color: #707183;">)</span>
+<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>ctx <span style="color: #6434A3;">context.Context</span>, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooClient, <span style="color: #BA36A5;">error</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -508,9 +508,9 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooClient</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
-    <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*MsgA<span style="color: #7388D6;">)</span> error
-    <span style="color: #006699;">CloseAndRecv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*MsgA, error<span style="color: #7388D6;">)</span>
+<pre class="src src-go"><span style="color: #0000FF;">type</span> &lt;ServiceName&gt;_FooClient <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+    <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*<span style="color: #6434A3;">MsgA</span><span style="color: #7388D6;">)</span> <span style="color: #6434A3;">error</span>
+    <span style="color: #006699;">CloseAndRecv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*<span style="color: #6434A3;">MsgA</span>, <span style="color: #6434A3;">error</span><span style="color: #7388D6;">)</span>
     grpc.ClientStream
 <span style="color: #707183;">}</span>
 </pre>
@@ -522,15 +522,15 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-orgbb964a4" class="outline-3">
-<h3 id="orgbb964a4"><span class="section-number-3">3.4</span> 双向流方法(Bidi-Streaming methods)</h3>
+<div id="outline-container-org7f36621" class="outline-3">
+<h3 id="org7f36621"><span class="section-number-3">3.4</span> 双向流方法(Bidi-Streaming methods)</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 这些方法生成的客户端存根具有以下签名：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>ctx context.Context, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooClient, error<span style="color: #707183;">)</span>
+<pre class="src src-go"><span style="color: #006699;">Foo</span><span style="color: #707183;">(</span>ctx <span style="color: #6434A3;">context.Context</span>, opts ...grpc.CallOption<span style="color: #707183;">)</span> <span style="color: #707183;">(</span>&lt;ServiceName&gt;_FooClient, <span style="color: #BA36A5;">error</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -539,9 +539,9 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">type</span> <span style="color: #6434A3;">&lt;ServiceName&gt;_FooClient</span> <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
-    <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*MsgA<span style="color: #7388D6;">)</span> error
-    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*MsgB, error<span style="color: #7388D6;">)</span>
+<pre class="src src-go"><span style="color: #0000FF;">type</span> &lt;ServiceName&gt;_FooClient <span style="color: #0000FF;">interface</span> <span style="color: #707183;">{</span>
+    <span style="color: #006699;">Send</span><span style="color: #7388D6;">(</span>*<span style="color: #6434A3;">MsgA</span><span style="color: #7388D6;">)</span> <span style="color: #6434A3;">error</span>
+    <span style="color: #006699;">Recv</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">(</span>*<span style="color: #6434A3;">MsgB</span>, <span style="color: #6434A3;">error</span><span style="color: #7388D6;">)</span>
     grpc.ClientStream
 <span style="color: #707183;">}</span>
 </pre>
@@ -558,8 +558,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-orgcb1b3a4" class="outline-2">
-<h2 id="orgcb1b3a4"><span class="section-number-2">4</span> 包和命名空间</h2>
+<div id="outline-container-orgfca416a" class="outline-2">
+<h2 id="orgfca416a"><span class="section-number-2">4</span> 包和命名空间</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 当 <code>protoc</code> 编译器调用 <code>-go_out=plugins=grpc:</code>  时， <code>proto package</code> 会被转换成 Go 的包，跟 <code>protoc-gen-go</code> 插件不加 <code>grpc</code>
@@ -573,7 +573,7 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-21 15:05:55 <br />Last updated: 2020-05-21 Thu 15:52 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2020-05-21 15:05:55 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 </div>
 </body>
 </html>

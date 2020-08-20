@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-05-22 Fri 10:22 -->
+<!-- 2020-08-20 Thu 15:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Service</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -250,32 +250,32 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0f23829">1. 动机</a></li>
-<li><a href="#orgb4128f8">2. Service 资源</a></li>
-<li><a href="#org39e4ca5">3. 定义 Service</a>
+<li><a href="#org7e811fd">1. 动机</a></li>
+<li><a href="#orge4da00a">2. Service 资源</a></li>
+<li><a href="#org8e2086d">3. 定义 Service</a>
 <ul>
-<li><a href="#org15caacb">3.1. 没有选择器的 Services</a></li>
-<li><a href="#orgbc891af">3.2. EndpointSlices</a></li>
-<li><a href="#org0f9427e">3.3. Application Protocol</a></li>
+<li><a href="#org657b743">3.1. 没有选择器的 Services</a></li>
+<li><a href="#org1389ae4">3.2. EndpointSlices</a></li>
+<li><a href="#org004778b">3.3. Application Protocol</a></li>
 </ul>
 </li>
-<li><a href="#orgde8050d">4. <span class="todo TODO">TODO</span> 虚拟 IPs 和服务代理</a>
+<li><a href="#orgfbaf509">4. <span class="todo TODO">TODO</span> 虚拟 IPs 和服务代理</a>
 <ul>
-<li><a href="#org2efd559">4.1. 为什么不使用 DNS 轮询？</a></li>
-<li><a href="#orgbb85e2b">4.2. 使用空间代理模式（User space proxy mode）</a></li>
-<li><a href="#orgf2e2f56">4.3. <code>iptables</code> 代理模式</a></li>
-<li><a href="#orgc57deeb">4.4. IPVS 代理模式</a></li>
+<li><a href="#orgcea01da">4.1. 为什么不使用 DNS 轮询？</a></li>
+<li><a href="#org829a8de">4.2. 使用空间代理模式（User space proxy mode）</a></li>
+<li><a href="#org40cca37">4.3. <code>iptables</code> 代理模式</a></li>
+<li><a href="#org613c802">4.4. IPVS 代理模式</a></li>
 </ul>
 </li>
-<li><a href="#orgc045095">5. <span class="todo TODO">TODO</span> 多端口 Services</a></li>
-<li><a href="#orgcb7af96">6. <span class="todo TODO">TODO</span> 选择自己的 IP 地址</a></li>
-<li><a href="#org714413a">7. <span class="todo TODO">TODO</span> 服务发现</a></li>
-<li><a href="#orgd60e1ca">8. <span class="todo TODO">TODO</span> Headless Services</a></li>
-<li><a href="#org4c1da79">9. <span class="todo TODO">TODO</span> Publishing Services (ServiceTypes)</a></li>
-<li><a href="#org9347d08">10. <span class="todo TODO">TODO</span> Shortcomming</a></li>
-<li><a href="#org2b0a50c">11. <span class="todo TODO">TODO</span> 虚拟 IP 实现</a></li>
-<li><a href="#orgabad526">12. <span class="todo TODO">TODO</span> API 对象</a></li>
-<li><a href="#orge9d87ec">13. <span class="todo TODO">TODO</span> 支持的协议</a></li>
+<li><a href="#org84636b9">5. <span class="todo TODO">TODO</span> 多端口 Services</a></li>
+<li><a href="#org8fde19b">6. <span class="todo TODO">TODO</span> 选择自己的 IP 地址</a></li>
+<li><a href="#org59a3f70">7. <span class="todo TODO">TODO</span> 服务发现</a></li>
+<li><a href="#orgefd16ca">8. <span class="todo TODO">TODO</span> Headless Services</a></li>
+<li><a href="#org4b9794b">9. <span class="todo TODO">TODO</span> Publishing Services (ServiceTypes)</a></li>
+<li><a href="#org1baa372">10. <span class="todo TODO">TODO</span> Shortcomming</a></li>
+<li><a href="#org18f9619">11. <span class="todo TODO">TODO</span> 虚拟 IP 实现</a></li>
+<li><a href="#orgd1a82c6">12. <span class="todo TODO">TODO</span> API 对象</a></li>
+<li><a href="#org24981e5">13. <span class="todo TODO">TODO</span> 支持的协议</a></li>
 </ul>
 </div>
 </div>
@@ -298,8 +298,8 @@ Kubernetes 为每一个 Pod 提供单独的 IP 并且为一组 Pod 提供单独�
 </p>
 </blockquote>
 
-<div id="outline-container-org0f23829" class="outline-2">
-<h2 id="org0f23829"><span class="section-number-2">1</span> 动机</h2>
+<div id="outline-container-org7e811fd" class="outline-2">
+<h2 id="org7e811fd"><span class="section-number-2">1</span> 动机</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Kubernetes 的 Pod 不是一个持久的实体。使用 Deployment 运行应用时，它会动态的创建和销毁 Pods。
@@ -316,8 +316,8 @@ Kubernetes 的 Pod 不是一个持久的实体。使用 Deployment 运行应用�
 </div>
 </div>
 
-<div id="outline-container-orgb4128f8" class="outline-2">
-<h2 id="orgb4128f8"><span class="section-number-2">2</span> Service 资源</h2>
+<div id="outline-container-orge4da00a" class="outline-2">
+<h2 id="orge4da00a"><span class="section-number-2">2</span> Service 资源</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Service 是一种抽象，定义了 Pod 的逻辑集合和访问策略（有时称之为微服务）。Service 和目标 Pods 的关联通常有选择器来关联。
@@ -330,8 +330,8 @@ Service 是一种抽象，定义了 Pod 的逻辑集合和访问策略（有时�
 </div>
 </div>
 
-<div id="outline-container-org39e4ca5" class="outline-2">
-<h2 id="org39e4ca5"><span class="section-number-2">3</span> 定义 Service</h2>
+<div id="outline-container-org8e2086d" class="outline-2">
+<h2 id="org8e2086d"><span class="section-number-2">3</span> 定义 Service</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Service 和 Pod 一样，是一个 REST 对象，和其它的对象一样，你可以 <code>POST</code> 一个 Service 到 API server 来创建一个实例。
@@ -371,8 +371,8 @@ Service 控制器负责持续扫描与选择器相匹配的 Pod，然后更新 <
 </pre>
 </div>
 
-<div id="outline-container-org15caacb" class="outline-3">
-<h3 id="org15caacb"><span class="section-number-3">3.1</span> 没有选择器的 Services</h3>
+<div id="outline-container-org657b743" class="outline-3">
+<h3 id="org657b743"><span class="section-number-3">3.1</span> 没有选择器的 Services</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Service 最常见的是抽象对 Pod 集合的访问，但是他们也可以抽象其它类型的后端，比如：
@@ -448,8 +448,8 @@ ExternalName Service 是 Service 的特例，它没有选择器，而是使用 D
 </div>
 </div>
 
-<div id="outline-container-orgbc891af" class="outline-3">
-<h3 id="orgbc891af"><span class="section-number-3">3.2</span> EndpointSlices</h3>
+<div id="outline-container-org1389ae4" class="outline-3">
+<h3 id="org1389ae4"><span class="section-number-3">3.2</span> EndpointSlices</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 <a href="https://kubernetes.io/docs/concepts/services-networking/service/#endpointslices">https://kubernetes.io/docs/concepts/services-networking/service/#endpointslices</a>
@@ -457,8 +457,8 @@ ExternalName Service 是 Service 的特例，它没有选择器，而是使用 D
 </div>
 </div>
 
-<div id="outline-container-org0f9427e" class="outline-3">
-<h3 id="org0f9427e"><span class="section-number-3">3.3</span> Application Protocol</h3>
+<div id="outline-container-org004778b" class="outline-3">
+<h3 id="org004778b"><span class="section-number-3">3.3</span> Application Protocol</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 <a href="https://kubernetes.io/docs/concepts/services-networking/service/#application-protocol">https://kubernetes.io/docs/concepts/services-networking/service/#application-protocol</a>
@@ -467,16 +467,16 @@ ExternalName Service 是 Service 的特例，它没有选择器，而是使用 D
 </div>
 </div>
 
-<div id="outline-container-orgde8050d" class="outline-2">
-<h2 id="orgde8050d"><span class="section-number-2">4</span> <span class="todo TODO">TODO</span> 虚拟 IPs 和服务代理</h2>
+<div id="outline-container-orgfbaf509" class="outline-2">
+<h2 id="orgfbaf509"><span class="section-number-2">4</span> <span class="todo TODO">TODO</span> 虚拟 IPs 和服务代理</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> 。 <code>kube-proxy</code> 的责任是实现除了 ExternalName 之外的 <code>Services</code> 的虚拟 IP。
 </p>
 </div>
 
-<div id="outline-container-org2efd559" class="outline-3">
-<h3 id="org2efd559"><span class="section-number-3">4.1</span> 为什么不使用 DNS 轮询？</h3>
+<div id="outline-container-orgcea01da" class="outline-3">
+<h3 id="orgcea01da"><span class="section-number-3">4.1</span> 为什么不使用 DNS 轮询？</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 经常会有人问，为什么 Kubernetes 要依赖于代理将流量转发到后端，而不是使用其他方式，比如说：是否可以配置具有多个 A 值的 DNS 记录，
@@ -495,8 +495,8 @@ Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> �
 </div>
 </div>
 
-<div id="outline-container-orgbb85e2b" class="outline-3">
-<h3 id="orgbb85e2b"><span class="section-number-3">4.2</span> 使用空间代理模式（User space proxy mode）</h3>
+<div id="outline-container-org829a8de" class="outline-3">
+<h3 id="org829a8de"><span class="section-number-3">4.2</span> 使用空间代理模式（User space proxy mode）</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 在此模式下，Kube-proxy 监听 Kubernetes master 以添加或者删除 Service 和 Endpoint 对象。
@@ -523,8 +523,8 @@ Sorry, your browser does not support SVG.</object>
 </div>
 </div>
 
-<div id="outline-container-orgf2e2f56" class="outline-3">
-<h3 id="orgf2e2f56"><span class="section-number-3">4.3</span> <code>iptables</code> 代理模式</h3>
+<div id="outline-container-org40cca37" class="outline-3">
+<h3 id="org40cca37"><span class="section-number-3">4.3</span> <code>iptables</code> 代理模式</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
 在这种模式下，kube-proxy 监听 Kubernetes 控制面板用于添加和删除 Service 和 Endpoint 对象。对于每一个 Services，它安装
@@ -560,8 +560,8 @@ Sorry, your browser does not support SVG.</object>
 </div>
 </div>
 
-<div id="outline-container-orgc57deeb" class="outline-3">
-<h3 id="orgc57deeb"><span class="section-number-3">4.4</span> IPVS 代理模式</h3>
+<div id="outline-container-org613c802" class="outline-3">
+<h3 id="org613c802"><span class="section-number-3">4.4</span> IPVS 代理模式</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 <code>Kubernetes v1.11</code> 之后支持的特性, <span class="underline">stable</span> 。
@@ -624,44 +624,44 @@ Sorry, your browser does not support SVG.</object>
 </div>
 </div>
 
-<div id="outline-container-orgc045095" class="outline-2">
-<h2 id="orgc045095"><span class="section-number-2">5</span> <span class="todo TODO">TODO</span> 多端口 Services</h2>
+<div id="outline-container-org84636b9" class="outline-2">
+<h2 id="org84636b9"><span class="section-number-2">5</span> <span class="todo TODO">TODO</span> 多端口 Services</h2>
 </div>
 
-<div id="outline-container-orgcb7af96" class="outline-2">
-<h2 id="orgcb7af96"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> 选择自己的 IP 地址</h2>
+<div id="outline-container-org8fde19b" class="outline-2">
+<h2 id="org8fde19b"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> 选择自己的 IP 地址</h2>
 </div>
 
-<div id="outline-container-org714413a" class="outline-2">
-<h2 id="org714413a"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> 服务发现</h2>
+<div id="outline-container-org59a3f70" class="outline-2">
+<h2 id="org59a3f70"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> 服务发现</h2>
 </div>
 
-<div id="outline-container-orgd60e1ca" class="outline-2">
-<h2 id="orgd60e1ca"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> Headless Services</h2>
+<div id="outline-container-orgefd16ca" class="outline-2">
+<h2 id="orgefd16ca"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> Headless Services</h2>
 </div>
 
-<div id="outline-container-org4c1da79" class="outline-2">
-<h2 id="org4c1da79"><span class="section-number-2">9</span> <span class="todo TODO">TODO</span> Publishing Services (ServiceTypes)</h2>
+<div id="outline-container-org4b9794b" class="outline-2">
+<h2 id="org4b9794b"><span class="section-number-2">9</span> <span class="todo TODO">TODO</span> Publishing Services (ServiceTypes)</h2>
 </div>
 
-<div id="outline-container-org9347d08" class="outline-2">
-<h2 id="org9347d08"><span class="section-number-2">10</span> <span class="todo TODO">TODO</span> Shortcomming</h2>
+<div id="outline-container-org1baa372" class="outline-2">
+<h2 id="org1baa372"><span class="section-number-2">10</span> <span class="todo TODO">TODO</span> Shortcomming</h2>
 </div>
 
-<div id="outline-container-org2b0a50c" class="outline-2">
-<h2 id="org2b0a50c"><span class="section-number-2">11</span> <span class="todo TODO">TODO</span> 虚拟 IP 实现</h2>
+<div id="outline-container-org18f9619" class="outline-2">
+<h2 id="org18f9619"><span class="section-number-2">11</span> <span class="todo TODO">TODO</span> 虚拟 IP 实现</h2>
 </div>
 
-<div id="outline-container-orgabad526" class="outline-2">
-<h2 id="orgabad526"><span class="section-number-2">12</span> <span class="todo TODO">TODO</span> API 对象</h2>
+<div id="outline-container-orgd1a82c6" class="outline-2">
+<h2 id="orgd1a82c6"><span class="section-number-2">12</span> <span class="todo TODO">TODO</span> API 对象</h2>
 </div>
 
-<div id="outline-container-orge9d87ec" class="outline-2">
-<h2 id="orge9d87ec"><span class="section-number-2">13</span> <span class="todo TODO">TODO</span> 支持的协议</h2>
+<div id="outline-container-org24981e5" class="outline-2">
+<h2 id="org24981e5"><span class="section-number-2">13</span> <span class="todo TODO">TODO</span> 支持的协议</h2>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2020-05-08 Fri 10:51 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>

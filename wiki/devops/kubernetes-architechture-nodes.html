@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-05-22 Fri 10:21 -->
+<!-- 2020-08-20 Thu 15:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 节点</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -250,21 +250,21 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org49b9622">1. 节点状态</a>
+<li><a href="#org6059028">1. 节点状态</a>
 <ul>
-<li><a href="#org660ffaa">1.1. 地址（Addresses）</a></li>
-<li><a href="#orgf909a79">1.2. 条件（Conditions）</a></li>
-<li><a href="#org53e659f">1.3. 容量和可分配（Capacity and Allocatable）</a></li>
-<li><a href="#org303c957">1.4. 信息（info）</a></li>
+<li><a href="#orgb78762e">1.1. 地址（Addresses）</a></li>
+<li><a href="#org0ec45fb">1.2. 条件（Conditions）</a></li>
+<li><a href="#orgdbf0340">1.3. 容量和可分配（Capacity and Allocatable）</a></li>
+<li><a href="#orgfe36e10">1.4. 信息（info）</a></li>
 </ul>
 </li>
-<li><a href="#org9d6934d">2. 管理</a>
+<li><a href="#orge606e67">2. 管理</a>
 <ul>
-<li><a href="#org76127af">2.1. 节点控制器（Node Controller）</a></li>
-<li><a href="#orgd976087">2.2. 心跳机制</a></li>
-<li><a href="#orgf76a9e6">2.3. 可靠性</a></li>
-<li><a href="#org1a0c67b">2.4. 手动管理节点</a></li>
-<li><a href="#orgcbd47f5">2.5. 节点容量</a></li>
+<li><a href="#orgecec2e3">2.1. 节点控制器（Node Controller）</a></li>
+<li><a href="#org038a6b1">2.2. 心跳机制</a></li>
+<li><a href="#org1c8689b">2.3. 可靠性</a></li>
+<li><a href="#orgbc19b17">2.4. 手动管理节点</a></li>
+<li><a href="#org54240ba">2.5. 节点容量</a></li>
 </ul>
 </li>
 </ul>
@@ -275,16 +275,16 @@ for the JavaScript code in this tag.
 节点上运行的服务包括：容器运行时、kubelet 和 kube-proxy。
 </p>
 
-<div id="outline-container-org49b9622" class="outline-2">
-<h2 id="org49b9622"><span class="section-number-2">1</span> 节点状态</h2>
+<div id="outline-container-org6059028" class="outline-2">
+<h2 id="org6059028"><span class="section-number-2">1</span> 节点状态</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 一个节点包含：地址、条件、容量和可分配、信息。可通过 <code>kubectl describe node &lt;node-name&gt;</code> 查看详细信息。
 </p>
 </div>
 
-<div id="outline-container-org660ffaa" class="outline-3">
-<h3 id="org660ffaa"><span class="section-number-3">1.1</span> 地址（Addresses）</h3>
+<div id="outline-container-orgb78762e" class="outline-3">
+<h3 id="orgb78762e"><span class="section-number-3">1.1</span> 地址（Addresses）</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 包含：
@@ -298,8 +298,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgf909a79" class="outline-3">
-<h3 id="orgf909a79"><span class="section-number-3">1.2</span> 条件（Conditions）</h3>
+<div id="outline-container-org0ec45fb" class="outline-3">
+<h3 id="org0ec45fb"><span class="section-number-3">1.2</span> 条件（Conditions）</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 <code>conditions</code> 描述 <code>Running</code> 节点的状态。Conditions 的 Type 包括：
@@ -358,8 +358,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org53e659f" class="outline-3">
-<h3 id="org53e659f"><span class="section-number-3">1.3</span> 容量和可分配（Capacity and Allocatable）</h3>
+<div id="outline-container-orgdbf0340" class="outline-3">
+<h3 id="orgdbf0340"><span class="section-number-3">1.3</span> 容量和可分配（Capacity and Allocatable）</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 描述节点上的可用资源：CPU、内存和可以调度到该节点上的 Pods 最大数量。
@@ -372,8 +372,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org303c957" class="outline-3">
-<h3 id="org303c957"><span class="section-number-3">1.4</span> 信息（info）</h3>
+<div id="outline-container-orgfe36e10" class="outline-3">
+<h3 id="orgfe36e10"><span class="section-number-3">1.4</span> 信息（info）</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 节点的通用信息（System Info），包含：内核版本、系统、容器运行时以及 Kubernetes 版本信息等。
@@ -381,8 +381,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-org9d6934d" class="outline-2">
-<h2 id="org9d6934d"><span class="section-number-2">2</span> 管理</h2>
+<div id="outline-container-orge606e67" class="outline-2">
+<h2 id="orge606e67"><span class="section-number-2">2</span> 管理</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 节点（Node）并不是由 Kubernetes 创建的（外部云厂商创建）。Kubernetes 中的创建节点只是创建一个对象（包含节点的信息：name，label 等）。
@@ -413,8 +413,8 @@ for the JavaScript code in this tag.
 </p>
 </div>
 
-<div id="outline-container-org76127af" class="outline-3">
-<h3 id="org76127af"><span class="section-number-3">2.1</span> 节点控制器（Node Controller）</h3>
+<div id="outline-container-orgecec2e3" class="outline-3">
+<h3 id="orgecec2e3"><span class="section-number-3">2.1</span> 节点控制器（Node Controller）</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 节点控制器是 master 的一个组件，专门用来管理节点。
@@ -428,8 +428,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgd976087" class="outline-3">
-<h3 id="orgd976087"><span class="section-number-3">2.2</span> 心跳机制</h3>
+<div id="outline-container-org038a6b1" class="outline-3">
+<h3 id="org038a6b1"><span class="section-number-3">2.2</span> 心跳机制</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 心跳由两种形式： <code>NodeStatus</code> 和 <code>Lease</code> 对象。
@@ -437,8 +437,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgf76a9e6" class="outline-3">
-<h3 id="orgf76a9e6"><span class="section-number-3">2.3</span> 可靠性</h3>
+<div id="outline-container-org1c8689b" class="outline-3">
+<h3 id="org1c8689b"><span class="section-number-3">2.3</span> 可靠性</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 节点控制器驱逐 Pod 策略根据不健康节点占比动态调整。
@@ -446,8 +446,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org1a0c67b" class="outline-3">
-<h3 id="org1a0c67b"><span class="section-number-3">2.4</span> 手动管理节点</h3>
+<div id="outline-container-orgbc19b17" class="outline-3">
+<h3 id="orgbc19b17"><span class="section-number-3">2.4</span> 手动管理节点</h3>
 <div class="outline-text-3" id="text-2-4">
 <ul class="org-ul">
 <li>管理员可以手动修改节点资源：节点 labels 以及标记为不可调度。</li>
@@ -473,8 +473,8 @@ for the JavaScript code in this tag.
 </p>
 </div>
 </div>
-<div id="outline-container-orgcbd47f5" class="outline-3">
-<h3 id="orgcbd47f5"><span class="section-number-3">2.5</span> 节点容量</h3>
+<div id="outline-container-org54240ba" class="outline-3">
+<h3 id="org54240ba"><span class="section-number-3">2.5</span> 节点容量</h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 节点的容量（CPU 数量和内存容量）是节点对象的一部分。调度器会控制节点上的资源足够 Pods 使用；但是这只包含 kubelet 启动的所有容器，
@@ -485,7 +485,7 @@ for the JavaScript code in this tag.
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-06 13:11:04 <br />Last updated: 2020-04-09 Thu 10:09 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+<p class="postamble">First created: 2020-02-06 13:11:04 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
 </div>
 </body>
 </html>

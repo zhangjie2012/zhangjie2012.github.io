@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-06-02 Tue 14:53 -->
+<!-- 2020-08-20 Thu 15:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go MySQL 报错 closing bad idle connection: EOF</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="admin" />
+<meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
  />
 <style type="text/css">
@@ -297,10 +297,10 @@ for the JavaScript code in this tag.
 <div class="org-src-container">
 <pre class="src src-go"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">ExecContext executes a query without returning any rows.</span>
 <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">The args are for any placeholder parameters in the query.</span>
-<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span>db *<span style="color: #6434A3;">DB</span><span style="color: #707183;">)</span> <span style="color: #006699;">ExecContext</span><span style="color: #707183;">(</span>ctx <span style="color: #6434A3;">context.Context</span>, query <span style="color: #6434A3;">string</span>, args ...<span style="color: #0000FF;">interface</span><span style="color: #7388D6;">{}</span><span style="color: #707183;">)</span> <span style="color: #707183;">(</span><span style="color: #6434A3;">Result</span>, <span style="color: #6434A3;">error</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">var</span> res Result
-    <span style="color: #0000FF;">var</span> err error
-    <span style="color: #0000FF;">for</span> i := 0; i &lt; maxBadConnRetries; i++ <span style="color: #7388D6;">{</span>
+<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">db</span> *<span style="color: #6434A3;">DB</span><span style="color: #707183;">)</span> <span style="color: #006699;">ExecContext</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">ctx</span> <span style="color: #6434A3;">context.Context</span>, <span style="color: #BA36A5;">query</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">args</span> ...<span style="color: #0000FF;">interface</span><span style="color: #7388D6;">{}</span><span style="color: #707183;">)</span> <span style="color: #707183;">(</span><span style="color: #6434A3;">Result</span>, <span style="color: #6434A3;">error</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">var</span> <span style="color: #BA36A5;">res</span> <span style="color: #6434A3;">Result</span>
+    <span style="color: #0000FF;">var</span> <span style="color: #BA36A5;">err</span> <span style="color: #6434A3;">error</span>
+    <span style="color: #0000FF;">for</span> <span style="color: #BA36A5;">i</span> := 0; i &lt; maxBadConnRetries; i++ <span style="color: #7388D6;">{</span>
         res, err = db.<span style="color: #006699;">exec</span><span style="color: #909183;">(</span>ctx, query, args, cachedOrNewConn<span style="color: #909183;">)</span>
         <span style="color: #0000FF;">if</span> err != driver.ErrBadConn <span style="color: #909183;">{</span>
             <span style="color: #0000FF;">break</span>
@@ -344,7 +344,7 @@ for the JavaScript code in this tag.
 <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Expired connections may be closed lazily before reuse.</span>
 <span style="color: #8D8D84;">//</span>
 <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">If d &lt;= 0, connections are reused forever.</span>
-<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span>db *<span style="color: #6434A3;">DB</span><span style="color: #707183;">)</span> <span style="color: #006699;">SetConnMaxLifetime</span><span style="color: #707183;">(</span>d <span style="color: #6434A3;">time.Duration</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">db</span> *<span style="color: #6434A3;">DB</span><span style="color: #707183;">)</span> <span style="color: #006699;">SetConnMaxLifetime</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">d</span> <span style="color: #6434A3;">time.Duration</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
     <span style="color: #0000FF;">if</span> d &lt; 0 <span style="color: #7388D6;">{</span>
         d = 0
     <span style="color: #7388D6;">}</span>
@@ -420,7 +420,7 @@ MySQL server 默认与客户端的连接交互时间是 <code>28800s</code> ，8
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-06-01 18:07:52 <br />Last updated: 2020-06-02 Tue 14:52 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2020-06-01 18:07:52 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 </div>
 </body>
 </html>
