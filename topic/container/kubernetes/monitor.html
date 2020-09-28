@@ -6,7 +6,7 @@
 <!-- 2020-09-28 Mon 16:23 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ant Design</title>
+<title>Kubernetes - 监控</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,132 +221,18 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">Ant Design</h1>
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#org77c1b12">1. FAQ</a>
-<ul>
-<li><a href="#orgffc85b7">1.1. 表格内嵌表格，无数据时不显示 icon</a></li>
-<li><a href="#org46f8795">1.2. 表格水平滚动条，显示时多了一个空白列</a></li>
-<li><a href="#org3d1e1b4">1.3. 表单 required 校验时，提示 "xxx is not string"</a></li>
-<li><a href="#orge91817c">1.4. v4 form initialValue 只初始化一次</a></li>
-</ul>
-</li>
-<li><a href="#orgdf6158a">2. 资源</a></li>
-</ul>
-</div>
-</div>
+<h1 class="title">Kubernetes - 监控</h1>
 <p>
-antd v4 发布了，以下如无特殊说明，均为 3.x 版本。
-</p>
-
-<div id="outline-container-org77c1b12" class="outline-2">
-<h2 id="org77c1b12"><span class="section-number-2">1</span> FAQ</h2>
-<div class="outline-text-2" id="text-1">
-</div>
-<div id="outline-container-orgffc85b7" class="outline-3">
-<h3 id="orgffc85b7"><span class="section-number-3">1.1</span> 表格内嵌表格，无数据时不显示 icon</h3>
-<div class="outline-text-3" id="text-1-1">
-<div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">function</span> <span style="color: #006699;">expandIcon</span><span style="color: #707183;">(</span><span style="color: #7388D6;">{</span> expanded, expandable, record, onExpand <span style="color: #7388D6;">}</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-  <span style="color: #0000FF;">if</span> <span style="color: #7388D6;">(</span>!expandable || record.canExpanded === <span style="color: #D0372D;">false</span><span style="color: #7388D6;">)</span> <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">null</span>;
-
-  <span style="color: #0000FF;">return</span> <span style="color: #7388D6;">(</span>
-    &lt;a onClick=<span style="color: #909183;">{</span>e =&gt; onExpand<span style="color: #709870;">(</span>record, e<span style="color: #709870;">)</span><span style="color: #909183;">}</span>&gt;
-      <span style="color: #909183;">{</span>expanded ? &lt;Icon type=<span style="color: #008000;">"minus-square"</span> /&gt; : &lt;Icon type=<span style="color: #008000;">"plus-square"</span> /&gt;<span style="color: #909183;">}</span>
-    &lt;/a&gt;
-    <span style="color: #7388D6;">)</span>;
-<span style="color: #707183;">}</span>
-</pre>
-</div>
-
-<p>
-<a href="https://codesandbox.io/s/8x2j898pp2">https://codesandbox.io/s/8x2j898pp2</a>
-</p>
-</div>
-</div>
-
-<div id="outline-container-org46f8795" class="outline-3">
-<h3 id="org46f8795"><span class="section-number-3">1.2</span> 表格水平滚动条，显示时多了一个空白列</h3>
-<div class="outline-text-3" id="text-1-2">
-<ol class="org-ol">
-<li>列设置固定宽度，比如 <code>width: 980</code> ，注意是数值不是字符串</li>
-<li>设置 scroll，比如 <code>scroll={{ x: 1600 }}</code> x 的值对应的屏幕的大小，1600 的意思是超过 1600 宽度的屏幕才开始滚动。
-另外 x 可以设置成 <code>max-content</code> 来自适应滚动<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-org3d1e1b4" class="outline-3">
-<h3 id="org3d1e1b4"><span class="section-number-3">1.3</span> 表单 required 校验时，提示 "xxx is not string"</h3>
-<div class="outline-text-3" id="text-1-3">
-<p>
-如果设置了 <code>required: true</code> ，会校验值是否有效，但是默认似乎是 <code>string</code> 类型，如果值不是 <code>string</code> 类型，需要手动设置值类型 <code>type</code> 。
-</p>
-
-<p>
-<code>type</code> 可选值有：<a href="https://github.com/yiminghe/async-validator#type">https://github.com/yiminghe/async-validator#type</a>
-</p>
-
-<p>
-比如：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-js">rules: <span style="color: #707183;">[</span><span style="color: #7388D6;">{</span> require: <span style="color: #D0372D;">true</span>, type: <span style="color: #008000;">'integer'</span> <span style="color: #7388D6;">}</span><span style="color: #707183;">]</span>
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orge91817c" class="outline-3">
-<h3 id="orge91817c"><span class="section-number-3">1.4</span> v4 form initialValue 只初始化一次</h3>
-<div class="outline-text-3" id="text-1-4">
-<p>
-官方说明：
-</p>
-
-<blockquote>
-<p>
-在 v3 版本中，修改未操作的字段 initialValue 会同步更新字段值，这是一个 BUG。但是由于被长期作为一个 feature 使用，
-因而我们一直没有修复。在 v4 中，该 BUG 已被修复。initialValue 只有在初始化以及重置表单时生效。
-</p>
-</blockquote>
-
-<p>
-这会导致类似编辑的表单老的办法没法使用了，表单字段只能初始化一次，数据不更新。解决办法：
+暴露的 Kubernetes metric:
 </p>
 
 <ul class="org-ul">
-<li><code>form.setFieldsValue</code> 设置值 <a href="https://codepen.io/afc163-1472555193/pen/LYVjNWN?editors=0011">https://codepen.io/afc163-1472555193/pen/LYVjNWN?editors=0011</a></li>
+<li><a href="https://github.com/kubernetes/kube-state-metrics/tree/master/docs">kube-state-metrics</a>：集群、节点、空间，Pod 等</li>
+<li><a href="https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md">cAdvisor export metric</a>：容器暴露的 metric name、类型、描述、单位等</li>
 </ul>
 </div>
-</div>
-</div>
-
-<div id="outline-container-orgdf6158a" class="outline-2">
-<h2 id="orgdf6158a"><span class="section-number-2">2</span> 资源</h2>
-<div class="outline-text-2" id="text-2">
-<ul class="org-ul">
-<li>定制主题：<a href="https://ant.design/docs/react/customize-theme-cn">https://ant.design/docs/react/customize-theme-cn</a></li>
-</ul>
-</div>
-</div>
-<div id="footnotes">
-<h2 class="footnotes">Footnotes: </h2>
-<div id="text-footnotes">
-
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
-<a href="https://github.com/ant-design/ant-design/issues/10189">https://github.com/ant-design/ant-design/issues/10189</a>
-</p></div></div>
-
-
-</div>
-</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-12-10 18:01:01 <br />Last updated: 2020-09-09 Wed 14:29 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
+<p class="postamble">First created: 2020-09-28 16:21:42 <br />Last updated: 2020-09-28 Mon 16:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
 </div>
 </body>
 </html>
