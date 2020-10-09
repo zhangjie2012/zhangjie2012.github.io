@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2020-10-09 Fri 14:37 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Prometheus 文档（非官方）</title>
@@ -42,7 +42,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -197,50 +197,26 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -257,7 +233,7 @@ for the JavaScript code in this tag.
 <li><a href="#org0bacacb">1.1.1. 什么是 Prometheus?</a></li>
 <li><a href="#orgdd774f1">1.1.2. 特性</a></li>
 <li><a href="#org8cde03e">1.1.3. 组件</a></li>
-<li><a href="#org5e24eb3">1.1.4. 架构</a></li>
+<li><a href="#orge95ef47">1.1.4. 架构</a></li>
 <li><a href="#org47fc38a">1.1.5. 什么时候比较适合使用 Prometheus？</a></li>
 <li><a href="#org617a6b2">1.1.6. 什么时候不适合使用 Prometheus？</a></li>
 </ul>
@@ -265,10 +241,10 @@ for the JavaScript code in this tag.
 <li><a href="#org160e96c">1.2. 第一步</a>
 <ul>
 <li><a href="#org98a529d">1.2.1. 下载</a></li>
-<li><a href="#orgf061d13">1.2.2. 配置</a></li>
-<li><a href="#orgf9e8d02">1.2.3. 启动 Prometheus</a></li>
+<li><a href="#orga99c468">1.2.2. 配置</a></li>
+<li><a href="#org72357d5">1.2.3. 启动 Prometheus</a></li>
 <li><a href="#org69a5709">1.2.4. 在浏览器上使用表达式</a></li>
-<li><a href="#org6645faa">1.2.5. 使用图形界面</a></li>
+<li><a href="#orgefce474">1.2.5. 使用图形界面</a></li>
 <li><a href="#orgb219f1a">1.2.6. 监控其它目标</a></li>
 </ul>
 </li>
@@ -276,44 +252,44 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#org556a179">1.3.1. <span class="done DONE">DONE</span> Prometheus vs. Graphite</a>
 <ul>
-<li><a href="#orgbbef2be">1.3.1.1. 范围（Scope）</a></li>
-<li><a href="#orgbd1d15c">1.3.1.2. 数据模型</a></li>
-<li><a href="#org434b47a">1.3.1.3. 存储</a></li>
-<li><a href="#orga92dc98">1.3.1.4. 总结</a></li>
+<li><a href="#org293f1ce">1.3.1.1. 范围（Scope）</a></li>
+<li><a href="#org9624131">1.3.1.2. 数据模型</a></li>
+<li><a href="#orgc23bec6">1.3.1.3. 存储</a></li>
+<li><a href="#org2266650">1.3.1.4. 总结</a></li>
 </ul>
 </li>
 <li><a href="#org68cc8ad">1.3.2. <span class="done DONE">DONE</span> Prometheus vs. InfluxDB</a>
 <ul>
-<li><a href="#org293f1ce">1.3.2.1. 范围（Scope）</a></li>
+<li><a href="#orgc8dbcd1">1.3.2.1. 范围（Scope）</a></li>
 <li><a href="#org294108a">1.3.2.2. 数据模型/存储</a></li>
-<li><a href="#orgb32f8cf">1.3.2.3. 架构</a></li>
-<li><a href="#org76dc4b8">1.3.2.4. 总结</a></li>
+<li><a href="#org139a8eb">1.3.2.3. 架构</a></li>
+<li><a href="#orgc88f29f">1.3.2.4. 总结</a></li>
 </ul>
 </li>
 <li><a href="#org07f61cb">1.3.3. <span class="done DONE">DONE</span> Prometheus vs. OpenTSDB</a>
 <ul>
-<li><a href="#org3b6b77e">1.3.3.1. 范围</a></li>
-<li><a href="#org7c8b1e5">1.3.3.2. 数据模型</a></li>
-<li><a href="#org175048d">1.3.3.3. 存储</a></li>
-<li><a href="#org53522bc">1.3.3.4. 总结</a></li>
+<li><a href="#org51703f1">1.3.3.1. 范围</a></li>
+<li><a href="#orgd0c8c18">1.3.3.2. 数据模型</a></li>
+<li><a href="#org4ea1fa3">1.3.3.3. 存储</a></li>
+<li><a href="#org5429dd1">1.3.3.4. 总结</a></li>
 </ul>
 </li>
 <li><a href="#orgde2ac32">1.3.4. <span class="done DONE">DONE</span> Prometheus vs. Nagios</a>
 <ul>
-<li><a href="#orgfc7c86c">1.3.4.1. 范围</a></li>
-<li><a href="#org327f4aa">1.3.4.2. 数据模型</a></li>
-<li><a href="#orgd268256">1.3.4.3. 存储</a></li>
-<li><a href="#org915035d">1.3.4.4. 架构</a></li>
-<li><a href="#org2c37d5d">1.3.4.5. 总结</a></li>
+<li><a href="#orgd1bd088">1.3.4.1. 范围</a></li>
+<li><a href="#orga9faa83">1.3.4.2. 数据模型</a></li>
+<li><a href="#orgabb86c3">1.3.4.3. 存储</a></li>
+<li><a href="#org16b0c7e">1.3.4.4. 架构</a></li>
+<li><a href="#org9ea42d1">1.3.4.5. 总结</a></li>
 </ul>
 </li>
 <li><a href="#org5fa114a">1.3.5. <span class="done DONE">DONE</span> Prometheus vs. Sensu</a>
 <ul>
-<li><a href="#org51703f1">1.3.5.1. 范围</a></li>
-<li><a href="#orgf3ba673">1.3.5.2. 数据模型</a></li>
-<li><a href="#org4bd75b3">1.3.5.3. 存储</a></li>
-<li><a href="#orge95ef47">1.3.5.4. 架构</a></li>
-<li><a href="#org2266650">1.3.5.5. 总结</a></li>
+<li><a href="#org6ec8772">1.3.5.1. 范围</a></li>
+<li><a href="#orge39a72c">1.3.5.2. 数据模型</a></li>
+<li><a href="#org52cbb65">1.3.5.3. 存储</a></li>
+<li><a href="#orgf55d739">1.3.5.4. 架构</a></li>
+<li><a href="#orga2cd339">1.3.5.5. 总结</a></li>
 </ul>
 </li>
 </ul>
@@ -367,7 +343,7 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#orgc8ada5e">2. 概念</a>
 <ul>
-<li><a href="#org9624131">2.1. 数据模型</a>
+<li><a href="#org39c2d11">2.1. 数据模型</a>
 <ul>
 <li><a href="#org343cd53">2.1.1. Metric 名字和标签（labels）</a></li>
 <li><a href="#orgc268bdf">2.1.2. 样本</a></li>
@@ -388,9 +364,9 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#org41ede61">3.1.1. 下载和运行</a></li>
 <li><a href="#orge595861">3.1.2. 配置 Prometheus 然后监控它自己</a></li>
-<li><a href="#org72357d5">3.1.3. 启动 Prometheus</a></li>
+<li><a href="#orgc2fbdca">3.1.3. 启动 Prometheus</a></li>
 <li><a href="#org93a23a5">3.1.4. 在浏览器使用表达式</a></li>
-<li><a href="#orgefce474">3.1.5. 使用图形界面</a></li>
+<li><a href="#orgc326042">3.1.5. 使用图形界面</a></li>
 <li><a href="#orge4e52a4">3.1.6. 启用一些样本目标</a></li>
 <li><a href="#org8add783">3.1.7. 配置 Prometheus 监控样本目标</a></li>
 <li><a href="#org12378c3">3.1.8. 配置规则将抓取的数据汇总到新的时间序列</a></li>
@@ -409,7 +385,7 @@ for the JavaScript code in this tag.
 </li>
 </ul>
 </li>
-<li><a href="#orga99c468">3.3. <span class="todo TODO">TODO</span> 配置</a></li>
+<li><a href="#org0ee16c1">3.3. <span class="todo TODO">TODO</span> 配置</a></li>
 <li><a href="#org65a9a42">3.4. 查询</a>
 <ul>
 <li><a href="#orgb5c59b1">3.4.1. 基础（Basic）</a>
@@ -473,7 +449,7 @@ for the JavaScript code in this tag.
 </li>
 </ul>
 </li>
-<li><a href="#orgc23bec6">3.5. <span class="todo TODO">TODO</span> 存储</a></li>
+<li><a href="#org27c5c34">3.5. <span class="todo TODO">TODO</span> 存储</a></li>
 <li><a href="#org8cd9aed">3.6. <span class="todo TODO">TODO</span> Federation</a></li>
 <li><a href="#org54c9bcc">3.7. <span class="todo TODO">TODO</span> 管理 API</a></li>
 </ul>
@@ -554,15 +530,15 @@ Prometheus 生态由多个组件组成，其中许多都是可选的：
 </div>
 </div>
 
-<div id="outline-container-org5e24eb3" class="outline-4">
-<h4 id="org5e24eb3"><span class="section-number-4">1.1.4</span> 架构</h4>
+<div id="outline-container-orge95ef47" class="outline-4">
+<h4 id="orge95ef47"><span class="section-number-4">1.1.4</span> 架构</h4>
 <div class="outline-text-4" id="text-1-1-4">
 <p>
 下面这张图说明了 Prometheus 的体系结构以及一些生态组件：
 </p>
 
 
-<div class="figure">
+<div id="orge58618c" class="figure">
 <p><img src="https://prometheus.io/assets/architecture.png" alt="architecture.png" />
 </p>
 </div>
@@ -628,8 +604,8 @@ console_libraries  consoles  LICENSE  NOTICE  prometheus  prometheus.yml  promto
 </div>
 </div>
 
-<div id="outline-container-orgf061d13" class="outline-4">
-<h4 id="orgf061d13"><span class="section-number-4">1.2.2</span> 配置</h4>
+<div id="outline-container-orga99c468" class="outline-4">
+<h4 id="orga99c468"><span class="section-number-4">1.2.2</span> 配置</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <p>
 Prometheus 配置是 <a href="https://yaml.org/start.html">YAML</a> 格式的，下载之后会提供了一个配置样本文件 <code>prometheus.yml</code> 。
@@ -641,17 +617,17 @@ Prometheus 配置是 <a href="https://yaml.org/start.html">YAML</a> 格式的，
 
 <div class="org-src-container">
 <pre class="src src-yaml"><span style="color: #BA36A5;">global</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">scrape_interval</span>:     15s
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">evaluation_interval</span>: 15s
+  <span style="color: #BA36A5;">scrape_interval</span>:     15s
+  <span style="color: #BA36A5;">evaluation_interval</span>: 15s
 
-<span style="color: #BA36A5;">rule_files</span>:
+  <span style="color: #BA36A5;">rule_files</span>:
 <span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">- "first_rules.yml"</span>
 <span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">- "second_rules.yml"</span>
 
-<span style="color: #BA36A5;">scrape_configs</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">- job_name</span>: <span style="color: #008000;">'prometheus'</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">scrape_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - job_name</span>: <span style="color: #008000;">'prometheus'</span>
 <span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">static_configs</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">- targets</span>: [<span style="color: #008000;">'localhost:9090'</span>]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  - targets</span>: [<span style="color: #008000;">'localhost:9090'</span>]
 </pre>
 </div>
 
@@ -668,14 +644,14 @@ Prometheus 配置是 <a href="https://yaml.org/start.html">YAML</a> 格式的，
 <li><code>rule_files</code> 指定 Prometheus 加载的规则的位置</li>
 <li><code>scape_configs</code> 控制 Prometheus 监控那些资源，因为 Promethues 服务通过 HTTP 暴露了自己的监控数据，
 所以我们可以配置一个叫做 <code>prometheus</code> 的任务（job），用来抓取 Prometheus 暴露的时间序列数据。
-  它包含一个简单的、静态的配置，目标是： <code>localhost:9090</code> 。
-  默认情况下，Prometheus 是向 <code>http://localhost:9090/metrics</code> 请求数据的。</li>
+它包含一个简单的、静态的配置，目标是： <code>localhost:9090</code> 。
+默认情况下，Prometheus 是向 <code>http://localhost:9090/metrics</code> 请求数据的。</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgf9e8d02" class="outline-4">
-<h4 id="orgf9e8d02"><span class="section-number-4">1.2.3</span> 启动 Prometheus</h4>
+<div id="outline-container-org72357d5" class="outline-4">
+<h4 id="org72357d5"><span class="section-number-4">1.2.3</span> 启动 Prometheus</h4>
 <div class="outline-text-4" id="text-1-2-3">
 <p>
 使用我们新创建的配置文件 Prometheus，切换到 Prometheus 二进制文件的目录并执行：
@@ -735,8 +711,8 @@ count(promhttp_metric_handler_requests_total)
 </div>
 </div>
 
-<div id="outline-container-org6645faa" class="outline-4">
-<h4 id="org6645faa"><span class="section-number-4">1.2.5</span> 使用图形界面</h4>
+<div id="outline-container-orgefce474" class="outline-4">
+<h4 id="orgefce474"><span class="section-number-4">1.2.5</span> 使用图形界面</h4>
 <div class="outline-text-4" id="text-1-2-5">
 <p>
 切换到 "Graph" 页签，可以查看表达式执行结果的图形。
@@ -771,8 +747,8 @@ rate(promhttp_metric_handler_requests_total{code="200"}[1m])
 <h4 id="org556a179"><span class="section-number-4">1.3.1</span> <span class="done DONE">DONE</span> Prometheus vs. Graphite</h4>
 <div class="outline-text-4" id="text-1-3-1">
 </div>
-<div id="outline-container-orgbbef2be" class="outline-5">
-<h5 id="orgbbef2be"><span class="section-number-5">1.3.1.1</span> 范围（Scope）</h5>
+<div id="outline-container-org293f1ce" class="outline-5">
+<h5 id="org293f1ce"><span class="section-number-5">1.3.1.1</span> 范围（Scope）</h5>
 <div class="outline-text-5" id="text-1-3-1-1">
 <p>
 <a href="https://graphite.readthedocs.io/en/latest/">Graphite</a> 致力于成为具有查询语言和图形特性的被动的（passtive）时间序列数据库。其它的任何问题都可以通过外部组件解决。
@@ -785,8 +761,8 @@ Prometheus 是一个完整的监控和趋势分析系统，包括内置的主动
 </div>
 </div>
 
-<div id="outline-container-orgbd1d15c" class="outline-5">
-<h5 id="orgbd1d15c"><span class="section-number-5">1.3.1.2</span> 数据模型</h5>
+<div id="outline-container-org9624131" class="outline-5">
+<h5 id="org9624131"><span class="section-number-5">1.3.1.2</span> 数据模型</h5>
 <div class="outline-text-5" id="text-1-3-1-2">
 <p>
 Graphite 存储具名的时间序列的数值样本，跟 Prometheus 很像。然而，Prometheus 的元数据模型更加的丰富：
@@ -820,8 +796,8 @@ api_server_http_requests_total{method="POST",handler="/tracks",status="500",inst
 </div>
 </div>
 
-<div id="outline-container-org434b47a" class="outline-5">
-<h5 id="org434b47a"><span class="section-number-5">1.3.1.3</span> 存储</h5>
+<div id="outline-container-orgc23bec6" class="outline-5">
+<h5 id="orgc23bec6"><span class="section-number-5">1.3.1.3</span> 存储</h5>
 <div class="outline-text-5" id="text-1-3-1-3">
 <p>
 Graphite 使用 <a href="https://graphite.readthedocs.org/en/latest/whisper.html">Whisper</a> 存储时间序列数据在本地，是一个 RRD 风格的数据库，它希望样本以固定时间间隔到达。
@@ -835,8 +811,8 @@ Prometheus 也是每个时间序列单独的文件，但是允许在获取数据
 </div>
 </div>
 
-<div id="outline-container-orga92dc98" class="outline-5">
-<h5 id="orga92dc98"><span class="section-number-5">1.3.1.4</span> 总结</h5>
+<div id="outline-container-org2266650" class="outline-5">
+<h5 id="org2266650"><span class="section-number-5">1.3.1.4</span> 总结</h5>
 <div class="outline-text-5" id="text-1-3-1-4">
 <p>
 Prometheus 除了更容易运行和集成到你的环境之外，还提供了丰富的数据模型和查询语言。
@@ -855,8 +831,8 @@ Prometheus 除了更容易运行和集成到你的环境之外，还提供了丰
 </p>
 </div>
 
-<div id="outline-container-org293f1ce" class="outline-5">
-<h5 id="org293f1ce"><span class="section-number-5">1.3.2.1</span> 范围（Scope）</h5>
+<div id="outline-container-orgc8dbcd1" class="outline-5">
+<h5 id="orgc8dbcd1"><span class="section-number-5">1.3.2.1</span> 范围（Scope）</h5>
 <div class="outline-text-5" id="text-1-3-2-1">
 <p>
 为了公平的比较，我们还比如把 <a href="https://github.com/influxdata/kapacitor">Kapacitor</a> 和 InfluxDB 放一起考虑，它们结合一起来，可以解决 Prometheus 和
@@ -896,8 +872,8 @@ InfluxDB 使用 <a href="https://docs.influxdata.com/influxdb/v1.7/concepts/stor
 </div>
 </div>
 
-<div id="outline-container-orgb32f8cf" class="outline-5">
-<h5 id="orgb32f8cf"><span class="section-number-5">1.3.2.3</span> 架构</h5>
+<div id="outline-container-org139a8eb" class="outline-5">
+<h5 id="org139a8eb"><span class="section-number-5">1.3.2.3</span> 架构</h5>
 <div class="outline-text-5" id="text-1-3-2-3">
 <p>
 Prometheus 服务器彼此独立运行，仅依靠本地存储来实现核心功能：抓取、规则处理和告警。开源的 InfluxDB 版本类似。
@@ -924,8 +900,8 @@ Influx 提供了 <a href="https://docs.influxdata.com/enterprise_kapacitor/v1.5/
 </div>
 </div>
 
-<div id="outline-container-org76dc4b8" class="outline-5">
-<h5 id="org76dc4b8"><span class="section-number-5">1.3.2.4</span> 总结</h5>
+<div id="outline-container-orgc88f29f" class="outline-5">
+<h5 id="orgc88f29f"><span class="section-number-5">1.3.2.4</span> 总结</h5>
 <div class="outline-text-5" id="text-1-3-2-4">
 <p>
 两个系统有很大的相似性。都有标签（一个叫 label，一个叫 tag）来高效的支持多维指标。都有基本相同的数据压缩算法。
@@ -968,8 +944,8 @@ Prometheus 是一个完全开源的独立项目，由许多公司和个人维护
 </p>
 </div>
 
-<div id="outline-container-org3b6b77e" class="outline-5">
-<h5 id="org3b6b77e"><span class="section-number-5">1.3.3.1</span> 范围</h5>
+<div id="outline-container-org51703f1" class="outline-5">
+<h5 id="org51703f1"><span class="section-number-5">1.3.3.1</span> 范围</h5>
 <div class="outline-text-5" id="text-1-3-3-1">
 <p>
 这里的适用范围和 Graphite 应用相同。
@@ -977,8 +953,8 @@ Prometheus 是一个完全开源的独立项目，由许多公司和个人维护
 </div>
 </div>
 
-<div id="outline-container-org7c8b1e5" class="outline-5">
-<h5 id="org7c8b1e5"><span class="section-number-5">1.3.3.2</span> 数据模型</h5>
+<div id="outline-container-orgd0c8c18" class="outline-5">
+<h5 id="orgd0c8c18"><span class="section-number-5">1.3.3.2</span> 数据模型</h5>
 <div class="outline-text-5" id="text-1-3-3-2">
 <p>
 OpenTSDB 的数据模型几乎和 Prometheus 相同：时间序列由一组任意的键值对标识（OpenTSDB 的 tags 是 Prometheus 的 labels）。所有的指标数据是 <a href="http://opentsdb.net/docs/build/html/user_guide/writing/index.html#time-series-cardinality">存储在一起的</a>，限制指标的基数。
@@ -987,8 +963,8 @@ OpenTSDB 的数据模型几乎和 Prometheus 相同：时间序列由一组任�
 </div>
 </div>
 
-<div id="outline-container-org175048d" class="outline-5">
-<h5 id="org175048d"><span class="section-number-5">1.3.3.3</span> 存储</h5>
+<div id="outline-container-org4ea1fa3" class="outline-5">
+<h5 id="org4ea1fa3"><span class="section-number-5">1.3.3.3</span> 存储</h5>
 <div class="outline-text-5" id="text-1-3-3-3">
 <p>
 OpenTSDB 是在 Hadoop 和 HBase 之上实现的，这意味着水平扩展比较简单，但是你一开始就要接受运行 Hadoop/HBase 集群的总体复杂性。
@@ -1000,8 +976,8 @@ Prometheus 最初运行起来会很简单，但是一旦超出单个节点的容
 </div>
 </div>
 
-<div id="outline-container-org53522bc" class="outline-5">
-<h5 id="org53522bc"><span class="section-number-5">1.3.3.4</span> 总结</h5>
+<div id="outline-container-org5429dd1" class="outline-5">
+<h5 id="org5429dd1"><span class="section-number-5">1.3.3.4</span> 总结</h5>
 <div class="outline-text-5" id="text-1-3-3-4">
 <p>
 Prometheus 提供了更丰富的查询语言，可以处理更高的基数指标，并且是构建完整监控系统的一部分。如果你已经在运行 Hadoop 并重视长期存储的优势，那么 OpenTSDB 是一个不错的选择。
@@ -1018,8 +994,8 @@ Prometheus 提供了更丰富的查询语言，可以处理更高的基数指标
 </p>
 </div>
 
-<div id="outline-container-orgfc7c86c" class="outline-5">
-<h5 id="orgfc7c86c"><span class="section-number-5">1.3.4.1</span> 范围</h5>
+<div id="outline-container-orgd1bd088" class="outline-5">
+<h5 id="orgd1bd088"><span class="section-number-5">1.3.4.1</span> 范围</h5>
 <div class="outline-text-5" id="text-1-3-4-1">
 <p>
 Nagios 主要基于脚本退出码进行告警。它们被称为 "checks"。单个告警支持静默，但是不会进行分组，路由或者重复数据删除。
@@ -1032,8 +1008,8 @@ NRPE 在远程机器上运行检查。
 </div>
 </div>
 
-<div id="outline-container-org327f4aa" class="outline-5">
-<h5 id="org327f4aa"><span class="section-number-5">1.3.4.2</span> 数据模型</h5>
+<div id="outline-container-orga9faa83" class="outline-5">
+<h5 id="orga9faa83"><span class="section-number-5">1.3.4.2</span> 数据模型</h5>
 <div class="outline-text-5" id="text-1-3-4-2">
 <p>
 Nagios 是基于主机的。每个主机可以有有一个或者多个服务，并且每个服务执行一项检查。
@@ -1045,8 +1021,8 @@ Nagios 是基于主机的。每个主机可以有有一个或者多个服务，�
 </div>
 </div>
 
-<div id="outline-container-orgd268256" class="outline-5">
-<h5 id="orgd268256"><span class="section-number-5">1.3.4.3</span> 存储</h5>
+<div id="outline-container-orgabb86c3" class="outline-5">
+<h5 id="orgabb86c3"><span class="section-number-5">1.3.4.3</span> 存储</h5>
 <div class="outline-text-5" id="text-1-3-4-3">
 <p>
 除了检查状态之外，Nagios 本身没有存储空间。有些插件可以存储诸如可视化的数据。
@@ -1054,8 +1030,8 @@ Nagios 是基于主机的。每个主机可以有有一个或者多个服务，�
 </div>
 </div>
 
-<div id="outline-container-org915035d" class="outline-5">
-<h5 id="org915035d"><span class="section-number-5">1.3.4.4</span> 架构</h5>
+<div id="outline-container-org16b0c7e" class="outline-5">
+<h5 id="org16b0c7e"><span class="section-number-5">1.3.4.4</span> 架构</h5>
 <div class="outline-text-5" id="text-1-3-4-4">
 <p>
 Nagios 服务器是独立的，所有的检查配置均通过文件进行。
@@ -1063,8 +1039,8 @@ Nagios 服务器是独立的，所有的检查配置均通过文件进行。
 </div>
 </div>
 
-<div id="outline-container-org2c37d5d" class="outline-5">
-<h5 id="org2c37d5d"><span class="section-number-5">1.3.4.5</span> 总结</h5>
+<div id="outline-container-org9ea42d1" class="outline-5">
+<h5 id="org9ea42d1"><span class="section-number-5">1.3.4.5</span> 总结</h5>
 <div class="outline-text-5" id="text-1-3-4-5">
 <p>
 Nagios 适用于黑盒（blackbox）探测足够小型或者静态的系统的基本监控。
@@ -1085,8 +1061,8 @@ Nagios 适用于黑盒（blackbox）探测足够小型或者静态的系统的�
 </p>
 </div>
 
-<div id="outline-container-org51703f1" class="outline-5">
-<h5 id="org51703f1"><span class="section-number-5">1.3.5.1</span> 范围</h5>
+<div id="outline-container-org6ec8772" class="outline-5">
+<h5 id="org6ec8772"><span class="section-number-5">1.3.5.1</span> 范围</h5>
 <div class="outline-text-5" id="text-1-3-5-1">
 <p>
 The same general scope differences as in the case of Nagios apply here.
@@ -1098,8 +1074,8 @@ The same general scope differences as in the case of Nagios apply here.
 </div>
 </div>
 
-<div id="outline-container-orgf3ba673" class="outline-5">
-<h5 id="orgf3ba673"><span class="section-number-5">1.3.5.2</span> 数据模型</h5>
+<div id="outline-container-orge39a72c" class="outline-5">
+<h5 id="orge39a72c"><span class="section-number-5">1.3.5.2</span> 数据模型</h5>
 <div class="outline-text-5" id="text-1-3-5-2">
 <p>
 Sensu 和 Nagios 有相同粗糙的数据模型。
@@ -1107,8 +1083,8 @@ Sensu 和 Nagios 有相同粗糙的数据模型。
 </div>
 </div>
 
-<div id="outline-container-org4bd75b3" class="outline-5">
-<h5 id="org4bd75b3"><span class="section-number-5">1.3.5.3</span> 存储</h5>
+<div id="outline-container-org52cbb65" class="outline-5">
+<h5 id="org52cbb65"><span class="section-number-5">1.3.5.3</span> 存储</h5>
 <div class="outline-text-5" id="text-1-3-5-3">
 <p>
 Sensu 使用 Redis 来存储监控数据，包括 Sensu 客户端注册表，检查结果，检查执行记录，和当前事件数据。
@@ -1116,8 +1092,8 @@ Sensu 使用 Redis 来存储监控数据，包括 Sensu 客户端注册表，检
 </div>
 </div>
 
-<div id="outline-container-orge95ef47" class="outline-5">
-<h5 id="orge95ef47"><span class="section-number-5">1.3.5.4</span> 架构</h5>
+<div id="outline-container-orgf55d739" class="outline-5">
+<h5 id="orgf55d739"><span class="section-number-5">1.3.5.4</span> 架构</h5>
 <div class="outline-text-5" id="text-1-3-5-4">
 <p>
 Sensu 有许多组件。它使用 RabbitMQ 传送，Redis 存储当前状态，并使用单独的服务器进行处理和 API 访问。
@@ -1129,8 +1105,8 @@ Sensu 有许多组件。它使用 RabbitMQ 传送，Redis 存储当前状态，�
 </div>
 </div>
 
-<div id="outline-container-org2266650" class="outline-5">
-<h5 id="org2266650"><span class="section-number-5">1.3.5.5</span> 总结</h5>
+<div id="outline-container-orga2cd339" class="outline-5">
+<h5 id="orga2cd339"><span class="section-number-5">1.3.5.5</span> 总结</h5>
 <div class="outline-text-5" id="text-1-3-5-5">
 <p>
 如果你已经有 Nagios 安装并且希望水平扩展，或者想利用 Sensu 的自动注册功能，那么 Sensu 是一个不错的选择。
@@ -1439,7 +1415,7 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 Supporting native 64 bit integers would (only) help if you need integer precision above <code>2^53</code> but below <code>2^63</code>.
 In principle, support for different sample value types (including some kind of big integer, supporting even more than 64 bit)
 could be implemented, but it is not a priority right now.
- A counter, even if incremented one million times per second, will only run into precision issues after over 285 years.
+A counter, even if incremented one million times per second, will only run into precision issues after over 285 years.
 </p>
 </div>
 </div>
@@ -1495,8 +1471,8 @@ Prometheus 的规划，更全面的了解可以参考相关组件的 issue，比
 <h3 id="org10a042d"><span class="section-number-3">1.7</span> 专有名词表（Glossary）</h3>
 <div class="outline-text-3" id="text-1-7">
 <dl class="org-dl">
-<dt>告警（alert）</dt><dd>告警是 Prometheus 的告警规则运行触发的结果，告警从 Prometheus 发送到 AlertManager。</dd>
-<dt>告警管理器（AlertManager）</dt><dd>告警管理器接口告警，然后进行分组、重复数据聚合，通知收敛、静默，最后将告警发送到邮件、SNS 等。</dd>
+<dt>告警（alert）</dt><dd>告警是 Prometheus 的告警规则运行触发的结果，告警从 Prometheus 发送到 Alertmanager。</dd>
+<dt>告警管理器（Alertmanager）</dt><dd>告警管理器接口告警，然后进行分组、重复数据聚合，通知收敛、静默，最后将告警发送到邮件、SNS 等。</dd>
 <dt>Bridge</dt><dd>Bridge 是从客户端库中获取样本然后暴露给非 Prometheus 监控系统的组件。比如，Python、Go、Java 客户端也可以将指标导出到 Graphite。</dd>
 <dt>客户端库（Client Libary）</dt><dd>一些语言的客户端库（比如：Go、Java、Python、Ruby 等）使你写监测代码更加容易，编写自定义的收集器从其他系统中提取指标，
 然后将指标暴露给 Prometheus。</dd>
@@ -1523,8 +1499,8 @@ This allows Prometheus to scrape their metrics after they have terminated.</dd>
 <h2 id="orgc8ada5e"><span class="section-number-2">2</span> 概念</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org9624131" class="outline-3">
-<h3 id="org9624131"><span class="section-number-3">2.1</span> 数据模型</h3>
+<div id="outline-container-org39c2d11" class="outline-3">
+<h3 id="org39c2d11"><span class="section-number-3">2.1</span> 数据模型</h3>
 <div class="outline-text-3" id="text-2-1">
 </div>
 <div id="outline-container-org343cd53" class="outline-4">
@@ -1796,24 +1772,24 @@ Prometheus 从 HTTP 到达点收集指标数据，Prometheus 自己的服务也�
   <span style="color: #BA36A5;">external_labels</span>:
 <span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">monitor</span>: <span style="color: #008000;">'codelab-monitor'</span>
 
-<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">A scrape configuration containing exactly one endpoint to scrape:</span>
-<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Here it's Prometheus itself.</span>
-<span style="color: #BA36A5;">scrape_configs</span>:
-  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span>
-  - <span style="color: #BA36A5;">job_name</span>: <span style="color: #008000;">'prometheus'</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">A scrape configuration containing exactly one endpoint to scrape:</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Here it's Prometheus itself.</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">scrape_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - job_name</span>: <span style="color: #008000;">'prometheus'</span>
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Override the global default and scrape targets from this job every 5 seconds.</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">scrape_interval</span>: 5s
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Override the global default and scrape targets from this job every 5 seconds.</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">scrape_interval</span>: 5s
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">static_configs</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - targets</span>: [<span style="color: #008000;">'localhost:9090'</span>]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">static_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  - targets</span>: [<span style="color: #008000;">'localhost:9090'</span>]
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org72357d5" class="outline-4">
-<h4 id="org72357d5"><span class="section-number-4">3.1.3</span> 启动 Prometheus</h4>
+<div id="outline-container-orgc2fbdca" class="outline-4">
+<h4 id="orgc2fbdca"><span class="section-number-4">3.1.3</span> 启动 Prometheus</h4>
 <div class="outline-text-4" id="text-3-1-3">
 <p>
 切换到包含 Prometheus 二进制文件的目录然后运行：
@@ -1875,8 +1851,8 @@ count(prometheus_target_interval_length_seconds)
 </div>
 </div>
 
-<div id="outline-container-orgefce474" class="outline-4">
-<h4 id="orgefce474"><span class="section-number-4">3.1.5</span> 使用图形界面</h4>
+<div id="outline-container-orgc326042" class="outline-4">
+<h4 id="orgc326042"><span class="section-number-4">3.1.5</span> 使用图形界面</h4>
 <div class="outline-text-4" id="text-3-1-5">
 <p>
 选择 Graph 页签。下面的表达式表示每秒创建 chunks 的速率：
@@ -1941,19 +1917,19 @@ go build
 
 <div class="org-src-container">
 <pre class="src src-yaml"><span style="color: #BA36A5;">scrape_configs</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">- job_name</span>:       <span style="color: #008000;">'example-random'</span>
+  - <span style="color: #BA36A5;">job_name</span>:       <span style="color: #008000;">'example-random'</span>
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Override the global default and scrape targets from this job every 5 seconds.</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  scrape_interval</span>: 5s
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Override the global default and scrape targets from this job every 5 seconds.</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">scrape_interval</span>: 5s
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  static_configs</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">- targets</span>: [<span style="color: #008000;">'localhost:8080'</span>, <span style="color: #008000;">'localhost:8081'</span>]
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">group</span>: <span style="color: #008000;">'production'</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">static_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - targets</span>: [<span style="color: #008000;">'localhost:8080'</span>, <span style="color: #008000;">'localhost:8081'</span>]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">labels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  group</span>: <span style="color: #008000;">'production'</span>
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">- targets</span>: [<span style="color: #008000;">'localhost:8082'</span>]
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">group</span>: <span style="color: #008000;">'canary'</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  - targets</span>: [<span style="color: #008000;">'localhost:8082'</span>]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">labels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">  group</span>: <span style="color: #008000;">'canary'</span>
 </pre>
 </div>
 
@@ -1987,10 +1963,10 @@ avg(rate(rpc_durations_seconds_count[5m])) by (job, service)
 
 <div class="org-src-container">
 <pre class="src src-yaml"><span style="color: #BA36A5;">groups</span>:
-- <span style="color: #BA36A5;">name</span>: example
-  <span style="color: #BA36A5;">rules</span>:
-  - <span style="color: #BA36A5;">record</span>: job_service:rpc_durations_seconds_count:avg_rate5m
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">expr</span>: avg(rate(rpc_durations_seconds_count[5m])) by (job, service)
+  - <span style="color: #BA36A5;">name</span>: example
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">rules</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - record</span>: job_service:rpc_durations_seconds_count:avg_rate5m
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">expr</span>: avg(rate(rpc_durations_seconds_count[5m])) by (job, service)
 </pre>
 </div>
 
@@ -2007,31 +1983,31 @@ avg(rate(rpc_durations_seconds_count[5m])) by (job, service)
   <span style="color: #BA36A5;">external_labels</span>:
 <span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">monitor</span>: <span style="color: #008000;">'codelab-monitor'</span>
 
-<span style="color: #BA36A5;">rule_files</span>:
-  - <span style="color: #008000;">'prometheus.rules.yml'</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">rule_files</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  - <span style="color: #008000;">'prometheus.rules.yml'</span>
 
-<span style="color: #BA36A5;">scrape_configs</span>:
-  - <span style="color: #BA36A5;">job_name</span>: <span style="color: #008000;">'prometheus'</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  scrape_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">- job_name</span>: <span style="color: #008000;">'prometheus'</span>
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Override the global default and scrape targets from this job every 5 seconds.</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">scrape_interval</span>: 5s
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span>  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Override the global default and scrape targets from this job every 5 seconds.</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  scrape_interval</span>: 5s
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">static_configs</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - targets</span>: [<span style="color: #008000;">'localhost:9090'</span>]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  static_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">- targets</span>: [<span style="color: #008000;">'localhost:9090'</span>]
 
-  - <span style="color: #BA36A5;">job_name</span>:       <span style="color: #008000;">'example-random'</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">  - job_name</span>:       <span style="color: #008000;">'example-random'</span>
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Override the global default and scrape targets from this job every 5 seconds.</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">scrape_interval</span>: 5s
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">                </span><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Override the global default and scrape targets from this job every 5 seconds.</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">                </span><span style="color: #BA36A5;">scrape_interval</span>: 5s
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">static_configs</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - targets</span>: [<span style="color: #008000;">'localhost:8080'</span>, <span style="color: #008000;">'localhost:8081'</span>]
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  group</span>: <span style="color: #008000;">'production'</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">                </span><span style="color: #BA36A5;">static_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">                </span><span style="color: #BA36A5;">  - targets</span>: [<span style="color: #008000;">'localhost:8080'</span>, <span style="color: #008000;">'localhost:8081'</span>]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">                    </span><span style="color: #BA36A5;">labels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">                    </span><span style="color: #BA36A5;">  group</span>: <span style="color: #008000;">'production'</span>
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - targets</span>: [<span style="color: #008000;">'localhost:8082'</span>]
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  group</span>: <span style="color: #008000;">'canary'</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">                    </span><span style="color: #BA36A5;">  - targets</span>: [<span style="color: #008000;">'localhost:8082'</span>]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">                        </span><span style="color: #BA36A5;">labels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">                        </span><span style="color: #BA36A5;">  group</span>: <span style="color: #008000;">'canary'</span>
 </pre>
 </div>
 
@@ -2173,8 +2149,8 @@ docker run -p 9090:9090 my-prometheus
 </div>
 </div>
 
-<div id="outline-container-orga99c468" class="outline-3">
-<h3 id="orga99c468"><span class="section-number-3">3.3</span> <span class="todo TODO">TODO</span> 配置</h3>
+<div id="outline-container-org0ee16c1" class="outline-3">
+<h3 id="org0ee16c1"><span class="section-number-3">3.3</span> <span class="todo TODO">TODO</span> 配置</h3>
 </div>
 <div id="outline-container-org65a9a42" class="outline-3">
 <h3 id="org65a9a42"><span class="section-number-3">3.4</span> 查询</h3>
@@ -2384,7 +2360,7 @@ rate 的计算方法为：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js"><span style="color: #707183;">{</span>
+<pre class="src src-js">{
     <span style="color: #008000;">"status"</span>: <span style="color: #008000;">"success"</span> | <span style="color: #008000;">"error"</span>,
     <span style="color: #008000;">"data"</span>: &lt;data&gt;,
 
@@ -2395,8 +2371,8 @@ rate 的计算方法为：
 
     <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Only if there were warnings while executing the request.</span>
     <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">There will still be data in the data field.</span>
-    <span style="color: #008000;">"warnings"</span>: <span style="color: #7388D6;">[</span><span style="color: #008000;">"&lt;string&gt;"</span><span style="color: #7388D6;">]</span>
-<span style="color: #707183;">}</span>
+    <span style="color: #008000;">"warnings"</span>: [<span style="color: #008000;">"&lt;string&gt;"</span>]
+}
 </pre>
 </div>
 
@@ -2472,10 +2448,10 @@ POST /api/v1/query
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js"><span style="color: #707183;">{</span>
-  <span style="color: #008000;">"resultType"</span>: <span style="color: #008000;">"matrix"</span> | <span style="color: #008000;">"vector"</span> | <span style="color: #008000;">"scalar"</span> | <span style="color: #008000;">"string"</span>,
-  <span style="color: #008000;">"result"</span>: &lt;value&gt;
-<span style="color: #707183;">}</span>
+<pre class="src src-js">{
+    <span style="color: #008000;">"resultType"</span>: <span style="color: #008000;">"matrix"</span> | <span style="color: #008000;">"vector"</span> | <span style="color: #008000;">"scalar"</span> | <span style="color: #008000;">"string"</span>,
+    <span style="color: #008000;">"result"</span>: &lt;value&gt;
+}
 </pre>
 </div>
 
@@ -2742,13 +2718,13 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js"><span style="color: #707183;">[</span>
-  <span style="color: #7388D6;">{</span>
-    <span style="color: #008000;">"metric"</span>: <span style="color: #909183;">{</span> <span style="color: #008000;">"&lt;label_name&gt;"</span>: <span style="color: #008000;">"&lt;label_value&gt;"</span>, ... <span style="color: #909183;">}</span>,
-    <span style="color: #008000;">"values"</span>: <span style="color: #909183;">[</span> <span style="color: #709870;">[</span> &lt;unix_time&gt;, <span style="color: #008000;">"&lt;sample_value&gt;"</span> <span style="color: #709870;">]</span>, ... <span style="color: #909183;">]</span>
-  <span style="color: #7388D6;">}</span>,
-  ...
-<span style="color: #707183;">]</span>
+<pre class="src src-js">[
+    {
+        <span style="color: #008000;">"metric"</span>: { <span style="color: #008000;">"&lt;label_name&gt;"</span>: <span style="color: #008000;">"&lt;label_value&gt;"</span>, ... },
+        <span style="color: #008000;">"values"</span>: [ [ &lt;unix_time&gt;, <span style="color: #008000;">"&lt;sample_value&gt;"</span> ], ... ]
+    },
+    ...
+]
 </pre>
 </div>
 </div>
@@ -2762,13 +2738,13 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js"><span style="color: #707183;">[</span>
-  <span style="color: #7388D6;">{</span>
-    <span style="color: #008000;">"metric"</span>: <span style="color: #909183;">{</span> <span style="color: #008000;">"&lt;label_name&gt;"</span>: <span style="color: #008000;">"&lt;label_value&gt;"</span>, ... <span style="color: #909183;">}</span>,
-    <span style="color: #008000;">"value"</span>: <span style="color: #909183;">[</span> &lt;unix_time&gt;, <span style="color: #008000;">"&lt;sample_value&gt;"</span> <span style="color: #909183;">]</span>
-  <span style="color: #7388D6;">}</span>,
-  ...
-<span style="color: #707183;">]</span>
+<pre class="src src-js">[
+    {
+        <span style="color: #008000;">"metric"</span>: { <span style="color: #008000;">"&lt;label_name&gt;"</span>: <span style="color: #008000;">"&lt;label_value&gt;"</span>, ... },
+        <span style="color: #008000;">"value"</span>: [ &lt;unix_time&gt;, <span style="color: #008000;">"&lt;sample_value&gt;"</span> ]
+    },
+    ...
+]
 </pre>
 </div>
 </div>
@@ -2782,7 +2758,7 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js"><span style="color: #707183;">[</span> &lt;unix_time&gt;, <span style="color: #008000;">"&lt;scalar_value&gt;"</span> <span style="color: #707183;">]</span>
+<pre class="src src-js">[ &lt;unix_time&gt;, <span style="color: #008000;">"&lt;scalar_value&gt;"</span> ]
 </pre>
 </div>
 </div>
@@ -2796,7 +2772,7 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js"><span style="color: #707183;">[</span> &lt;unix_time&gt;, <span style="color: #008000;">"&lt;string_value&gt;"</span> <span style="color: #707183;">]</span>
+<pre class="src src-js">[ &lt;unix_time&gt;, <span style="color: #008000;">"&lt;string_value&gt;"</span> ]
 </pre>
 </div>
 </div>
@@ -2829,8 +2805,8 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </div>
 </div>
 </div>
-<div id="outline-container-orgc23bec6" class="outline-3">
-<h3 id="orgc23bec6"><span class="section-number-3">3.5</span> <span class="todo TODO">TODO</span> 存储</h3>
+<div id="outline-container-org27c5c34" class="outline-3">
+<h3 id="org27c5c34"><span class="section-number-3">3.5</span> <span class="todo TODO">TODO</span> 存储</h3>
 </div>
 <div id="outline-container-org8cd9aed" class="outline-3">
 <h3 id="org8cd9aed"><span class="section-number-3">3.6</span> <span class="todo TODO">TODO</span> Federation</h3>
@@ -2850,7 +2826,13 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </div>
 <div id="outline-container-org447555c" class="outline-2">
 <h2 id="org447555c"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> 告警（Alerting）</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+告警相对独立，见 <a href="prometheus-alert.html">Prometheus Alert</a>。
+</p>
 </div>
+</div>
+
 <div id="outline-container-orgdfa71df" class="outline-2">
 <h2 id="orgdfa71df"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> 最佳实践</h2>
 </div>
@@ -2859,7 +2841,7 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-25 14:42:47 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
+<p class="postamble">First created: 2020-02-25 14:42:47 <br />Last updated: 2020-10-04 Sun 09:48 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
 </div>
 </body>
 </html>

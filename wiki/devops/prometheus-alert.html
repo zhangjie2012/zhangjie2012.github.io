@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2020-10-09 Fri 14:37 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Prometheus alert</title>
@@ -42,7 +42,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -197,50 +197,26 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -250,25 +226,58 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org88825a6">1. AlertManager</a>
+<li><a href="#orgb4a806f">1. 概览</a></li>
+<li><a href="#org77eb658">2. Alertmanager</a>
 <ul>
-<li><a href="#org4169091">1.1. Grouping 分组</a></li>
-<li><a href="#org3a8a0a8">1.2. Inhibition 抑制</a></li>
-<li><a href="#org5d9203a">1.3. Silences 静默</a></li>
-<li><a href="#orge6ee7de">1.4. Client behavior 客户端行为</a></li>
-<li><a href="#orgb56f3ab">1.5. Hign Availability 高可用</a></li>
+<li><a href="#org4169091">2.1. Grouping 分组</a></li>
+<li><a href="#org3a8a0a8">2.2. Inhibition 抑制</a></li>
+<li><a href="#org5d9203a">2.3. Silences 静默</a></li>
+<li><a href="#orge6ee7de">2.4. Client behavior 客户端行为</a></li>
+<li><a href="#org5d2276b">2.5. High Availability 高可用</a></li>
+</ul>
+</li>
+<li><a href="#org8475193">3. 配置</a>
+<ul>
+<li><a href="#org4283778">3.1. 配置</a></li>
+<li><a href="#orgcb85ff2">3.2. <code>&lt;route&gt;</code></a></li>
+<li><a href="#org1e2e538">3.3. <code>&lt;inhibit_rule&gt;</code></a></li>
+<li><a href="#orgea236e0">3.4. <code>&lt;http_config&gt;</code></a></li>
+<li><a href="#org8d45008">3.5. <code>&lt;tls_config&gt;</code></a></li>
+<li><a href="#orga72b6b7">3.6. <code>&lt;receiver&gt;</code></a></li>
+<li><a href="#orgd08fbc9">3.7. <code>&lt;webhook_config&gt;</code></a></li>
+</ul>
+</li>
+<li><a href="#org6675e89">4. 客户端</a></li>
+<li><a href="#orgbb840e6">5. 通知模板参考</a></li>
+<li><a href="#orgd738b27">6. 通知模板范例</a></li>
+<li><a href="#org884ac90">7. <span class="todo TODO">TODO</span> 管理端 API</a>
+<ul>
+<li><a href="#org8d3fa63">7.1. 健康检测</a></li>
+<li><a href="#org7ad01da">7.2. 可用（readiness）检测</a></li>
+<li><a href="#org7ab70cd">7.3. 重新加载（reload）</a></li>
+</ul>
+</li>
+<li><a href="#org0ccc33e">8. 源码剖析笔记</a>
+<ul>
+<li><a href="#org65a427d">8.1. provider</a></li>
+<li><a href="#org8ba2252">8.2. store</a></li>
+<li><a href="#org959f8bd">8.3. types</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
+
+<div id="outline-container-orgb4a806f" class="outline-2">
+<h2 id="orgb4a806f"><span class="section-number-2">1</span> 概览</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 告警和 Prometheus 是两部分：
 </p>
 
 <ol class="org-ol">
 <li>Prometheus server 发送告警到 Alertmanager；</li>
-<li>AlertManager 管理告警，告警策略包括静默，抑制，聚合，然后发送通知（通过邮件、on-call 通知系统、聊天平台等）；</li>
+<li>Alertmanager 管理告警，告警策略包括静默，抑制，聚合，然后发送通知（通过邮件、on-call 通知系统、聊天平台等）；</li>
 </ol>
 
 <p>
@@ -280,38 +289,53 @@ for the JavaScript code in this tag.
 <li>配置 Prometheus 向 Alertmanager 通知</li>
 <li>配置 Prometheus 告警规则</li>
 </ol>
+</div>
+</div>
 
-<div id="outline-container-org88825a6" class="outline-2">
-<h2 id="org88825a6"><span class="section-number-2">1</span> AlertManager</h2>
-<div class="outline-text-2" id="text-1">
+<div id="outline-container-org77eb658" class="outline-2">
+<h2 id="org77eb658"><span class="section-number-2">2</span> Alertmanager</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 <a href="https://github.com/prometheus/alertmanager">https://github.com/prometheus/alertmanager</a>
 </p>
 
 <p>
-Alertmanager 负责处理由客户端发送过来的告警。它负责将重复数据杉树，分组和路由到正确的接收者；它还负责静默和禁止告警。
-核心概念：
+Alertmanager 负责处理由客户端发送过来的告警（比如 Prometheus 服务）。它负责将重复数据删除，分组和路由到正确的接收者（使用电子邮件、PageDuty 或者 OpsGenie 等）；
+它还负责静默和禁止告警。
+</p>
+
+<p>
+<b><b>以下是告警相关的核心概念：</b></b>
 </p>
 </div>
 
 <div id="outline-container-org4169091" class="outline-3">
-<h3 id="org4169091"><span class="section-number-3">1.1</span> Grouping 分组</h3>
-<div class="outline-text-3" id="text-1-1">
+<h3 id="org4169091"><span class="section-number-3">2.1</span> Grouping 分组</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 分组将类似的告警分类为单个通知，这在有较大的事故中比较有用（许多系统同时发出告警）。
 </p>
 
 <p>
-作为用户，在这种情况下只希望看到一个页面，仍然可以准确的查看受影响的服务实例。
+比如：发生网络分区时，集群中正在运行数十个或数百个服务实例。有一半的服务实例访问不到数据库。Prometheus 的告警规则配置是每个服务实例无法与数据库通信时为其发送告警。
+结果就是数百个告警被发送到 Alertmanager。
+</p>
+
+<p>
+作为用户，在这种情况下只希望看到一个页面，仍然可以准确的查看受影响的服务实例。因此，可以将 Alertmanager 设置为按集群和名字为告警分组，以便它可以发送一个紧凑的通知。
+</p>
+
+<p>
+告警的分组，分组通知的时间和通知的接受者都是由配置文件中的路由树配置。
 </p>
 </div>
 </div>
 
 <div id="outline-container-org3a8a0a8" class="outline-3">
-<h3 id="org3a8a0a8"><span class="section-number-3">1.2</span> Inhibition 抑制</h3>
-<div class="outline-text-3" id="text-1-2">
+<h3 id="org3a8a0a8"><span class="section-number-3">2.2</span> Inhibition 抑制</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
-如果某些其它的警告已经触发，则抑制某些警告的通知。
+抑制指的是：如果某些其它的警告已经触发，则抑制某些警告的通知。
 </p>
 
 <p>
@@ -321,8 +345,8 @@ Alertmanager 负责处理由客户端发送过来的告警。它负责将重复�
 </div>
 
 <div id="outline-container-org5d9203a" class="outline-3">
-<h3 id="org5d9203a"><span class="section-number-3">1.3</span> Silences 静默</h3>
-<div class="outline-text-3" id="text-1-3">
+<h3 id="org5d9203a"><span class="section-number-3">2.3</span> Silences 静默</h3>
+<div class="outline-text-3" id="text-2-3">
 <p>
 静默是指在一段时间内不接收通知。
 </p>
@@ -330,16 +354,488 @@ Alertmanager 负责处理由客户端发送过来的告警。它负责将重复�
 </div>
 
 <div id="outline-container-orge6ee7de" class="outline-3">
-<h3 id="orge6ee7de"><span class="section-number-3">1.4</span> Client behavior 客户端行为</h3>
+<h3 id="orge6ee7de"><span class="section-number-3">2.4</span> Client behavior 客户端行为</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+Alertmanager 对于它的客户端有 <a href="https://prometheus.io/docs/alerting/latest/clients/">特殊要求</a>，这些仅与不使用 Prometheus 发送告警的高级用例有关。
+</p>
+</div>
 </div>
 
-<div id="outline-container-orgb56f3ab" class="outline-3">
-<h3 id="orgb56f3ab"><span class="section-number-3">1.5</span> Hign Availability 高可用</h3>
+<div id="outline-container-org5d2276b" class="outline-3">
+<h3 id="org5d2276b"><span class="section-number-3">2.5</span> High Availability 高可用</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+Alertmanager 支持配置以创建一个集群为了高可用，可以使用 <a href="https://github.com/prometheus/alertmanager#high-availability">&#x2013;cluster-*</a> 参数。
+</p>
+
+<p>
+很重要的一点是：不要在 Prometheus 和 Alertmanagers 之间做流量的负载均衡，而是将 Prometheus 指向所有的 Alertmanagers 列表。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8475193" class="outline-2">
+<h2 id="org8475193"><span class="section-number-2">3</span> 配置</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Alertmanager 通过命令行和配置文件进行配置。命令行配置不变的系统参数。配置文件配置抑制规则，通知路由和通知接收人。
+</p>
+
+<p>
+<a href="https://www.prometheus.io/webtools/alerting/routing-tree-editor/">虚拟编辑器</a> 可以帮助你构建路由树。
+</p>
+
+<p>
+运行 <code>alertmanager -h</code> 查看所有的命令行参数。Alertmanager 支持在运行时加载配置，如果配置格式有误将不会被应用。
+配置通过发送 SIGHUP 信号给进程或者请求 <code>/-reload</code> 。
+</p>
+</div>
+
+<div id="outline-container-org4283778" class="outline-3">
+<h3 id="org4283778"><span class="section-number-3">3.1</span> 配置</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+使用 <code>--config.file</code> 来指定配置文件。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">./alertmanager --config.file=alertmanager.yml
+</pre>
+</div>
+
+<p>
+文件是 YAML 格式的，由以下描述的 scheme 来定义。方括号表示是可选的。对于非列表参数，该值设置为指定的默认值。
+</p>
+
+<p>
+通用的占位数定义如下：
+</p>
+
+<ul class="org-ul">
+<li><code>&lt;duration&gt;</code> 正则表达式表示的持续时间 <code>[0-9]+(ms|[smhdwy])</code></li>
+<li><code>&lt;labelname&gt;</code> 正则表达式表示的字符串 <code>[a-zA-Z_][a-zA-Z0-9_]*</code></li>
+<li><code>&lt;labelvalue&gt;</code> unicode 字符串</li>
+<li><code>&lt;filepath&gt;</code> 工作目录下的有效路径</li>
+<li><code>&lt;boolean&gt;</code> 布尔值, <code>true</code> <code>false</code></li>
+<li><code>&lt;string&gt;</code> 字符串</li>
+<li><code>&lt;secret&gt;</code> 机密的字符串，比如密码</li>
+<li><code>&lt;tmpl_string&gt;</code> 模板字符串</li>
+<li><code>&lt;tmpl_secret&gt;</code> 机密的模板字符串</li>
+<li><code>&lt;int&gt;</code> 整型值</li>
+</ul>
+
+<p>
+<a href="https://github.com/prometheus/alertmanager/blob/master/doc/examples/simple.yml">有效的示例</a> 文件显示了使用上下文。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcb85ff2" class="outline-3">
+<h3 id="orgcb85ff2"><span class="section-number-3">3.2</span> <code>&lt;route&gt;</code></h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+路由块定义了路由树中的节点以及子节点。如果没有设置，则其可选的配置参是从父节点中继承。
+</p>
+
+<p>
+每个告警都从他的顶级路由处进入路由树，它会遍历所有的告警。然后，遍历子节点。如果 <code>continue</code> 设置为 <code>false</code> ，
+它会在第一个匹配的子项之后停止。如果 <code>continue</code> 为 <code>true</code> ，告警将继续与后续同级匹配。如果告警与任何节点都不匹配。
+则根据当前节点的配置参数处理。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1e2e538" class="outline-3">
+<h3 id="org1e2e538"><span class="section-number-3">3.3</span> <code>&lt;inhibit_rule&gt;</code></h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+当存在与另外一组匹配器匹配的告警（源）时，抑制规则将匹配一组匹配器的告警抑制。目标告警和源告警需要有相等的签名。
+</p>
+
+<p>
+从语义上来说，缺少 lable 和具有空 label 值是相同的。因此，如果源告警和目标告警都缺少 <code>equal</code> 的标签名，抑制规则将适用。
+</p>
+
+<p>
+To prevent an alert from inhibiting itself, an alert that matches both the target and the source side of a rule cannot
+be inhibited by alerts for which the same is true (including itself). However, we recommend to choose target and source
+matchers in a way that alerts never match both sides. It is much easier to reason about and does not trigger this special case.
+</p>
+
+<p>
+#+begin_quote
+抑制通过 <code>target</code> 和 <code>source</code> 来控制，两个概念比较绕。发送的告警通知匹配策略是 <code>target</code> ，当新的告警规则满足 <code>source</code>
+中的规则，并且发送的告警和新产生的告警中的 equal 标签完全相同时，则启动抑制机制，新的告警不会被发生。
+</p>
+
+<p>
+也就是说 source 的是用来定义同源的。比如说主机宕机和主机上的服务异常两个告警，服务异常的 target 是服务异常，
+source 应该包含主机宕机的标签。这样的话，当服务异常时，如果包含主机宕机的标签，那么这条告警会被静默。
+因为主机宕机了，服务自然时异常状态。
+#+end_quote&gt;
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgea236e0" class="outline-3">
+<h3 id="orgea236e0"><span class="section-number-3">3.4</span> <code>&lt;http_config&gt;</code></h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+<code>http_config</code> 允许配置 HTTP 客户端：接受者用来与基于 HTTP 的 API 服务来进行通信。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Note that `basic_auth`, `bearer_token` and `bearer_token_file` options are</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">mutually exclusive.</span>
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Sets the `Authorization` header with the configured username and password.</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">password and password_file are mutually exclusive.</span>
+<span style="color: #BA36A5;">basic_auth</span>:
+  [ username: &lt;string&gt; ]
+  [ password: &lt;secret&gt; ]
+  [ password_file: &lt;string&gt; ]
+
+  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Sets the `Authorization` header with the configured bearer token.</span>
+  [ bearer_token: &lt;secret&gt; ]
+
+  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Sets the `Authorization` header with the bearer token read from the configured file.</span>
+  [ bearer_token_file: &lt;filepath&gt; ]
+
+  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Configures the TLS settings.</span>
+  <span style="color: #BA36A5;">tls_config</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>[ &lt;tls_config&gt; ]
+
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Optional proxy URL.</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">[ proxy_url</span>: &lt;string&gt; ]
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8d45008" class="outline-3">
+<h3 id="org8d45008"><span class="section-number-3">3.5</span> <code>&lt;tls_config&gt;</code></h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+<code>tls_config</code> 允许配置 TLS 连接。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">CA certificate to validate the server certificate with.</span>
+[ ca_file: &lt;filepath&gt; ]
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Certificate and key files for client cert authentication to the server.</span>
+[ cert_file: &lt;filepath&gt; ]
+[ key_file: &lt;filepath&gt; ]
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">ServerName extension to indicate the name of the server.</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">http://tools.ietf.org/html/rfc4366#section-3.1</span>
+[ server_name: &lt;string&gt; ]
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Disable validation of the server certificate.</span>
+[ insecure_skip_verify: &lt;boolean&gt; | default = false]
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga72b6b7" class="outline-3">
+<h3 id="orga72b6b7"><span class="section-number-3">3.6</span> <code>&lt;receiver&gt;</code></h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+接收器用来配置一个或者多个通知集成。
+</p>
+
+<p>
+<b><b>我们不会一直添加新的接收器，我们建议你通过 webhook 来实现自定义的通知集成。</b></b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">The unique name of the receiver.</span>
+<span style="color: #BA36A5;">name</span>: &lt;string&gt;
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Configurations for several notification integrations.</span>
+<span style="color: #BA36A5;">email_configs</span>:
+  [ - &lt;email_config&gt;, ... ]
+  <span style="color: #BA36A5;">pagerduty_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>[ - &lt;pagerduty_config&gt;, ... ]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">pushover_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  [ - &lt;pushover_config&gt;, ... ]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  slack_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span>[ - &lt;slack_config&gt;, ... ]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">opsgenie_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span>  [ - &lt;opsgenie_config&gt;, ... ]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  webhook_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span>[ - &lt;webhook_config&gt;, ... ]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">victorops_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span>  [ - &lt;victorops_config&gt;, ... ]
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">  wechat_configs</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">                </span>[ - &lt;wechat_config&gt;, ... ]
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd08fbc9" class="outline-3">
+<h3 id="orgd08fbc9"><span class="section-number-3">3.7</span> <code>&lt;webhook_config&gt;</code></h3>
+<div class="outline-text-3" id="text-3-7">
+<p>
+Webhook 接收器允许配置通用接收器。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Whether or not to notify about resolved alerts.</span>
+[ send_resolved: &lt;boolean&gt; | default = true ]
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">The endpoint to send HTTP POST requests to.</span>
+<span style="color: #BA36A5;">url</span>: &lt;string&gt;
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">The HTTP client's configuration.</span>
+[ http_config: &lt;http_config&gt; | default = global.http_config ]
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">The maximum number of alerts to include in a single webhook message. Alerts</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">above this threshold are truncated. When leaving this at its default value of</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">0, all alerts are included.</span>
+[ max_alerts: &lt;int&gt; | default = 0 ]
+</pre>
+</div>
+
+<p>
+Alertmanager 会发送一个 HTTP 如下 JSON 格式的 POST 请求：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js">{
+    <span style="color: #008000;">"version"</span>: <span style="color: #008000;">"4"</span>,
+    <span style="color: #008000;">"groupKey"</span>: &lt;string&gt;,              <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">key identifying the group of alerts (e.g. to deduplicate)</span>
+    <span style="color: #008000;">"truncatedAlerts"</span>: &lt;<span style="color: #6434A3;">int</span>&gt;,          <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">how many alerts have been truncated due to "max_alerts"</span>
+    <span style="color: #008000;">"status"</span>: <span style="color: #008000;">"&lt;resolved|firing&gt;"</span>,
+    <span style="color: #008000;">"receiver"</span>: &lt;string&gt;,
+    <span style="color: #008000;">"groupLabels"</span>: &lt;object&gt;,
+    <span style="color: #008000;">"commonLabels"</span>: &lt;object&gt;,
+    <span style="color: #008000;">"commonAnnotations"</span>: &lt;object&gt;,
+    <span style="color: #008000;">"externalURL"</span>: &lt;string&gt;,           <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">backlink to the Alertmanager.</span>
+    <span style="color: #008000;">"alerts"</span>: [
+        {
+            <span style="color: #008000;">"status"</span>: <span style="color: #008000;">"&lt;resolved|firing&gt;"</span>,
+            <span style="color: #008000;">"labels"</span>: &lt;object&gt;,
+            <span style="color: #008000;">"annotations"</span>: &lt;object&gt;,
+            <span style="color: #008000;">"startsAt"</span>: <span style="color: #008000;">"&lt;rfc3339&gt;"</span>,
+            <span style="color: #008000;">"endsAt"</span>: <span style="color: #008000;">"&lt;rfc3339&gt;"</span>,
+            <span style="color: #008000;">"generatorURL"</span>: &lt;string&gt;       <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">identifies the entity that caused the alert</span>
+        },
+        ...
+    ]
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6675e89" class="outline-2">
+<h2 id="org6675e89"><span class="section-number-2">4</span> 客户端</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+<b><b>免责声明：Prometheus 自动处理发送通过配置的<a href="https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/">告警规则</a>生成的告警。强烈建议你根据时间序列数据在 Prometheus
+中配置告警告警规则，而不是实现一个客户端。</b></b>
+</p>
+
+<p>
+Alertmanager 有两种 API, v1 和 v2，都监听告警。v1 在下面的代码中进行描述。v2 遵循 OpenAPI 规范，
+可以在 Alertmanager <a href="https://github.com/prometheus/alertmanager/blob/master/api/v2/openapi.yaml">存储库</a> 中找到该规范。
+</p>
+
+<p>
+只要是客户端仍然处于活动状态，他们就可以不断的发送告警（通常是 30s 到 3 分钟之间）。客户端可以通过 POST
+请求可以推送列表到 Alertmanager 中。
+</p>
+
+<p>
+每个告警的标签用于标识是相同告警，并进行重复数据删除。注解（annotations）始终魏为最新收到的，且不能标识告警。
+</p>
+
+<p>
+<code>startAt</code> 和 <code>endAt</code> 的时间戳是可选的。如果 <code>startAt</code> 省略掉了，Alertmanager 会设置成当前时间，仅在告警结束之后
+才设置 <code>endAt</code> 。否则会被设置为上一次告警开始到现在的时间。
+</p>
+
+<p>
+<code>generatorURL</code> 是唯一的反向链接，用来标识客户端中此告警的产生实体。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js">[
+    {
+        <span style="color: #008000;">"labels"</span>: {
+            <span style="color: #008000;">"alertname"</span>: <span style="color: #008000;">"&lt;requiredAlertName&gt;"</span>,
+            <span style="color: #008000;">"&lt;labelname&gt;"</span>: <span style="color: #008000;">"&lt;labelvalue&gt;"</span>,
+            ...
+        },
+        <span style="color: #008000;">"annotations"</span>: {
+            <span style="color: #008000;">"&lt;labelname&gt;"</span>: <span style="color: #008000;">"&lt;labelvalue&gt;"</span>,
+        },
+        <span style="color: #008000;">"startsAt"</span>: <span style="color: #008000;">"&lt;rfc3339&gt;"</span>,
+        <span style="color: #008000;">"endsAt"</span>: <span style="color: #008000;">"&lt;rfc3339&gt;"</span>,
+        <span style="color: #008000;">"generatorURL"</span>: <span style="color: #008000;">"&lt;generator_url&gt;"</span>
+    },
+    ...
+]
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbb840e6" class="outline-2">
+<h2 id="orgbb840e6"><span class="section-number-2">5</span> 通知模板参考</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+<a href="https://prometheus.io/docs/alerting/latest/notifications/">https://prometheus.io/docs/alerting/latest/notifications/</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd738b27" class="outline-2">
+<h2 id="orgd738b27"><span class="section-number-2">6</span> 通知模板范例</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+<a href="https://prometheus.io/docs/alerting/latest/notification_examples/">https://prometheus.io/docs/alerting/latest/notification_examples/</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org884ac90" class="outline-2">
+<h2 id="org884ac90"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> 管理端 API</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-org8d3fa63" class="outline-3">
+<h3 id="org8d3fa63"><span class="section-number-3">7.1</span> 健康检测</h3>
+<div class="outline-text-3" id="text-7-1">
+<pre class="example">
+GET /-/healthy
+</pre>
+
+<p>
+检查是否返回 200.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7ad01da" class="outline-3">
+<h3 id="org7ad01da"><span class="section-number-3">7.2</span> 可用（readiness）检测</h3>
+<div class="outline-text-3" id="text-7-2">
+<pre class="example">
+GET /-/ready
+</pre>
+
+<p>
+正常接收请求时，返回 200.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7ab70cd" class="outline-3">
+<h3 id="org7ab70cd"><span class="section-number-3">7.3</span> 重新加载（reload）</h3>
+<div class="outline-text-3" id="text-7-3">
+<pre class="example">
+POST /-/reload
+</pre>
+
+<p>
+触发 Alertmanager 配置文件重新加载。还有一种办法是发送 <code>SIGHUP</code> 到 Alertmanager 进程。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0ccc33e" class="outline-2">
+<h2 id="org0ccc33e"><span class="section-number-2">8</span> 源码剖析笔记</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+alertmanager 版本：2020-10-03 clone master
+</p>
+</div>
+
+<div id="outline-container-org65a427d" class="outline-3">
+<h3 id="org65a427d"><span class="section-number-3">8.1</span> provider</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+alerts 生产者，核心数据结构是 <code>Alerts</code> ，主要包含：
+</p>
+
+<ul class="org-ul">
+<li><code>store.Alerts</code> alert 的存储（内存中）</li>
+<li><code>map[int]listeningAlerts</code> alert 的所有订阅方管理，alert 可以被多处订阅。通过 <code>Subscribe</code> 发起，返回一个 alert 迭代器。</li>
+</ul>
+
+<p>
+核心函数：
+</p>
+
+<ul class="org-ul">
+<li><code>Subscribe</code> 订阅 alert，返回 alert 迭代器</li>
+<li><code>Put</code> 将新的 alert 存储，并把 alert 通过 channel 发送给订阅者。此方法的上游调用方是 api（也就是 prometheus）。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8ba2252" class="outline-3">
+<h3 id="org8ba2252"><span class="section-number-3">8.2</span> store</h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+alerts 的内存存储，相同的 <code>model.Fingerprint</code> 的 alert 只保留一份。提供了定时 gc（回收 resolved 的 alerts）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org959f8bd" class="outline-3">
+<h3 id="org959f8bd"><span class="section-number-3">8.3</span> types</h3>
+<div class="outline-text-3" id="text-8-3">
+<p>
+公共类型定义。
+</p>
+
+<p>
+<code>Matcher</code> 提供 alert label 的匹配和校验。
+</p>
+
+<p>
+<code>Marker</code> 可以对一个 alert 设置状态，存储告警的静默和抑制。 <code>memMarker</code> Marker 的内存存储实现。
+</p>
+
+<p>
+<code>MultiError</code> multiple error.
+</p>
+
+<p>
+<code>Alert</code> 对 prometheus alert 的包装，额外添加了 <code>updateAt</code> 和 <code>Timeout</code> .
+</p>
+
+<p>
+<code>AlertSlice</code> <code>Alert</code> 数组结构，提供了 <code>Less</code> <code>Swap</code> <code>Len</code> <code>Merge</code> 等方法。
+</p>
+
+<p>
+<code>Silence</code> 判断一个给定的标签是否被静默（muted）：
+</p>
+
+<ul class="org-ul">
+<li>多个 <code>Matcher</code></li>
+<li>静默的时间段</li>
+<li>一些元数据（创建时间，备注等）</li>
+<li>一些辅助方法 <code>CalcSilenceState</code> 计算 Silence 的状态（"expired", "active", "pending"）</li>
+</ul>
+
+<p>
+可以看到 Alertmanager 是跟 Prometheus 是强耦合的。
+</p>
+</div>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-07-09 11:09:08 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
+<p class="postamble">First created: 2020-07-09 11:09:08 <br />Last updated: 2020-10-09 Fri 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
 </div>
 </body>
 </html>

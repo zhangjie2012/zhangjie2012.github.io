@@ -6,7 +6,7 @@
 <!-- 2020-10-09 Fri 14:37 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Go 资源</title>
+<title>Go 语言 FAQ</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,14 +221,96 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">Go 资源</h1>
-<ul class="org-ul">
-<li><a href="https://talks.golang.org/2014/go4gophers.slide">https://talks.golang.org/2014/go4gophers.slide</a> Go PPT</li>
-<li><a href="https://talks.golang.org/2012/splash.article">Go at Google: Language Design in the Service of Software Engineering</a> Go 为什么是这样设计的，<a href="https://www.oschina.net/translate/go-at-google-language-design-in-the-service-of-software-engineering?lang=chs">中文版本</a></li>
+<h1 class="title">Go 语言 FAQ</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org232017c">1. map</a>
+<ul>
+<li><a href="#org1d2c4ec">1.1. Key</a></li>
+<li><a href="#orgccd6e8b">1.2. 值还是引用？</a></li>
+<li><a href="#orgbdd5c7e">1.3. 迭代</a></li>
+<li><a href="#org3276147">1.4. map 中删除元素是否安全？</a></li>
+</ul>
+</li>
 </ul>
 </div>
+</div>
+
+<div id="outline-container-org232017c" class="outline-2">
+<h2 id="org232017c"><span class="section-number-2">1</span> map</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org1d2c4ec" class="outline-3">
+<h3 id="org1d2c4ec"><span class="section-number-3">1.1</span> Key</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+map 中的 key 必须是可以判定相等的类型。不建议把浮点数作为 key，最坏的情况下 NaN 和任何浮点数都不同。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgccd6e8b" class="outline-3">
+<h3 id="orgccd6e8b"><span class="section-number-3">1.2</span> 值还是引用？</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+map 是个引用类型（hash 表）。因此使用 map 必须初始化（否则值默认为 nil）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbdd5c7e" class="outline-3">
+<h3 id="orgbdd5c7e"><span class="section-number-3">1.3</span> 迭代</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+map 迭代顺序是不确定的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3276147" class="outline-3">
+<h3 id="org3276147"><span class="section-number-3">1.4</span> map 中删除元素是否安全？</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+安全<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">for</span> <span style="color: #BA36A5;">key</span> := <span style="color: #0000FF;">range</span> m {
+    <span style="color: #0000FF;">if</span> key.<span style="color: #006699;">expired</span>() {
+        <span style="color: #006FE0;">delete</span>(m, key)
+    }
+}
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>Go map 是使用 hash 表实现的，并不是 tree</li>
+<li>delete 并没有实际的删除一个元素，只是设置一个标记，也就是说，delete 并不会减少 map 空间的大小<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>。
+并且允许删除一个不存在的 key。</li>
+<li>只有 <code>map=nil</code> 才会释放空间</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://stackoverflow.com/questions/23229975/is-it-safe-to-remove-selected-keys-from-map-within-a-range-loop">https://stackoverflow.com/questions/23229975/is-it-safe-to-remove-selected-keys-from-map-within-a-range-loop</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://github.com/golang/go/blob/master/src/runtime/map.go#L685">https://github.com/golang/go/blob/master/src/runtime/map.go#L685</a>
+</p></div></div>
+
+
+</div>
+</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-03-30 12:13:41 <br />Last updated: 2020-10-08 Thu 13:00 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
+<p class="postamble">First created: 2020-10-06 16:21:47 <br />Last updated: 2020-10-06 Tue 16:44 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
 </div>
 </body>
 </html>
