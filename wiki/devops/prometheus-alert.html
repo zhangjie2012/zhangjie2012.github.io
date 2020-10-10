@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-10-09 Fri 14:37 -->
+<!-- 2020-10-10 Sat 17:47 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Prometheus alert</title>
@@ -236,9 +236,9 @@
 <li><a href="#org5d2276b">2.5. High Availability 高可用</a></li>
 </ul>
 </li>
-<li><a href="#org8475193">3. 配置</a>
+<li><a href="#org6641352">3. 配置</a>
 <ul>
-<li><a href="#org4283778">3.1. 配置</a></li>
+<li><a href="#org8475193">3.1. 配置</a></li>
 <li><a href="#orgcb85ff2">3.2. <code>&lt;route&gt;</code></a></li>
 <li><a href="#org1e2e538">3.3. <code>&lt;inhibit_rule&gt;</code></a></li>
 <li><a href="#orgea236e0">3.4. <code>&lt;http_config&gt;</code></a></li>
@@ -376,8 +376,8 @@ Alertmanager 支持配置以创建一个集群为了高可用，可以使用 <a 
 </div>
 </div>
 
-<div id="outline-container-org8475193" class="outline-2">
-<h2 id="org8475193"><span class="section-number-2">3</span> 配置</h2>
+<div id="outline-container-org6641352" class="outline-2">
+<h2 id="org6641352"><span class="section-number-2">3</span> 配置</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Alertmanager 通过命令行和配置文件进行配置。命令行配置不变的系统参数。配置文件配置抑制规则，通知路由和通知接收人。
@@ -393,8 +393,8 @@ Alertmanager 通过命令行和配置文件进行配置。命令行配置不变�
 </p>
 </div>
 
-<div id="outline-container-org4283778" class="outline-3">
-<h3 id="org4283778"><span class="section-number-3">3.1</span> 配置</h3>
+<div id="outline-container-org8475193" class="outline-3">
+<h3 id="org8475193"><span class="section-number-3">3.1</span> 配置</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 使用 <code>--config.file</code> 来指定配置文件。
@@ -606,7 +606,7 @@ Alertmanager 会发送一个 HTTP 如下 JSON 格式的 POST 请求：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js">{
+<pre class="src src-js"><span style="color: #707183;">{</span>
     <span style="color: #008000;">"version"</span>: <span style="color: #008000;">"4"</span>,
     <span style="color: #008000;">"groupKey"</span>: &lt;string&gt;,              <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">key identifying the group of alerts (e.g. to deduplicate)</span>
     <span style="color: #008000;">"truncatedAlerts"</span>: &lt;<span style="color: #6434A3;">int</span>&gt;,          <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">how many alerts have been truncated due to "max_alerts"</span>
@@ -616,18 +616,18 @@ Alertmanager 会发送一个 HTTP 如下 JSON 格式的 POST 请求：
     <span style="color: #008000;">"commonLabels"</span>: &lt;object&gt;,
     <span style="color: #008000;">"commonAnnotations"</span>: &lt;object&gt;,
     <span style="color: #008000;">"externalURL"</span>: &lt;string&gt;,           <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">backlink to the Alertmanager.</span>
-    <span style="color: #008000;">"alerts"</span>: [
-        {
+    <span style="color: #008000;">"alerts"</span>: <span style="color: #7388D6;">[</span>
+        <span style="color: #909183;">{</span>
             <span style="color: #008000;">"status"</span>: <span style="color: #008000;">"&lt;resolved|firing&gt;"</span>,
             <span style="color: #008000;">"labels"</span>: &lt;object&gt;,
             <span style="color: #008000;">"annotations"</span>: &lt;object&gt;,
             <span style="color: #008000;">"startsAt"</span>: <span style="color: #008000;">"&lt;rfc3339&gt;"</span>,
             <span style="color: #008000;">"endsAt"</span>: <span style="color: #008000;">"&lt;rfc3339&gt;"</span>,
             <span style="color: #008000;">"generatorURL"</span>: &lt;string&gt;       <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">identifies the entity that caused the alert</span>
-        },
+        <span style="color: #909183;">}</span>,
         ...
-    ]
-}
+    <span style="color: #7388D6;">]</span>
+<span style="color: #707183;">}</span>
 </pre>
 </div>
 </div>
@@ -666,22 +666,22 @@ Alertmanager 有两种 API, v1 和 v2，都监听告警。v1 在下面的代码�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js">[
-    {
-        <span style="color: #008000;">"labels"</span>: {
+<pre class="src src-js"><span style="color: #707183;">[</span>
+    <span style="color: #7388D6;">{</span>
+        <span style="color: #008000;">"labels"</span>: <span style="color: #909183;">{</span>
             <span style="color: #008000;">"alertname"</span>: <span style="color: #008000;">"&lt;requiredAlertName&gt;"</span>,
             <span style="color: #008000;">"&lt;labelname&gt;"</span>: <span style="color: #008000;">"&lt;labelvalue&gt;"</span>,
             ...
-        },
-        <span style="color: #008000;">"annotations"</span>: {
+        <span style="color: #909183;">}</span>,
+        <span style="color: #008000;">"annotations"</span>: <span style="color: #909183;">{</span>
             <span style="color: #008000;">"&lt;labelname&gt;"</span>: <span style="color: #008000;">"&lt;labelvalue&gt;"</span>,
-        },
+        <span style="color: #909183;">}</span>,
         <span style="color: #008000;">"startsAt"</span>: <span style="color: #008000;">"&lt;rfc3339&gt;"</span>,
         <span style="color: #008000;">"endsAt"</span>: <span style="color: #008000;">"&lt;rfc3339&gt;"</span>,
         <span style="color: #008000;">"generatorURL"</span>: <span style="color: #008000;">"&lt;generator_url&gt;"</span>
-    },
+    <span style="color: #7388D6;">}</span>,
     ...
-]
+<span style="color: #707183;">]</span>
 </pre>
 </div>
 </div>
@@ -835,7 +835,7 @@ alerts 的内存存储，相同的 <code>model.Fingerprint</code> 的 alert 只�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-07-09 11:09:08 <br />Last updated: 2020-10-09 Fri 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
+<p class="postamble">First created: 2020-07-09 11:09:08 <br />Last updated: 2020-10-10 Sat 10:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
 </div>
 </body>
 </html>
