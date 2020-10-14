@@ -6,7 +6,7 @@
 <!-- 2020-10-14 Wed 12:45 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>正则表达式</title>
+<title>ElasticSearch</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -218,304 +218,51 @@
     /*]]>*///-->
 // @license-end
 </script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
-
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
-</script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
-<h1 class="title">正则表达式</h1>
-<p>
-来自：<a href="https://github.com/google/re2/wiki/Syntax">https://github.com/google/re2/wiki/Syntax</a>
-</p>
-
-<p>
-除了 <code>*+?()|</code> 几个元字符之外，字符只匹配自己本身，匹配元字符需要使用 <code>\</code> 转义。
-</p>
-
-<p>
-<code>*+?</code> 是重复匹配，
-</p>
-
-<ul class="org-ul">
-<li><code>*</code> 0 个或者多个字符串</li>
-<li><code>+</code> 1 个或者多个字符串</li>
-<li><code>?</code> 0 个或 1 个</li>
+<h1 class="title">ElasticSearch</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6e7a662">1. FAQ</a>
+<ul>
+<li><a href="#orgfbc2629">1.1. 插入数据之后立即查询，查询不到数据</a></li>
 </ul>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">单个字符匹配</th>
-<th scope="col" class="org-left">范例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">任何字符，包括换行</td>
-<td class="org-left"><code>.</code></td>
-</tr>
-
-<tr>
-<td class="org-left">字符类（包含其中的一个即匹配）</td>
-<td class="org-left"><code>[xyz]</code></td>
-</tr>
-
-<tr>
-<td class="org-left">否定字符类</td>
-<td class="org-left"><code>[^xyz]</code></td>
-</tr>
-
-<tr>
-<td class="org-left">数字</td>
-<td class="org-left"><code>\d</code> 等价于 <code>[0-9]</code></td>
-</tr>
-
-<tr>
-<td class="org-left">非数字</td>
-<td class="org-left"><code>\D</code> 等价于 <code>[^0-9]</code></td>
-</tr>
-</tbody>
-</table>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">&#xa0;</th>
-<th scope="col" class="org-left">复合</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left"><code>xy</code></td>
-<td class="org-left">x 后面紧跟 y</td>
-</tr>
-
-<tr>
-<td class="org-left">x &vert; y</td>
-<td class="org-left">x 或者 y</td>
-</tr>
-</tbody>
-</table>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">&#xa0;</th>
-<th scope="col" class="org-left">重复次数</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left"><code>x*</code></td>
-<td class="org-left">0 个或者多个 <code>x</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>x+</code></td>
-<td class="org-left">1 个或者多个 <code>x</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>x?</code></td>
-<td class="org-left">0 个或者多个 <code>x</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>x{n,m}</code></td>
-<td class="org-left">n 到 m 个 <code>x</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>x{n,}</code></td>
-<td class="org-left">n 个或者更多个 <code>x</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>x{n}</code></td>
-<td class="org-left">n 个 <code>x</code></td>
-</tr>
-</tbody>
-</table>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">&#xa0;</th>
-<th scope="col" class="org-left">分组</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left"><code>(re)</code></td>
-<td class="org-left">编号分组（子匹配项）</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>(?P&lt;name&gt;re)</code></td>
-<td class="org-left">命名的 &amp; 编号分组（子匹配项目）</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>(?:re)</code></td>
-<td class="org-left">non-capturing group</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>(?flags)</code></td>
-<td class="org-left">set flags within current group; non-capturing</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>(?flags:re)</code></td>
-<td class="org-left">set flags during re; non-capturing</td>
-</tr>
-</tbody>
-</table>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">&#xa0;</th>
-<th scope="col" class="org-left">Empty strings</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left"><code>^</code></td>
-<td class="org-left">at beginning of text or line (m=true)</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>$</code></td>
-<td class="org-left">at end of text (like \z not \Z) or line (m=true)</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>\A</code></td>
-<td class="org-left">at beginning of text</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>\b</code></td>
-<td class="org-left">at ASCII word boundary (\w on one side and \W, \A, or \z on the other)</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>\B</code></td>
-<td class="org-left">not at ASCII word boundary</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>\z</code></td>
-<td class="org-left">at end of text</td>
-</tr>
-</tbody>
-</table>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">&#xa0;</th>
-<th scope="col" class="org-left">Perl character classes (all ASCII-only)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left"><code>\d</code></td>
-<td class="org-left">digits (≡ [0-9])</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>\D</code></td>
-<td class="org-left">not digits (≡ [^0-9])</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>\s</code></td>
-<td class="org-left">whitespace (≡ [\t\n\f\r ])</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>\S</code></td>
-<td class="org-left">not whitespace (≡ [^\t\n\f\r ])</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>\w</code></td>
-<td class="org-left">word characters (≡ [0-9A-Za-z_])</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>\W</code></td>
-<td class="org-left">not word characters (≡ [^0-9A-Za-z_])</td>
-</tr>
-</tbody>
-</table>
+</li>
+</ul>
 </div>
+</div>
+
+
+<div id="outline-container-org6e7a662" class="outline-2">
+<h2 id="org6e7a662"><span class="section-number-2">1</span> FAQ</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgfbc2629" class="outline-3">
+<h3 id="orgfbc2629"><span class="section-number-3">1.1</span> 插入数据之后立即查询，查询不到数据</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+ES 插入和查询通常不在同一个分片，不同的分片之间有同步延迟。可以通过 <code>refresh</code> <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>参数控制强制同步数据。
+但是一般不建议这么做，会影响性能，如果要使用，建议评估影响。
+</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-refresh.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-refresh.html</a>
+</p></div></div>
+
+
+</div>
+</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-06-02 17:33:42 <br />Last updated: 2020-10-14 Wed 10:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
+<p class="postamble">First created: 2020-10-14 11:51:14 <br />Last updated: 2020-10-14 Wed 11:55 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
 </div>
 </body>
 </html>
