@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2020-10-22 Thu 15:17 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>nginx</title>
@@ -42,7 +42,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -197,50 +197,26 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -251,6 +227,11 @@ for the JavaScript code in this tag.
 <div id="text-table-of-contents">
 <ul>
 <li><a href="#org1d62de2">1. Basic Auth</a></li>
+<li><a href="#org775a706">2. FAQ</a>
+<ul>
+<li><a href="#orgbd8a6aa">2.1. http header 包含下划线会被忽略？</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -263,10 +244,10 @@ for the JavaScript code in this tag.
 使用「HTTP Basic Authentication」协议做简单的账户名和密码认证。配置如下：
 </p>
 
-<pre class="example">
+<pre class="example" id="org60ee7f9">
 location / {
-    auth_basic           "closed site";
-    auth_basic_user_file conf/htpasswd;
+	auth_basic           "closed site";
+	auth_basic_user_file conf/htpasswd;
 }
 </pre>
 
@@ -282,7 +263,7 @@ location / {
 htpasswd 是 HTTPD 工具集的一部分，所以要先安装：
 </p>
 
-<pre class="example">
+<pre class="example" id="org75407b7">
 yum install -y httpd-tools
 </pre>
 
@@ -290,7 +271,7 @@ yum install -y httpd-tools
 生成认证凭据，
 </p>
 
-<pre class="example">
+<pre class="example" id="orge44cf59">
 htpasswd -c /etc/nginx/.htpasswd admin
 </pre>
 
@@ -298,7 +279,7 @@ htpasswd -c /etc/nginx/.htpasswd admin
 <code>/etc/nginx/.htpasswd</code> 是凭据文件位置， <code>admin</code> 是用户名，执行时会提示输入密码，文件内容类似这样：
 </p>
 
-<pre class="example">
+<pre class="example" id="orge93c632">
 # /etc/nginx/.htpasswd
 admin:$apr1$z2.a8U.c$DGsdj6MGmnfnQOwF3mWaE0
 </pre>
@@ -308,9 +289,33 @@ admin:$apr1$z2.a8U.c$DGsdj6MGmnfnQOwF3mWaE0
 </p>
 </div>
 </div>
+
+<div id="outline-container-org775a706" class="outline-2">
+<h2 id="org775a706"><span class="section-number-2">2</span> FAQ</h2>
+<div class="outline-text-2" id="text-2">
 </div>
+<div id="outline-container-orgbd8a6aa" class="outline-3">
+<h3 id="orgbd8a6aa"><span class="section-number-3">2.1</span> http header 包含下划线会被忽略？</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+有效的 http Header 命名规范是英文字母，数字和中划线，可能包含下划线。下划线被 <code>underscores_in_headers</code> 控制，默认是关闭的状态。<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
+</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#ignore_invalid_headers">http://nginx.org/en/docs/http/ngx_http_core_module.html#ignore_invalid_headers</a>
+</p></div></div>
+
+
+</div>
+</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-06-02 17:28:48 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
+<p class="postamble">First created: 2019-06-02 17:28:48 <br />Last updated: 2020-10-21 Wed 15:28 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
 </div>
 </body>
 </html>
