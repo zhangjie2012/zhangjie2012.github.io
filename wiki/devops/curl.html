@@ -6,7 +6,7 @@
 <!-- 2020-11-11 Wed 17:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>构建 Go 项目最佳实践</title>
+<title>curl</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,90 +221,36 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">构建 Go 项目最佳实践</h1>
-<p>
-对于项目结构和相关技术栈选择，请查看 <a href="project-layout.html">项目结构</a> 和 <a href="build-web-server-stack.html">构建 Go Web 服务技术栈</a>。
-</p>
+<h1 class="title">curl</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org27d3f81">1. 常用参数</a></li>
+</ul>
+</div>
+</div>
 
-<p>
-本文内容与前两篇不冲突，侧重于构建略微大一些的项目，如何更好的组织代码使得项目更易维护，以避免 Go 中经常出现的一些问题。
-实践心得，比较零散，不一定正确。
-</p>
-
-<hr />
-
-<p>
-Go 中的 package 针对的抽象层面是 module，并不是单个实体（面向对象中的类）。我理解 Go 最小粒度的抽象体现在文件层面，而非 package。
-</p>
-
-<p>
-如果将 package 作为做小的粒度容易带来的问题：
-</p>
-
-<p>
-当两个 package 存在一些共同的抽象，这一层的抽象就很难表达。在公共部分加一个 utils，用来作为公共抽象，那么这个公共抽象会越来越重度，
-实际上 utils 应该是放一些业务无关的工具。还有一种解决办法是在同级别 package 加一层 utils 用来做公共业务的抽象，这是可行的，但是比较丑陋。
-因为原则上来讲同一个层级的 package 的职责应该是相同的，加一个工具 utils 不优雅。
-</p>
-
-<p>
-解决此类问题的最佳实践是将放大 package 的抽象粒度，作为一个 module ，包含很多个相关联的实体，如果有业务抽象在内部新增一个文件抽象即可。
-减少 package 级别的业务再此抽象。
-</p>
-
-<p>
-以前我还不太理解很多开源项目的 go 文件是平铺开来的，很少加内部 package，经过实践看来，通过 go 文件来表达实体要比 package 要能省很多事情。
-</p>
-
-<p>
-<b>避免过度抽象，过度设计。</b>
-</p>
-
-<hr />
-
-<p>
-类型定义和函数定义分开，统一维护一份类型定义（大都是与存储相关的）。这里的类型一般指的是公共的类型，如果是一次性的类型定义，放哪里都无所谓的。
-</p>
-
-<p>
-为什么要这么做呢?
-</p>
-
-<p>
-针对函数层面的循环依赖一般是架构设计不合理，但是 A package 调用了 B package 中的 <i>函数</i> ，B package 中使用了 A package 中的 <i>类型</i> 却是很常见的情况。
-所以为了避免循环依赖，把所有的类型统一到一起，它不会依赖于任何外部的类型或者函数。
-</p>
-
-<p>
-另外，在代码维护角度这么做也更易维护代码，否则到处都是 struct，引用起来乱七八糟，想复用也比较难。
-</p>
-
-<p>
-再另外，工具类 package (比如 util，common) 可以依赖外部的类型定义，但不要依赖外部的函数。
-</p>
-
-<hr />
-
-<p>
-上面的办法也不好，如果单纯把类型和函数定义分开，容易乱。
-</p>
-
-<p>
-如果把所有的公共类型全部抽离到 types 中是简单的，但是类型一般会携带一些 method，也就是说会有一些业务逻辑在里面。
-那这样的话，types 就不能算是「公共」部分了，而是与业务强相关的部分。
-</p>
-
-<p>
-解决办法是再抽一级目录，比如说定义的 <code>types</code> 用来标识项目的公共类型；子模块中再加一个 <code>types</code> 目录，
-用来表示该子模块相关的 type，业务逻辑放在上一层。
-</p>
-
-<p>
-这样就可以相对完美的解决模块依赖问题了。
-</p>
+<div id="outline-container-org27d3f81" class="outline-2">
+<h2 id="org27d3f81"><span class="section-number-2">1</span> 常用参数</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><code>-A</code> 添加 User-Agent</li>
+<li><code>-H</code> 设置 header，可以指定多次 <code>-H 'a:b' -H 'c:d'</code></li>
+<li><code>-b</code> 发送 cookie， <code>-b 'foo1=bar;foo2=bar2'</code></li>
+<li><code>-d</code> POST 请求 body 体</li>
+<li><code>-F</code> 上传二进制文件 <code>curl -F 'file=@photo.png' https://google.com/profile</code></li>
+<li><code>-G</code> 构造 url querystring</li>
+<li><code>-u</code> 设置服务器认证的用户名和密码</li>
+<li><code>-v</code> 输出通信过程，用于调试</li>
+<li><code>-x</code> 指定请求代理</li>
+<li><code>-X</code> 指定请求方法， <code>-X POST/GET/PUT/PACTH/...</code></li>
+</ul>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-13 17:17:51 <br />Last updated: 2020-11-11 Wed 16:44 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
+<p class="postamble">First created: 2020-11-09 11:32:51 <br />Last updated: 2020-11-09 Mon 11:41 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
 </div>
 </body>
 </html>
