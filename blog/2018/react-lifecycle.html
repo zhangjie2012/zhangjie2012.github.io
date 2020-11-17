@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2020-11-17 Tue 17:33 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>React 组件生命周期</title>
@@ -42,7 +42,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -197,50 +197,26 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -266,11 +242,18 @@ for the JavaScript code in this tag.
 </ul>
 </li>
 <li><a href="#org0bd0130">4. 卸载</a></li>
+<li><a href="#org02221d7">5. React hook</a>
+<ul>
+<li><a href="#orgf47b45f">5.1. State Hook</a></li>
+<li><a href="#org05cf00a">5.2. Effect Hook</a></li>
+<li><a href="#orgdd17f92">5.3. Hook 使用规则</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div class="figure">
+<div id="org89d9e2a" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/react-lifecycle.png" alt="react-lifecycle.png" />
 </p>
 </div>
@@ -311,6 +294,7 @@ Github 的 <a href="https://github.com/wojtekmaj/react-lifecycle-methods-diagram
 <li><code>componentWillUnmount()</code>: 常用</li>
 </ol></li>
 </ul>
+
 <div id="outline-container-org368f004" class="outline-2">
 <h2 id="org368f004"><span class="section-number-2">1</span> 初始化</h2>
 <div class="outline-text-2" id="text-1">
@@ -323,9 +307,10 @@ Github 的 <a href="https://github.com/wojtekmaj/react-lifecycle-methods-diagram
 强行使用 <code>setState</code> ，React 会报错。bind 操作类似，
 </p>
 
-<pre class="example">
-this.handleClick = this.handleClick.bind(this)
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #D0372D;">this</span>.handleClick = <span style="color: #D0372D;">this</span>.handleClick.bind<span style="color: #707183;">(</span><span style="color: #D0372D;">this</span><span style="color: #707183;">)</span>
 </pre>
+</div>
 
 <p>
 ES6 提供了箭头函数可自动绑定 this，所以一般不需要在构造函数中手动绑定。
@@ -370,6 +355,9 @@ React 组件的核心方法，也是必须要实现的一个方法，用于根�
 <div class="outline-text-3" id="text-2-3">
 <p>
 <code>componentDidMount()</code> 首次渲染结束后调用的方法，只会被调用一次。异步的 API 调用应该放到这个函数中，而不是 <code>componentWillMount()</code> 中。
+</p>
+
+<p>
 具体可以查看 <a href="https://hackernoon.com/where-to-integrate-api-calls-in-reactjs-componentwillmount-vs-componentdidmount-710085dc05c3">Where to integrate API calls in ReactJs? &#x2014; componentWillMount vscomponentDidMount</a>。
 </p>
 </div>
@@ -412,11 +400,11 @@ React 组件的核心方法，也是必须要实现的一个方法，用于根�
 但是注意一定要做条件判断（不然就死循环了）。类似这样:
 </p>
 
-<pre class="example">
+<pre class="example" id="org0a81f9a">
 componentDidUpdate(prevProps) {
   // Typical usage (don't forget to compare props):
   if (this.props.userID !== prevProps.userID) {
-    this.fetchData(this.props.userID);
+	this.fetchData(this.props.userID);
   }
 }
 </pre>
@@ -455,12 +443,12 @@ componentDidUpdate(prevProps) {
 <code>getDerivedStateFromProps</code> 是一个 <code>static</code> 函数，也就意味着不属于任何一个实例，只属于类本身，那么如何在它里面使用  <code>this.setState</code> 呢？
 答案是你不需要这么做。这个函数直接返回新的 state ，如果没有变更返回 null 即可。
 </p>
-<pre class="example">
+<pre class="example" id="orga12e861">
 static getDerivedStateFromProps(nextProps, prevState) {
   if (prevState !== nextProps) {
-    return {
-      // new state
-    }
+	return {
+	  // new state
+	}
   }
   return null
 }
@@ -470,10 +458,11 @@ static getDerivedStateFromProps(nextProps, prevState) {
 <code>getDerivedStateFromProps</code> 会在首次挂载和每次重新渲染时（re-rendering）调用，所以你可以替代在构造函数中使用 props 初始化 state。
 </p></li>
 <li>如果同时使用了 <code>getDerivedStateFromProps</code> 和 <code>componentWillReceiveProps=，只有 =getDerivedStateFromProps</code> 会被调用</li>
-<li><code>getDerivedStateFromProps</code> 中只能更新 state 的值，那更新了之后要异步更新数据怎么办呢？
+<li><p>
+<code>getDerivedStateFromProps</code> 中只能更新 state 的值，那更新了之后要异步更新数据怎么办呢？
 答案是使用 <code>componentDidUpdate(prevProps, prevState, snapshot)</code> ，前两个参数表示在 <code>getDerivedStateFromProps</code> 更新之前的 props 和 state。
-判断新旧的 props 或者 state，然后决定是否异步请求数据（谨慎判断，不然可能会死循环）。</li>
-</ol>
+判断新旧的 props 或者 state，然后决定是否异步请求数据（谨慎判断，不然可能会死循环）。
+</p>
 
 <p>
 能满足需求，但是使用起来的确麻烦了。为什么废弃 componentWillXXX 系列的函数呢？好像是为了减少渲染次数，提高效率（搜了不少文章，能精确描述缘由的几乎没有）。
@@ -481,7 +470,8 @@ static getDerivedStateFromProps(nextProps, prevState) {
 
 <p>
 参考: <a href="https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b">What'snew in React 16.3(.0-alpha)</a>
-</p>
+</p></li>
+</ol>
 
 <p>
 <b>2019-08-02 10:25:09 更新</b>
@@ -505,9 +495,118 @@ static getDerivedStateFromProps(nextProps, prevState) {
 </p>
 </div>
 </div>
+
+<div id="outline-container-org02221d7" class="outline-2">
+<h2 id="org02221d7"><span class="section-number-2">5</span> React hook</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+<b>2020-11-16 更新</b>
+</p>
+
+<p>
+React v16.8 版本之后新增了 Hook。 我的理解是：hook 使得函数组件也可以 state，也可以有生命周期。
+</p>
+
+<p>
+起初觉得难以理解很排斥，用起来之后「真香」。这也符合 React 的学习曲线：理解起来很难，但是用起来很简单。
+专业的术语在<a href="https://zh-hans.reactjs.org/docs/hooks-intro.html">官方文档</a>有说明，这里只说明怎么用，使用场景，以及一些注意事项。
+</p>
+</div>
+
+<div id="outline-container-orgf47b45f" class="outline-3">
+<h3 id="orgf47b45f"><span class="section-number-3">5.1</span> State Hook</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+<code>useState</code> 声明并初始化一个变量，返回一个可修改变量值的 hook。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #0000FF;">const</span> <span style="color: #707183;">[</span><span style="color: #BA36A5;">count</span>, <span style="color: #BA36A5;">setCount</span><span style="color: #707183;">]</span> = useState<span style="color: #707183;">(</span>0<span style="color: #707183;">)</span>;
+</pre>
+</div>
+
+<p>
+声明一个 count 并初始化为 0， <code>setCount</code> 用来修改 count 的值。如果需要声明多个变量，则多行调用 <code>useState</code> 即可。
+如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #0000FF;">const</span> <span style="color: #707183;">[</span><span style="color: #BA36A5;">age</span>, <span style="color: #BA36A5;">setAge</span><span style="color: #707183;">]</span> = useState<span style="color: #707183;">(</span>42<span style="color: #707183;">)</span>;
+<span style="color: #0000FF;">const</span> <span style="color: #707183;">[</span><span style="color: #BA36A5;">fruit</span>, <span style="color: #BA36A5;">setFruit</span><span style="color: #707183;">]</span> = useState<span style="color: #707183;">(</span><span style="color: #008000;">'banana'</span><span style="color: #707183;">)</span>;
+<span style="color: #0000FF;">const</span> <span style="color: #707183;">[</span><span style="color: #BA36A5;">todos</span>, <span style="color: #BA36A5;">setTodos</span><span style="color: #707183;">]</span> = useState<span style="color: #707183;">(</span><span style="color: #7388D6;">[</span><span style="color: #909183;">{</span> text: <span style="color: #008000;">'&#23398;&#20064; Hook'</span> <span style="color: #909183;">}</span><span style="color: #7388D6;">]</span><span style="color: #707183;">)</span>;
+</pre>
+</div>
+
+<p>
+<b>注意</b> 函数退出时候变量会被销毁，而 state 中的变量会被保留。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org05cf00a" class="outline-3">
+<h3 id="org05cf00a"><span class="section-number-3">5.2</span> Effect Hook</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+<code>useEffect</code> 可以认为是 <code>componentDidMount</code>, <code>componentDidUpdate</code>, <code>componentWillUnmount</code> 三个生命周期函数的组合。
+也就是说函数式组件的生命周期由 <code>useEffect</code> 来实现。
+</p>
+
+<p>
+在一个 class 组件中，想要在 DOM 更新之后发送网络请求，一般放在 <code>componentDidMount</code> 中，中间 props 发生变化，
+再次更新数据数据放在 <code>componentDidUpdate</code> 中。
+</p>
+
+<p>
+在 function 组件中，使用 <code>useEffect</code> 即可。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js">useEffect<span style="color: #707183;">(</span><span style="color: #7388D6;">()</span> =&gt; <span style="color: #7388D6;">{</span>
+    fetch<span style="color: #909183;">()</span>;
+<span style="color: #7388D6;">}</span>, <span style="color: #7388D6;">[]</span><span style="color: #707183;">)</span>;
+</pre>
+</div>
+
+<p>
+他不同于 <code>componentDidMount</code> 在于它在每次渲染后都会执行。也因此类似 <code>componentDidUpdate</code> ，需要一些判定条件，否则很容易死循环。
+<code>useEffect</code> 的第二个可选参数来指定该参数发生变化之后才执行 <code>useEffect</code> 中的内容。第二个参数是个数组，可以填写多个值。
+</p>
+
+<p>
+如果只希望在 function 组件初始化时调用一次，第二个参数填写 <code>[]</code> 即可。
+</p>
+
+<p>
+对于需要清除的副作用，在 class 组件中通过 <code>componentWillUnmount</code> 中实现。function 组件中， <code>useEffect</code> 返回一个
+callback，该 callback 函数在组件卸载时自动执行。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js">useEffect<span style="color: #707183;">(</span><span style="color: #7388D6;">()</span> =&gt; <span style="color: #7388D6;">{</span>
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">...</span>
+    ChatAPI.subscribeToFriendStatus<span style="color: #909183;">(</span>props.friend.id, handleStatusChange<span style="color: #909183;">)</span>;
+    <span style="color: #0000FF;">return</span> <span style="color: #909183;">()</span> =&gt; <span style="color: #909183;">{</span>
+        ChatAPI.unsubscribeFromFriendStatus<span style="color: #709870;">(</span>props.friend.id, handleStatusChange<span style="color: #709870;">)</span>;
+    <span style="color: #909183;">}</span>;
+<span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdd17f92" class="outline-3">
+<h3 id="orgdd17f92"><span class="section-number-3">5.3</span> Hook 使用规则</h3>
+<div class="outline-text-3" id="text-5-3">
+<ul class="org-ul">
+<li>只能在函数最顶层使用 Hook，不要在循环中，条件或者嵌套函数中调用 Hook。</li>
+<li>只在 React 函数中调用 Hook</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-09-14 18:00:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2018-09-14 18:00:00 <br />Last updated: 2020-11-16 Mon 14:16 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 </div>
 </body>
 </html>
