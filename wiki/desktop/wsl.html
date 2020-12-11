@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-12-11 Fri 17:35 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WSL2</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+<!--/*--><![CDATA[/*><!--*/
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">WSL2</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org2e5fe34">1. 简介</a></li>
+<li><a href="#orgeb74362">2. 安装指引</a></li>
+<li><a href="#orgf2f5ee9">3. Windows Terminal</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2e5fe34" class="outline-2">
+<h2 id="org2e5fe34"><span class="section-number-2">1</span> 简介</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+WSL<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>，Windows Subsystem for Linux。允许开发人员在 Windows 下运行 GNU/Linux 环境。
+包括大多数命令行工具，实用程序和引用程序。
+</p>
+
+<p>
+比较牛逼的一个点在于，安装一个 Linux 发行版跟安装普通软件一样，但却能拥有近乎原生的 Linux 系统
+（真正的 Linux 内核），而不需要安装虚拟机。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgeb74362" class="outline-2">
+<h2 id="orgeb74362"><span class="section-number-2">2</span> 安装指引</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<a href="https://docs.microsoft.com/zh-cn/windows/wsl/install-win10">https://docs.microsoft.com/zh-cn/windows/wsl/install-win10</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf2f5ee9" class="outline-2">
+<h2 id="orgf2f5ee9"><span class="section-number-2">3</span> Windows Terminal</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+<a href="https://docs.microsoft.com/zh-cn/windows/terminal/get-started">https://docs.microsoft.com/zh-cn/windows/terminal/get-started</a>
+</p>
+
+<p>
+配置文件位置:
+</p>
+
+<p>
+<code>C:\Users\me\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\setting.json</code>
+</p>
+
+<p>
+部分配置：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #707183;">{</span>
+    <span style="color: #008000;">"copyOnSelect"</span>: <span style="color: #D0372D;">true</span>,
+    <span style="color: #008000;">"copyFormatting"</span>: <span style="color: #D0372D;">true</span>,
+    <span style="color: #008000;">"launchMode"</span>: <span style="color: #008000;">"maximized"</span>,
+    <span style="color: #008000;">"profiles"</span>: <span style="color: #7388D6;">{</span>
+        <span style="color: #008000;">"defaults"</span>: <span style="color: #909183;">{</span>
+            <span style="color: #008000;">"cursorShape"</span>: <span style="color: #008000;">"filledBox"</span>,
+            <span style="color: #008000;">"fontFace"</span>: <span style="color: #008000;">"Cascadia Mono"</span>,
+            <span style="color: #008000;">"fontSize"</span>: 11,
+            <span style="color: #008000;">"colorScheme"</span>: <span style="color: #008000;">"One Half Light"</span>,
+            <span style="color: #008000;">"cursorColor"</span>: <span style="color: #008000;">"#00AA00"</span>,
+            <span style="color: #008000;">"scrollbarState"</span>: <span style="color: #008000;">"hidden"</span>
+        <span style="color: #909183;">}</span>,
+    <span style="color: #7388D6;">}</span>
+
+    <span style="color: #008000;">"actions"</span>: <span style="color: #7388D6;">[</span>
+        <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Copy and paste are bound to Ctrl+Shift+C and Ctrl+Shift+V in your defaults.json.</span>
+        <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">These two lines additionally bind them to Ctrl+C and Ctrl+V.</span>
+        <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">To learn more about selection, visit https://aka.ms/terminal-selection</span>
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #709870;">{</span><span style="color: #008000;">"action"</span>: <span style="color: #008000;">"copy"</span>, <span style="color: #008000;">"singleLine"</span>: <span style="color: #D0372D;">false</span> <span style="color: #709870;">}</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+c"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #008000;">"paste"</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+v"</span> <span style="color: #909183;">}</span>,
+
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #008000;">"newTab"</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+shift+t"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+shift+1"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+shift+2"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+shift+3"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+shift+4"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+shift+5"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+shift+6"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+shift+7"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+shift+8"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+shift+9"</span> <span style="color: #909183;">}</span>,
+
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #709870;">{</span> <span style="color: #008000;">"action"</span>: <span style="color: #008000;">"switchToTab"</span>, <span style="color: #008000;">"index"</span>: 0 <span style="color: #709870;">}</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"alt+1"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #709870;">{</span> <span style="color: #008000;">"action"</span>: <span style="color: #008000;">"switchToTab"</span>, <span style="color: #008000;">"index"</span>: 1 <span style="color: #709870;">}</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"alt+2"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #709870;">{</span> <span style="color: #008000;">"action"</span>: <span style="color: #008000;">"switchToTab"</span>, <span style="color: #008000;">"index"</span>: 2 <span style="color: #709870;">}</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"alt+3"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #709870;">{</span> <span style="color: #008000;">"action"</span>: <span style="color: #008000;">"switchToTab"</span>, <span style="color: #008000;">"index"</span>: 3 <span style="color: #709870;">}</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"alt+4"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #709870;">{</span> <span style="color: #008000;">"action"</span>: <span style="color: #008000;">"switchToTab"</span>, <span style="color: #008000;">"index"</span>: 4 <span style="color: #709870;">}</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"alt+5"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #709870;">{</span> <span style="color: #008000;">"action"</span>: <span style="color: #008000;">"switchToTab"</span>, <span style="color: #008000;">"index"</span>: 5 <span style="color: #709870;">}</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"alt+6"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #709870;">{</span> <span style="color: #008000;">"action"</span>: <span style="color: #008000;">"switchToTab"</span>, <span style="color: #008000;">"index"</span>: 6 <span style="color: #709870;">}</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"alt+7"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #709870;">{</span> <span style="color: #008000;">"action"</span>: <span style="color: #008000;">"switchToTab"</span>, <span style="color: #008000;">"index"</span>: 7 <span style="color: #709870;">}</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"alt+8"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #709870;">{</span> <span style="color: #008000;">"action"</span>: <span style="color: #008000;">"switchToTab"</span>, <span style="color: #008000;">"index"</span>: 8 <span style="color: #709870;">}</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"alt+9"</span> <span style="color: #909183;">}</span>,
+
+        <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Press Ctrl+Shift+F to open the search box</span>
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #008000;">"find"</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+shift+f"</span> <span style="color: #909183;">}</span>,
+
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"alt+enter"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #008000;">"toggleFullscreen"</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"f11"</span> <span style="color: #909183;">}</span>,
+
+        <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">disable copy and parse</span>
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+c"</span> <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">{</span> <span style="color: #008000;">"command"</span>: <span style="color: #D0372D;">null</span>, <span style="color: #008000;">"keys"</span>: <span style="color: #008000;">"ctrl+v"</span> <span style="color: #909183;">}</span>
+    <span style="color: #7388D6;">]</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+<b>禁用光标闪烁</b> 配置没有办法直接禁用，只能在系统全局设置。 <code>控制面板 =&gt; 键盘 =&gt; 更改光标闪烁速率</code>
+这个设定有点坑，估计后面会优化。
+</p>
+
+<p>
+在 WSL 系统中使用宿主 Windows 系统的代理，
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/bin/</span><span style="color: #0000FF;">bash</span>
+<span style="color: #BA36A5;">host_ip</span>=$<span style="color: #707183;">(</span>cat /etc/resolv.conf |grep <span style="color: #008000;">"nameserver"</span> |cut -f 2 -d <span style="color: #008000;">" "</span><span style="color: #707183;">)</span>
+<span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">ALL_PROXY</span>=<span style="color: #008000;">"http://$host_ip:1080"</span>
+</pre>
+</div>
+
+<p>
+如果访问不了，注意查看 Windows 系统防火墙。
+</p>
+
+<p>
+<b>远程连接到服务器上，中文乱码</b> <code>/etc/default/locale</code> 中 LANG 改为 <code>zh_CN.UTF-8</code> 。
+</p>
+
+<p>
+<b>WSL 不支持 systemd</b> ，那就严重依赖 Docker 安装服务了。好在 Docker 和 WSL2 融合的似乎很完美<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>。
+只要安装 Windows 版本的 Desktop 之后，开启 WSL2 即可。
+</p>
+
+<p>
+<b>设置启动目录</b> <code>"startingDirectory" : "//wsl$/Ubuntu-18.04/home/&lt;Your Ubuntu Username&gt;"</code> <sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>。
+</p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://docs.microsoft.com/en-us/windows/wsl/">https://docs.microsoft.com/en-us/windows/wsl/</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://docs.docker.com/docker-for-windows/wsl/">https://docs.docker.com/docker-for-windows/wsl/</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://docs.microsoft.com/en-us/windows/terminal/troubleshooting#set-your-wsl-distribution-to-start-in-the-home--directory-when-launched">https://docs.microsoft.com/en-us/windows/terminal/troubleshooting#set-your-wsl-distribution-to-start-in-the-home--directory-when-launched</a>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-11-21 11:40:19 <br />Last updated: 2020-11-23 Mon 14:14 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
+</div>
+</body>
+</html>
