@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <!-- 2021-01-05 Tue 10:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>JerryZhang's Blog</title>
+<title>Kubernetes 控制器 - ReplicaSet</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,7 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
@@ -219,44 +221,90 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">JerryZhang's Blog</h1>
-
-<div id="outline-container-orgde30d06" class="outline-2">
-<h2 id="orgde30d06">Entry</h2>
-<div class="outline-text-2" id="text-orgde30d06">
-<dl class="org-dl">
-<dt><a href="blog/index.html">Blog</a></dt><dd>网络日志，偏技术和思考（现在写的比较少了）</dd>
-<dt><a href="wiki/index.html">Wiki</a></dt><dd>偏向于工具化，比较散的知识点</dd>
-<dt>Topic</dt><dd>技术专题，比较聚集的知识面
-<ul class="org-ul">
-<li><a href="topic/emacs/index.html">Emacs</a> 使用 Emacs 是一种信仰 <i>核心已完结，缓慢补充</i></li>
-<li><a href="topic/cloud-native/index.html">云原生</a> 容器、Docker、Kubernetes 等 <i>持续更新中，差的很远</i></li>
-<li><a href="topic/grpc/index.html">gRPC</a> <i>核心已完结，缓慢补充</i></li>
-</ul></dd>
-<dt><a href="reading/read-books.html">Read</a>、<a href="reading/unread-books.html">Unread</a></dt><dd>读过的和打算读的书，包括电子书</dd>
-<dt><a href="other/resume.html">Resume</a></dt><dd>简历</dd>
-</dl>
+<h1 class="title">Kubernetes 控制器 - ReplicaSet</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6236408">1. 工作原理</a></li>
+<li><a href="#org0e30a6f">2. 何时使用</a></li>
+<li><a href="#org6665fb0">3. 书写 ReplicaSet 清单</a></li>
+</ul>
 </div>
 </div>
-
-<div id="outline-container-org2c6dcc4" class="outline-2">
-<h2 id="org2c6dcc4">Open Source</h2>
-<div class="outline-text-2" id="text-org2c6dcc4">
 <p>
-Github: <a href="https://github.com/zhangjie2012">https://github.com/zhangjie2012</a> 。
+ReplicaSet（后面简称RS） 是为了维护一组 Pod 副本的运行，作用就是保证这些 Pod 在集群中正常运行。
 </p>
 
-<dl class="org-dl">
-<dt><a href="https://github.com/zhangjie2012/_emacs.d">_emacs.d</a></dt><dd>我的 Emacs 配置，[稳定版本, 迭代]</dd>
-<dt><a href="https://github.com/zhangjie2012/cbl-go">cbl-go</a></dt><dd>Go 的常用基础库封装（标准库中没有的）[迭代版本, 测试中]</dd>
-<dt>日志</dt><dd>日志收集相关 pipeline 和组件
+<div id="outline-container-org6236408" class="outline-2">
+<h2 id="org6236408"><span class="section-number-2">1</span> 工作原理</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+RS 使用字段定义，主要包括：
+</p>
+
 <ul class="org-ul">
-<li><a href="https://github.com/zhangjie2012/logrusredis-hook">logrusredis-hook</a> Go 日志包 logrus 的 redis hook，将日志输出到 redis LIST 中 [稳定版本, 维护]</li>
-<li><a href="https://github.com/zhangjie2012/logbus">logbus</a> 日志消费组件，一个输入源多个输出渠道，可自定义输入源和输出源 [稳定版本, 迭代]</li>
-</ul></dd>
-</dl>
+<li>选择器（selector）：来识别它可以获取的 Pods</li>
+<li>副本数量（replica）：表示维护的 Pod 数量</li>
+<li>Pod 模板（template）：表示创建 Pod 时所需要的信息</li>
+</ul>
+
+<p>
+RS 通过创建、删除 Pod 的方式来达到副本的期望（desired）数量，当它需要创建新的 Pod 时，会使用上面的 Pod 模板。
+</p>
+
+<p>
+RS 使用 Pod 的 metadata.ownerReferences 字段来与 Pod 之间建立连接（Pod 和 RS 的从属关系），指定当前对象所拥有的资源。
+使用 RS 创建的 Pods 都在 metadata.ownerReferences 中添加的自己的标识信息。
+</p>
+
+<p>
+RS 通过选择器来标识新的 Pods。如果一个 Pod 没有 OwnerReferences 或者 OwnerReference 不是 Controller，并且和
+RS 的选择器相匹配，那么 RS 会立即获取它。
+</p>
 </div>
 </div>
+
+<div id="outline-container-org0e30a6f" class="outline-2">
+<h2 id="org0e30a6f"><span class="section-number-2">2</span> 何时使用</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Deployment 相比 RS 是更高级的抽象来管理 ReplicaSets 和提供声明式的更新和其它有用的功能。因为，建议使用 Deployments
+而不直接使用 ReplicaSets，除非你需要自定义更新编排或者完全不需要更新。
+</p>
+
+<p>
+也就是说你永远不需要直接操作 RS 对象，而是通过修改 Deployment 中的 <code>spec</code> 部分来定义你的应用程序。
+</p>
+
+<p>
+注意：
+</p>
+
+<ul class="org-ul">
+<li><p>
+你可以直接创建 Pod，但是建议创建 Pod 时确保标签不要与已存在的 ReplicaSets 标签相同，否则会被 RS 获取到，然后被终止
+（因为 Pod 数量超过了 RS 所要求的数量）。
+</p>
+
+<p>
+如果你是先创建 Pod，然后创建 RS，那么 RS 会把该 Pod 作为 RS 的一部分，自己创建的 Pod 的数量将比实际的要少一个。
+</p></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6665fb0" class="outline-2">
+<h2 id="org6665fb0"><span class="section-number-2">3</span> 书写 ReplicaSet 清单</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+<a href="https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#writing-a-replicaset-manifest">https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#writing-a-replicaset-manifest</a>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-04-06 11:51:03 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.2)</p>
 </div>
 </body>
 </html>

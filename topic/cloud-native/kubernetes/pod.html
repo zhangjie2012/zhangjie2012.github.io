@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2021-01-05 Tue 10:25 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kubernetes - Pod</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+<!--/*--><![CDATA[/*><!--*/
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Kubernetes - Pod</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org99382af">1. 基本概念</a></li>
+<li><a href="#orge89c03a">2. 设计 pod 的目的</a></li>
+<li><a href="#orgd527087">3. 使用 pod</a></li>
+<li><a href="#org123eabc">4. 终止 pod</a>
+<ul>
+<li><a href="#org6de2542">4.1. 优雅终止</a></li>
+<li><a href="#org456d61c">4.2. 强制删除</a></li>
+</ul>
+</li>
+<li><a href="#orgf3339c7">5. Pod 的持久性（或稀缺性）</a></li>
+<li><a href="#org21116b9">6. Pod 的状态标识</a></li>
+<li><a href="#org90d2d26">7. 容器探针(probes)</a></li>
+<li><a href="#org3d2f8f9">8. Pod 的重启策略</a></li>
+<li><a href="#org7d43641">9. Pod 的 lifetime</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org99382af" class="outline-2">
+<h2 id="org99382af"><span class="section-number-2">1</span> 基本概念</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Pod 是 Kubernetes 的基本执行单元，是对象模型中创建或者部署的最小和最简单的单元。Pod 表示在集群上运行的进程。
+</p>
+
+<p>
+<i>通常我们也把 pod 称之为应用的实例。</i>
+</p>
+
+<p>
+一个 pod 中包含的容器个数：
+</p>
+
+<ul class="org-ul">
+<li><b>单个容器</b>
+一个 pod 一个容器是最常见的 Kubernetes 用例；Kubernetes 直接管理 Pod，而不是容器。</li>
+<li><b>多个紧密耦合且需要共享资源的容器</b>
+一般也是一个应用容器，其它的容器以 sidecar 的方式存在（系统级而非应用级）。</li>
+</ul>
+
+<p>
+总结 pod 的一些特性：
+</p>
+
+<ul class="org-ul">
+<li>Pod 中的容器共享存储（卷）、网络、以及怎样运行这些容器的声明。共享同一个 IP 地址和端口空间，可以通过 <code>localhost</code> 互相发现。</li>
+<li>Pod 中的内容总是一同调度，在共享的上下文（Linux namespace、cgroups、以及其它的潜在的资源隔离因素）中运行。
+同一个 pod 中的容器会安排到同一个节点中。</li>
+<li>Pod 的抽象定位是特定于应用的 <b>逻辑主机</b> ，包含一个或者多个容器，多个容器紧密的耦合在一起。</li>
+<li>Pod 内部容器之间可以通过标准的进程间（System V 信号量或者 POSIX 共享内存）通信方式通信，不同的 Pod 没有特殊的配置不能通过 IPC 通信，
+通常使用 IP 地址进行通信。</li>
+<li>Pod 被认为是一个短暂的实体，可能随时因为其它的原因销毁或者被其它节点的 Pod 替换掉。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge89c03a" class="outline-2">
+<h2 id="orge89c03a"><span class="section-number-2">2</span> 设计 pod 的目的</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Pod 是形成内聚服务单元的多个协作过程模式的模型。它们提供了一个比它们的应用组成集合更高级的抽象，从而简化了应用的部署和管理。
+Pod 可以用作部署、水平扩展和制作副本的最小单元。
+</p>
+
+<p>
+<i>为什么不在单个容器（Docker）容器中运行多个程序？</i>
+</p>
+
+<ul class="org-ul">
+<li>透明度。Pod 内的容器对基础设施可见，使得基础设施能够向这些容器提供服务，例如流程管理和资源监控。这为用户提供了许多便利。</li>
+<li>解耦软件依赖关系。可以独立地对单个容器进行版本控制、重新构建和重新部署。Kubernetes 有一天甚至可能支持单个容器的实时更新。</li>
+<li>易用性。用户不需要运行他们自己的进程管理器、也不用担心信号和退出代码传播等。</li>
+<li>效率。因为基础结构承担了更多的责任，所以容器可以变得更加轻量化。</li>
+</ul>
+
+<p>
+<i>为什么不支持基于亲和性的容器协同调度？</i>
+</p>
+
+<p>
+这种处理方法尽管可以提供同址，但不能提供 pod 的大部分好处，如资源共享、IPC、有保证的命运共享和简化的管理。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd527087" class="outline-2">
+<h2 id="orgd527087"><span class="section-number-2">3</span> 使用 pod</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+尽管 pod 可以单独被创建，但是实际使用过程中，不会直接使用。因为以 pod 为单独，不方便用户管理而且服务不可自愈。
+Kubernetes 提供了更高级别的抽象 <i>控制器</i> 来管理 pod。
+</p>
+
+<p>
+控制器可以创建或者管理多个 Pod，他提供了集群范围内的自愈机制，比如：一个节点宕机了，控制器会把副本调度到其它节点，保证服务可用。
+</p>
+
+<p>
+常见的 pod 控制器有：Deployment, StatefulSet, DaemonSet 等。控制器通常使用用户提供的 pod 模板来创建 pod。模板样例：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
+<span style="color: #BA36A5;">kind</span>: Pod
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: myapp-pod
+  <span style="color: #BA36A5;">labels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app</span>: myapp
+<span style="color: #BA36A5;">spec</span>:
+  <span style="color: #BA36A5;">containers</span>:
+  - <span style="color: #BA36A5;">name</span>: myapp-container
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">image</span>: busybox
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">command</span>: [<span style="color: #008000;">'sh'</span>, <span style="color: #008000;">'-c'</span>, <span style="color: #008000;">'echo Hello Kubernetes! &amp;&amp; sleep 3600'</span>]
+</pre>
+</div>
+
+<p>
+上面提供了 pod 容器的名称、镜像和启动命令。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org123eabc" class="outline-2">
+<h2 id="org123eabc"><span class="section-number-2">4</span> 终止 pod</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org6de2542" class="outline-3">
+<h3 id="org6de2542"><span class="section-number-3">4.1</span> 优雅终止</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+优雅终止 pod 是很重要的，用户可以设置容器的 <b>宽限期</b> ，默认的时间是 30 秒。流程如下：
+</p>
+
+<p>
+在用户请求删除 Pod 时，同时进行下面几步：
+</p>
+
+<ul class="org-ul">
+<li>Pod 会向容器主进程中发送 TERM 信号，然后等待 <b>宽限期</b> 。
+如果过了限制时间，就会发送 KILL 信号，然后就从 API 服务器上删除 Pod。</li>
+<li>Pod 状态就会设置为 "Terminating"，然后同步开始关闭 Pod 流程：
+<ol class="org-ol">
+<li>如果 pod 定义了 preStop Hook，就在 Pod 内部调用它。
+如果宽限期结束了，但是 <code>preStop</code> Hook 还在运行，会有一个小的宽限期（2 秒）</li>
+<li>给 pod 内的进程发送 TERM 信号。请注意：并不是所有的 Pod 容器同时收到 TERM 信号</li>
+</ol></li>
+<li>从 services 的 endpoints 中删除 pod，即从负载均衡器中删除</li>
+</ul>
+
+<p>
+最后，宽限期到时，依然运行的所有进程都会发出 SIGKILL 信号。kubelet 通过设置宽限期为 0 来完成 API server 中删除 pod 的操作。
+</p>
+
+<blockquote>
+<p>
+站在用户（应用方）视角理解：
+</p>
+
+<ul class="org-ul">
+<li>设置的宽限期是给容器中服务优雅终止的时间。如果服务没有合理的处理 TERM 信号，或者宽限期内服务没有终止完成。Pod 是不会关心的；</li>
+<li>请求关闭 pod 之后的关闭 pod 逻辑和不对外提供服务是同时发生的；</li>
+<li>宽限期时间不是固定的，会根据 preStop 微调，但是宽限期时间倒计时到 0 时，会强制清理所有资源（发送 SIGKILL 信号）；</li>
+</ul>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org456d61c" class="outline-3">
+<h3 id="org456d61c"><span class="section-number-3">4.2</span> 强制删除</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+强制删除指的是：从集群状态和 etcd 中立即删除 Pod；API 服务器不会等待 kubelet 的确认信息（该 Pod 是否被所运行的节点终止）。
+</p>
+
+<p>
+<i>强制删除对某些 Pod 可能具有潜在危险，应谨慎执行</i>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf3339c7" class="outline-2">
+<h2 id="orgf3339c7"><span class="section-number-2">5</span> Pod 的持久性（或稀缺性）</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+<b>不能将 pod 视为持久的实体。</b> 它们无法在调度失败、节点故障或其他驱逐策略（例如由于缺乏资源或在节点维护的情况下）中生存。
+</p>
+
+<blockquote>
+<p>
+Pod 可以当做一个应用实例，但不能当成虚拟机的定位。它们的逻辑是完全不同的：
+</p>
+
+<ul class="org-ul">
+<li>虚拟机中运行的服务宕了之后只会重启服务自身，但不会重启虚拟机</li>
+<li>Pod 中运行的服务宕机，不会重启服务，也不会重启 pod，而是重新创建一个 pod，然后销毁掉之前的 pod</li>
+</ul>
+
+<p>
+这种情况下 pod 的更新策略也叫 滚动更新。使用 Kubernetes 理解这一层至关重要。
+</p>
+</blockquote>
+
+<p>
+尽管按照上面说的 pod 的不会被直接使用，但还是会暴露 Pod 原语，目的是方便：
+</p>
+
+<ul class="org-ul">
+<li>调度器和控制器可插拔性</li>
+<li>支持 Pod 级别的操作，而不需要通过控制器 API 「代理」 它们</li>
+<li>Pod 生命与控制器生命的解耦，如自举</li>
+<li>控制器和服务的解耦 — 端点控制器只监视 Pod</li>
+<li>kubelet 级别的功能与集群级别功能的清晰组合 — kubelet 实际上是「Pod 控制器」</li>
+<li>高可用性应用程序期望在 Pod 终止之前并且肯定要在 Pod 被删除之前替换 Pod，例如在计划驱逐或镜像预先拉取的情况下</li>
+</ul>
+
+<p>
+总结一句话， <b>其实就是为了组件解耦和方便管理</b> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org21116b9" class="outline-2">
+<h2 id="org21116b9"><span class="section-number-2">6</span> Pod 的状态标识</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Pod 的 <code>status</code> 字段是一个 PodStatus 对象，其中包含 <code>phase</code> 和 <code>conditions</code> 用来标识 pod 的状态。
+</p>
+
+<p>
+<b>phase</b>
+</p>
+
+<p>
+Pod 的阶段（phase）是一个简单的，高层次的总结了 Pod 在生命周期中的状态；它并不是对容器或者 Pod 状态的全面检测之后的汇总，
+也不是一个全面的状态机。
+</p>
+
+<p>
+对阶段的定义有严格的保护，除了下面列举的值之外，不应该有其它的值。
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">值</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>Pending</code></td>
+<td class="org-left">Pod 已被 Kubernetes 接受，但容器镜像还没被创建。这包括了被调度的时间和镜像下载时间，可能有点费时</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>Running</code></td>
+<td class="org-left">Pod 已经绑定到节点上，所有的容器已经被创建。至少一个容器在运行或者正在启动、重新启动</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>Succeeded</code></td>
+<td class="org-left">Pod 中所有的容器已成功终止，并且不会重新启动</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>Failed</code></td>
+<td class="org-left">Pod 中所有容器都已终止，并且至少有一个容器因故障而终止。也就是要么容器非 0 退出，要么被系统终止</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>Unknown</code></td>
+<td class="org-left">因为某种原因，无法获得 Pod 的状态，通常是和 Pod 所在主机通信故障</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>conditions</b>
+</p>
+
+<p>
+<code>conditions</code> 是一个数组，来记录 pod 通过或者未通过。每个元素都可能有 6 个可能的字段：
+</p>
+
+<ul class="org-ul">
+<li><code>lastProbeTime</code> 提供最近一次 Pod 探测的时间</li>
+<li><code>lastTransitionTime</code> 提供最近一次状态变换的时间</li>
+<li><code>message</code> 人类可读的状态变更的详细信息</li>
+<li><code>reason</code> 唯一的驼峰命名的一个单词来描述最后一次状态变换</li>
+<li><code>status</code> 字符串，可能的值为 <code>True</code> <code>False</code> <code>Unknown</code></li>
+<li><code>type</code> 字符串，可能的值为：
+<ul class="org-ul">
+<li><code>PodScheduled</code> Pod 已经被调度到节点；</li>
+<li><code>Ready</code> Pod 已经可以处理请求，应该将它添加到匹配 services 的负载均衡池中；</li>
+<li><code>Initialized</code> 所有的初始化容器（Init Containers）已经初始化成功；</li>
+<li><code>ContainersReady</code> Pod 中所有的容器都已经就绪。</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org90d2d26" class="outline-2">
+<h2 id="org90d2d26"><span class="section-number-2">7</span> 容器探针(probes)</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+探针（probes）是 kubelet 对容器的定时诊断。提供三种探测方式：
+</p>
+
+<ul class="org-ul">
+<li><b>ExecAction</b> 在容器内部执行命令。退出时状态码为 0 表示成功</li>
+<li><b>TCPSocketAction</b> TCP 端口监测。判断端口是否存在</li>
+<li><b>HTTPGetAction:</b> HTTP Get 请求。回包响应码等于 200 或者小于 400 会被认为执行成功</li>
+</ul>
+
+<p>
+每种探测方式的结果会有下面三种中的一种：
+</p>
+
+<ul class="org-ul">
+<li><b>成功</b> 通过诊断</li>
+<li><b>失败</b> 诊断失败</li>
+<li><b>未知</b> 诊断失败，但什么都不做</li>
+</ul>
+
+<p>
+kubelet 对已经运行的容器可选的执行下面三种探针：
+</p>
+
+<ul class="org-ul">
+<li><code>livenessProbe</code> 存活探针，表示容器是否处于运行。如果判断结果为失败，会杀掉容器（优雅终止）</li>
+<li><code>readinessProbe</code> 可用探针，表示容器是否可正常对外请求。如果判断结果为失败，会把该 pod 从 services 的 endpoint 列表中移出。
+也就是暂时不对外提供服务。</li>
+<li><code>startupProbe</code> 启动探针，表示容器中的应用程序是否已经启动。如果使用了启动探针，会禁掉其它的探针，直到启动探针成功为止。
+如果启动探针执行失败，kubelet 会杀掉容器（优雅终止）。</li>
+</ul>
+
+<p>
+上面三种探针都是可选的，如果不配置默认都是成功。
+</p>
+
+<ul class="org-ul">
+<li>慎用存活探针，服务临时不可用时杀掉服务，未必是你想要的。除非你的需求就是这样。</li>
+<li>建议服务都配置可用探针，服务不可用时，临时切掉流量，等恢复了在继续处理请求。
+尤其是服务的更新策略是滚动更新时，更加建议配置可用检测，等新的 pod 真正意义的上 ready 了，然后再删除旧的 pod，
+这样更平滑一些。</li>
+<li>启动探针是 <code>v1.16</code> 版本之后的新功能， <i>还不是很了解</i> 。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3d2f8f9" class="outline-2">
+<h2 id="org3d2f8f9"><span class="section-number-2">8</span> Pod 的重启策略</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Pod 有可以设置重启策略，由 pod 所在容器的 kubelet 来判断容器状态（异常退出、存活检测失败），重启策略由 PodSpec 中的
+<code>restartPolicy</code> 字段来控制。
+</p>
+
+<ul class="org-ul">
+<li><code>Always</code> 当容器终止退出之后，自动重启，默认策略；</li>
+<li><code>OnFailure</code> 容器异常退出且退出码不为 0 时重启；</li>
+<li><code>Nerver</code> 容器退出时，不重启；</li>
+</ul>
+
+<p>
+在需要重启时，是基于延迟策略的间隔进行重启的（10s、20s、40s），上限是 5 分钟，并且成功执行 10 分钟之后重置。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7d43641" class="outline-2">
+<h2 id="org7d43641"><span class="section-number-2">9</span> Pod 的 lifetime</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+Pod 除非是人工或者控制器删除，否则会一直存在。当 pod 的数量超过配置的阈值时（由 kube-controller-manager 配置的
+<code>terminated-pod-gc-threshold</code> 决定），控制面板将清理终止的 pod（phase 值为 "success" 或者 "error"）。
+</p>
+
+<p>
+提供三种类型的控制器：
+</p>
+
+<ul class="org-ul">
+<li>Job 运行的预期会终止的 pods ，比如批量计算。Job 仅适用于 pod  <code>restartPolicy</code> 等于 OnFailure 或者 Never。</li>
+<li>ReplicationController, Replicaset 或者 Deployment 的 pods 预期不会被终止，比如 web 服务。
+ReplicationControllers 仅适用于 <code>restartPolicy</code> 为 always 的 pod。</li>
+<li>DaemonSet 运行的 pods 需要在每台机器上都运行一个，因为它们提供了特定于机器的系统服务。</li>
+</ul>
+
+<p>
+三种类型的控制器都包含 PodTemplate。建议创建合适的控制器（让它们来创建 pods），而不是手动创建 pods。
+因为 pods 本身不能抵御机器故障，但是控制器可以。
+</p>
+
+<p>
+如果节点宕掉或者与集群失联，kubernetes 会把所有的 pod phase 设置为 Failed。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-02-08 15:20:07 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.2)</p>
+</div>
+</body>
+</html>

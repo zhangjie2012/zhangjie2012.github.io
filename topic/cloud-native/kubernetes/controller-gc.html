@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <!-- 2021-01-05 Tue 10:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>JerryZhang's Blog</title>
+<title>Kubernetes - Garbage Collection</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,7 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
@@ -219,44 +221,163 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">JerryZhang's Blog</h1>
-
-<div id="outline-container-orgde30d06" class="outline-2">
-<h2 id="orgde30d06">Entry</h2>
-<div class="outline-text-2" id="text-orgde30d06">
-<dl class="org-dl">
-<dt><a href="blog/index.html">Blog</a></dt><dd>网络日志，偏技术和思考（现在写的比较少了）</dd>
-<dt><a href="wiki/index.html">Wiki</a></dt><dd>偏向于工具化，比较散的知识点</dd>
-<dt>Topic</dt><dd>技术专题，比较聚集的知识面
-<ul class="org-ul">
-<li><a href="topic/emacs/index.html">Emacs</a> 使用 Emacs 是一种信仰 <i>核心已完结，缓慢补充</i></li>
-<li><a href="topic/cloud-native/index.html">云原生</a> 容器、Docker、Kubernetes 等 <i>持续更新中，差的很远</i></li>
-<li><a href="topic/grpc/index.html">gRPC</a> <i>核心已完结，缓慢补充</i></li>
-</ul></dd>
-<dt><a href="reading/read-books.html">Read</a>、<a href="reading/unread-books.html">Unread</a></dt><dd>读过的和打算读的书，包括电子书</dd>
-<dt><a href="other/resume.html">Resume</a></dt><dd>简历</dd>
-</dl>
+<h1 class="title">Kubernetes - Garbage Collection</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org8ac853b">1. Owners 和依赖</a></li>
+<li><a href="#orgc837ae5">2. 控制垃圾回收器如何删除依赖项</a>
+<ul>
+<li><a href="#org6bd666b">2.1. 前台级联删除</a></li>
+<li><a href="#org8712751">2.2. 后台级联删除</a></li>
+<li><a href="#orgb979336">2.3. 设置级联删除策略</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
-
-<div id="outline-container-org2c6dcc4" class="outline-2">
-<h2 id="org2c6dcc4">Open Source</h2>
-<div class="outline-text-2" id="text-org2c6dcc4">
 <p>
-Github: <a href="https://github.com/zhangjie2012">https://github.com/zhangjie2012</a> 。
+Kubernetes 垃圾回收器的作用是删除曾经有 owner，但是后来没有 owner 的对象。
 </p>
 
-<dl class="org-dl">
-<dt><a href="https://github.com/zhangjie2012/_emacs.d">_emacs.d</a></dt><dd>我的 Emacs 配置，[稳定版本, 迭代]</dd>
-<dt><a href="https://github.com/zhangjie2012/cbl-go">cbl-go</a></dt><dd>Go 的常用基础库封装（标准库中没有的）[迭代版本, 测试中]</dd>
-<dt>日志</dt><dd>日志收集相关 pipeline 和组件
+<div id="outline-container-org8ac853b" class="outline-2">
+<h2 id="org8ac853b"><span class="section-number-2">1</span> Owners 和依赖</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Kubernetes 中一些对象是另外一些对象的 owner。比如，ReplicaSet 是一组 Pods 的 owner。被 owner 的对象称作 <i>依赖于</i> owner 对象。
+每个依赖的对象都有一个 <code>.metadata.ownerReference</code> 字段指向 owner 对象。
+</p>
+
+<p>
+有时，Kubernetes 会自动设置 <code>.metadata.ownerReference</code> 。比如，ReplicaSet 的每一个 Pods 都会自动设置 <code>ownerReference</code> 。
+在 1.8 之后，由 ReplicationController，ReplicaSet，StatefulSet，DaemonSet，Deployment，Job 和 CronJob 创建或者采用的对象
+都会自动添加 <code>ownerReference</code> 值。
+</p>
+
+<p>
+你也可以通过手动设置 <code>ownerReference</code> 字段来指定 owner 和依赖之间的关系。
+</p>
+
+<p>
+Pod 中 owner 显示一般如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
+<span style="color: #BA36A5;">kind</span>: Pod
+<span style="color: #BA36A5;">metadata</span>:
+  ...
+  <span style="color: #BA36A5;">ownerReferences</span>:
+  - <span style="color: #BA36A5;">apiVersion</span>: apps/v1
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">controller</span>: <span style="color: #D0372D;">true</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">blockOwnerDeletion</span>: <span style="color: #D0372D;">true</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">kind</span>: ReplicaSet
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">name</span>: my-repset
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">uid</span>: d9607e19-f88f-11e6-a518-42010a800195
+  ...
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>注意：</b> 设计上不允许跨空间的引用 owner。这意味着：
+</p>
+<ol class="org-ol">
+<li>只能在同一个空间指定 owner 和依赖，或者集群范围的 owner</li>
+<li>集群范围的依赖只能指定集群范围的 owner，但不是空间范围内</li>
+</ol>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgc837ae5" class="outline-2">
+<h2 id="orgc837ae5"><span class="section-number-2">2</span> 控制垃圾回收器如何删除依赖项</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+删除对象的时候，可以指定是否要同时自动删除对象的从属<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。自动删除依赖称作为 <i>级联删除</i> 。级联删除有两种模式：
+<i>后台（background）</i> 和 <i>前台（forground）</i> <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>。
+</p>
+
+<p>
+如果删除一个对象而不删除对象的依赖，依赖项会被称作为 <i>孤儿（orphaned）</i> 。
+</p>
+</div>
+
+<div id="outline-container-org6bd666b" class="outline-3">
+<h3 id="org6bd666b"><span class="section-number-3">2.1</span> 前台级联删除</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+前台级联删除的情况下，跟对象会进入”正在删除“状态，处于“正在删除”状态，以下情况是正常的：
+</p>
+
 <ul class="org-ul">
-<li><a href="https://github.com/zhangjie2012/logrusredis-hook">logrusredis-hook</a> Go 日志包 logrus 的 redis hook，将日志输出到 redis LIST 中 [稳定版本, 维护]</li>
-<li><a href="https://github.com/zhangjie2012/logbus">logbus</a> 日志消费组件，一个输入源多个输出渠道，可自定义输入源和输出源 [稳定版本, 迭代]</li>
-</ul></dd>
-</dl>
+<li>对象仍然可以通过 REST API 看到</li>
+<li>对象的 <code>deletionTimestamp</code> 被设置</li>
+<li>对象的 <code>metadata.finalizers</code> 包含 "forgroundDeletetion"</li>
+</ul>
+
+<p>
+一旦设置未“正在删除”，垃圾回收器会删除对象依赖。当垃圾回收器删除了所有的“blocking”依赖（有 <code>ownerReference.blockOwnerDeletion=true</code>
+标识的对象），然后会删除 owner 对象。
+</p>
+
+<p>
+注意，在前台删除的情况下，只有 <code>ownerReference.blockOwnerDeletion=true</code> 标识的依赖才会阻塞 owner 对象的删除。
+Kubernetes 1.7 版本添加了准入控制器，它控制用户访问权限基于对 owner 对象删除权限将 <code>blockOwnerDeletion</code> 设置为 true，
+以便未授权的依赖项无法延迟所有对象的删除。
+</p>
+
+<p>
+如果对象的 <code>ownerReference</code> 字段被控制器设置（比如 Deployment 或者 ReplicaSet），blockOwnerDeletion 是自动设置的，你不需要
+手动修改此字段。
+</p>
 </div>
 </div>
+
+<div id="outline-container-org8712751" class="outline-3">
+<h3 id="org8712751"><span class="section-number-3">2.2</span> 后台级联删除</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+后台级联删除的情况下，Kubernetes 会理解删除 owner 对象，然后使用垃圾回收期在后台删除依赖项。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb979336" class="outline-3">
+<h3 id="orgb979336"><span class="section-number-3">2.3</span> 设置级联删除策略</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+要控制级联删除策略，在删除对象时 <code>deleteOptions</code> 参数上设置 <code>propagationPolicy</code> 字段。可选的值有“Orphan”，“Foreground” 或者
+“Background”。
+</p>
+
+<p>
+在 Kubernetes 1.9 之前，许多默认的控制资源的垃圾回收策略都是 <code>orphan</code> 。包括 ReplicationController，ReplicaSet，StatefulSet，
+DaemonSet 和 Deployment。
+对于 <code>extensions/v1beta1</code>, <code>apps/v1beta1</code>, <code>apps/v1beta2</code> 中的版本，除非你另外指定，否则依赖的对象默认是 orphaned。
+1.9，所有的 <code>apps/v1</code> 版本，依赖对象默认被删除。
+</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+dependents 可以理解成依赖和从属，这里表达的是一个意思，在有些地方读起来更顺畅一些。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+background 和 forground 直译成背景和前景，但是这里似乎前台和后台更好理解一些。
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-04-14 11:04:43 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.2)</p>
 </div>
 </body>
 </html>

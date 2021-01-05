@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2021-01-05 Tue 10:25 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kubernetes - DaemonSet</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script type="text/javascript">
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+<!--/*--><![CDATA[/*><!--*/
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Kubernetes - DaemonSet</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org589e7e4">1. 书写 DaemonSet 规范</a>
+<ul>
+<li><a href="#org2abe802">1.1. Pod Tempate</a></li>
+<li><a href="#org998eba8">1.2. Pod Selector</a></li>
+<li><a href="#org84cab81">1.3. 仅在某些节点上运行 Pod</a></li>
+</ul>
+</li>
+<li><a href="#org5ce6b88">2. Daemon Pods 是如何调度的</a>
+<ul>
+<li><a href="#orgdb128e0">2.1. 默认的调度器调度</a></li>
+<li><a href="#orgd7cfc8a">2.2. Taints and Tolerations</a></li>
+</ul>
+</li>
+<li><a href="#org16f846c">3. 与 Daemon Pods 通信</a></li>
+<li><a href="#org8d6cc9e">4. 更新 DaemonSet</a></li>
+<li><a href="#org26936b3">5. 替代品</a>
+<ul>
+<li><a href="#orga1e637e">5.1. Init 脚本</a></li>
+<li><a href="#org33f8fca">5.2. 裸 Pods（Bare Pods）</a></li>
+<li><a href="#orgfa9bcd4">5.3. 静态 Pods</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+<i>DaemonSet</i> 保证在所有的（或者一些）节点上运行一个 Pod 副本。只要节点添加到集群时，会将 Pods 添加到他们上，
+节点从集群移除时，这些 Pods 会被垃圾回收。删除 DaemonSet 会清除它们创建的 Pod。
+</p>
+
+<p>
+一些典型的 DaemonSet 应用场景：
+</p>
+
+<ul class="org-ul">
+<li>运行集群的存储守护进程，比如在每一个节点上都运行 <code>glusterd</code>, <code>ceph</code> 。</li>
+<li>运行集群每个节点上的日志收集，比如 <code>fluentd</code> 或者 <code>filebeat</code> 。</li>
+<li>运行集群每个节点的监控，比如 Promethues Node Exporter</li>
+</ul>
+
+<div id="outline-container-org589e7e4" class="outline-2">
+<h2 id="org589e7e4"><span class="section-number-2">1</span> 书写 DaemonSet 规范</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-yaml" id="org6ceac8a"><span style="color: #BA36A5;">apiVersion</span>: apps/v1
+<span style="color: #BA36A5;">kind</span>: DaemonSet
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: fluentd-elasticsearch
+  <span style="color: #BA36A5;">namespace</span>: kube-system
+  <span style="color: #BA36A5;">labels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">k8s-app</span>: fluentd-logging
+<span style="color: #BA36A5;">spec</span>:
+  <span style="color: #BA36A5;">selector</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">matchLabels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  name</span>: fluentd-elasticsearch
+  <span style="color: #BA36A5;">template</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">metadata</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  labels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">name</span>: fluentd-elasticsearch
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">spec</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  tolerations</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">this toleration is to have the daemonset runnable on master nodes</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">remove it if your masters can't run pods</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - key</span>: node-role.kubernetes.io/master
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">effect</span>: NoSchedule
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  containers</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - name</span>: fluentd-elasticsearch
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">image</span>: quay.io/fluentd_elasticsearch/fluentd:v2.5.2
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">resources</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  limits</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">memory</span>: 200Mi
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  requests</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">cpu</span>: 100m
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">memory</span>: 200Mi
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">volumeMounts</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">- name</span>: varlog
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  mountPath</span>: /var/log
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">- name</span>: varlibdockercontainers
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  mountPath</span>: /var/lib/docker/containers
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  readOnly</span>: <span style="color: #D0372D;">true</span>
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  terminationGracePeriodSeconds</span>: 30
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  volumes</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - name</span>: varlog
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">hostPath</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  path</span>: /var/log
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - name</span>: varlibdockercontainers
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">hostPath</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  path</span>: /var/lib/docker/containers
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org2abe802" class="outline-3">
+<h3 id="org2abe802"><span class="section-number-3">1.1</span> Pod Tempate</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+<code>.spec.template</code> 是 <code>.spec</code> 必填字段之一，是一个 <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/#pod-templates">pod template</a>。除了 <code>apiVersion</code> 和 <code>kind</code> 之外，其它的跟 Pod
+的架构完全相同。
+</p>
+
+<ul class="org-ul">
+<li>除了 Pod 的必填字段之外，DaemonSet 中的 Pod template 必须指定适当的标签（见 Pod Selector）。</li>
+<li>DaemonSet 的 Pod 模板必须要有 <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy">重启策略</a>，等于 <code>Always</code> ，或者不指定，默认值也是 <code>Always</code> 。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org998eba8" class="outline-3">
+<h3 id="org998eba8"><span class="section-number-3">1.2</span> Pod Selector</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+<code>.spec.selector</code> 字段是一个 pod 选择器，和 Job 的 <code>.spec.selector</code> 类似。它是一个对象由两个字段组成：
+</p>
+
+<ul class="org-ul">
+<li><code>matchLabels</code> 和 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/">ReplicationController</a> 中的 <code>.spec.selector</code> 相同。</li>
+<li><code>matchExpressions</code> 允许通过指定键，值列表来构建更复杂的选择器。</li>
+</ul>
+
+<p>
+当两个都指定时，需要同时满足条件（与运算）。如果指定了 <code>.spec.selector</code> ，必须要与 <code>.spec.template.metadata.labels</code>
+相匹配。如果不匹配，将会被 API 拒绝。
+</p>
+
+<p>
+同样，不可以创建与测标签相匹配的 Pod（不管是另外的 DaemonSet 还是其它的控制器）。
+</p>
+
+<p>
+Kubernetes 1.8 以后，这个字段是你必须要指定的，留空不再会设置默认值。而且一旦创建之后，就不允许修改了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org84cab81" class="outline-3">
+<h3 id="org84cab81"><span class="section-number-3">1.3</span> 仅在某些节点上运行 Pod</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+如果指定了 <code>.spec.template.spec.nodeSelector</code> ，控制器只会在匹配的节点（<a href="https://kubernetes.io/docs/concepts/configuration/assign-pod-node/">节点选择器</a>）上创建 Pods。
+同样的，如果你指定了 <code>.spec.template.spec.affinity</code> ，控制只会在匹配的节点（<a href="https://kubernetes.io/docs/concepts/configuration/assign-pod-node/">节点亲和性</a>）上创建 Pods。
+如果你什么都不指定，那么控制器会在所有的节点上创建 Pods。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5ce6b88" class="outline-2">
+<h2 id="org5ce6b88"><span class="section-number-2">2</span> Daemon Pods 是如何调度的</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgdb128e0" class="outline-3">
+<h3 id="orgdb128e0"><span class="section-number-3">2.1</span> 默认的调度器调度</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+DaemonSet 保证所有合适的节点运行一个 Pod 副本。一般来说，节点上运行的 Pod 都是由集群的调度器来选择的。
+但是，DaemonSet 的 Pods 是由 DaemonSet 控制器创建和选择的，就引入了以下问题：
+</p>
+
+<ul class="org-ul">
+<li>不一致的 Pod 行为：普通的 Pods 等待调度会处于 <code>Pending</code> 状态，但是 DaemonSet Pod 不会被创建为 <code>Pending</code> 状态。
+这可能会让人感到迷惑。</li>
+<li><a href="https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/">Pod 抢占</a> 由默认调度器处理。当抢占功能打开之后，DaemonSet 控制器将不会考虑 Pod 优先级和抢占策略来自己做出决定。</li>
+</ul>
+
+<p>
+通过添加 <code>NodeAffinity</code> 到 DaemonSet 取代 <code>.spec.nodeName</code> ，允许你使用默认的调度器而不是 DaemonSet 控制器来调度。
+然后默认的调度器来将 pod 绑定到目标主机。DaemonSet 控制器只执行 DaemonSet 的创建和修改操作，并且不会修改 DaemonSet
+的 <code>spec.template</code> 。
+</p>
+
+<pre class="example">
+nodeAffinity:
+  requiredDuringSchedulingIgnoredDuringExecution:
+	nodeSelectorTerms:
+	- matchFields:
+	  - key: metadata.name
+		operator: In
+		values:
+		- target-host-name
+</pre>
+
+<p>
+此外， <code>node.kubernetes.io/unschedulable:NoSchedule</code> 容忍会自动添加到 DaemonSet Pods 中。默认的调度器当调度 DaemonSet
+Pods 时，会自动忽略 <code>unschedulable</code> 节点。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd7cfc8a" class="outline-3">
+<h3 id="orgd7cfc8a"><span class="section-number-3">2.2</span> Taints and Tolerations</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Although Daemon Pods respect taints and tolerations, the following tolerations are added to DaemonSet Pods
+automatically according to the related features.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Toleration Key</th>
+<th scope="col" class="org-left">Effect</th>
+<th scope="col" class="org-right">Version</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">node.kubernetes.io/not-ready</td>
+<td class="org-left">NoExecute</td>
+<td class="org-right">1.13+</td>
+<td class="org-left">DaemonSet pods will not be evicted when there are node problems such as a network partition.</td>
+</tr>
+
+<tr>
+<td class="org-left">node.kubernetes.io/unreachable</td>
+<td class="org-left">NoExecute</td>
+<td class="org-right">1.13+</td>
+<td class="org-left">DaemonSet pods will not be evicted when there are node problems such as a network partition.</td>
+</tr>
+
+<tr>
+<td class="org-left">node.kubernetes.io/disk-pressure</td>
+<td class="org-left">NoSchedule</td>
+<td class="org-right">1.8+</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">node.kubernetes.io/memory-pressure</td>
+<td class="org-left">NoSchedule</td>
+<td class="org-right">1.8+</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">node.kubernetes.io/unschedulable</td>
+<td class="org-left">NoSchedule</td>
+<td class="org-right">1.12+</td>
+<td class="org-left">DaemonSet pods tolerate unschedulable attributes by default scheduler.</td>
+</tr>
+
+<tr>
+<td class="org-left">node.kubernetes.io/network-unavailable</td>
+<td class="org-left">NoSchedule</td>
+<td class="org-right">1.12+</td>
+<td class="org-left">DaemonSet pods, who uses host network, tolerate network-unavailable attributes by default scheduler.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org16f846c" class="outline-2">
+<h2 id="org16f846c"><span class="section-number-2">3</span> 与 Daemon Pods 通信</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><b>Push</b> 用来将更新发送给另外一个服务，比如统计数据。它们没有 clients。</li>
+<li><b>NodeIP and Known Port</b> DaemonSet 中的 Pod 可以使用 <code>hostPort</code> ，以便可以通过节点 IP 来访问 Pod。客户端以某种方式
+知道节点 IP 列表，然后通过端口进行通信。</li>
+<li><b>DNS</b> 使用相同的 pod 选择器创建 headless service，然后使用 =endpoint* 资源发现 DaemonSet 或者从 DNS 中检索多个 A 记录</li>
+<li><b>Service</b> 相同的 pod 选择器创建 service，然后使用 service 随机访问一个节点上的 pod。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8d6cc9e" class="outline-2">
+<h2 id="org8d6cc9e"><span class="section-number-2">4</span> 更新 DaemonSet</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+当节点 labes 被修改之后，DaemonSet 立即将 Pod 添加到新匹配的节点，然后从不匹配的节点删除 Pod。
+</p>
+
+<p>
+你可以修改 DaemonSet 的 Pod，但是不允许更新所有字段，而且下一次节点创建时还会使用原始的模板。
+</p>
+
+<p>
+你可以删除 DaemonSet。如果你使用 <code>kubeclt</code> 指定了 <code>-cascade=false</code> ，Pods 会保留在节点上。
+如果你随后用相同的选择器创建了新的 DaemonSet，新的 DaemonSet 会使用已经存在的 Pods。如果 Pod 需要替换，DaemonSet
+会根据它的 <code>updateStrategy</code> 对其进行替换。
+</p>
+
+<p>
+你可以在 DaemonSet 上执行 <a href="https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/">滚动更新</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org26936b3" class="outline-2">
+<h2 id="org26936b3"><span class="section-number-2">5</span> 替代品</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orga1e637e" class="outline-3">
+<h3 id="orga1e637e"><span class="section-number-3">5.1</span> Init 脚本</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+你可以直接在节点上运行守护进程（比如使用 <code>init</code>, <code>upstartd</code>, <code>systemd</code> ）。这样也是可以的。但是使用 DaemonSet 有如下好处：
+</p>
+
+<ul class="org-ul">
+<li>和应用程序相同的方式监控和管理守护程序的日志。</li>
+<li>守护进程和应用程序使用相同的配置语言和工具（比如：Pod 模板， <code>kubectl</code> ）。</li>
+<li>在具有资源限制的容器中运行守护进程可以增加守护进程和应用容器之间的隔离。但是，这也可以通过容器运行守护进程也行
+（比如，直接使用 Docker 启动）。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org33f8fca" class="outline-3">
+<h3 id="org33f8fca"><span class="section-number-3">5.2</span> 裸 Pods（Bare Pods）</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+可以指定节点直接创建 Pod。然而，DaemonSet 会替换由于任何原因（例如在节点故障或者破坏性节点维护，比如内核升级的情况下）
+删除或终止的 Pod。因为你应该使用 DaemonSet 而不是创建单个 Pod。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfa9bcd4" class="outline-3">
+<h3 id="orgfa9bcd4"><span class="section-number-3">5.3</span> 静态 Pods</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+通过向 kubelet 监听的目录写入文件来创建 Pod，称之为静态 Pods。不像 DaemonSet，静态 Pods 不能使用 kubectl 或其它的
+kubernetes API 客户端管理。静态 pod 不依赖于 apiserver，使得它们在集群引导的情况下很有用。
+</p>
+
+<p>
+另外，静态 Pods 可能在将来会被弃用。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-04-11 18:20:37 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.2)</p>
+</div>
+</body>
+</html>

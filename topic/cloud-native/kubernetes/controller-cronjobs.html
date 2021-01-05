@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <!-- 2021-01-05 Tue 10:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>JerryZhang's Blog</title>
+<title>Kubernetes - CronJob</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,7 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
@@ -219,44 +221,113 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">JerryZhang's Blog</h1>
-
-<div id="outline-container-orgde30d06" class="outline-2">
-<h2 id="orgde30d06">Entry</h2>
-<div class="outline-text-2" id="text-orgde30d06">
-<dl class="org-dl">
-<dt><a href="blog/index.html">Blog</a></dt><dd>网络日志，偏技术和思考（现在写的比较少了）</dd>
-<dt><a href="wiki/index.html">Wiki</a></dt><dd>偏向于工具化，比较散的知识点</dd>
-<dt>Topic</dt><dd>技术专题，比较聚集的知识面
-<ul class="org-ul">
-<li><a href="topic/emacs/index.html">Emacs</a> 使用 Emacs 是一种信仰 <i>核心已完结，缓慢补充</i></li>
-<li><a href="topic/cloud-native/index.html">云原生</a> 容器、Docker、Kubernetes 等 <i>持续更新中，差的很远</i></li>
-<li><a href="topic/grpc/index.html">gRPC</a> <i>核心已完结，缓慢补充</i></li>
-</ul></dd>
-<dt><a href="reading/read-books.html">Read</a>、<a href="reading/unread-books.html">Unread</a></dt><dd>读过的和打算读的书，包括电子书</dd>
-<dt><a href="other/resume.html">Resume</a></dt><dd>简历</dd>
-</dl>
+<h1 class="title">Kubernetes - CronJob</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org8f8687e">1. CronJob</a>
+<ul>
+<li><a href="#org2810ba1">1.1. 举例</a></li>
+</ul>
+</li>
+<li><a href="#org0de44e5">2. CronJob 局限性</a></li>
+</ul>
 </div>
 </div>
-
-<div id="outline-container-org2c6dcc4" class="outline-2">
-<h2 id="org2c6dcc4">Open Source</h2>
-<div class="outline-text-2" id="text-org2c6dcc4">
 <p>
-Github: <a href="https://github.com/zhangjie2012">https://github.com/zhangjie2012</a> 。
+<i>CronJob</i> 按照时间表（schedule）重复的创建 Jobs。类似 Unix/Linux <i>crontab</i>  文件，也是以 <a href="https://en.wikipedia.org/wiki/Cron">cron</a> 的格式编写。
 </p>
 
-<dl class="org-dl">
-<dt><a href="https://github.com/zhangjie2012/_emacs.d">_emacs.d</a></dt><dd>我的 Emacs 配置，[稳定版本, 迭代]</dd>
-<dt><a href="https://github.com/zhangjie2012/cbl-go">cbl-go</a></dt><dd>Go 的常用基础库封装（标准库中没有的）[迭代版本, 测试中]</dd>
-<dt>日志</dt><dd>日志收集相关 pipeline 和组件
-<ul class="org-ul">
-<li><a href="https://github.com/zhangjie2012/logrusredis-hook">logrusredis-hook</a> Go 日志包 logrus 的 redis hook，将日志输出到 redis LIST 中 [稳定版本, 维护]</li>
-<li><a href="https://github.com/zhangjie2012/logbus">logbus</a> 日志消费组件，一个输入源多个输出渠道，可自定义输入源和输出源 [稳定版本, 迭代]</li>
-</ul></dd>
-</dl>
+<p>
+当创建 Cronjob 资源的时候，它的名字不能超过 52 个字符。因为 CronJob 控制器在创建 Job 时，会自动添加 11 个字符到 Job 名称上，
+Job 名称不可超过 63 个字符。
+</p>
+
+<div id="outline-container-org8f8687e" class="outline-2">
+<h2 id="org8f8687e"><span class="section-number-2">1</span> CronJob</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+CronJob 对于周期性的重复任务非常有用，类似备份和发送邮件。也可以用来安排特定的任务在指定时间执行，比如在集群空闲的时候调度 Job。
+</p>
+</div>
+
+<div id="outline-container-org2810ba1" class="outline-3">
+<h3 id="org2810ba1"><span class="section-number-3">1.1</span> 举例</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+下面的例子周期性的在每分钟打印当前时间和 hello 消息：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml" id="orgc00b52b"><span style="color: #BA36A5;">apiVersion</span>: batch/v1beta1
+<span style="color: #BA36A5;">kind</span>: CronJob
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: hello
+<span style="color: #BA36A5;">spec</span>:
+  <span style="color: #BA36A5;">schedule</span>: <span style="color: #008000;">"*/1 * * * *"</span>
+  <span style="color: #BA36A5;">jobTemplate</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">spec</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  template</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">spec</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  containers</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  - name</span>: hello
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">image</span>: busybox
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">args</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span>- /bin/sh
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span>- -c
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span>- date; echo Hello from the Kubernetes cluster
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  restartPolicy</span>: OnFailure
+</pre>
 </div>
 </div>
+</div>
+</div>
+
+<div id="outline-container-org0de44e5" class="outline-2">
+<h2 id="org0de44e5"><span class="section-number-2">2</span> CronJob 局限性</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+cron job 在隔一段时间应该会创建一个 job。我们说“应该”是因为在有些情况下可能会创建两个 job，或者可能不会被创建。
+这种情况很少，但是并不能完全防止。因此，jobs 应该是幂等的。
+</p>
+
+<p>
+如果 <code>startingDeadlineSeconds</code> 设置一个较大的值或者使用默认值，且 <code>concurrencyPolicy</code> 设置成 <code>Allow</code> ，jobs 始终至少运行一次。
+</p>
+
+<p>
+对于每一个 CronJob 控制器会检查从上一个执行时间到现在，错过了多少次执行。如果超过 100 次，它不会启动 job 并且记录错误。
+</p>
+
+<p>
+很重要的一点是如果 <code>startingDeadlineSeconds</code> 字段设置了（不是 <code>nil</code> ），控制器计算错过多少任务并不是上一次执行时间，而是按照
+<code>startingDeadlineSeconds</code> 来。比如，当 <code>startingDeadlineSeconds</code> 设置为 <code>200</code> 时，控制器计数是按照最近 200 秒内来算的。
+</p>
+
+<p>
+A CronJob is counted as missed if it has failed to be created at its scheduled time. For example, If <code>concurrencyPolicy</code> is
+set to <code>Forbid</code> and a CronJob was attempted to be scheduled when there was a previous schedule still running, then it would
+count as missed.
+</p>
+
+<p>
+比如说，从 <code>08:30:00</code> 开始每分钟执行一个任务， <code>startingDeadlineSeconds</code> 没有设置。如果在 <code>08:29:00</code> to <code>10:21:00</code> 之间，
+job 都没有启动，因为超过了 100 次，job 就不在会被执行。
+</p>
+
+<p>
+进一步，如果上面的例子中设置了 <code>startingDeadlineSeconds</code> 为 200 秒，那么在 200 秒钟实际错过了 3 次执行，那么 job 会被继续执行。
+</p>
+
+<p>
+CronJob 的职责是在匹配的时间表中创建 Jobs，而 Job 则负责对应的 Pod 管理。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-04-18 10:22:38 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.2)</p>
 </div>
 </body>
 </html>
