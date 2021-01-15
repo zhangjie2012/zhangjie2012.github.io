@@ -6,7 +6,7 @@
 <!-- 2021-01-15 Fri 17:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>乌镇之行</title>
+<title>分页（Pagination）技术规范</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,91 +221,74 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">乌镇之行</h1>
-
-<div id="org2320837" class="figure">
-<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2016/wuzhen-0.jpg" alt="wuzhen-0.jpg" />
-</p>
-<p><span class="figure-number">Figure 1: </span>五兄弟</p>
+<h1 class="title">分页（Pagination）技术规范</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7ce0c0c">1. 规范</a></li>
+<li><a href="#orgb19d58c">2. 一些实现</a>
+<ul>
+<li><a href="#orgd04ba60">2.1. 内存分页</a></li>
+<li><a href="#orgcafd08e">2.2. MySQL</a></li>
+<li><a href="#org59c43f6">2.3. Mongo</a></li>
+</ul>
+</li>
+</ul>
 </div>
-
-
-<div id="orgb7bf35e" class="figure">
-<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2016/wuzhen-6.jpg" alt="wuzhen-6.jpg" />
-</p>
-<p><span class="figure-number">Figure 2: </span>五兄弟(tk 在拍照)</p>
 </div>
+<p>
+做中后台系统查询分页偶尔会用到的一项技术，倒是不难，不过每次写的时候都要查一查规范，看看一般会怎么命名。
+</p>
 
 <p>
-上周五到上周日，和群里的几个朋友到乌镇玩了一趟，写篇文章记录一下。说不定若干年以后，各自成事，这也算一个吹嘘资本吧(:-D)。
+这里记录一下一些命名规范和基于一些数据库的实现，主要给自己用。
 </p>
 
 <p>
-我们有个基友群，Tanky 拉的，对于此类事情 Tanky 总是乐此不疲。除了
-Tanky、吴磊、我之外，另外两个是 SunisDown 和 朱哥。关系有些复杂:
+主要参考 <a href="https://ant.design/components/pagination-cn/">https://ant.design/components/pagination-cn/</a> 因为我目前用的前端都是 antd。
 </p>
 
+<div id="outline-container-org7ce0c0c" class="outline-2">
+<h2 id="org7ce0c0c"><span class="section-number-2">1</span> 规范</h2>
+<div class="outline-text-2" id="text-1">
 <ul class="org-ul">
-<li>他们四个是前同事，比较熟</li>
-<li>我和吴磊是前同事，比较熟</li>
-<li>四个人中，我和 Tanky 认识是最早的，大学的时候，网友</li>
-<li>我和吴磊是通过 Tanky
-认识的，我的上一份工作是吴磊介绍的，丫的还小赚一笔伯乐奖呢</li>
-<li>我和朱哥、SunisDown 是通过 Tanky 和 吴磊认识的，没见过面</li>
+<li><code>current</code> 当前页码，从 1 开始</li>
+<li><code>page_size</code> 每页条数</li>
+<li><code>total</code> 数据总数</li>
+<li><code>items</code> 数据列表</li>
 </ul>
 
 <p>
-平常一起吹吹牛逼，聊聊技术神马的，偶尔还打个嘴炮(做技术的，一些争执是难免的)。最后终于有人寂寞难耐，就问:「约吗」，于是就有了这一次聚会式的旅行。
+前后端交互：
 </p>
 
-<p>
-因为工作的关系，大家都比较忙，时间不好协调，能聚一次还挺不容易，好在大家都是年轻人。具体的行程没啥交代的，我站在我的角度，谈一谈出行这件事情。
-</p>
+<ul class="org-ul">
+<li>前端请求传两个参数， <code>current</code> 和 <code>page_size</code></li>
+<li>后端返回: <code>current</code> <code>page_size</code> <code>total</code> <code>items</code></li>
+</ul>
+</div>
+</div>
 
-<p>
-打小我就对人多的地方比较排斥，所以对旅游啦、聚会啦就不怎么感冒。之前的两家公司出去团建，大家都很激情、很开心，我怎么都不明白人挤人有什么意思，还不如睡觉或者找个网吧打游戏。
-</p>
+<div id="outline-container-orgb19d58c" class="outline-2">
+<h2 id="orgb19d58c"><span class="section-number-2">2</span> 一些实现</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgd04ba60" class="outline-3">
+<h3 id="orgd04ba60"><span class="section-number-3">2.1</span> 内存分页</h3>
+</div>
 
-<p>
-这次出去玩也不例外，我对沿路的风景不怎么感兴趣，所以他们定去哪儿玩的时候，我没怎么参与。反正定好了，我买票过去就行了。按照我的想法，几个人来点烧烤、喝个小酒，聊个天，在哪儿都一样。养成一个人生活的习惯以后，我的"自闭"倾向似乎越来越严重了，宁愿一个人憋在家里看电影、看书、打游戏，也不愿意出去转转。我始终觉得，看看不懂的风景、不懂的人沟通，是一种时间上的极大浪费。
-</p>
+<div id="outline-container-orgcafd08e" class="outline-3">
+<h3 id="orgcafd08e"><span class="section-number-3">2.2</span> MySQL</h3>
+</div>
 
-<p>
-周五、周六基本上都在走路，一直走，估计今年这几个月的走的路加起来都没有这么多。周五在乌镇过夜、周六晚上到杭州，周日下午的高铁各回各家。整个过程比平时出去玩要开心一些，毕竟和熟悉的人扯扯淡是很愉快的一件事。让我触动的确是另外一件事情：
-</p>
-
-<p>
-周日凌晨五点左右突然醒了，看了一下手机发现赵总给我发了一封邮件，说阿里云服务器宕机了。然后就开始琢磨为什么会宕机，那个环节出了问题了？新加的
-Redis
-导致的？配置错了内存爆了？各种排除之后，向阿里云提了一个工单，几十分钟之后，看到回复说是物理机宕了。确定跟我们自己没有关系之后，又开始思考以后出现类似的问题应该怎么解决？想了一会之后太困，就睡着了&#x2026;
-</p>
-
-<p>
-回来的高铁上我做了一些云主机方面的调研，突然想到另外一个问题：「这样的生活是不是我想要的？」
-</p>
-
-<p>
-在风行的时候，下班从来没有考虑过工作相关的事情，该干嘛干嘛。
-</p>
-
-<p>
-在江游的时候，下班看心情了，要么在公司和他们一起头脑风暴，要么回家自己看书打游戏了；有报警，连过去看看解决问题；加班加点也是常有的事情，我不乐意也不反对，毕竟这是责任范围内的事情；在江游有广宇在，工作还算开心，想干嘛干嘛，几乎没什么压力。
-</p>
-
-<p>
-到七行之后，新的技术、架构、业务方方面面都需要自己去花精力去研究，没有人可以依靠，很少有人可以给你提供方案，不断的试错；尤其到今年以后，版本正是开始使用了，不断有线上的业务推着你走；虽然说是一天工作七个小时，五点就下班了，没有人管你，但是来七行之后压力是前两份工作不能比的。经常早上醒来的第一件事情是看邮件，然后琢磨今天要做哪些事情，莫名的焦虑。毕业之后，我给自己的一个小目标是，工作就是工作、生活就是生活。现在工作几乎占据了整个人的全部。
-</p>
-
-<p>
-现在想想，那些工作多年的人为什么会对出行这么感兴趣，可能本质上是一种暂时的身心解脱。
-</p>
-
-<p>
-有空还是要多走走！
-</p>
+<div id="outline-container-org59c43f6" class="outline-3">
+<h3 id="org59c43f6"><span class="section-number-3">2.3</span> Mongo</h3>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2016-04-26 00:00:00 <br />Last updated: 2021-01-15 Fri 16:23 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2021-01-14 15:50:31 <br />Last updated: 2021-01-15 Fri 10:00 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 </div>
 </body>
 </html>

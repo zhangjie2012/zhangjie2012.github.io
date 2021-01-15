@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-01-15 Fri 17:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>理解 Go 的 Array 和 slice</title>
@@ -42,7 +42,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +54,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -197,50 +197,26 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -257,11 +233,10 @@ for the JavaScript code in this tag.
 </div>
 </div>
 <p>
-今早 <a href="https://blog.opskumu.com/">磊磊</a> 在 Twitter
-上看到一条消息，大致意思是问下面代码的执行结果是什么：
+今早 <a href="https://blog.opskumu.com/">磊磊</a> 在 Twitter 上看到一条消息，大致意思是问下面代码的执行结果是什么：
 </p>
 
-<pre class="example">
+<pre class="example" id="org955ae31">
 package main
 
 import "fmt"
@@ -334,7 +309,7 @@ C++ 中的 vector 也是类似的实现，只不过它提供了拷贝构造函�
 再回到刚才之前的问题上，当把 s 传递给 four 的时候是一次浅拷贝，为了没有命名歧义，four 中的传入的 s 先叫成 sc。传参类似于做了 <code>sc = s</code> 的操作：
 </p>
 
-<pre class="example">
+<pre class="example" id="org88e81a5">
 sc.buffer = s.buffer
 sc.len = s.len
 sc.cap = s.cap
@@ -356,7 +331,7 @@ len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改
 再看一段代码：
 </p>
 
-<pre class="example">
+<pre class="example" id="org7e83b5a">
 package main
 
 import "fmt"
@@ -387,7 +362,7 @@ func main() {
 两种办法可以验证这个想法，第一种是把内存的的数据打印出来：
 </p>
 
-<pre class="example">
+<pre class="example" id="org65d9e7f">
 package main
 
 import (
@@ -429,7 +404,7 @@ func main() {
 但是，Go 的 slice 的 slice，真有个使用上的陷阱。比如对一个 slice 做 slice 操作：
 </p>
 
-<pre class="example">
+<pre class="example" id="org7576909">
 s = []{1, 2, 3, 4, 5, 6}
 t := s[1:3]
 </pre>
@@ -447,7 +422,7 @@ Go <a href="https://blog.golang.org/go-slices-usage-and-internals">有篇官方�
 如果原有的 slice 很大，slice 之后的很小，因为小的 slice 一直占用内存，导致大的 buffer 一直无法释放，举个例子：
 </p>
 
-<pre class="example">
+<pre class="example" id="org65ce085">
 var digitRegexp = regexp.MustCompile("[0-9]+")
 
 func FindDigits(filename string) []byte {
@@ -460,7 +435,7 @@ func FindDigits(filename string) []byte {
 这会导致 <code>FindDigits</code> 返回的 <code>[]byte</code> 一直占用整个文件内容相同大小的 buffer，直到 <code>[]byte</code> 的变量释放。为了解决这个问题，在返回时新建一个所需实际大小的 buffer，然后拷贝过去，再返回。类似这样：
 </p>
 
-<pre class="example">
+<pre class="example" id="org98fcaec">
 func CopyDigits(filename string) []byte {
     b, _ := ioutil.ReadFile(filename)
     b = digitRegexp.Find(b)
@@ -513,7 +488,7 @@ func CopyDigits(filename string) []byte {
 今天遇到个问题，默认初始化的 slices 被 json 序列化之后，值竟然是 <code>nil</code> 而不是 <code>[]</code> ，但是正常输出是却为 <code>[]</code> 。
 </p>
 
-<pre class="example">
+<pre class="example" id="org1250c80">
 package main
 
 import (
@@ -538,7 +513,7 @@ func main() {
 输出结果为：
 </p>
 
-<pre class="example">
+<pre class="example" id="org5b24171">
 {[]}
 {"xxx":null}
 </pre>
@@ -554,11 +529,19 @@ func main() {
 <p>
 虽然我觉得这是个糟糕的设计（不过整个 Go 语言的设计思路就让人觉得很刻意，那我还能怎么办呢，当然是怎么设计怎么用啦）。
 </p>
+
+<p>
+<b>2021-01-15 16:58:51 更新：</b>
+</p>
+
+<p>
+这里的图片很好的说明 Go Slice 的基本原理： <a href="https://ueokande.github.io/go-slice-tricks/">https://ueokande.github.io/go-slice-tricks/</a>
+</p>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2021-01-15 Fri 16:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
 </div>
 </body>
 </html>
