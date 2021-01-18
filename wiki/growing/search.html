@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <!-- 2021-01-18 Mon 15:29 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>分页（Pagination）技术规范</title>
+<title>搜索技巧</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -195,7 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
@@ -221,142 +221,14 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">分页（Pagination）技术规范</h1>
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#org7ce0c0c">1. 规范</a></li>
-<li><a href="#orgb19d58c">2. 一些实现</a>
-<ul>
-<li><a href="#orgd04ba60">2.1. 内存分页</a></li>
-<li><a href="#orgcafd08e">2.2. MySQL</a></li>
-<li><a href="#org1207bce">2.3. MongoDB</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<p>
-做中后台系统查询分页偶尔会用到的一项技术，倒是不难，不过每次写的时候都要查一查规范，看看一般会怎么命名。
-</p>
-
-<p>
-这里记录一下一些命名规范和基于一些数据库的实现，主要给自己用。
-</p>
-
-<p>
-主要参考 <a href="https://ant.design/components/pagination-cn/">https://ant.design/components/pagination-cn/</a> 因为我目前用的前端都是 antd。
-</p>
-
-<div id="outline-container-org7ce0c0c" class="outline-2">
-<h2 id="org7ce0c0c"><span class="section-number-2">1</span> 规范</h2>
-<div class="outline-text-2" id="text-1">
+<h1 class="title">搜索技巧</h1>
 <ul class="org-ul">
-<li><code>current</code> 当前页码，从 1 开始</li>
-<li><code>page_size</code> 每页条数</li>
-<li><code>total</code> 数据总数</li>
-<li><code>items</code> 数据列表</li>
+<li>如果想要知道某个技术的大概资料，可以在技术前面加上 <code>awesome</code> ，比如 <code>awesome emacs</code></li>
+<li>如果想要知道一些常规的命令行操作，可以使用 <code>cheat sheet</code> ，比如 <code>emacs cheat sheet</code> 点开图片有会惊喜</li>
 </ul>
-
-<p>
-前后端交互：
-</p>
-
-<ul class="org-ul">
-<li>前端请求传两个参数， <code>current</code> 和 <code>page_size</code></li>
-<li>后端返回: <code>current</code> <code>page_size</code> <code>total</code> <code>items</code></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgb19d58c" class="outline-2">
-<h2 id="orgb19d58c"><span class="section-number-2">2</span> 一些实现</h2>
-<div class="outline-text-2" id="text-2">
-</div>
-<div id="outline-container-orgd04ba60" class="outline-3">
-<h3 id="orgd04ba60"><span class="section-number-3">2.1</span> 内存分页</h3>
-<div class="outline-text-3" id="text-2-1">
-<div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">import</span> <span style="color: #707183;">(</span>
-    <span style="color: #008000;">"math"</span>
-<span style="color: #707183;">)</span>
-
-<span style="color: #0000FF;">type</span> <span style="color: #6434A3;">Pagination</span> <span style="color: #0000FF;">struct</span> <span style="color: #707183;">{</span>
-    Current  <span style="color: #6434A3;">int</span>           <span style="color: #008000;">`json:"current"`</span>
-    PageSize <span style="color: #6434A3;">int</span>           <span style="color: #008000;">`json:"page_size"`</span>
-    Total    <span style="color: #6434A3;">int</span>           <span style="color: #008000;">`json:"total"`</span>
-    Items    <span style="color: #7388D6;">[]</span><span style="color: #0000FF;">interface</span><span style="color: #7388D6;">{}</span> <span style="color: #008000;">`json:"items"`</span>
-<span style="color: #707183;">}</span>
-
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">MemoryPaginate paginate in memory</span>
-<span style="color: #0000FF;">func</span> <span style="color: #006699;">MemoryPaginate</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">items</span> <span style="color: #7388D6;">[]</span><span style="color: #0000FF;">interface</span><span style="color: #7388D6;">{}</span>, <span style="color: #BA36A5;">current</span> <span style="color: #6434A3;">int</span>, <span style="color: #BA36A5;">pageSize</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">Pagination</span> <span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">if</span> pageSize &lt;= 0 <span style="color: #7388D6;">{</span>
-        pageSize = 20
-    <span style="color: #7388D6;">}</span>
-
-    <span style="color: #BA36A5;">total</span> := <span style="color: #006FE0;">len</span><span style="color: #7388D6;">(</span>items<span style="color: #7388D6;">)</span>
-    <span style="color: #BA36A5;">pageCount</span> := <span style="color: #006699;">int</span><span style="color: #7388D6;">(</span>math.<span style="color: #006699;">Floor</span><span style="color: #909183;">(</span><span style="color: #006699;">float64</span><span style="color: #709870;">(</span>total<span style="color: #709870;">)</span> / <span style="color: #006699;">float64</span><span style="color: #709870;">(</span>pageSize<span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span>
-    <span style="color: #0000FF;">if</span> current &gt; pageCount <span style="color: #7388D6;">{</span>
-        current = pageCount
-    <span style="color: #7388D6;">}</span>
-    <span style="color: #0000FF;">if</span> current &lt;= 0 <span style="color: #7388D6;">{</span>
-        current = 1
-    <span style="color: #7388D6;">}</span>
-
-    <span style="color: #BA36A5;">start</span> := <span style="color: #7388D6;">(</span>current - 1<span style="color: #7388D6;">)</span> * pageSize
-    <span style="color: #BA36A5;">end</span> := start + pageSize
-    <span style="color: #0000FF;">if</span> end &gt; total <span style="color: #7388D6;">{</span>
-        end = total
-    <span style="color: #7388D6;">}</span>
-
-    <span style="color: #BA36A5;">p</span> := <span style="color: #6434A3;">Pagination</span><span style="color: #7388D6;">{</span>
-        <span style="color: #D0372D;">Current</span>:  current,
-        <span style="color: #D0372D;">PageSize</span>: pageSize,
-        <span style="color: #D0372D;">Total</span>:    total,
-        <span style="color: #D0372D;">Items</span>:    items<span style="color: #909183;">[</span>start:end<span style="color: #909183;">]</span>,
-    <span style="color: #7388D6;">}</span>
-    <span style="color: #0000FF;">return</span> p
-<span style="color: #707183;">}</span>
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgcafd08e" class="outline-3">
-<h3 id="orgcafd08e"><span class="section-number-3">2.2</span> MySQL</h3>
-<div class="outline-text-3" id="text-2-2">
-<p>
-<a href="https://dev.mysql.com/doc/refman/8.0/en/select.html">SELECT 的官方文档</a>说， <code>LIMIT</code> 可以用来约束返回的行数，它接收两个非负的参数，
-</p>
-
-<ul class="org-ul">
-<li>第一个参数指定偏移量 offset，从 0 开始。如果不指定第一个参数，默认从 0 开始。</li>
-<li>第二个参数指定返回的数量</li>
-</ul>
-
-<p>
-比如： <code>SELECT * FROM tbl LIMIT 5,10;  # Retrieve rows 6-15</code>
-</p>
-
-<p>
-目前没有演示代码，后面再慢慢补充。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org1207bce" class="outline-3">
-<h3 id="org1207bce"><span class="section-number-3">2.3</span> MongoDB</h3>
-<div class="outline-text-3" id="text-2-3">
-<p>
-比较简单，使用 <code>cursor.skip()</code> 即可，具体见 <a href="https://docs.mongodb.com/manual/reference/method/cursor.skip/">https://docs.mongodb.com/manual/reference/method/cursor.skip/</a>
-</p>
-</div>
-</div>
-</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-01-14 15:50:31 <br />Last updated: 2021-01-18 Mon 15:27 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2021-01-18 15:01:59 <br />Last updated: 2021-01-18 Mon 15:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
