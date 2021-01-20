@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-01-20 Wed 16:21 -->
+<!-- 2021-01-20 Wed 16:22 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>分页（Pagination）技术规范</title>
+<title>Go for &#x2026; range</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,142 +221,111 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">分页（Pagination）技术规范</h1>
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#org7ce0c0c">1. 规范</a></li>
-<li><a href="#orgb19d58c">2. 一些实现</a>
-<ul>
-<li><a href="#orgd04ba60">2.1. 内存分页</a></li>
-<li><a href="#orgcafd08e">2.2. MySQL</a></li>
-<li><a href="#org1207bce">2.3. MongoDB</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
+<h1 class="title">Go for &#x2026; range</h1>
 <p>
-做中后台系统查询分页偶尔会用到的一项技术，倒是不难，不过每次写的时候都要查一查规范，看看一般会怎么命名。
+今天写代码发现一个 bug：数据回写到 MySQL 的时候，第一条数据被重复写了，后面的数据没写进入。最后定位到：
 </p>
 
-<p>
-这里记录一下一些命名规范和基于一些数据库的实现，主要给自己用。
-</p>
-
-<p>
-主要参考 <a href="https://ant.design/components/pagination-cn/">https://ant.design/components/pagination-cn/</a> 因为我目前用的前端都是 antd。
-</p>
-
-<div id="outline-container-org7ce0c0c" class="outline-2">
-<h2 id="org7ce0c0c"><span class="section-number-2">1</span> 规范</h2>
-<div class="outline-text-2" id="text-1">
-<ul class="org-ul">
-<li><code>current</code> 当前页码，从 1 开始</li>
-<li><code>page_size</code> 每页条数</li>
-<li><code>total</code> 数据总数</li>
-<li><code>items</code> 数据列表</li>
-</ul>
-
-<p>
-前后端交互：
-</p>
-
-<ul class="org-ul">
-<li>前端请求传两个参数， <code>current</code> 和 <code>page_size</code></li>
-<li>后端返回: <code>current</code> <code>page_size</code> <code>total</code> <code>items</code></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgb19d58c" class="outline-2">
-<h2 id="orgb19d58c"><span class="section-number-2">2</span> 一些实现</h2>
-<div class="outline-text-2" id="text-2">
-</div>
-<div id="outline-container-orgd04ba60" class="outline-3">
-<h3 id="orgd04ba60"><span class="section-number-3">2.1</span> 内存分页</h3>
-<div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">import</span> <span style="color: #707183;">(</span>
-    <span style="color: #008000;">"math"</span>
-<span style="color: #707183;">)</span>
-
-<span style="color: #0000FF;">type</span> <span style="color: #6434A3;">Pagination</span> <span style="color: #0000FF;">struct</span> <span style="color: #707183;">{</span>
-    Current  <span style="color: #6434A3;">int</span>           <span style="color: #008000;">`json:"current"`</span>
-    PageSize <span style="color: #6434A3;">int</span>           <span style="color: #008000;">`json:"page_size"`</span>
-    Total    <span style="color: #6434A3;">int</span>           <span style="color: #008000;">`json:"total"`</span>
-    Items    <span style="color: #7388D6;">[]</span><span style="color: #0000FF;">interface</span><span style="color: #7388D6;">{}</span> <span style="color: #008000;">`json:"items"`</span>
-<span style="color: #707183;">}</span>
-
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">MemoryPaginate paginate in memory</span>
-<span style="color: #0000FF;">func</span> <span style="color: #006699;">MemoryPaginate</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">items</span> <span style="color: #7388D6;">[]</span><span style="color: #0000FF;">interface</span><span style="color: #7388D6;">{}</span>, <span style="color: #BA36A5;">current</span> <span style="color: #6434A3;">int</span>, <span style="color: #BA36A5;">pageSize</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">Pagination</span> <span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">if</span> pageSize &lt;= 0 <span style="color: #7388D6;">{</span>
-        pageSize = 20
-    <span style="color: #7388D6;">}</span>
-
-    <span style="color: #BA36A5;">total</span> := <span style="color: #006FE0;">len</span><span style="color: #7388D6;">(</span>items<span style="color: #7388D6;">)</span>
-    <span style="color: #BA36A5;">pageCount</span> := <span style="color: #006699;">int</span><span style="color: #7388D6;">(</span>math.<span style="color: #006699;">Floor</span><span style="color: #909183;">(</span><span style="color: #006699;">float64</span><span style="color: #709870;">(</span>total<span style="color: #709870;">)</span> / <span style="color: #006699;">float64</span><span style="color: #709870;">(</span>pageSize<span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span>
-    <span style="color: #0000FF;">if</span> current &gt; pageCount <span style="color: #7388D6;">{</span>
-        current = pageCount
-    <span style="color: #7388D6;">}</span>
-    <span style="color: #0000FF;">if</span> current &lt;= 0 <span style="color: #7388D6;">{</span>
-        current = 1
-    <span style="color: #7388D6;">}</span>
-
-    <span style="color: #BA36A5;">start</span> := <span style="color: #7388D6;">(</span>current - 1<span style="color: #7388D6;">)</span> * pageSize
-    <span style="color: #BA36A5;">end</span> := start + pageSize
-    <span style="color: #0000FF;">if</span> end &gt; total <span style="color: #7388D6;">{</span>
-        end = total
-    <span style="color: #7388D6;">}</span>
-
-    <span style="color: #BA36A5;">p</span> := <span style="color: #6434A3;">Pagination</span><span style="color: #7388D6;">{</span>
-        <span style="color: #D0372D;">Current</span>:  current,
-        <span style="color: #D0372D;">PageSize</span>: pageSize,
-        <span style="color: #D0372D;">Total</span>:    total,
-        <span style="color: #D0372D;">Items</span>:    items<span style="color: #909183;">[</span>start:end<span style="color: #909183;">]</span>,
-    <span style="color: #7388D6;">}</span>
-    <span style="color: #0000FF;">return</span> p
+<pre class="src src-go"><span style="color: #0000FF;">for</span> <span style="color: #BA36A5;">_</span>, <span style="color: #BA36A5;">r</span> := <span style="color: #0000FF;">range</span> recvs <span style="color: #707183;">{</span>
+    ib = ib.<span style="color: #006699;">Values</span><span style="color: #7388D6;">(</span>&amp;lastId, &amp;e.Fingerprint, &amp;e.Version, &amp;r<span style="color: #7388D6;">)</span>
 <span style="color: #707183;">}</span>
 </pre>
 </div>
-</div>
-</div>
-
-<div id="outline-container-orgcafd08e" class="outline-3">
-<h3 id="orgcafd08e"><span class="section-number-3">2.2</span> MySQL</h3>
-<div class="outline-text-3" id="text-2-2">
-<p>
-<a href="https://dev.mysql.com/doc/refman/8.0/en/select.html">SELECT 的官方文档</a>说， <code>LIMIT</code> 可以用来约束返回的行数，它接收两个非负的参数，
-</p>
-
-<ul class="org-ul">
-<li>第一个参数指定偏移量 offset，从 0 开始。如果不指定第一个参数，默认从 0 开始。</li>
-<li>第二个参数指定返回的数量</li>
-</ul>
 
 <p>
-比如： <code>SELECT * FROM tbl LIMIT 5,10;  # Retrieve rows 6-15</code>
+操作数据库使用了 <a href="https://github.com/Masterminds/squirrel">squirrel</a>， <code>Values</code> 的参数是 <code>interface{}</code> ，所以我下意识的用了地址。我把取地址 <code>&amp;</code> 去掉之后，
+就正常了。
 </p>
 
 <p>
-目前没有演示代码，后面再慢慢补充。
+然后就开始怀疑， <b>难道 Go range 中的第二个参数每次的地址都是一样的？</b> 那不就是简单的赋值操作，做个浅拷贝？
 </p>
-</div>
+
+<p>
+写了一段测试代码：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">package</span> main
+
+<span style="color: #0000FF;">import</span> <span style="color: #008000;">"fmt"</span>
+
+<span style="color: #0000FF;">func</span> <span style="color: #006699;">main</span> <span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+    <span style="color: #BA36A5;">arr</span> := <span style="color: #7388D6;">[]</span><span style="color: #6434A3;">int</span><span style="color: #7388D6;">{</span>1, 2, 3, 4, 5, 6<span style="color: #7388D6;">}</span>
+
+    <span style="color: #0000FF;">for</span> <span style="color: #BA36A5;">i</span>, <span style="color: #BA36A5;">a</span> := <span style="color: #0000FF;">range</span> arr <span style="color: #7388D6;">{</span>
+        fmt.<span style="color: #006699;">Println</span><span style="color: #909183;">(</span>&amp;a, &amp;arr<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span><span style="color: #909183;">)</span>
+    <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+
+</pre>
 </div>
 
-<div id="outline-container-org1207bce" class="outline-3">
-<h3 id="org1207bce"><span class="section-number-3">2.3</span> MongoDB</h3>
-<div class="outline-text-3" id="text-2-3">
 <p>
-比较简单，使用 <code>cursor.skip()</code> 即可，具体见 <a href="https://docs.mongodb.com/manual/reference/method/cursor.skip/">https://docs.mongodb.com/manual/reference/method/cursor.skip/</a>
+输出：
 </p>
+
+<pre class="example">
+0xc0000140f0 0xc000018090
+0xc0000140f0 0xc000018098
+0xc0000140f0 0xc0000180a0
+0xc0000140f0 0xc0000180a8
+0xc0000140f0 0xc0000180b0
+0xc0000140f0 0xc0000180b8
+</pre>
+
+<p>
+还真是。查了一下官方文档<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
+</p>
+
+<blockquote>
+<ol class="org-ol">
+<li>For an array, pointer to array, or slice value a, the index iteration values are produced in increasing order, starting at element index 0.
+If at most one iteration variable is present, the range loop produces iteration values from 0 up to len(a)-1 and does not index
+into the array or slice itself. For a nil slice, the number of iterations is 0.</li>
+<li>For a string value, the "range" clause iterates over the Unicode code points in the string starting at byte index 0.
+On successive iterations, the index value will be the index of the first byte of successive UTF-8-encoded code points
+in the string, and the second value, of type rune, will be the value of the corresponding code point.
+If the iteration encounters an invalid UTF-8 sequence, the second value will be 0xFFFD, the Unicode replacement character,
+and the next iteration will advance a single byte in the string.</li>
+<li>The iteration order over maps is not specified and is not guaranteed to be the same from one iteration to the next.
+If a map entry that has not yet been reached is removed during iteration, the corresponding iteration value will not be produced.
+If a map entry is created during iteration, that entry may be produced during the iteration or may be skipped.
+The choice may vary for each entry created and from one iteration to the next. If the map is nil, the number of iterations is 0.</li>
+<li>For channels, the iteration values produced are the successive values sent on the channel until the channel is closed.
+If the channel is nil, the range expression blocks forever.</li>
+</ol>
+
+<p>
+The iteration variables may be declared by the "range" clause using a form of short variable declaration (:=).
+In this case their types are set to the types of the respective iteration values and their scope is the block of the "for" statement;
+they are re-used in each iteration. If the iteration variables are declared outside the "for" statement,
+after execution their values will be those of the last iteration.
+</p>
+</blockquote>
+
+<p>
+也就是说对于 array, slice 这种只是一个简单的赋值 <code>:=</code> 然后变量复用。我本以为是一个迭代器，迭代器里引用了变量的地址。
+没想到是个这么原始的实现。
+</p>
+
+<p>
+既然这样的话，对于比较大的结构体，最好在数组中存放指针。如 <code>[]*BigStruct</code> ，或者在遍历的时候，通过索引访问（使用第一个参数，忽略第二个参数）。
+</p>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://golang.org/ref/spec#For_statements">https://golang.org/ref/spec#For_statements</a>
+</p></div></div>
+
+
 </div>
-</div>
-</div>
-</div>
+</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-01-14 15:50:31 <br />Last updated: 2021-01-18 Mon 15:31 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2021-01-20 15:58:58 <br />Last updated: 2021-01-20 Wed 16:21 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
