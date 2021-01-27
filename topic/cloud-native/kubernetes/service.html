@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-01-05 Tue 10:25 -->
+<!-- 2021-01-27 Wed 10:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Service</title>
@@ -54,7 +54,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -227,7 +227,11 @@
 <div id="text-table-of-contents">
 <ul>
 <li><a href="#org40def28">1. 动机</a></li>
-<li><a href="#org68791be">2. Service 资源</a></li>
+<li><a href="#org68791be">2. Service 资源</a>
+<ul>
+<li><a href="#org3277f71">2.1. 云原生的服务发现</a></li>
+</ul>
+</li>
 <li><a href="#org27147f7">3. 定义 Service</a>
 <ul>
 <li><a href="#org5d3401e">3.1. 没有选择器的 Services</a></li>
@@ -235,7 +239,7 @@
 <li><a href="#org2563eb3">3.3. Application Protocol</a></li>
 </ul>
 </li>
-<li><a href="#org9d3b727">4. <span class="todo TODO">TODO</span> 虚拟 IPs 和服务代理</a>
+<li><a href="#org9d3b727">4. 虚拟 IPs 和服务代理</a>
 <ul>
 <li><a href="#orgefd0bf9">4.1. 为什么不使用 DNS 轮询？</a></li>
 <li><a href="#org9adbc1f">4.2. 使用空间代理模式（User space proxy mode）</a></li>
@@ -243,9 +247,14 @@
 <li><a href="#orgd286ae1">4.4. IPVS 代理模式</a></li>
 </ul>
 </li>
-<li><a href="#org4a5bf0e">5. <span class="todo TODO">TODO</span> 多端口 Services</a></li>
-<li><a href="#orgb716652">6. <span class="todo TODO">TODO</span> 选择自己的 IP 地址</a></li>
-<li><a href="#orge301d4b">7. <span class="todo TODO">TODO</span> 服务发现</a></li>
+<li><a href="#org4a5bf0e">5. 多端口 Services</a></li>
+<li><a href="#orgb716652">6. 选择自己的 IP 地址</a></li>
+<li><a href="#orge301d4b">7. 服务发现</a>
+<ul>
+<li><a href="#orgf735f74">7.1. 环境变量</a></li>
+<li><a href="#org065678f">7.2. DNS</a></li>
+</ul>
+</li>
 <li><a href="#orgd4e4d60">8. <span class="todo TODO">TODO</span> Headless Services</a></li>
 <li><a href="#org1d6a607">9. <span class="todo TODO">TODO</span> Publishing Services (ServiceTypes)</a></li>
 <li><a href="#orgdcb0273">10. <span class="todo TODO">TODO</span> Shortcomming</a></li>
@@ -283,7 +292,11 @@ Kubernetes 的 Pod 不是一个持久的实体。使用 Deployment 运行应用�
 
 <p>
 虽然每一个 Pod 都有自己的 IP 地址，但是 Deployment 中的不同的时间段的 Pod 集合可能不同（有很多原因导致 Pod 重启）。
-所以，前端如何使用集群中的 Pod 集合？并且能都达到均衡的作用呢？
+</p>
+
+<p>
+这就产生了一个问题：如果一些 Pods （称他们为“后端”）为另外集群中的另外一些 Pod（称他们为“前端”） 提供了功能，
+前端是如何找到需要连接的后端 Pods 的 IP 地址呢？
 </p>
 
 <p>
@@ -296,13 +309,31 @@ Kubernetes 的 Pod 不是一个持久的实体。使用 Deployment 运行应用�
 <h2 id="org68791be"><span class="section-number-2">2</span> Service 资源</h2>
 <div class="outline-text-2" id="text-2">
 <p>
-Service 是一种抽象，定义了 Pod 的逻辑集合和访问策略（有时称之为微服务）。Service 和目标 Pods 的关联通常有选择器来关联。
+Service 是一种抽象，定义了 Pod 的逻辑集合和访问策略（有时称之为微服务）。Service 和目标 Pods 的关联通常由 selector w来关联。
 </p>
 
 <p>
 前端不用关心 Pod 的 IP 地址到底是什么，也不用关心 Pod 是不是之前的 Pod。Service 为它们提供了统一的出口。
 前端只需要关心 Service 的地址就行了，而 Service 的地址是不会变的。
 </p>
+
+<p>
+Service 的抽象使这种解耦成为了可能。
+</p>
+</div>
+
+<div id="outline-container-org3277f71" class="outline-3">
+<h3 id="org3277f71"><span class="section-number-3">2.1</span> 云原生的服务发现</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+在你的应用程序中你可以使用 Kubernetes APIs 做服务发现，可以向 API Server 查询 Endpoints，每当在 Service 中的 Pod 集合发生变更时，
+这些更新就会耕者更新。
+</p>
+
+<p>
+对于非原生应用，Kubernetes 提供了防止网络端口的方法或者在应用程序和后端 Pod 之间的负载均衡器。
+</p>
+</div>
 </div>
 </div>
 
@@ -325,11 +356,11 @@ Service 的名字必须是一个有效的 DNS 标签。
   <span style="color: #BA36A5;">name</span>: my-service
 <span style="color: #BA36A5;">spec</span>:
   <span style="color: #BA36A5;">selector</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app</span>: MyApp
+    <span style="color: #BA36A5;">app</span>: MyApp
   <span style="color: #BA36A5;">ports</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">- protocol</span>: TCP
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  port</span>: 80
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  targetPort</span>: 9376
+    - <span style="color: #BA36A5;">protocol</span>: TCP
+      <span style="color: #BA36A5;">port</span>: 80
+      <span style="color: #BA36A5;">targetPort</span>: 9376
 </pre>
 </div>
 
@@ -371,9 +402,9 @@ Service 最常见的是抽象对 Pod 集合的访问，但是他们也可以抽�
   <span style="color: #BA36A5;">name</span>: my-service
 <span style="color: #BA36A5;">spec</span>:
   <span style="color: #BA36A5;">ports</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">- protocol</span>: TCP
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  port</span>: 80
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  targetPort</span>: 9376
+    - <span style="color: #BA36A5;">protocol</span>: TCP
+      <span style="color: #BA36A5;">port</span>: 80
+      <span style="color: #BA36A5;">targetPort</span>: 9376
 </pre>
 </div>
 
@@ -389,9 +420,9 @@ Endpoint 对象：
   <span style="color: #BA36A5;">name</span>: my-service
 <span style="color: #BA36A5;">subsets</span>:
   - <span style="color: #BA36A5;">addresses</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - ip</span>: 192.0.2.42
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">ports</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - port</span>: 9376
+      - <span style="color: #BA36A5;">ip</span>: 192.0.2.42
+    <span style="color: #BA36A5;">ports</span>:
+      - <span style="color: #BA36A5;">port</span>: 9376
 </pre>
 </div>
 
@@ -428,7 +459,17 @@ ExternalName Service 是 Service 的特例，它没有选择器，而是使用 D
 <h3 id="org829a79b"><span class="section-number-3">3.2</span> EndpointSlices</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
-<a href="https://kubernetes.io/docs/concepts/services-networking/service/#endpointslices">https://kubernetes.io/docs/concepts/services-networking/service/#endpointslices</a>
+<b>特性状态</b>: <code>Kubernetes v1.17 [beta]</code>
+</p>
+
+<p>
+EndpointSlices 是一种 API 资源，可以为 Endpoints 提供更具扩展性的替代方案。尽管从概念上来讲与 Endpoints 非常相似，
+但 EndpointSlices 允许跨多个网络资源分布式网络 endpoints。默认情况下，EndpointSlice 到达 1000 个 endpoints 之后就会被认为是已满。
+这时将创建其他的 EndpointSlice，以存储任何其他 endpoints。
+</p>
+
+<p>
+EndpointSlices 提供了其他属性和功能，具体见：<a href="https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/">https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/</a>
 </p>
 </div>
 </div>
@@ -437,14 +478,22 @@ ExternalName Service 是 Service 的特例，它没有选择器，而是使用 D
 <h3 id="org2563eb3"><span class="section-number-3">3.3</span> Application Protocol</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
-<a href="https://kubernetes.io/docs/concepts/services-networking/service/#application-protocol">https://kubernetes.io/docs/concepts/services-networking/service/#application-protocol</a>
+<b>特性状态</b>: <code>Kubernetes v1.20 [stable]</code>
+</p>
+
+<p>
+<code>appProtocol</code> 字段提供了为每个服务端口指定应用程序协议的方法。该字段的值由相应的 Endpoints 和 EndpointSlice 对象镜像（mirror）。
+</p>
+
+<p>
+该字段遵循标准的 Kubernetes 标签语法。值应该是 <a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml">IANA 标准 service 名称</a> 或者类似 <code>mycompany.com/my-custom-protocol</code> 的域名前缀。
 </p>
 </div>
 </div>
 </div>
 
 <div id="outline-container-org9d3b727" class="outline-2">
-<h2 id="org9d3b727"><span class="section-number-2">4</span> <span class="todo TODO">TODO</span> 虚拟 IPs 和服务代理</h2>
+<h2 id="org9d3b727"><span class="section-number-2">4</span> 虚拟 IPs 和服务代理</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> 。 <code>kube-proxy</code> 的责任是实现除了 ExternalName 之外的 <code>Services</code> 的虚拟 IP。
@@ -490,7 +539,7 @@ Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> �
 </p>
 
 
-<div id="orgb577ffa" class="figure">
+<div id="orgb884ddd" class="figure">
 <p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/e351b830334b8622a700a8da6568cb081c464a9b/13020/images/docs/services-userspace-overview.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object>
 </p>
@@ -527,7 +576,7 @@ iptables 规则，用来捕获到 Service 的 <code>clusterIP</code> 和 <code>p
 </p>
 
 
-<div id="org1dde32a" class="figure">
+<div id="orgc6c0e23" class="figure">
 <p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/27b2978647a8d7bdc2a96b213f0c0d3242ef9ce0/e8c9b/images/docs/services-iptables-overview.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object>
 </p>
@@ -580,7 +629,7 @@ IPVS 为后端 Pods 流量的负载均衡提供了更多的选项：
 </blockquote>
 
 
-<div id="org5327fba" class="figure">
+<div id="orgc1ef509" class="figure">
 <p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/2d3d2b521cf7f9ff83238218dac1c019c270b1ed/9ac5c/images/docs/services-ipvs-overview.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object>
 </p>
@@ -601,15 +650,138 @@ Sorry, your browser does not support SVG.</object>
 </div>
 
 <div id="outline-container-org4a5bf0e" class="outline-2">
-<h2 id="org4a5bf0e"><span class="section-number-2">5</span> <span class="todo TODO">TODO</span> 多端口 Services</h2>
+<h2 id="org4a5bf0e"><span class="section-number-2">5</span> 多端口 Services</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+对于一些 Services，你需要暴露多个端口。Kubernetes 允许你在 Service 对象定义是配置多个端口。
+当一个 Service 包含多个端口时，你必须要设置所有端口的名字以消除歧义。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
+<span style="color: #BA36A5;">kind</span>: Service
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: my-service
+<span style="color: #BA36A5;">spec</span>:
+  <span style="color: #BA36A5;">selector</span>:
+    <span style="color: #BA36A5;">app</span>: MyApp
+  <span style="color: #BA36A5;">ports</span>:
+    - <span style="color: #BA36A5;">name</span>: http
+      <span style="color: #BA36A5;">protocol</span>: TCP
+      <span style="color: #BA36A5;">port</span>: 80
+      <span style="color: #BA36A5;">targetPort</span>: 9376
+    - <span style="color: #BA36A5;">name</span>: https
+      <span style="color: #BA36A5;">protocol</span>: TCP
+      <span style="color: #BA36A5;">port</span>: 443
+      <span style="color: #BA36A5;">targetPort</span>: 9377
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>注意：</b>
+与 Kubernetes 名称的规范一样，端口的名字也只能包含小写字母、数字和 <code>-</code> ，端口名字还必须以字母数字开头和结尾。
+</p>
+
+<p>
+比如， <code>123-abc</code> 和 <code>web</code> 是有效的，而 <code>123_abc</code> 和 <code>-web</code> 不是。
+</p>
+</blockquote>
+</div>
 </div>
 
 <div id="outline-container-orgb716652" class="outline-2">
-<h2 id="orgb716652"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> 选择自己的 IP 地址</h2>
+<h2 id="orgb716652"><span class="section-number-2">6</span> 选择自己的 IP 地址</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+你可以在 Service 的创建请求中指定你自己的集群 IP 地址。只需要设置 <code>.spec.clusterIP</code> 字段。
+比如，你已经有一个想要重复使用的 DNS 条目，或者为特定的 IP 地址配置切难以重新配置的旧版系统。
+</p>
+
+<p>
+你选择的 IP 地址必须是一个有效的 IPv4 和 IPv6 地址，且在 API server 配置的 <code>service-cluster-ip-range</code> CIDR 范围内。
+如果你尝试使用无效的 clusterIP 地址值创建 Service，API server 会返回一个 422 的 HTTP 状态码来表示存在问题。
+</p>
+</div>
 </div>
 
 <div id="outline-container-orge301d4b" class="outline-2">
-<h2 id="orge301d4b"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> 服务发现</h2>
+<h2 id="orge301d4b"><span class="section-number-2">7</span> 服务发现</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Kubernetes 支持两种主要的模式来找到一个 Service - 环境变量和 DNS。
+</p>
+</div>
+
+<div id="outline-container-orgf735f74" class="outline-3">
+<h3 id="orgf735f74"><span class="section-number-3">7.1</span> 环境变量</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+当节点上运行一个 Pod，kubelet 回味每个激活的 Service 添加一组环境变量。它既支持 Docker lins compatible 变量又支持简单的
+<code>{SVCNAME}_SERVICE_HOST</code> 和 <code>{SVCNAME}_SERVICE_PORT</code> 变量，Service 名称为大写字母，并且破折号转换为下划线。
+</p>
+
+<p>
+比如，Service <code>redis-master</code> 暴露了 TCP 端口 6379 而且分配至集群 IP 地址为 10.0.0.11，将产生以下的环境变量：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml">REDIS_MASTER_SERVICE_HOST=10.0.0.11
+REDIS_MASTER_SERVICE_PORT=6379
+REDIS_MASTER_PORT=tcp://10.0.0.11:6379
+REDIS_MASTER_PORT_6379_TCP=tcp://10.0.0.11:6379
+REDIS_MASTER_PORT_6379_TCP_PROTO=tcp
+REDIS_MASTER_PORT_6379_TCP_PORT=6379
+REDIS_MASTER_PORT_6379_TCP_ADDR=10.0.0.11
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>注意：</b>
+当你有一个 Pod 需要访问一个 Service，并且你使用环境变量的方法来将端口和集群 IP 发布到客户端 Pod，
+你必须在客户端 Pods 产生之前创建 Service。否则这些客户端 Pods 不会填充其环境变量。
+</p>
+
+<p>
+如果你仅使用 DNS 查找服务的集群 IP，那么不用担心顺序问题。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org065678f" class="outline-3">
+<h3 id="org065678f"><span class="section-number-3">7.2</span> DNS</h3>
+<div class="outline-text-3" id="text-7-2">
+<p>
+你应该添加<a href="https://kubernetes.io/docs/concepts/cluster-administration/addons/">插件</a>来为你的集群创建一个 DNS 服务（并且总应该这么做）。
+</p>
+
+<p>
+一个支持集群的 DNS 服务，比如 CoreDNS，监听 Kubernetes API 的 Service 创建，然后创建为每个记录创建一组 DNS 记录。
+如果在整个集群中都启用了 DNS，那么所有的 Pods 都应该能够通过其 DNS 名称解析其 Services。
+</p>
+
+<p>
+比如说在 Kubernetes 空间 <code>my-ns</code> 中包含一个 Service 叫做 <code>my-service</code> ，控制平面和 DNS 服务共同为 <code>my-service.my-ns</code>
+创建一个 DNS 记录。在 <code>my-ns</code> 空间中可以简单的通过 <code>my-service</code> 找到对应的服务，使用 <code>my-service.my-ns</code> 也可以。。
+</p>
+
+<p>
+在其它空间的服务必须使用 <code>my-service.my-ns</code> 才可以。这些名字会被解析为 Service 的集群 IP。
+</p>
+
+<p>
+Kubernetes 还支持命名端口的 DNS SRV(Service) 记录。如果 <code>my-service.my-ns</code> Serivce 包含一个命名端口 <code>http</code> 协议为 <code>TCP</code> ,
+你可以为 <code>_http._tcp.my-service.my-ns</code> 做一个 DNS SRV 来发现 <code>http</code> 的端口号，以及 IP 地址。
+</p>
+
+<p>
+Kubernetes DNS 服务器是唯一访问 <code>ExternalName</code> Services 的方法。你可以在 <a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/">DNS Pods 和 Services</a> 中找到更多的关于 <code>ExternalName</code>
+的解释。
+</p>
+</div>
+</div>
 </div>
 
 <div id="outline-container-orgd4e4d60" class="outline-2">
@@ -637,7 +809,7 @@ Sorry, your browser does not support SVG.</object>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.2)</p>
+<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2021-01-27 Wed 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
