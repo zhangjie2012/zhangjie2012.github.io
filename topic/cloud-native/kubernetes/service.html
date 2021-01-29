@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-01-27 Wed 10:25 -->
+<!-- 2021-01-29 Fri 10:49 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Service</title>
@@ -255,9 +255,21 @@
 <li><a href="#org065678f">7.2. DNS</a></li>
 </ul>
 </li>
-<li><a href="#orgd4e4d60">8. <span class="todo TODO">TODO</span> Headless Services</a></li>
-<li><a href="#org1d6a607">9. <span class="todo TODO">TODO</span> Publishing Services (ServiceTypes)</a></li>
-<li><a href="#orgdcb0273">10. <span class="todo TODO">TODO</span> Shortcomming</a></li>
+<li><a href="#orgd4e4d60">8. Headless Services</a>
+<ul>
+<li><a href="#org6843af4">8.1. 有选择器（with selectors）</a></li>
+<li><a href="#org634fc57">8.2. 无选择器（without selectors）</a></li>
+</ul>
+</li>
+<li><a href="#orgbe87c18">9. 发布 Services (ServiceTypes)</a>
+<ul>
+<li><a href="#orge485dbb">9.1. NodePort 类型</a></li>
+<li><a href="#orgc097c7f">9.2. LoadBalancer 类型</a></li>
+<li><a href="#org7a3110a">9.3. ExternalName 类型</a></li>
+<li><a href="#org237cedf">9.4. ExternalIPs</a></li>
+</ul>
+</li>
+<li><a href="#org8bbf692">10. <span class="todo TODO">TODO</span> 缺点</a></li>
 <li><a href="#org3587e8e">11. <span class="todo TODO">TODO</span> 虚拟 IP 实现</a></li>
 <li><a href="#org3f3ec93">12. <span class="todo TODO">TODO</span> API 对象</a></li>
 <li><a href="#orgd5d3770">13. <span class="todo TODO">TODO</span> 支持的协议</a></li>
@@ -539,7 +551,7 @@ Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> �
 </p>
 
 
-<div id="orgb884ddd" class="figure">
+<div id="org22915ce" class="figure">
 <p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/e351b830334b8622a700a8da6568cb081c464a9b/13020/images/docs/services-userspace-overview.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object>
 </p>
@@ -576,7 +588,7 @@ iptables 规则，用来捕获到 Service 的 <code>clusterIP</code> 和 <code>p
 </p>
 
 
-<div id="orgc6c0e23" class="figure">
+<div id="org5d5fc71" class="figure">
 <p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/27b2978647a8d7bdc2a96b213f0c0d3242ef9ce0/e8c9b/images/docs/services-iptables-overview.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object>
 </p>
@@ -629,7 +641,7 @@ IPVS 为后端 Pods 流量的负载均衡提供了更多的选项：
 </blockquote>
 
 
-<div id="orgc1ef509" class="figure">
+<div id="org6a9c78e" class="figure">
 <p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/2d3d2b521cf7f9ff83238218dac1c019c270b1ed/9ac5c/images/docs/services-ipvs-overview.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object>
 </p>
@@ -785,15 +797,239 @@ Kubernetes DNS 服务器是唯一访问 <code>ExternalName</code> Services 的�
 </div>
 
 <div id="outline-container-orgd4e4d60" class="outline-2">
-<h2 id="orgd4e4d60"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> Headless Services</h2>
+<h2 id="orgd4e4d60"><span class="section-number-2">8</span> Headless Services</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+有时你不需要负载均衡和单独的 Service IP。这种情况下，你可以创建一个名为 "headless" 的 Services，通过显示的将集群 IP
+<code>.spec.clusterIP</code> 设置为 <code>"None"</code> 。
+</p>
+
+<p>
+你可以使用 Headless Service 与其他的服务发现机制接口，而不需要跟 Kubernetes 的实现绑定到一起。
+</p>
+
+<p>
+对于 headless <code>Services</code> ，集群 IP 不会被分配，kube-proxy 也不会处理这些 Services，也不会给他们做负载均衡或者代理。
+如何自动配置 DNS 取决于是否定义了选择器：
+</p>
 </div>
 
-<div id="outline-container-org1d6a607" class="outline-2">
-<h2 id="org1d6a607"><span class="section-number-2">9</span> <span class="todo TODO">TODO</span> Publishing Services (ServiceTypes)</h2>
+<div id="outline-container-org6843af4" class="outline-3">
+<h3 id="org6843af4"><span class="section-number-3">8.1</span> 有选择器（with selectors）</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+如果定义了选择器，endpoints 控制器在 API 中创建 <code>Endpoints</code> 记录，然后修改 DNS 配置返回记录（指向 <code>Service</code> 后面的 <code>Pods</code> ）。
+</p>
+</div>
 </div>
 
-<div id="outline-container-orgdcb0273" class="outline-2">
-<h2 id="orgdcb0273"><span class="section-number-2">10</span> <span class="todo TODO">TODO</span> Shortcomming</h2>
+<div id="outline-container-org634fc57" class="outline-3">
+<h3 id="org634fc57"><span class="section-number-3">8.2</span> 无选择器（without selectors）</h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+如果没有定义选择器的话，endpoints 控制器不会创建 <code>Endpoints</code> 记录。然而，DNS 系统会查找并配置以下任意一项：
+</p>
+
+<ul class="org-ul">
+<li>ExternalName 类型 Services 的 CNAME 记录；</li>
+<li>其他的类型，任何的 <code>Endpoints</code> 与 Services 共享名字的记录；</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbe87c18" class="outline-2">
+<h2 id="orgbe87c18"><span class="section-number-2">9</span> 发布 Services (ServiceTypes)</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+对于一些应用，你可能希望把 Service 暴露成一个集群外部的 IP 地址。
+</p>
+
+<p>
+Kubernetes 的 <code>ServiceTypes</code> 允许你指定你所需要的 <code>ServiceType</code> 。默认是 <code>ClusterIP</code> 。
+</p>
+
+<p>
+<code>Type</code> 的值以及行为如下：
+</p>
+
+<ul class="org-ul">
+<li><code>ClusterIP</code> ：集群内部 IP 暴露 Service。只能在集群内部进行访问。这也是默认的 <code>SerivceType</code> 。</li>
+<li>NodePort：在每一个节点的 IP 上暴露一个静态端口，也就是 <code>NodePort</code> 。自动创建一个 <code>ClusterIP</code> Service，路由到 <code>NodePort</code> Service，
+在外部集群，你可以通过请求 <code>&lt;NodeIP&gt;:&lt;NodePort&gt;</code> 来访问 <code>NodePort</code> 服务。</li>
+<li>LoadBalancer：使用云厂商提供的负载均衡器暴露服务。自动创建负载均衡路由到 <code>NodePort</code> 和 <code>ClusterIP</code> Services。</li>
+<li><p>
+ExternalName: 通过返回带有 <code>CNAME</code> 记录的值，把服务映射到 <code>externalName</code> 字段的内容（比如 <code>foo.bar.example.com</code> ）。没有设置任何代理。
+</p>
+<blockquote>
+<p>
+<b>注意</b> 需要 kube-dns 1.7 或者 CoreDNS 0.0.8 或者更高的版本才能使用 ExternalName 类型。
+</p>
+</blockquote></li>
+</ul>
+
+<p>
+你也可以使用 Ingress 来暴露服务。Ingress 不是一个 Service 类型，但是扮演者集群访问的入口。它可以将你的路由规则整合成一个资源，
+因为它可以在同一个 IP 地址下公开多个服务。
+</p>
+</div>
+
+<div id="outline-container-orge485dbb" class="outline-3">
+<h3 id="orge485dbb"><span class="section-number-3">9.1</span> NodePort 类型</h3>
+<div class="outline-text-3" id="text-9-1">
+<p>
+当你的 <code>type</code> 字段设置为 <code>NodePort</code> ，Kubernetes 控制平面会从 <code>--service-node-port-range</code> 中分配一个端口
+（默认为 30000-32767）。每一个节点都会代理这个端口到你的 Service 中。你的 Service 在它的 <code>.spec.ports[*].nodePort</code> 字段中
+报告分配端口的值。
+</p>
+
+<p>
+如果你想要指定特定的 IP(s) 代理到端口，你可以设置 <code>--nodeport-addresses</code> 在 kube-proxy 中指定 IP 块；
+这个特性从 Kubernetes v1.10 开始支持。该标识用逗号分割的 IP 块（比如：10.0.0.0/8, 192.0.2.0/25）指定 IP 地址范围
+以 kube-proxy 应该视该节点为本地节点。
+</p>
+
+<p>
+比如，你启动 kube-proxy 设置 <code>-nodeport-addresses=127.0.0.0/8</code> ，kube-proxy 只会选择 NodePort Services 的回环接口。
+默认设置的 <code>--nodeport-addresses</code> 是一个空的列表。这意味着 kube-proxy 应该考虑 NodePort 的所有可用网络接口
+（这也与早起的 Kubernetes 版本兼容）。
+</p>
+
+<p>
+如果你想要指定端口号，你可以在 <code>nodePort</code> 字段中指定值。控制平面会为你分配该端口或者告诉你 API 事务失败。也就是说
+你要自己注意端口是否会冲突。你还必须要使用有效的端口号，确保端口号在配置的范围内。
+</p>
+
+<p>
+使用 NodePort 会给你自由设置自己的负载均衡方案，配置 Kubernetes 不完全支持的环境，甚至是直接暴露一个或者多个节点的 IP。
+</p>
+
+<p>
+注意 Service 以 <code>&lt;NodeIP&gt;:spec.ports[*].nodePort</code> 和 <code>.spec.clusterIP:spec.ports[*].port</code> 可见（如果 <code>--nodeport-addresses</code> 在
+kube-proxy 中设置了，将被过滤 NodeIPs ）。
+</p>
+
+<p>
+比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
+<span style="color: #BA36A5;">kind</span>: Service
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: my-service
+<span style="color: #BA36A5;">spec</span>:
+  <span style="color: #BA36A5;">type</span>: NodePort
+  <span style="color: #BA36A5;">selector</span>:
+    <span style="color: #BA36A5;">app</span>: MyApp
+  <span style="color: #BA36A5;">ports</span>:
+      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">By default and for convenience, the `targetPort` is set to the same value as the `port` field.</span>
+    - <span style="color: #BA36A5;">port</span>: 80
+      <span style="color: #BA36A5;">targetPort</span>: 80
+      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Optional field</span>
+      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)</span>
+      <span style="color: #BA36A5;">nodePort</span>: 30007
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc097c7f" class="outline-3">
+<h3 id="orgc097c7f"><span class="section-number-3">9.2</span> LoadBalancer 类型</h3>
+<div class="outline-text-3" id="text-9-2">
+<p>
+<a href="https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer">https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org7a3110a" class="outline-3">
+<h3 id="org7a3110a"><span class="section-number-3">9.3</span> ExternalName 类型</h3>
+<div class="outline-text-3" id="text-9-3">
+<p>
+类型为 ExternalName 的 Service 会将 Service 映射为一个 DNS 名字，而不是一个典型的类似 <code>my-service</code> 或者 <code>cassandra</code> 的选择器。
+你可以使用 <code>.spec.externalName</code> 参数来指定这些 Services。
+</p>
+
+<p>
+下面的 Service 定义，在 <code>prod</code> 空间中将 <code>my-service</code> 映射到 <code>my.database.example.com</code> :
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
+<span style="color: #BA36A5;">kind</span>: Service
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: my-service
+  <span style="color: #BA36A5;">namespace</span>: prod
+<span style="color: #BA36A5;">spec</span>:
+  <span style="color: #BA36A5;">type</span>: ExternalName
+  <span style="color: #BA36A5;">externalName</span>: my.database.example.com
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>注意：</b> ExternalName 接受一个 IPv4 的字符串地址，包括数字组成的 DNS 地址，而不是 IP 地址。
+类似与 IPv4 地址的 ExternalName 不会被 CoreDNS 或者 ingress-nginx 解析，因为 ExternalName 用于指定规范的 DNS 名称。
+要对 IP 地址进行硬编码，请考虑使用 headless Services。
+</p>
+</blockquote>
+
+<p>
+当查找 <code>my-service.prod.svc.cluster.local</code> 的主机时，集群的 DNS 服务将返回值为 <code>my.database.example.com</code> 的 CNAME 值。
+访问 <code>my-service</code> 的方式与其他 Services 的方式相同，但主要区别在于重定向发生在 DNS 级别，而不是通过代理或者转发。
+如果以后你决定将数据库迁移到集群中，则可以启动其 Pods，添加使用的选择器或者 endpoints，并修改它的 Services 类型。
+</p>
+
+<blockquote>
+<p>
+<b>警告：</b> 你可以在使用 ExternalName 一些协议的过程中遇到麻烦，包括 HTTP 和 HTTPS。
+如果你 ExternalName ，则集群内的客户端使用的主机名和 ExternalName 应用的名字不同。
+</p>
+
+<p>
+对于使用主机名的协议，此差异可能导致错误或者意外的回包。HTTP 请求将具有原始服务器无法识别的 <code>Host:</code> header；
+TLS 服务器将无法提供与客户端连接的主机名匹配的证书。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org237cedf" class="outline-3">
+<h3 id="org237cedf"><span class="section-number-3">9.4</span> ExternalIPs</h3>
+<div class="outline-text-3" id="text-9-4">
+<p>
+如果有外部的 IP 路由到一个或者多个集群节点，Kubernetes Services 可以在 <code>externalIPs</code> 上暴露。
+作为外部 IP（作为目标 IP）流量通过 ingresses 到集群，在 Service 端口上，会被路又道 Service 的 endpoints 之一。
+<code>externalIPs</code> 不会受 Kubernetes 的管控，而是集群管理员的责任。
+</p>
+
+<p>
+在 Service spec 中， <code>externalIPs</code> 与 <code>ServiceTypes</code> 一起指定。如下， <code>my-service</code> 可以被客户端在 <code>80.11.12.10:80</code> 上访问。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
+<span style="color: #BA36A5;">kind</span>: Service
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: my-service
+<span style="color: #BA36A5;">spec</span>:
+  <span style="color: #BA36A5;">selector</span>:
+    <span style="color: #BA36A5;">app</span>: MyApp
+  <span style="color: #BA36A5;">ports</span>:
+    - <span style="color: #BA36A5;">name</span>: http
+      <span style="color: #BA36A5;">protocol</span>: TCP
+      <span style="color: #BA36A5;">port</span>: 80
+      <span style="color: #BA36A5;">targetPort</span>: 9376
+  <span style="color: #BA36A5;">externalIPs</span>:
+    - 80.11.12.10
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8bbf692" class="outline-2">
+<h2 id="org8bbf692"><span class="section-number-2">10</span> <span class="todo TODO">TODO</span> 缺点</h2>
 </div>
 
 <div id="outline-container-org3587e8e" class="outline-2">
@@ -809,7 +1045,7 @@ Kubernetes DNS 服务器是唯一访问 <code>ExternalName</code> Services 的�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2021-01-27 Wed 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2021-01-29 Fri 10:46 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
