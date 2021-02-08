@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-01-05 Tue 10:25 -->
+<!-- 2021-02-08 Mon 17:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - DaemonSet</title>
@@ -54,7 +54,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -276,44 +276,44 @@
   <span style="color: #BA36A5;">name</span>: fluentd-elasticsearch
   <span style="color: #BA36A5;">namespace</span>: kube-system
   <span style="color: #BA36A5;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">k8s-app</span>: fluentd-logging
+    <span style="color: #BA36A5;">k8s-app</span>: fluentd-logging
 <span style="color: #BA36A5;">spec</span>:
   <span style="color: #BA36A5;">selector</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">matchLabels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  name</span>: fluentd-elasticsearch
+    <span style="color: #BA36A5;">matchLabels</span>:
+      <span style="color: #BA36A5;">name</span>: fluentd-elasticsearch
   <span style="color: #BA36A5;">template</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">metadata</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">name</span>: fluentd-elasticsearch
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">spec</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  tolerations</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">this toleration is to have the daemonset runnable on master nodes</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">remove it if your masters can't run pods</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - key</span>: node-role.kubernetes.io/master
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">effect</span>: NoSchedule
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  containers</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - name</span>: fluentd-elasticsearch
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">image</span>: quay.io/fluentd_elasticsearch/fluentd:v2.5.2
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">resources</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  limits</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">memory</span>: 200Mi
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  requests</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">cpu</span>: 100m
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">            </span><span style="color: #BA36A5;">memory</span>: 200Mi
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">volumeMounts</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">- name</span>: varlog
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  mountPath</span>: /var/log
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">- name</span>: varlibdockercontainers
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  mountPath</span>: /var/lib/docker/containers
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  readOnly</span>: <span style="color: #D0372D;">true</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  terminationGracePeriodSeconds</span>: 30
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  volumes</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - name</span>: varlog
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">hostPath</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  path</span>: /var/log
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - name</span>: varlibdockercontainers
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">hostPath</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  path</span>: /var/lib/docker/containers
+    <span style="color: #BA36A5;">metadata</span>:
+      <span style="color: #BA36A5;">labels</span>:
+        <span style="color: #BA36A5;">name</span>: fluentd-elasticsearch
+    <span style="color: #BA36A5;">spec</span>:
+      <span style="color: #BA36A5;">tolerations</span>:
+      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">this toleration is to have the daemonset runnable on master nodes</span>
+      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">remove it if your masters can't run pods</span>
+      - <span style="color: #BA36A5;">key</span>: node-role.kubernetes.io/master
+        <span style="color: #BA36A5;">effect</span>: NoSchedule
+      <span style="color: #BA36A5;">containers</span>:
+      - <span style="color: #BA36A5;">name</span>: fluentd-elasticsearch
+        <span style="color: #BA36A5;">image</span>: quay.io/fluentd_elasticsearch/fluentd:v2.5.2
+        <span style="color: #BA36A5;">resources</span>:
+          <span style="color: #BA36A5;">limits</span>:
+            <span style="color: #BA36A5;">memory</span>: 200Mi
+          <span style="color: #BA36A5;">requests</span>:
+            <span style="color: #BA36A5;">cpu</span>: 100m
+            <span style="color: #BA36A5;">memory</span>: 200Mi
+        <span style="color: #BA36A5;">volumeMounts</span>:
+        - <span style="color: #BA36A5;">name</span>: varlog
+          <span style="color: #BA36A5;">mountPath</span>: /var/log
+        - <span style="color: #BA36A5;">name</span>: varlibdockercontainers
+          <span style="color: #BA36A5;">mountPath</span>: /var/lib/docker/containers
+          <span style="color: #BA36A5;">readOnly</span>: <span style="color: #D0372D;">true</span>
+      <span style="color: #BA36A5;">terminationGracePeriodSeconds</span>: 30
+      <span style="color: #BA36A5;">volumes</span>:
+      - <span style="color: #BA36A5;">name</span>: varlog
+        <span style="color: #BA36A5;">hostPath</span>:
+          <span style="color: #BA36A5;">path</span>: /var/log
+      - <span style="color: #BA36A5;">name</span>: varlibdockercontainers
+        <span style="color: #BA36A5;">hostPath</span>:
+          <span style="color: #BA36A5;">path</span>: /var/lib/docker/containers
 </pre>
 </div>
 </div>
@@ -399,12 +399,12 @@ DaemonSet 保证所有合适的节点运行一个 Pod 副本。一般来说，�
 <pre class="example">
 nodeAffinity:
   requiredDuringSchedulingIgnoredDuringExecution:
-	nodeSelectorTerms:
-	- matchFields:
-	  - key: metadata.name
-		operator: In
-		values:
-		- target-host-name
+    nodeSelectorTerms:
+    - matchFields:
+      - key: metadata.name
+        operator: In
+        values:
+        - target-host-name
 </pre>
 
 <p>
@@ -572,7 +572,7 @@ kubernetes API 客户端管理。静态 pod 不依赖于 apiserver，使得它�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-11 18:20:37 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.2)</p>
+<p class="postamble">First created: 2020-04-11 18:20:37 <br />Last updated: 2021-01-29 Fri 10:46 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
