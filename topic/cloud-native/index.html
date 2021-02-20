@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-02-08 Mon 17:41 -->
+<!-- 2021-02-20 Sat 18:23 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>云原生</title>
@@ -267,7 +267,7 @@ OCI 于 2015 年 6 月由 Docker，CoreOS 和其他容器行业领导者成立�
 <h2 id="org22eecef"><span class="todo TODO">TODO</span> Docker</h2>
 </div>
 <div id="outline-container-orgd51e7e2" class="outline-2">
-<h2 id="orgd51e7e2"><span class="todo TODO">TODO</span> Kubernetes</h2>
+<h2 id="orgd51e7e2">Kubernetes</h2>
 <div class="outline-text-2" id="text-orgd51e7e2">
 <p>
 Kubernetes 是开源的微服务或者容器化应用的编排工具，是谷歌开发的集群管理工具（前身是谷歌内部运行十几年的集群管理工具 Borg<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>，
@@ -288,7 +288,32 @@ Kubernetes 提供了服务发现和负载均衡、自动部署和回滚、弹性
 </p>
 
 <ul class="org-ul">
-<li><a href="kubernetes/architecture.html">架构</a>: kubernetes 架构与组件概览</li>
+<li>概览
+<ul class="org-ul">
+<li><a href="kubernetes/what-is-kubernetes.html">什么是 Kubernetes?</a>:  Kubernetes 是一个用于管理容器化的工作负载和服务的可移植的、可扩展的、开源平台，便于声明式配置和自动化。
+它拥有庞大且快速增长的生态系统。Kubernetes 的服务，支持和工具广泛可用。</li>
+<li><a href="kubernetes/components.html">Kubernetes 组件</a>: Kubernetes 集群由代表控制平面（control pane）的组件和一组称之为节点的机器组成。</li>
+<li><a href="kubernetes/kubernetes-api.html">Kubernetes API</a>: Kubernetes API 允许你查询和操作 Kubernetes 集群中的对象状态。Kubernetes 控制平面的核心是它的
+API server 和它暴露的 HTTP API。用户和集群的不同组件以及外部组件都是通过 API server 进行通信。</li>
+<li>与 Kubernetes 对象一起工作: Kubernetes 对象是 Kubernetes 系统中的持久化实体。Kubernetes 使用这些实体来表示集群的状态。
+<ul class="org-ul">
+<li><a href="kubernetes/kubernetes-objects.html">理解 Kubernetes 对象</a></li>
+<li><a href="kubernetes/object-management.html">Kubernetes 对象管理</a></li>
+<li><a href="kubernetes/object-name-and-id.html">对象名称和 IDs</a></li>
+<li><a href="kubernetes/object-namespace.html">命名空间（Namespaces）</a></li>
+<li><a href="kubernetes/label-and-selector.html">Labels 和 Selectors</a></li>
+<li><a href="kubernetes/object-annotation.html">注解（Annotations）</a></li>
+<li><a href="kubernetes/object-field-selectors.html">字段选择器（Field Selectors）</a></li>
+<li><a href="kubernetes/object-common-label.html">推荐的 Labels</a></li>
+</ul></li>
+</ul></li>
+<li><a href="kubernetes/architecture.html">集群架构</a>: kubernetes 架构与组件概览</li>
+<li>容器</li>
+<li>工作负载（Workloads）
+<ul class="org-ul">
+<li>Pods</li>
+<li>工作负载资源</li>
+</ul></li>
 <li><a href="kubernetes/pod.html">Pod</a>: 概念、为什么需要 Pod、状态标识、健康检查、生命周期等</li>
 <li>控制器(controller):
 <ul class="org-ul">
@@ -306,9 +331,7 @@ Kubernetes 提供了服务发现和负载均衡、自动部署和回滚、弹性
 <ul class="org-ul">
 <li><a href="kubernetes/service.html">Service</a> 集群内部的服务暴露抽象，提供虚拟 IP ，然后通过负载均衡策略，将流量转发到 Endpoints。
 底层实现是 kube-proxy，它支持三种模式（用户空间，iptables，IPVS），主流都是使用 IPVS</li>
-<li>DNS</li>
-<li>Ingress 和 Ingress Controller</li>
-<li>网络策略</li>
+<li class="off"><code>[&#xa0;]</code> <a href="kubernetes/service-topology.html">服务拓扑</a> 实现基于 Service 的亲和性</li>
 </ul></li>
 <li>存储: Volumes, Persistent Volumes, Storage Class 等</li>
 <li>调度: 调度器和调度策略</li>
@@ -337,18 +360,6 @@ kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </ul>
 </div>
 </div>
-
-<div id="outline-container-org667bf52" class="outline-3">
-<h3 id="org667bf52"><span class="todo TODO">TODO</span> 书籍</h3>
-<div class="outline-text-3" id="text-org667bf52">
-<ul class="org-ul">
-<li class="off"><code>[&#xa0;]</code> Kubernetes: Up and Running</li>
-<li class="off"><code>[&#xa0;]</code> Kubernetes in Action</li>
-<li class="off"><code>[&#xa0;]</code> Kubernetes Patterns</li>
-<li class="off"><code>[&#xa0;]</code> Kubernetes Best Practices</li>
-</ul>
-</div>
-</div>
 </div>
 
 <div id="outline-container-org90ef5c9" class="outline-2">
@@ -359,7 +370,23 @@ kubectl 是用来管理 Kubernetes 集群的命令行工具。
 <li><a href="../../blog/2021/kubernetes-vs-docker.html">Kubernetes vs Docker</a> 2021 翻译的文章，容器、Docker、Kubernetes 之间的关系，
 Kubernetes v1.20 开始废弃了 Dockershim 之后，对于研发人员、管理员以及 CI/CD 流程上会有哪些影响？</li>
 <li><a href="https://12factor.net/zh_cn/">12-Factor</a> 构建 SaaS 应用方法论</li>
+<li><a href="https://kubernetesreadme.com/">kubernetes README</a> Kubernetes 书籍、教程和其它资源列表</li>
 </ul>
+</div>
+
+<div id="outline-container-org667bf52" class="outline-3">
+<h3 id="org667bf52">书籍</h3>
+<div class="outline-text-3" id="text-org667bf52">
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> Kubernetes: Up and Running</li>
+<li class="off"><code>[&#xa0;]</code> Kubernetes in Action</li>
+<li class="off"><code>[&#xa0;]</code> Kubernetes Patterns</li>
+<li class="off"><code>[&#xa0;]</code> Kubernetes Best Practices</li>
+<li class="off"><code>[&#xa0;]</code> Cloud Native Patterns</li>
+<li class="off"><code>[&#xa0;]</code> Kubernetes Patterns</li>
+<li class="off"><code>[&#xa0;]</code> The Kubernetes Book 这本书每年都会更新一次，以跟上最新的 Kubernetes 生态</li>
+</ul>
+</div>
 </div>
 </div>
 <div id="footnotes">
