@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-02-20 Sat 18:23 -->
+<!-- 2021-02-22 Mon 14:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Service</title>
@@ -297,6 +297,7 @@
 <li><a href="#org3ea94c0">13.6. PROXY 协议</a></li>
 </ul>
 </li>
+<li><a href="#org1d6fc30">14. 官方文档之外</a></li>
 </ul>
 </div>
 </div>
@@ -390,13 +391,13 @@ Service 的名字必须是一个有效的 DNS 标签。
 <span style="color: #BA36A5;">kind</span>: Service
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">name</span>: my-service
-<span style="color: #BA36A5;">spec</span>:
-  <span style="color: #BA36A5;">selector</span>:
-    <span style="color: #BA36A5;">app</span>: MyApp
-  <span style="color: #BA36A5;">ports</span>:
-    - <span style="color: #BA36A5;">protocol</span>: TCP
-      <span style="color: #BA36A5;">port</span>: 80
-      <span style="color: #BA36A5;">targetPort</span>: 9376
+  <span style="color: #BA36A5;">spec</span>:
+    <span style="color: #BA36A5;">selector</span>:
+      <span style="color: #BA36A5;">app</span>: MyApp
+      <span style="color: #BA36A5;">ports</span>:
+        - <span style="color: #BA36A5;">protocol</span>: TCP
+          <span style="color: #BA36A5;">port</span>: 80
+          <span style="color: #BA36A5;">targetPort</span>: 9376
 </pre>
 </div>
 
@@ -436,11 +437,11 @@ Service 最常见的是抽象对 Pod 集合的访问，但是他们也可以抽�
 <span style="color: #BA36A5;">kind</span>: Service
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">name</span>: my-service
-<span style="color: #BA36A5;">spec</span>:
-  <span style="color: #BA36A5;">ports</span>:
-    - <span style="color: #BA36A5;">protocol</span>: TCP
-      <span style="color: #BA36A5;">port</span>: 80
-      <span style="color: #BA36A5;">targetPort</span>: 9376
+  <span style="color: #BA36A5;">spec</span>:
+    <span style="color: #BA36A5;">ports</span>:
+      - <span style="color: #BA36A5;">protocol</span>: TCP
+        <span style="color: #BA36A5;">port</span>: 80
+        <span style="color: #BA36A5;">targetPort</span>: 9376
 </pre>
 </div>
 
@@ -454,11 +455,11 @@ Endpoint 对象：
 <span style="color: #BA36A5;">kind</span>: Endpoints
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">name</span>: my-service
-<span style="color: #BA36A5;">subsets</span>:
-  - <span style="color: #BA36A5;">addresses</span>:
-      - <span style="color: #BA36A5;">ip</span>: 192.0.2.42
-    <span style="color: #BA36A5;">ports</span>:
-      - <span style="color: #BA36A5;">port</span>: 9376
+  <span style="color: #BA36A5;">subsets</span>:
+    - <span style="color: #BA36A5;">addresses</span>:
+        - <span style="color: #BA36A5;">ip</span>: 192.0.2.42
+          <span style="color: #BA36A5;">ports</span>:
+            - <span style="color: #BA36A5;">port</span>: 9376
 </pre>
 </div>
 
@@ -575,7 +576,7 @@ Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> �
 </p>
 
 
-<div id="org8609dbb" class="figure">
+<div id="org0edecb6" class="figure">
 <p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/e351b830334b8622a700a8da6568cb081c464a9b/13020/images/docs/services-userspace-overview.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object>
 </p>
@@ -612,7 +613,7 @@ iptables 规则，用来捕获到 Service 的 <code>clusterIP</code> 和 <code>p
 </p>
 
 
-<div id="orgee3a4fb" class="figure">
+<div id="orga4ca02e" class="figure">
 <p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/27b2978647a8d7bdc2a96b213f0c0d3242ef9ce0/e8c9b/images/docs/services-iptables-overview.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object>
 </p>
@@ -665,7 +666,7 @@ IPVS 为后端 Pods 流量的负载均衡提供了更多的选项：
 </blockquote>
 
 
-<div id="org9b8269e" class="figure">
+<div id="org1aeb9f1" class="figure">
 <p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/2d3d2b521cf7f9ff83238218dac1c019c270b1ed/9ac5c/images/docs/services-ipvs-overview.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object>
 </p>
@@ -698,18 +699,18 @@ Sorry, your browser does not support SVG.</object>
 <span style="color: #BA36A5;">kind</span>: Service
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">name</span>: my-service
-<span style="color: #BA36A5;">spec</span>:
-  <span style="color: #BA36A5;">selector</span>:
-    <span style="color: #BA36A5;">app</span>: MyApp
-  <span style="color: #BA36A5;">ports</span>:
-    - <span style="color: #BA36A5;">name</span>: http
-      <span style="color: #BA36A5;">protocol</span>: TCP
-      <span style="color: #BA36A5;">port</span>: 80
-      <span style="color: #BA36A5;">targetPort</span>: 9376
-    - <span style="color: #BA36A5;">name</span>: https
-      <span style="color: #BA36A5;">protocol</span>: TCP
-      <span style="color: #BA36A5;">port</span>: 443
-      <span style="color: #BA36A5;">targetPort</span>: 9377
+  <span style="color: #BA36A5;">spec</span>:
+    <span style="color: #BA36A5;">selector</span>:
+      <span style="color: #BA36A5;">app</span>: MyApp
+      <span style="color: #BA36A5;">ports</span>:
+        - <span style="color: #BA36A5;">name</span>: http
+          <span style="color: #BA36A5;">protocol</span>: TCP
+          <span style="color: #BA36A5;">port</span>: 80
+          <span style="color: #BA36A5;">targetPort</span>: 9376
+          - <span style="color: #BA36A5;">name</span>: https
+            <span style="color: #BA36A5;">protocol</span>: TCP
+            <span style="color: #BA36A5;">port</span>: 443
+            <span style="color: #BA36A5;">targetPort</span>: 9377
 </pre>
 </div>
 
@@ -942,17 +943,17 @@ kube-proxy 中设置了，将被过滤 NodeIPs ）。
 <span style="color: #BA36A5;">kind</span>: Service
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">name</span>: my-service
-<span style="color: #BA36A5;">spec</span>:
-  <span style="color: #BA36A5;">type</span>: NodePort
-  <span style="color: #BA36A5;">selector</span>:
-    <span style="color: #BA36A5;">app</span>: MyApp
-  <span style="color: #BA36A5;">ports</span>:
-      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">By default and for convenience, the `targetPort` is set to the same value as the `port` field.</span>
-    - <span style="color: #BA36A5;">port</span>: 80
-      <span style="color: #BA36A5;">targetPort</span>: 80
-      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Optional field</span>
-      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)</span>
-      <span style="color: #BA36A5;">nodePort</span>: 30007
+  <span style="color: #BA36A5;">spec</span>:
+    <span style="color: #BA36A5;">type</span>: NodePort
+    <span style="color: #BA36A5;">selector</span>:
+      <span style="color: #BA36A5;">app</span>: MyApp
+      <span style="color: #BA36A5;">ports</span>:
+        <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">By default and for convenience, the `targetPort` is set to the same value as the `port` field.</span>
+        - <span style="color: #BA36A5;">port</span>: 80
+          <span style="color: #BA36A5;">targetPort</span>: 80
+          <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Optional field</span>
+          <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)</span>
+          <span style="color: #BA36A5;">nodePort</span>: 30007
 </pre>
 </div>
 </div>
@@ -984,9 +985,9 @@ kube-proxy 中设置了，将被过滤 NodeIPs ）。
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">name</span>: my-service
   <span style="color: #BA36A5;">namespace</span>: prod
-<span style="color: #BA36A5;">spec</span>:
-  <span style="color: #BA36A5;">type</span>: ExternalName
-  <span style="color: #BA36A5;">externalName</span>: my.database.example.com
+  <span style="color: #BA36A5;">spec</span>:
+    <span style="color: #BA36A5;">type</span>: ExternalName
+    <span style="color: #BA36A5;">externalName</span>: my.database.example.com
 </pre>
 </div>
 
@@ -1036,16 +1037,16 @@ TLS 服务器将无法提供与客户端连接的主机名匹配的证书。
 <span style="color: #BA36A5;">kind</span>: Service
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">name</span>: my-service
-<span style="color: #BA36A5;">spec</span>:
-  <span style="color: #BA36A5;">selector</span>:
-    <span style="color: #BA36A5;">app</span>: MyApp
-  <span style="color: #BA36A5;">ports</span>:
-    - <span style="color: #BA36A5;">name</span>: http
-      <span style="color: #BA36A5;">protocol</span>: TCP
-      <span style="color: #BA36A5;">port</span>: 80
-      <span style="color: #BA36A5;">targetPort</span>: 9376
-  <span style="color: #BA36A5;">externalIPs</span>:
-    - 80.11.12.10
+  <span style="color: #BA36A5;">spec</span>:
+    <span style="color: #BA36A5;">selector</span>:
+      <span style="color: #BA36A5;">app</span>: MyApp
+      <span style="color: #BA36A5;">ports</span>:
+        - <span style="color: #BA36A5;">name</span>: http
+          <span style="color: #BA36A5;">protocol</span>: TCP
+          <span style="color: #BA36A5;">port</span>: 80
+          <span style="color: #BA36A5;">targetPort</span>: 9376
+          <span style="color: #BA36A5;">externalIPs</span>:
+            - 80.11.12.10
 </pre>
 </div>
 </div>
@@ -1298,9 +1299,127 @@ PROXY TCP4 192.0.2.202 10.0.42.7 12345 7\r\n
 </div>
 </div>
 </div>
+
+<div id="outline-container-org1d6fc30" class="outline-2">
+<h2 id="org1d6fc30"><span class="section-number-2">14</span> 官方文档之外</h2>
+<div class="outline-text-2" id="text-14">
+<p>
+<b><span class="timestamp-wrapper"><span class="timestamp">&lt;2021-02-22 Mon 13:58&gt; </span></span> Headless Service 应用场景</b>
+</p>
+
+<p>
+当部署 Service 时，Kubernetes 为会其分配一个 DNS 名称，集群中的其它组件可以使用此名称和 DNS 与上游 Pods 通信（Endpoints）。
+（上面文档有写）。格式类似：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">my-svc.my-namespace.svc.cluster-domain.example
+</pre>
+</div>
+
+<p>
+当 <code>ServiceTypes</code> 类型为 <code>ClusterIP</code> 时， 值设置为 <code>"None"</code> 创建的 Service，称之为 Headless Service。
+因为没有 Cluster IP，kube-proxy 不会处理它。
+</p>
+
+
+<p>
+对于 Headless Service 关联的 Pod，也会被配置 A 或者 AAAA 记录，这样对 Headless Service 指定 DNS 查询时，会直接解析到所连接的 Pod 的
+IP 地址。
+</p>
+
+<p>
+区别在于，对于 Service，client 到达 Pod 的流程为：
+</p>
+
+<ol class="org-ol">
+<li>通过 DNS 服务，拿到 Service 的虚拟 IP 地址；</li>
+<li>使用时，VIP 通过 Kube-proxy（iptables/ipvs） 通过负载均衡策略，从 Endpoints 中选择一个 Pod 的 IP: ；</li>
+</ol>
+
+<p>
+<span class="underline">不管有多少个 Endpoints，DNS 查询时最终只返回 Service 的 VIP 地址。具体 client 访问时哪个 Pod，是由负载均衡器（ipvs）来决定的。</span>
+</p>
+
+<p>
+<span class="underline">而对于 Headless Service，DNS 查询会直接返回 Endpoint(IP) 列表。</span>
+</p>
+
+<p>
+一般的场景在于：
+</p>
+
+<ul class="org-ul">
+<li>客户端有自助选择权来决定使用那个 Pod，不走集群负载均衡的策略；</li>
+<li>Headless Service 对应的 Endpoints，每个 Pod 都有一个唯一的 DNS 域名。这样 Pod 之间就可以互相访问。
+这种情况下通常和 statefulset 一起使用来部署有状态应用；</li>
+</ul>
+
+<p>
+参考：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/wuchangblog/p/14032057.html">https://www.cnblogs.com/wuchangblog/p/14032057.html</a></li>
+<li><a href="https://mp.weixin.qq.com/s/a_a2Bev_L2sq_G1a9R_kUA">https://mp.weixin.qq.com/s/a_a2Bev_L2sq_G1a9R_kUA</a></li>
+</ul>
+
+<p>
+<b><span class="timestamp-wrapper"><span class="timestamp">&lt;2021-02-22 Mon 14:37&gt; </span></span> ExternalName 类型 Service 应用场景</b>
+</p>
+
+<p>
+将集群内部的名称映射到集群外部。只是一层重定向，与其它类型的 Service 完全不同，没有 Pod 相关联。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
+<span style="color: #BA36A5;">kind</span>: Service
+<span style="color: #BA36A5;">metadata</span>:
+  <span style="color: #BA36A5;">name</span>: my-xn-service
+<span style="color: #BA36A5;">spec</span>:
+  <span style="color: #BA36A5;">type</span>: ExternalName
+  <span style="color: #BA36A5;">externalName</span>: example.com
+</pre>
+</div>
+
+<p>
+当在集群内部访问 <code>my-xn-service</code> 内部的 DNS 会被映射到外部的 <code>example.com</code> 。
+</p>
+
+<p>
+参考：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://cloud.google.com/kubernetes-engine/docs/concepts/service?hl=zh-cn#service_of_type_externalname">https://cloud.google.com/kubernetes-engine/docs/concepts/service?hl=zh-cn#service_of_type_externalname</a></li>
+<li><a href="https://blog.opskumu.com/kubernetes-ext-service.html">https://blog.opskumu.com/kubernetes-ext-service.html</a></li>
+</ul>
+
+<p>
+<b><span class="timestamp-wrapper"><span class="timestamp">&lt;2021-02-22 Mon 14:44&gt; </span></span> Kubernetes 中的服务发现和负载均衡组件关系</b>
+</p>
+
+<p>
+刚开始的时候这块会比较混乱（尤其是我这种不是运维出身的）。这里放一些总结：
+</p>
+
+<ul class="org-ul">
+<li>Service 是 Pods 访问的抽象，集群控制面板会给 Service 分配一个虚拟 IP，这个 IP 只能在集群内部使用，是个完全虚拟的；</li>
+<li>Service 和 Pods 的关系是通过标签选择器来建立的（Kubernetes 中的资源关系大都是这么建立的）；</li>
+<li>kube-proxy 会将 Service VIP 和 Endpoints 的规则写入到 iptables/ipvs 规则中；当 client 访问 VIP 时，kube-proxy 通过
+负载均衡策略为 client 选择一个 endpoints(IP:Port)；</li>
+<li>创建 Service 时，集群的 DNS 插件（如 coredns）会为 Service 创建一个 DNS 记录。</li>
+</ul>
+
+<p>
+所以，访问流程为： <code>my-service -&gt; DNS -&gt; VIP -&gt; kubeproxy -&gt; IP:Port</code> 。
+</p>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2021-02-20 Sat 16:23 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2021-02-22 Mon 14:52 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
