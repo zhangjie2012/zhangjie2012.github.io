@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2021-02-22 Mon 10:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 对象</title>
@@ -42,7 +42,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +54,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -197,50 +197,26 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -250,223 +226,34 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1ac607a">1. 命名空间</a>
+<li><a href="#orgefadf29">1. 字段选择器</a>
 <ul>
-<li><a href="#orgec2e9b1">1.1. 用途</a></li>
-<li><a href="#orge459e2e">1.2. 使用</a></li>
-<li><a href="#org2f06907">1.3. 命名空间和 DNS</a></li>
-<li><a href="#org7469b6e">1.4. 并非所有对象都在命名空间中</a></li>
+<li><a href="#org9b267bb">1.1. 支持的字段</a></li>
+<li><a href="#orgde63079">1.2. 支持的运算符</a></li>
+<li><a href="#orge56d25b">1.3. 链式选择器</a></li>
+<li><a href="#org88c60e9">1.4. 多种资源类型</a></li>
 </ul>
 </li>
-<li><a href="#orgb5dbfb4">2. 标签和选择器</a>
+<li><a href="#orgca33d12">2. 推荐使用的标签</a>
 <ul>
-<li><a href="#org5fdfcef">2.1. 动机</a></li>
-<li><a href="#org9c50027">2.2. 语法和字符集</a></li>
-<li><a href="#orgdbc3f94">2.3. 标签选择器</a></li>
-<li><a href="#orgdd999ae">2.4. API</a></li>
+<li><a href="#org1c39684">2.1. 一个简单的无状态服务</a></li>
+<li><a href="#org376d460">2.2. 有状态服务</a></li>
 </ul>
 </li>
-<li><a href="#orgefadf29">3. 字段选择器</a>
+<li><a href="#orgdcb0a2f">3. 理解 Kubernetes 对象</a>
 <ul>
-<li><a href="#org9b267bb">3.1. 支持的字段</a></li>
-<li><a href="#orgde63079">3.2. 支持的运算符</a></li>
-<li><a href="#orge56d25b">3.3. 链式选择器</a></li>
-<li><a href="#org88c60e9">3.4. 多种资源类型</a></li>
-</ul>
-</li>
-<li><a href="#orgca33d12">4. 推荐使用的标签</a>
-<ul>
-<li><a href="#org1c39684">4.1. 一个简单的无状态服务</a></li>
-<li><a href="#org376d460">4.2. 有状态服务</a></li>
-</ul>
-</li>
-<li><a href="#orgdcb0a2f">5. 理解 Kubernetes 对象</a>
-<ul>
-<li><a href="#org37f9aa7">5.1. 对象规约（Spec）和状态（Status）</a></li>
-<li><a href="#orgbcc51e6">5.2. 描述 Kubernetes 对象</a></li>
-<li><a href="#org8628600">5.3. 必须字段</a></li>
+<li><a href="#org37f9aa7">3.1. 对象规约（Spec）和状态（Status）</a></li>
+<li><a href="#orgbcc51e6">3.2. 描述 Kubernetes 对象</a></li>
+<li><a href="#org8628600">3.3. 必须字段</a></li>
 </ul>
 </li>
 </ul>
-</div>
-</div>
-
-<div id="outline-container-org1ac607a" class="outline-2">
-<h2 id="org1ac607a"><span class="section-number-2">1</span> 命名空间</h2>
-<div class="outline-text-2" id="text-1">
-<p>
-同一个物理机群支持划分出多个虚拟集群，这些虚拟集群被称为命名空间（namespace）。
-</p>
-</div>
-
-<div id="outline-container-orgec2e9b1" class="outline-3">
-<h3 id="orgec2e9b1"><span class="section-number-3">1.1</span> 用途</h3>
-<div class="outline-text-3" id="text-1-1">
-<ul class="org-ul">
-<li>命名空间用于很多跨多个团队或者项目的用户场景。几个或者几十个用户的集群，不需要考虑命名空间。</li>
-<li>资源名称在同一个命名空间中是唯一的（跨空间允许相同），命名空间不支持嵌套，同一个资源只能属于一个空间。</li>
-<li>命名空间是多个用户之间划分集群资源的一种方法。</li>
-<li>轻微不同的资源，不需要使用命名空间来区分，比如同一个软件的不同版本，可通过 Label 来区分。</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orge459e2e" class="outline-3">
-<h3 id="orge459e2e"><span class="section-number-3">1.2</span> 使用</h3>
-<div class="outline-text-3" id="text-1-2">
-<div class="org-src-container">
-<pre class="src src-shell">kubectl get namespaces
-</pre>
-</div>
-
-<p>
-Kubernetes 会创建三个初始的空间：
-</p>
-
-<ul class="org-ul">
-<li><code>default</code> 未指定其它命名空间的资源使用的默认空间</li>
-<li><code>kube-system</code> 系统创建的对象所使用的命名空间</li>
-<li><code>kube-public</code> 自动创建，所有用户都可使用，为集群所用</li>
-</ul>
-
-<p>
-请求指定空间的资源，可通过 <code>-namespace</code> 参数筛选。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org2f06907" class="outline-3">
-<h3 id="org2f06907"><span class="section-number-3">1.3</span> 命名空间和 DNS</h3>
-<div class="outline-text-3" id="text-1-3">
-<p>
-当创建一个 Service 时，Kubernetes 会创建一个对应的 DNS 条目，形式为： <code>&lt;service-name&gt;.&lt;namespace-name&gt;.svc.cluster.local</code> 。
-如果容器使用 <code>&lt;service-name&gt;</code> 将被解析到本地命名空间的服务。如果希望跨命名空间访问，需要使用完全限定域名（FQDN）。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org7469b6e" class="outline-3">
-<h3 id="org7469b6e"><span class="section-number-3">1.4</span> 并非所有对象都在命名空间中</h3>
-<div class="outline-text-3" id="text-1-4">
-<p>
-在查询资源时，可通过指定 <code>-namespace=true/false</code> 来查看哪些资源不在命名空间中。
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell"><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">In a namespace</span>
-kubectl api-resources --namespaced=true
-
-<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Not in a namespace</span>
-kubectl api-resources --namespaced=false
-</pre>
-</div>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgb5dbfb4" class="outline-2">
-<h2 id="orgb5dbfb4"><span class="section-number-2">2</span> 标签和选择器</h2>
-<div class="outline-text-2" id="text-2">
-<p>
-<i>标签</i> 是附加到 Kubernetes 对象（比如 Pods）上的键值对。
-</p>
-
-<ul class="org-ul">
-<li>标签的含义由用户定义。</li>
-<li>可以用来组织和选择对象的子集。</li>
-<li>标签可以随时添加和修改。</li>
-<li>每个对象都可以定义一组键/值标签，键不可重复。</li>
-</ul>
-
-<div class="org-src-container">
-<pre class="src src-js"><span style="color: #008000;">"metadata"</span>: <span style="color: #707183;">{</span>
-  <span style="color: #008000;">"labels"</span>: <span style="color: #7388D6;">{</span>
-    <span style="color: #008000;">"key1"</span> : <span style="color: #008000;">"value1"</span>,
-    <span style="color: #008000;">"key2"</span> : <span style="color: #008000;">"value2"</span>
-  <span style="color: #7388D6;">}</span>
-<span style="color: #707183;">}</span>
-</pre>
-</div>
-
-<p>
-标签会被设置成索引，以提高查询效率和监控。如果是非标识性的，尤其是大型的结构化数据应该使用注解来记录，而不是标签。
-</p>
-</div>
-
-<div id="outline-container-org5fdfcef" class="outline-3">
-<h3 id="org5fdfcef"><span class="section-number-3">2.1</span> 动机</h3>
-<div class="outline-text-3" id="text-2-1">
-<p>
-标签使用户能够以松散耦合的方式将他们自己的组织结构映射到系统对象，而无需客户端存储这些映射。
-</p>
-
-<p>
-其实就是一个轻量级的标识，用于多纬度的管理（查询），具体含义由用户约定。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org9c50027" class="outline-3">
-<h3 id="org9c50027"><span class="section-number-3">2.2</span> 语法和字符集</h3>
-<div class="outline-text-3" id="text-2-2">
-<p>
-<i>键值对。</i>
-</p>
-
-<ul class="org-ul">
-<li>键，可选的前缀和名称，用斜杠（ <code>/</code> ）分隔，。
-<ul class="org-ul">
-<li>名称是必须的，以字母数字字符 <code>[a-z0-9A-Z]</code> 开头和结尾，中间包含 <code>-</code> <code>_</code> <code>.</code> 和 <code>[a-z0-9A-Z]</code></li>
-<li>前缀是可选的，如果指定必须是 DNS 子域：点（ <code>.</code> ）分隔的一系列 DNS 标签，总共不超过 253 个字符，后跟斜杠（ <code>/</code> ）</li>
-</ul></li>
-<li>值，小于 64 字符， <code>[a-z0-9A-Z]</code> 开头和结尾，中间包含 <code>-</code> <code>_</code> <code>.</code> 和 <code>[a-z0-9A-Z]</code></li>
-</ul>
-
-<p>
-<i>键</i> 如果省略前缀，则假定是对用户是私有的。自动系统组件必须指定前缀（ <code>kube-scheduler</code> ， <code>kube-controller-manager</code> 等）。
-<code>kubernetes.io/</code> 前缀是为 Kubernetes 核心组件保留的。
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgdbc3f94" class="outline-3">
-<h3 id="orgdbc3f94"><span class="section-number-3">2.3</span> 标签选择器</h3>
-<div class="outline-text-3" id="text-2-3">
-<p>
-通过标签选择器，用户可以识别一组对象。API 目前支持两种类型的选择器：
-</p>
-
-<ol class="org-ol">
-<li>基于相等性的</li>
-<li>基于集合的</li>
-</ol>
-
-<p>
-标签选择器可以有逗号分隔的多个 <i>需求</i> 组成。在多个需求的情况下，必须满足所有的要求，因为逗号分隔符充当的是逻辑 <i>与</i> 运算符。
-</p>
-
-<p>
-<b>基于相等性的需求</b>
-</p>
-
-<p>
-一种使用场景是 Pods 要指定节点选择标准。
-</p>
-
-<p>
-<b>基于集合的需求</b>
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgdd999ae" class="outline-3">
-<h3 id="orgdd999ae"><span class="section-number-3">2.4</span> API</h3>
 </div>
 </div>
 
 <div id="outline-container-orgefadf29" class="outline-2">
-<h2 id="orgefadf29"><span class="section-number-2">3</span> 字段选择器</h2>
-<div class="outline-text-2" id="text-3">
+<h2 id="orgefadf29"><span class="section-number-2">1</span> 字段选择器</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 字段选择器允许用户根据一个或者多个资源字段值筛选资源。比如 <code>metadata.name=my-service</code> ， <code>status.phase=Pending</code> 。
 </p>
@@ -482,8 +269,8 @@ kubectl api-resources --namespaced=false
 </div>
 
 <div id="outline-container-org9b267bb" class="outline-3">
-<h3 id="org9b267bb"><span class="section-number-3">3.1</span> 支持的字段</h3>
-<div class="outline-text-3" id="text-3-1">
+<h3 id="org9b267bb"><span class="section-number-3">1.1</span> 支持的字段</h3>
+<div class="outline-text-3" id="text-1-1">
 <p>
 不同的资源类型（deployment，pod 等）支持不同的字段选择器，所有的资源都支持 <code>metadata.name</code> 和  <code>metadata.namespace</code> 。
 </p>
@@ -491,8 +278,8 @@ kubectl api-resources --namespaced=false
 </div>
 
 <div id="outline-container-orgde63079" class="outline-3">
-<h3 id="orgde63079"><span class="section-number-3">3.2</span> 支持的运算符</h3>
-<div class="outline-text-3" id="text-3-2">
+<h3 id="orgde63079"><span class="section-number-3">1.2</span> 支持的运算符</h3>
+<div class="outline-text-3" id="text-1-2">
 <ul class="org-ul">
 <li>相等： <code>=</code> 和 <code>==</code> <i>两者意义相同</i></li>
 <li>不相等： <code>!=</code></li>
@@ -501,8 +288,8 @@ kubectl api-resources --namespaced=false
 </div>
 
 <div id="outline-container-orge56d25b" class="outline-3">
-<h3 id="orge56d25b"><span class="section-number-3">3.3</span> 链式选择器</h3>
-<div class="outline-text-3" id="text-3-3">
+<h3 id="orge56d25b"><span class="section-number-3">1.3</span> 链式选择器</h3>
+<div class="outline-text-3" id="text-1-3">
 <p>
 通过逗号分隔组成一个选择链，逗号表示 <i>与</i> 。
 </p>
@@ -510,8 +297,8 @@ kubectl api-resources --namespaced=false
 </div>
 
 <div id="outline-container-org88c60e9" class="outline-3">
-<h3 id="org88c60e9"><span class="section-number-3">3.4</span> 多种资源类型</h3>
-<div class="outline-text-3" id="text-3-4">
+<h3 id="org88c60e9"><span class="section-number-3">1.4</span> 多种资源类型</h3>
+<div class="outline-text-3" id="text-1-4">
 <p>
 多种资源类型中逗号分隔，可以 <i>同时</i> 筛选。比如：
 </p>
@@ -525,8 +312,8 @@ kubectl api-resources --namespaced=false
 </div>
 
 <div id="outline-container-orgca33d12" class="outline-2">
-<h2 id="orgca33d12"><span class="section-number-2">4</span> 推荐使用的标签</h2>
-<div class="outline-text-2" id="text-4">
+<h2 id="orgca33d12"><span class="section-number-2">2</span> 推荐使用的标签</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 <a href="https://kubernetes.io/zh/docs/concepts/overview/working-with-objects/common-labels/">https://kubernetes.io/zh/docs/concepts/overview/working-with-objects/common-labels/</a>
 </p>
@@ -540,19 +327,19 @@ kubectl api-resources --namespaced=false
 <span style="color: #BA36A5;">kind</span>: StatefulSet
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/name</span>: mysql
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/instance</span>: wordpress-abcxzy
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/version</span>: <span style="color: #008000;">"5.7.21"</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/component</span>: database
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/part-of</span>: wordpress
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/managed-by</span>: helm
+    <span style="color: #BA36A5;">app.kubernetes.io/name</span>: mysql
+    <span style="color: #BA36A5;">app.kubernetes.io/instance</span>: wordpress-abcxzy
+    <span style="color: #BA36A5;">app.kubernetes.io/version</span>: <span style="color: #008000;">"5.7.21"</span>
+    <span style="color: #BA36A5;">app.kubernetes.io/component</span>: database
+    <span style="color: #BA36A5;">app.kubernetes.io/part-of</span>: wordpress
+    <span style="color: #BA36A5;">app.kubernetes.io/managed-by</span>: helm
 </pre>
 </div>
 </div>
 
 <div id="outline-container-org1c39684" class="outline-3">
-<h3 id="org1c39684"><span class="section-number-3">4.1</span> 一个简单的无状态服务</h3>
-<div class="outline-text-3" id="text-4-1">
+<h3 id="org1c39684"><span class="section-number-3">2.1</span> 一个简单的无状态服务</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 <b>Deployment</b>
 </p>
@@ -562,8 +349,8 @@ kubectl api-resources --namespaced=false
 <span style="color: #BA36A5;">kind</span>: Deployment
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/name</span>: myservice
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/instance</span>: myservice-abcxzy
+    <span style="color: #BA36A5;">app.kubernetes.io/name</span>: myservice
+    <span style="color: #BA36A5;">app.kubernetes.io/instance</span>: myservice-abcxzy
 <span style="color: #8D8D84; font-style: italic;">...</span>
 </pre>
 </div>
@@ -578,8 +365,8 @@ kubectl api-resources --namespaced=false
 <span style="color: #BA36A5;">kind</span>: Service
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/name</span>: myservice
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/instance</span>: myservice-abcxzy
+    <span style="color: #BA36A5;">app.kubernetes.io/name</span>: myservice
+    <span style="color: #BA36A5;">app.kubernetes.io/instance</span>: myservice-abcxzy
 <span style="color: #8D8D84; font-style: italic;">...</span>
 </pre>
 </div>
@@ -587,8 +374,8 @@ kubectl api-resources --namespaced=false
 </div>
 
 <div id="outline-container-org376d460" class="outline-3">
-<h3 id="org376d460"><span class="section-number-3">4.2</span> 有状态服务</h3>
-<div class="outline-text-3" id="text-4-2">
+<h3 id="org376d460"><span class="section-number-3">2.2</span> 有状态服务</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 <b>StatefulSet</b>
 </p>
@@ -598,12 +385,12 @@ kubectl api-resources --namespaced=false
 <span style="color: #BA36A5;">kind</span>: StatefulSet
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/name</span>: mysql
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/instance</span>: mysql-abcxzy
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/version</span>: <span style="color: #008000;">"5.7.21"</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/managed-by</span>: helm
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/component</span>: database
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/part-of</span>: wordpress
+    <span style="color: #BA36A5;">app.kubernetes.io/name</span>: mysql
+    <span style="color: #BA36A5;">app.kubernetes.io/instance</span>: mysql-abcxzy
+    <span style="color: #BA36A5;">app.kubernetes.io/version</span>: <span style="color: #008000;">"5.7.21"</span>
+    <span style="color: #BA36A5;">app.kubernetes.io/managed-by</span>: helm
+    <span style="color: #BA36A5;">app.kubernetes.io/component</span>: database
+    <span style="color: #BA36A5;">app.kubernetes.io/part-of</span>: wordpress
 <span style="color: #8D8D84; font-style: italic;">...</span>
 </pre>
 </div>
@@ -617,12 +404,12 @@ kubectl api-resources --namespaced=false
 <span style="color: #BA36A5;">kind</span>: Service
 <span style="color: #BA36A5;">metadata</span>:
   <span style="color: #BA36A5;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/name</span>: mysql
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/instance</span>: mysql-abcxzy
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/version</span>: <span style="color: #008000;">"5.7.21"</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/managed-by</span>: helm
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/component</span>: database
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app.kubernetes.io/part-of</span>: wordpress
+    <span style="color: #BA36A5;">app.kubernetes.io/name</span>: mysql
+    <span style="color: #BA36A5;">app.kubernetes.io/instance</span>: mysql-abcxzy
+    <span style="color: #BA36A5;">app.kubernetes.io/version</span>: <span style="color: #008000;">"5.7.21"</span>
+    <span style="color: #BA36A5;">app.kubernetes.io/managed-by</span>: helm
+    <span style="color: #BA36A5;">app.kubernetes.io/component</span>: database
+    <span style="color: #BA36A5;">app.kubernetes.io/part-of</span>: wordpress
 <span style="color: #8D8D84; font-style: italic;">...</span>
 </pre>
 </div>
@@ -630,8 +417,8 @@ kubectl api-resources --namespaced=false
 </div>
 </div>
 <div id="outline-container-orgdcb0a2f" class="outline-2">
-<h2 id="orgdcb0a2f"><span class="section-number-2">5</span> 理解 Kubernetes 对象</h2>
-<div class="outline-text-2" id="text-5">
+<h2 id="orgdcb0a2f"><span class="section-number-2">3</span> 理解 Kubernetes 对象</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 Kubernetes 使用 <i>对象</i> 来表示整个集群的状态。它们描述了：
 </p>
@@ -656,8 +443,8 @@ Kubernetes 对象的操作（CRUD） 都需要使用 Kubernetes API。kubectl �
 </div>
 
 <div id="outline-container-org37f9aa7" class="outline-3">
-<h3 id="org37f9aa7"><span class="section-number-3">5.1</span> 对象规约（Spec）和状态（Status）</h3>
-<div class="outline-text-3" id="text-5-1">
+<h3 id="org37f9aa7"><span class="section-number-3">3.1</span> 对象规约（Spec）和状态（Status）</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
 每个 Kubernetes 对象包含两个嵌套的字段，它们负责管理对象的配置：一个是对象 Spec；一个是 Status；
 </p>
@@ -674,8 +461,8 @@ Kubernetes 对象的操作（CRUD） 都需要使用 Kubernetes API。kubectl �
 </div>
 
 <div id="outline-container-orgbcc51e6" class="outline-3">
-<h3 id="orgbcc51e6"><span class="section-number-3">5.2</span> 描述 Kubernetes 对象</h3>
-<div class="outline-text-3" id="text-5-2">
+<h3 id="orgbcc51e6"><span class="section-number-3">3.2</span> 描述 Kubernetes 对象</h3>
+<div class="outline-text-3" id="text-3-2">
 <p>
 创建 Kubernetes 对象时，必须提供对象的 Spec，描述对象的期望状态，以及关于对象的一些基本信息（名称，空间等）。
 API 请求必须在 body 中包含 JSON 信息。kubectl 使用 yaml 格式，发起请求时，将这些信息转换成 JSON。比如：
@@ -690,27 +477,27 @@ API 请求必须在 body 中包含 JSON 信息。kubectl 使用 yaml 格式，�
   <span style="color: #BA36A5;">name</span>: nginx-deployment
 <span style="color: #BA36A5;">spec</span>:
   <span style="color: #BA36A5;">selector</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">matchLabels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  app</span>: nginx
+    <span style="color: #BA36A5;">matchLabels</span>:
+      <span style="color: #BA36A5;">app</span>: nginx
   <span style="color: #BA36A5;">replicas</span>: 2 <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">tells deployment to run 2 pods matching the template</span>
   <span style="color: #BA36A5;">template</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">metadata</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">app</span>: nginx
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">spec</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  containers</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - name</span>: nginx
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">image</span>: nginx:1.7.9
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">ports</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">- containerPort</span>: 80
+    <span style="color: #BA36A5;">metadata</span>:
+      <span style="color: #BA36A5;">labels</span>:
+        <span style="color: #BA36A5;">app</span>: nginx
+    <span style="color: #BA36A5;">spec</span>:
+      <span style="color: #BA36A5;">containers</span>:
+      - <span style="color: #BA36A5;">name</span>: nginx
+        <span style="color: #BA36A5;">image</span>: nginx:1.7.9
+        <span style="color: #BA36A5;">ports</span>:
+        - <span style="color: #BA36A5;">containerPort</span>: 80
 </pre>
 </div>
 </div>
 </div>
 
 <div id="outline-container-org8628600" class="outline-3">
-<h3 id="org8628600"><span class="section-number-3">5.3</span> 必须字段</h3>
-<div class="outline-text-3" id="text-5-3">
+<h3 id="org8628600"><span class="section-number-3">3.3</span> 必须字段</h3>
+<div class="outline-text-3" id="text-3-3">
 <p>
 创建 Kubernetes 对象中对应的 .yaml 文件，需要配置如下字段：
 </p>
@@ -726,7 +513,7 @@ API 请求必须在 body 中包含 JSON 信息。kubectl 使用 yaml 格式，�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-05 12:25:24 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
+<p class="postamble">First created: 2020-02-05 12:25:24 <br />Last updated: 2021-02-22 Mon 09:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
