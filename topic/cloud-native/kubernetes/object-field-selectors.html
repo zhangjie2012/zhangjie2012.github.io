@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-02-20 Sat 18:23 -->
+<!-- 2021-02-24 Wed 18:04 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 字段选择器（Field Selectors）</title>
@@ -222,12 +222,108 @@
 <body>
 <div id="content">
 <h1 class="title">Kubernetes 字段选择器（Field Selectors）</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3fa1607">1. 支持的字段</a></li>
+<li><a href="#org12eaa99">2. 支持的运算符</a></li>
+<li><a href="#orgee0b9e1">3. 链式选择器</a></li>
+<li><a href="#org1a96d4f">4. 多种资源类型</a></li>
+</ul>
+</div>
+</div>
 <p>
-<a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/">https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/</a>
+<i>字段选择器</i> 允许用户根据一个或者多个资源字段值<a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/">选择 Kubernetes 资源</a>。比如:
 </p>
+
+<ul class="org-ul">
+<li><code>metadata.name=my-service</code></li>
+<li><code>metadata.namespace!=default</code></li>
+<li><code>status.phase=Pending</code></li>
+</ul>
+
+<p>
+<code>kubectl</code> 命令通过 <code>--field-selector</code> 筛选资源，比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">kubectl get pods --field-selector status.phase=Running
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>注意：</b> 字段选择器本质上资源过滤器。默认情况下，没有应用选择器/过滤器，意味着选择指定类型的所有资源。
+<code>kubectl</code> 查询 <code>kubectl get pods</code> 和 <code>kubectl get pods --field-selector ""</code> 是等价的。
+</p>
+</blockquote>
+
+<div id="outline-container-org3fa1607" class="outline-2">
+<h2 id="org3fa1607"><span class="section-number-2">1</span> 支持的字段</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+支持的字段视不同的 Kubernetes 资源而定。但是所有的资源类型都支持 <code>metadata.name</code> 和 <code>metadata.namespace</code> 。
+使用不支持的字段选择器会报错。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">$ kubectl get ingress --field-selector foo.bar=baz
+Error from server <span style="color: #707183;">(</span>BadRequest<span style="color: #707183;">)</span>: Unable to find <span style="color: #008000;">"ingresses"</span> that match label selector <span style="color: #008000;">""</span>, field selector <span style="color: #008000;">"foo.bar=baz"</span>: <span style="color: #008000;">"foo.bar"</span> is not a known field selector: only <span style="color: #008000;">"metadata.name"</span>, <span style="color: #008000;">"metadata.namespace"</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org12eaa99" class="outline-2">
+<h2 id="org12eaa99"><span class="section-number-2">2</span> 支持的运算符</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>相等： <code>=</code> 和 <code>==</code> <i>两者意义相同</i></li>
+<li>不相等： <code>!=</code></li>
+</ul>
+
+<p>
+比如，下面的 <code>kubectl</code> 命令，选择 Kubernetes 中所有的 Services 但不在 <code>default</code> 空间中：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">kubectl get services  --all-namespaces --field-selector metadata.namespace!=default
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgee0b9e1" class="outline-2">
+<h2 id="orgee0b9e1"><span class="section-number-2">3</span> 链式选择器</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+通过逗号分隔组成一个选择链，逗号表示 <i>与</i> 。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">kubectl get pods --field-selector=status.phase!=Running,spec.restartPolicy=Always
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a96d4f" class="outline-2">
+<h2 id="org1a96d4f"><span class="section-number-2">4</span> 多种资源类型</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+多种资源类型中逗号分隔，可以 <i>同时</i> 筛选。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">kubectl get statefulsets,services --all-namespaces --field-selector metadata.namespace!=default
+</pre>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-02-20 16:49:05 <br />Last updated: 2021-02-20 Sat 17:27 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2021-02-20 16:49:05 <br />Last updated: 2021-02-23 Tue 17:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
