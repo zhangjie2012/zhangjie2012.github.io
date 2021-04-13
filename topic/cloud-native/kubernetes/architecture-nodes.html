@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-04-06 Tue 14:48 -->
+<!-- 2021-04-13 Tue 18:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 架构：节点</title>
@@ -228,8 +228,9 @@
 <ul>
 <li><a href="#org87d3095">1. 管理</a>
 <ul>
-<li><a href="#org49c88c0">1.1. 节点的自注册</a></li>
-<li><a href="#org6b2dde0">1.2. 手动节点管理</a></li>
+<li><a href="#orgfa638c1">1.1. 节点名称唯一性</a></li>
+<li><a href="#org49c88c0">1.2. 节点的自注册</a></li>
+<li><a href="#org441b00e">1.3. 手动管理节点</a></li>
 </ul>
 </li>
 <li><a href="#org3e015f2">2. 节点状态</a>
@@ -253,12 +254,20 @@
 </div>
 </div>
 <p>
+<a href="https://kubernetes.io/docs/concepts/architecture/nodes/">https://kubernetes.io/docs/concepts/architecture/nodes/</a>
+</p>
+
+<p>
 Kubernetes 在 <i>节点（nodes）</i> 上将容器放入 Pods 中运行你的工作负载。节点可能是一个虚拟或者物理的机器，依赖于你的集群。
 每个节点都会被控制平面管理，并且包含运行 Pods 所需要的服务。
 </p>
 
 <p>
-节点上的 <a href="https://kubernetes.io/docs/concepts/overview/components/#node-components">组件</a> 包含：kubelet，容器运行时和 kube-proy。
+通常，一个集群中包含多个节点。在学习或者有限的资源环境中，您可能只有一个节点。
+</p>
+
+<p>
+节点上的 <a href="https://kubernetes.io/docs/concepts/overview/components/#node-components">组件</a> 包含：kubelet，容器运行时（container runtime）和 kube-proxy。
 </p>
 
 <div id="outline-container-org87d3095" class="outline-2">
@@ -270,9 +279,8 @@ Kubernetes 在 <i>节点（nodes）</i> 上将容器放入 Pods 中运行你的�
 
 <ol class="org-ol">
 <li>节点上的 kubelet 自动注册到控制平面</li>
-<li>你，或者其他人手动添加节点对象</li>
+<li>你（或者其他人）手动添加节点对象</li>
 </ol>
-
 
 <p>
 在你创建了节点对象之后，或者节点上的 kubelet 自注册，控制平面会检查新的节点是否有效。举个例子，如果你想用一下的 JSON 创建一个节点：
@@ -299,7 +307,11 @@ Kubernetes 在内部创建一个节点对象，Kubernetes 会检查 kubelet 已�
 
 <blockquote>
 <p>
-<b>注意：</b> Kubernetes 将保留无效的节点，然后持续检查该节点是否健康。你，或者控制器，必须显式的删除节点对象才能停止该健康检测。
+<b>注意：</b> Kubernetes 将保留无效的节点，然后持续检查该节点是否健康。
+</p>
+
+<p>
+你，或者控制器，必须显式的删除节点对象才能停止该健康检测。
 </p>
 </blockquote>
 
@@ -308,9 +320,20 @@ Kubernetes 在内部创建一个节点对象，Kubernetes 会检查 kubelet 已�
 </p>
 </div>
 
-<div id="outline-container-org49c88c0" class="outline-3">
-<h3 id="org49c88c0"><span class="section-number-3">1.1</span> 节点的自注册</h3>
+<div id="outline-container-orgfa638c1" class="outline-3">
+<h3 id="orgfa638c1"><span class="section-number-3">1.1</span> 节点名称唯一性</h3>
 <div class="outline-text-3" id="text-1-1">
+<p>
+名字可以标识一个节点。两个节点不可能在同一个时间内有相同的名字。Kubernetes 假定具有相同名称的资源是相同的对象。对于节点，他隐式的假定相同名称的实例
+具有相同的状态（比如说：网络设置，根磁盘内容）。如果在不更改实例名称的情况下对其进行了修改，则可能导致不一致。如果需要大量更换或者更新的节点，现有的节点
+对象首先从 APIServer 中删除，并在更新后重新添加。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org49c88c0" class="outline-3">
+<h3 id="org49c88c0"><span class="section-number-3">1.2</span> 节点的自注册</h3>
+<div class="outline-text-3" id="text-1-2">
 <p>
 如果 kubelet 的 <code>--register-node</code> 是 true（默认值），kubelet 会尝试注册自己到 API server。这是大多数发行版首选的模式。
 </p>
@@ -330,16 +353,15 @@ Kubernetes 在内部创建一个节点对象，Kubernetes 会检查 kubelet 已�
 <li><code>--node-status-update-frequency</code> - 指定 kubelet 多久同步一次节点状态到主节点；</li>
 </ul>
 
-
 <p>
 当 <a href="https://kubernetes.io/docs/reference/access-authn-authz/node/">节点认证模式</a> 和 <a href="https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction">节点限制准入插件</a> 是开启状态，kubelet 仅被授权创建/修改自己的节点资源。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6b2dde0" class="outline-3">
-<h3 id="org6b2dde0"><span class="section-number-3">1.2</span> 手动节点管理</h3>
-<div class="outline-text-3" id="text-1-2">
+<div id="outline-container-org441b00e" class="outline-3">
+<h3 id="org441b00e"><span class="section-number-3">1.3</span> 手动管理节点</h3>
+<div class="outline-text-3" id="text-1-3">
 <p>
 你可以使用 kubectl 创建或者修改节点对象。
 </p>
@@ -378,7 +400,6 @@ Kubernetes 在内部创建一个节点对象，Kubernetes 会检查 kubelet 已�
 </div>
 </div>
 </div>
-
 
 <div id="outline-container-org3e015f2" class="outline-2">
 <h2 id="org3e015f2"><span class="section-number-2">2</span> 节点状态</h2>
@@ -515,7 +536,6 @@ kubelet 通信。删除 Pod 的决定无法传递给 kubelet 直到 kubelet 与 
 </div>
 </div>
 
-
 <div id="outline-container-org1120559" class="outline-3">
 <h3 id="org1120559"><span class="section-number-3">2.4</span> 信息（info）</h3>
 <div class="outline-text-3" id="text-2-4">
@@ -629,7 +649,6 @@ Kubernetes 调度程序确保所有的 Pod 都有足够的资源。调度器检�
 </div>
 </div>
 
-
 <div id="outline-container-orgd45aa31" class="outline-2">
 <h2 id="orgd45aa31"><span class="section-number-2">3</span> 节点拓扑结构</h2>
 <div class="outline-text-2" id="text-3">
@@ -684,7 +703,7 @@ Kubernetes 调度程序确保所有的 Pod 都有足够的资源。调度器检�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-02-28 18:00:19 <br />Last updated: 2021-03-23 Tue 17:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2021-02-28 18:00:19 <br />Last updated: 2021-04-13 Tue 17:09 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>
