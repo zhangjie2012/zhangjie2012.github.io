@@ -6,7 +6,7 @@
 <!-- 2021-04-21 Wed 17:08 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Go 资源</title>
+<title>Kubernetes 工作负载</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,16 +221,90 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">Go 资源</h1>
-<ul class="org-ul">
-<li><a href="https://talks.golang.org/2014/go4gophers.slide">https://talks.golang.org/2014/go4gophers.slide</a> Go PPT</li>
-<li><a href="https://talks.golang.org/2012/splash.article">Go at Google: Language Design in the Service of Software Engineering</a> Go 为什么是这样设计的，<a href="https://www.oschina.net/translate/go-at-google-language-design-in-the-service-of-software-engineering?lang=chs">中文版本</a></li>
-<li><a href="https://blog.discord.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f">Why Discord is switching from Go to Rust</a> Discard 从 Go 迁移到 Rust，主要谈的是 GC 问题，另外说 Rust 在各种性能指标上都比 Go 强</li>
-<li><a href="https://github.com/Pungyeon/clean-go-article">https://github.com/Pungyeon/clean-go-article</a> how/why to write go clean code</li>
+<h1 class="title">Kubernetes 工作负载</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org22d35b6">1. 下一步</a></li>
 </ul>
 </div>
+</div>
+<p>
+工作负载（workload）是运行在 Kubernetes 中的应用。你的工作负载无论是一个组件还是多个组件都可以一起协同工作，在 Kubernetes 中你把它们运行在一组 <a href="https://kubernetes.io/docs/concepts/workloads/pods">Pods</a> 中。
+在 Kubernetes 中， <code>Pod</code> 表示你集群中运行的一组容器。
+</p>
+
+<p>
+Kubernetes pods 有 <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/">确定的生命周期</a>。比如，一旦 Pod 所在的节点发生严重的故障意味着节点上所有的 Pod 都会发生故障。Kubernetes 将该故障作为最终级别来对待：
+你将需要创建一个新的 Pod 进行恢复，即使节点后面恢复健康状态。
+</p>
+
+<p>
+然而，为了让你的生活更加的轻松，你不需要直接管理每一个 <code>Pod</code> 。而是，你可以使用 <i>工作负载资源</i> 替代你来管理一组 Pods。这些资源配置控制器会确保正在运行的
+Pods 数量匹配你的预期。
+</p>
+
+<p>
+Kubernetes 提供了几种内置的工作负载资源：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">Deployment</a> 和 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/">ReplicaSet</a>（替换旧版本的 ReplicationController）。 <code>Deployment</code> 非常适合管理集群上的无状态应用工作负载， <code>Deployment</code>
+中的每个 <code>Pod</code> 都可以被互换的，而且有需要随时会被替换；</li>
+<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/">StatefulSet</a> 允许你运行一个或者多个以某种方式跟踪状态相关的 Pods。比如，如果你的工作负载持续记录数据，你可以运行一个 <code>StatefulSet</code> 来使一个 <code>Pod</code>
+对应一个 <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">持久化卷</a>。在该 <code>StatefulSet</code> 的 <code>Pod</code> 中运行的代码可以将数据复制到同一的 <code>StatefulSet</code> 中的其他 Pod，以提高总体弹性；</li>
+<li><p>
+<a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">DaemonSet</a> 定义提供本地节点功能的 <code>Pods</code> 。这些可能是集群运行的基建，比如网络辅助工具，或者插件（add-on）的一部分；
+</p>
+
+<p>
+每次向集群中添加一个与 <code>DaemonSet</code> 规范（Spec）匹配的节点时，控制平面都会将该 <code>DaemonSet</code> 的 <code>Pod</code> 调度到新节点上。
+</p></li>
+
+<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/job/">Job</a> 和 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/">CronJob</a> 定义任务运行完成之后就停止。Jobs 表示一次性的任务， <code>CronJobs</code> 是定时执行的。</li>
+</ul>
+
+<p>
+在 Kubernetes 生态中，你可以找到第三方提供的工作负载资源表示其他行为。如果你想要的不是 Kubernetes 核心的特定行为，可以使用 <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/">自定义资源</a>，
+添加第三方的工作负载资源。比如，如果你想为你的应用程序运行一组 <code>Pods</code> ，但除非所有的 Pod 都可用，才可以开始工作（可能是一些高吞吐量的分布式任务），
+那么你可以实现或者安装一个扩展来实现此功能。
+</p>
+
+<div id="outline-container-org22d35b6" class="outline-2">
+<h2 id="org22d35b6"><span class="section-number-2">1</span> 下一步</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+除了阅读每种资源之外，你还可以了解与他们相关的特定任务：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/">使用 Deployment 运行无状态应用</a>；</li>
+<li>以 <a href="https://kubernetes.io/docs/tasks/run-application/run-single-instance-stateful-application/">单实例</a> 或者 <a href="https://kubernetes.io/docs/tasks/run-application/run-replicated-stateful-application/">replicated set</a> 的方式运行有状态应用；</li>
+<li><a href="https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/">使用 CronJob 运行自动化任务</a></li>
+</ul>
+
+<p>
+了解 Kubernetes 中代码和配置分离的机制，查看 <a href="https://kubernetes.io/docs/concepts/configuration/">配置</a> 文档。
+</p>
+
+<p>
+有两个支撑的概念为 Kubernetes 如何管理应用程序的 Pod 提供了背景知识：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/">垃圾回收</a> 在删除其拥有的资源之后，从集群中整理对象；</li>
+<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/ttlafterfinished/">控制器完成之后的 TTL</a> 在经过一定的时间之后，完成的一次性 Jobs；</li>
+</ul>
+
+<p>
+一旦你的应用程序运行，你可能在内部需要 <a href="https://kubernetes.io/docs/concepts/services-networking/service/">Service</a>，或者只是 web 应用的话，使用 <a href="https://kubernetes.io/docs/concepts/services-networking/ingress/">Ingress</a>。
+</p>
+</div>
+</div>
+</div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-03-30 12:13:41 <br />Last updated: 2021-04-20 Tue 10:01 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2021-04-20 17:33:18 <br />Last updated: 2021-04-21 Wed 17:07 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>

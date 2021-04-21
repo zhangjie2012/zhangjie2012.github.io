@@ -6,7 +6,7 @@
 <!-- 2021-04-21 Wed 17:08 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Go 资源</title>
+<title>Kubernetes 容器 - 容器环境</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,16 +221,79 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">Go 资源</h1>
-<ul class="org-ul">
-<li><a href="https://talks.golang.org/2014/go4gophers.slide">https://talks.golang.org/2014/go4gophers.slide</a> Go PPT</li>
-<li><a href="https://talks.golang.org/2012/splash.article">Go at Google: Language Design in the Service of Software Engineering</a> Go 为什么是这样设计的，<a href="https://www.oschina.net/translate/go-at-google-language-design-in-the-service-of-software-engineering?lang=chs">中文版本</a></li>
-<li><a href="https://blog.discord.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f">Why Discord is switching from Go to Rust</a> Discard 从 Go 迁移到 Rust，主要谈的是 GC 问题，另外说 Rust 在各种性能指标上都比 Go 强</li>
-<li><a href="https://github.com/Pungyeon/clean-go-article">https://github.com/Pungyeon/clean-go-article</a> how/why to write go clean code</li>
+<h1 class="title">Kubernetes 容器 - 容器环境</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1f3b844">1. 容器环境</a>
+<ul>
+<li><a href="#org54adbd5">1.1. 容器信息</a></li>
+<li><a href="#org8b3f2a3">1.2. 集群信息</a></li>
+</ul>
+</li>
 </ul>
 </div>
+</div>
+
+<div id="outline-container-org1f3b844" class="outline-2">
+<h2 id="org1f3b844"><span class="section-number-2">1</span> 容器环境</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Kubernetes 容器环境提供了容器的几个重要资源：
+</p>
+
+<ul class="org-ul">
+<li>一个文件系统，它是一个 <a href="https://kubernetes.io/docs/concepts/containers/images/">镜像</a> 和一个或者多个 <a href="https://kubernetes.io/docs/concepts/storage/volumes/">卷</a> 的组合；</li>
+<li>关于容器资自身的信息；</li>
+<li>关于集群中其他对象的信息；</li>
+</ul>
+</div>
+
+<div id="outline-container-org54adbd5" class="outline-3">
+<h3 id="org54adbd5"><span class="section-number-3">1.1</span> 容器信息</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+容器的 <i>hostname</i> 是容器运行所在 Pod 的名称。可通过 <code>hostname</code> 命令或者 libc 中的 <a href="https://man7.org/linux/man-pages/man2/gethostname.2.html">gethostname</a> 函数获取。
+</p>
+
+<p>
+通过 <a href="https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/">downward API</a> 可将 Pod 名称和空间名作为环境变量。
+</p>
+
+<p>
+容器也可以使用 Pod 定义中的用户定义环境变量，以及在 Docker 镜像中静态指定的任何环境变量。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8b3f2a3" class="outline-3">
+<h3 id="org8b3f2a3"><span class="section-number-3">1.2</span> 集群信息</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+创建容器时，正在运行的所有 service 列表供该容器作为环境变量。该列表仅限于与新容器的 Pod 和 Kubernetes 控制面板 services 在同一个空间中。
+这些环境变量与 Docker links 语法匹配。
+</p>
+
+<p>
+对于把 <code>foo</code> 的 service 映射到 <code>bar</code> ，下面的变量会被定义：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #BA36A5;">FOO_SERVICE_HOST</span>=&lt;the host the service is running on&gt;
+<span style="color: #BA36A5;">FOO_SERVICE_PORT</span>=&lt;the port the service is running on&gt;
+</pre>
+</div>
+
+<p>
+如果 <a href="https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns/">DNS 插件</a> 启用之后，Services 有专用的 IP 地址，并且可以通过 DNS 来给容器使用。
+</p>
+</div>
+</div>
+</div>
+</div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-03-30 12:13:41 <br />Last updated: 2021-04-20 Tue 10:01 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2021-04-17 09:26:27 <br />Last updated: 2021-04-17 Sat 09:37 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>
