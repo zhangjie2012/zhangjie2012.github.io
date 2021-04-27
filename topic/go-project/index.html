@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-04-27 Tue 15:37 -->
+<!-- 2021-04-27 Tue 15:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>find</title>
+<title>构建 Go 项目最佳实践</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,149 +221,10 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">find</h1>
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#org85e4f93">1. 查找规则</a></li>
-<li><a href="#orgb8cffba">2. 执行 action</a></li>
-</ul>
-</div>
-</div>
-<pre class="example" id="orge8b242e">
-find [查找目录] [查找规则/目标] [查找完之后执行的 action]
-</pre>
-
-<div id="outline-container-org85e4f93" class="outline-2">
-<h2 id="org85e4f93"><span class="section-number-2">1</span> 查找规则</h2>
-<div class="outline-text-2" id="text-1">
-<p>
-1、根据文件名
-</p>
-
-<ul class="org-ul">
-<li><code>-name</code> 根据文件名精确查找</li>
-<li><code>-iname</code> 忽略大小写查找，也算是精确查找</li>
-<li>通配符：
-
-<ul class="org-ul">
-<li><code>*</code> 匹配任意字符</li>
-<li><code>?</code> 匹配任意的单个字符</li>
-<li><code>[]</code> 匹配括号里面的任意一个字符</li>
-</ul></li>
-</ul>
-
-<p>
-2、根据文件所属用户和组
-</p>
-
-<ul class="org-ul">
-<li><code>-user</code> 根据所属用户来查找</li>
-<li><code>-group</code> 根据所属组来查找</li>
-</ul>
-
-<p>
-同时也可以用 <code>uid</code> 和 <code>gid</code> 来查找
-</p>
-
-<p>
-3、条件匹配
-</p>
-
-<ul class="org-ul">
-<li><code>-a</code> 必须同时满足两个条件</li>
-<li><code>-o</code> 满足其中的一个条件</li>
-<li><code>-not</code> 取反</li>
-</ul>
-
-<p>
-4、文件属性
-</p>
-
-<ul class="org-ul">
-<li><code>-atime</code> <code>-mtime</code>
-=-ctime=：最新一次访问时间、最近一次内容修改、最近一次属性修改，单位是天</li>
-<li><code>-amin</code> <code>-mmin</code> <code>-cmin</code> ：同上，单位是分钟</li>
-</ul>
-
-<p>
-比如：
-</p>
-
-<ul class="org-ul">
-<li><code>find /data/log/ -atime +30</code> 30 天内没有访问过的日志文件</li>
-<li><code>find /data/log -atime -30</code> 30 天内访问过的日志文件</li>
-</ul>
-
-<p>
-5、根据文件类型来查找文件
-</p>
-
-<p>
-<code>-type</code>
-</p>
-
-<ul class="org-ul">
-<li><code>f</code> 普通文件</li>
-<li><code>d</code> 目录</li>
-<li><code>l</code> 链接</li>
-<li><code>b</code> 块设备</li>
-<li><code>c</code> 字符设备</li>
-<li><code>p</code> 管道</li>
-<li><code>s</code> socket</li>
-</ul>
-
-<p>
-比如： <code>find /tmp -type s</code>
-</p>
-
-<p>
-6、根据文件大小来查找
-</p>
-
-<p>
-<code>-size</code>
-</p>
-
-<p>
-比如：
-</p>
-
-<ul class="org-ul">
-<li><code>find /tmp -size 2M</code> 查找等于 2M 的文件</li>
-<li><code>find /tmp -size +2M</code> 查找大于 2M 的文件</li>
-<li><code>find /tmp -size -2M</code> 查找小于 2M 的文件</li>
-</ul>
-
-<p>
-7、根据文件权限查找
-</p>
-
-<p>
-<code>-perm</code>
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgb8cffba" class="outline-2">
-<h2 id="orgb8cffba"><span class="section-number-2">2</span> 执行 action</h2>
-<div class="outline-text-2" id="text-2">
-<ul class="org-ul">
-<li><code>-print</code> 默认执行的动作</li>
-<li><code>-ls</code> 查找后用 ls 显示出来</li>
-<li><code>-ok [command]</code> 查找后执行命令的时候询问用户是否要执行</li>
-<li><code>-exec [command]</code> 查找后执行命令（不询问，直接执行）</li>
-</ul>
-
-<p>
-一个很常用的命令，查找 30 天未使用的日志文件，删除: <code>find /data/log -atime +30 -exec rm -rf {} \;</code>
-</p>
-</div>
-</div>
+<h1 class="title">构建 Go 项目最佳实践</h1>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-12-13 22:50 <br />Last updated: 2021-04-27 Tue 14:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2021-04-27 15:33:45 <br />Last updated: 2021-04-27 Tue 15:33 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>

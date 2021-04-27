@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-04-27 Tue 15:37 -->
+<!-- 2021-04-27 Tue 15:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>find</title>
+<title>Kubernetes 工作负载：Pod - Init Containers</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,149 +221,96 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">find</h1>
+<h1 class="title">Kubernetes 工作负载：Pod - Init Containers</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org85e4f93">1. 查找规则</a></li>
-<li><a href="#orgb8cffba">2. 执行 action</a></li>
+<li><a href="#orge4fe9ae">1. 理解 init containers</a>
+<ul>
+<li><a href="#org24cbb9d">1.1. 与普通容器的不同</a></li>
+</ul>
+</li>
+<li><a href="#orgd07d64c">2. 使用 init containers</a></li>
+<li><a href="#org72c458d">3. 详细行为</a></li>
+<li><a href="#org4d8eeae">4. 下一步</a></li>
 </ul>
 </div>
 </div>
-<pre class="example" id="orge8b242e">
-find [查找目录] [查找规则/目标] [查找完之后执行的 action]
-</pre>
+<p>
+<a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/">https://kubernetes.io/docs/concepts/workloads/pods/init-containers/</a>
+</p>
 
-<div id="outline-container-org85e4f93" class="outline-2">
-<h2 id="org85e4f93"><span class="section-number-2">1</span> 查找规则</h2>
+<p>
+Init containers 是在 Pod 中的应用容器之前运行的专有容器；Init containers 可以包含应用程序镜像中不存在的实用程序和启动脚本。
+</p>
+
+<p>
+你可以在 Pod 规范（Spec）中与 <code>containers</code> 数组一起指定 init containers。
+</p>
+
+<div id="outline-container-orge4fe9ae" class="outline-2">
+<h2 id="orge4fe9ae"><span class="section-number-2">1</span> 理解 init containers</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-1、根据文件名
+Pod 中可以有多个运行应用程序的容器，同时也可以有一个或者多个 init containers，它们会在应用容器启动之前运行。
+</p>
+
+<p>
+Init containers 容器和普通容器一样，除了：
 </p>
 
 <ul class="org-ul">
-<li><code>-name</code> 根据文件名精确查找</li>
-<li><code>-iname</code> 忽略大小写查找，也算是精确查找</li>
-<li>通配符：
-
-<ul class="org-ul">
-<li><code>*</code> 匹配任意字符</li>
-<li><code>?</code> 匹配任意的单个字符</li>
-<li><code>[]</code> 匹配括号里面的任意一个字符</li>
-</ul></li>
+<li>Init containers 总是会运行完成；</li>
+<li>每个 Init containers 必须成功完成才会启动下一个容器；</li>
 </ul>
 
 <p>
-2、根据文件所属用户和组
-</p>
-
-<ul class="org-ul">
-<li><code>-user</code> 根据所属用户来查找</li>
-<li><code>-group</code> 根据所属组来查找</li>
-</ul>
-
-<p>
-同时也可以用 <code>uid</code> 和 <code>gid</code> 来查找
+如果 Pod 的 init container 失败了，kubelet 会不断的重启 init container 直到它成功为止。然而，如果 Pod 的 <code>restartPolicy</code> 策略为
+Never，并且在 Pod 启动期间 init container 失败了，Kubernetes 会将整个 Pod 视为失败。
 </p>
 
 <p>
-3、条件匹配
+要为 Pod 指定 init container，添加 <code>initContainers</code> 字段到 Pod 规格中，作为类型为 <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#container-v1-core">Containers</a> 的对象数组，与应用的 <code>containers</code>
+一起。Init containers 的状态在 <code>.status.initContainerStatuses</code> 字段中返回（类似容器的 <code>.status.containerStatuses</code> 字段）。
 </p>
+</div>
 
-<ul class="org-ul">
-<li><code>-a</code> 必须同时满足两个条件</li>
-<li><code>-o</code> 满足其中的一个条件</li>
-<li><code>-not</code> 取反</li>
-</ul>
-
+<div id="outline-container-org24cbb9d" class="outline-3">
+<h3 id="org24cbb9d"><span class="section-number-3">1.1</span> 与普通容器的不同</h3>
+<div class="outline-text-3" id="text-1-1">
 <p>
-4、文件属性
-</p>
-
-<ul class="org-ul">
-<li><code>-atime</code> <code>-mtime</code>
-=-ctime=：最新一次访问时间、最近一次内容修改、最近一次属性修改，单位是天</li>
-<li><code>-amin</code> <code>-mmin</code> <code>-cmin</code> ：同上，单位是分钟</li>
-</ul>
-
-<p>
-比如：
-</p>
-
-<ul class="org-ul">
-<li><code>find /data/log/ -atime +30</code> 30 天内没有访问过的日志文件</li>
-<li><code>find /data/log -atime -30</code> 30 天内访问过的日志文件</li>
-</ul>
-
-<p>
-5、根据文件类型来查找文件
+Init containers 支持应用程序容器的所有字段和功能，包括资源限制，卷和安全设置。但是，如 <a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#resources">资源</a> 文档中所说，init container 的资源请求（requests）
+和限制（limits）的处理方式不同。
 </p>
 
 <p>
-<code>-type</code>
-</p>
-
-<ul class="org-ul">
-<li><code>f</code> 普通文件</li>
-<li><code>d</code> 目录</li>
-<li><code>l</code> 链接</li>
-<li><code>b</code> 块设备</li>
-<li><code>c</code> 字符设备</li>
-<li><code>p</code> 管道</li>
-<li><code>s</code> socket</li>
-</ul>
-
-<p>
-比如： <code>find /tmp -type s</code>
+另外，init containers 不支持 <code>lifecycle</code>, <code>livenessProbe</code>, <code>readinessProbe</code> 或者 <code>startupProbe</code> ，因为它们必须在 Pod ready
+之前才能完成。
 </p>
 
 <p>
-6、根据文件大小来查找
-</p>
-
-<p>
-<code>-size</code>
-</p>
-
-<p>
-比如：
-</p>
-
-<ul class="org-ul">
-<li><code>find /tmp -size 2M</code> 查找等于 2M 的文件</li>
-<li><code>find /tmp -size +2M</code> 查找大于 2M 的文件</li>
-<li><code>find /tmp -size -2M</code> 查找小于 2M 的文件</li>
-</ul>
-
-<p>
-7、根据文件权限查找
-</p>
-
-<p>
-<code>-perm</code>
+如果你为 Pod 指定了多个 init container，kubelet 会按照 init container 的顺序逐个执行。每个 init containers 必须成功，然后才能运行
+下一个容器。当所有的 init containers 都运行完毕之后，kubelet 会初始化 Pod 的应用程序，并像往常一样初始化它们。
 </p>
 </div>
 </div>
-
-<div id="outline-container-orgb8cffba" class="outline-2">
-<h2 id="orgb8cffba"><span class="section-number-2">2</span> 执行 action</h2>
-<div class="outline-text-2" id="text-2">
-<ul class="org-ul">
-<li><code>-print</code> 默认执行的动作</li>
-<li><code>-ls</code> 查找后用 ls 显示出来</li>
-<li><code>-ok [command]</code> 查找后执行命令的时候询问用户是否要执行</li>
-<li><code>-exec [command]</code> 查找后执行命令（不询问，直接执行）</li>
-</ul>
-
-<p>
-一个很常用的命令，查找 30 天未使用的日志文件，删除: <code>find /data/log -atime +30 -exec rm -rf {} \;</code>
-</p>
 </div>
+
+<div id="outline-container-orgd07d64c" class="outline-2">
+<h2 id="orgd07d64c"><span class="section-number-2">2</span> 使用 init containers</h2>
+</div>
+
+<div id="outline-container-org72c458d" class="outline-2">
+<h2 id="org72c458d"><span class="section-number-2">3</span> 详细行为</h2>
+</div>
+
+<div id="outline-container-org4d8eeae" class="outline-2">
+<h2 id="org4d8eeae"><span class="section-number-2">4</span> 下一步</h2>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-12-13 22:50 <br />Last updated: 2021-04-27 Tue 14:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2021-04-25 21:11:40 <br />Last updated: 2021-04-26 Mon 21:45 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>
