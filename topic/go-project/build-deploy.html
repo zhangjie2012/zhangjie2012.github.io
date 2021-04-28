@@ -6,7 +6,7 @@
 <!-- 2021-04-28 Wed 21:36 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>构建 Go 项目最佳实践</title>
+<title>构建和部署</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,85 +221,171 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">构建 Go 项目最佳实践</h1>
+<h1 class="title">构建和部署</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3dcafc2">1. 打包</a></li>
+<li><a href="#org390b18d">2. 部署</a>
+<ul>
+<li><a href="#orgba1d667">2.1. 直接部署到主机上</a></li>
+<li><a href="#org50340c9">2.2. 部署到容器环境下</a></li>
+<li><a href="#org20952f5">2.3. 版本号</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3dcafc2" class="outline-2">
+<h2 id="org3dcafc2"><span class="section-number-2">1</span> 打包</h2>
+<div class="outline-text-2" id="text-1">
 <p>
-实践心得，比较零散，不一定正确。
+Go 支持跨平台编译，这里假定服务名称为： <code>hello</code> ，构建 Docker 镜像：
 </p>
 
-<hr />
+<div class="org-src-container">
+<pre class="src src-dockerfile"><span style="color: #0000FF;">FROM</span> <span style="color: #6434A3;">Ubuntu:18.04</span>
+
+<span style="color: #0000FF;">COPY</span> hello /hello
+<span style="color: #0000FF;">COPY</span> config.yaml /etc/hello/config.yaml
+
+<span style="color: #0000FF;">EXPOSE</span> 8080
+
+<span style="color: #0000FF;">CMD</span> <span style="color: #707183;">[</span><span style="color: #008000;">"/hello"</span>, <span style="color: #008000;">"-config-file"</span>, <span style="color: #008000;">"/etc/hello/config.yaml"</span><span style="color: #707183;">]</span>
+</pre>
+</div>
 
 <p>
-Go 中的 package 针对的抽象层面是 module，并不是单个实体（面向对象中的类）。我理解 Go 最小粒度的抽象体现在文件层面，而非 package。
+一个简单的 Makefile：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #BA36A5;">OUTPUT</span>=hello
+<span style="color: #BA36A5;">TAG</span>=<span style="color: #008000;">`git rev-parse --short HEAD`</span>
+
+<span style="color: #0000ff;">build</span>:
+go build -o $<span style="color: #707183;">{</span><span style="color: #BA36A5;">OUTPUT</span><span style="color: #707183;">}</span> cmd/main.go
+
+<span style="color: #0000ff;">build-linux</span>:
+<span style="color: #BA36A5;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #707183;">{</span><span style="color: #BA36A5;">OUTPUT</span><span style="color: #707183;">}</span> cmd/main.go
+
+<span style="color: #0000ff;">build-docker</span>:
+<span style="color: #BA36A5;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #707183;">{</span><span style="color: #BA36A5;">OUTPUT</span><span style="color: #707183;">}</span> cmd/main.go
+<span style="color: #0000ff;">docker build -t &lt;your docker registry addr&gt;/$</span><span style="color: #707183;">{</span><span style="color: #0000ff;">OUTPUT</span><span style="color: #707183;">}</span>:$<span style="color: #707183;">{</span><span style="color: #BA36A5;">TAG</span><span style="color: #707183;">}</span> .
+
+<span style="color: #0000ff;">push-docker</span>:
+<span style="color: #0000ff;">docker push &lt;your docker registry addr&gt;/$</span><span style="color: #707183;">{</span><span style="color: #0000ff;">OUTPUT</span><span style="color: #707183;">}</span>:$<span style="color: #707183;">{</span><span style="color: #BA36A5;">TAG</span><span style="color: #707183;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org390b18d" class="outline-2">
+<h2 id="org390b18d"><span class="section-number-2">2</span> 部署</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgba1d667" class="outline-3">
+<h3 id="orgba1d667"><span class="section-number-3">2.1</span> 直接部署到主机上</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+构建对应平台的二进制包，Ubuntu 15.04 之后，以及 CentOS7 之后都使用 <a href="https://wiki.archlinux.org/index.php/Systemd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">systemd</a> 作为默认的系统和服务管理器了。
+他提供了一些的工具集合，使用起来比 <a href="http://supervisord.org/">Supervisor</a> 这种工具爽多了。
 </p>
 
 <p>
-如果将 package 作为做小的粒度容易带来的问题：
+配置比较简单，使用 systemd 管理的进程，都会在 <code>/usr/lib/systemd/system</code> 目录下有一个 service 文件，用来编排你的应用。
 </p>
 
 <p>
-当两个 package 存在一些共同的抽象，这一层的抽象就很难表达。在公共部分加一个 utils，用来作为公共抽象，那么这个公共抽象会越来越重度，
-实际上 utils 应该是放一些业务无关的工具。还有一种解决办法是在同级别 package 加一层 utils 用来做公共业务的抽象，这是可行的，但是比较丑陋。
-因为原则上来讲同一个层级的 package 的职责应该是相同的，加一个工具 utils 不优雅。
+比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" id="orgc3bacb2">[Unit]
+Description=Command Scheduler
+After=auditd.service systemd-user-sessions.service time-sync.target
+
+[Service]
+EnvironmentFile=/etc/sysconfig/crond
+ExecStart=/usr/sbin/crond -n $CRONDARGS
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+</pre>
+</div>
+
+<p>
+这是 crond 的配置文件，里面囊括了服务的描述、依赖、启动命令、配置文件等。
 </p>
 
 <p>
-解决此类问题的最佳实践是将放大 package 的抽象粒度，作为一个 module ，包含很多个相关联的实体，如果有业务抽象在内部新增一个文件抽象即可。
-减少 package 级别的业务再此抽象。
-</p>
-
-<p>
-以前我还不太理解很多开源项目的 go 文件是平铺开来的，很少加内部 package，经过实践看来，通过 go 文件来表达实体要比 package 要能省很多事情。
-</p>
-
-<p>
-<b>避免过度抽象，过度设计。</b>
-</p>
-
-<hr />
-
-<p>
-类型定义和函数定义分开，统一维护一份类型定义（大都是与存储相关的）。这里的类型一般指的是公共的类型，如果是一次性的类型定义，放哪里都无所谓的。
-</p>
-
-<p>
-为什么要这么做呢?
-</p>
-
-<p>
-针对函数层面的循环依赖一般是架构设计不合理，但是 A package 调用了 B package 中的 <i>函数</i> ，B package 中使用了 A package 中的 <i>类型</i> 却是很常见的情况。
-所以为了避免循环依赖，把所有的类型统一到一起，它不会依赖于任何外部的类型或者函数。
-</p>
-
-<p>
-另外，在代码维护角度这么做也更易维护代码，否则到处都是 struct，引用起来乱七八糟，想复用也比较难。
-</p>
-
-<p>
-再另外，工具类 package (比如 util，common) 可以依赖外部的类型定义，但不要依赖外部的函数。
-</p>
-
-<hr />
-
-<p>
-上面的办法也不好，如果单纯把类型和函数定义分开，容易乱。
-</p>
-
-<p>
-如果把所有的公共类型全部抽离到 types 中是简单的，但是类型一般会携带一些 method，也就是说会有一些业务逻辑在里面。
-那这样的话，types 就不能算是「公共」部分了，而是与业务强相关的部分。
-</p>
-
-<p>
-解决办法是再抽一级目录，比如说定义的 <code>types</code> 用来标识项目的公共类型；子模块中再加一个 <code>types</code> 目录，
-用来表示该子模块相关的 type，业务逻辑放在上一层。
-</p>
-
-<p>
-这样就可以相对完美的解决模块依赖问题了。
+使用 systemd 工具集，可以轻松的查看服务状态、查看日志、设置重启策略，开机启动等。具体可以看我之前梳理的文档：
+<a href="wiki/devops/systemd.html">systemd</a>、<a href="wiki/devops/journalctl.html">journalctl</a>。
 </p>
 </div>
+</div>
+
+<div id="outline-container-org50340c9" class="outline-3">
+<h3 id="org50340c9"><span class="section-number-3">2.2</span> 部署到容器环境下</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+在有容器运行时的情况下，建议使用容器部署。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org20952f5" class="outline-3">
+<h3 id="org20952f5"><span class="section-number-3">2.3</span> 版本号</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+如果使用 Docker 部署时，版本号通常放到 docker tag 中。如果使用二进制文件直接部署的话，把版本号放在二进制名称上是一种办法，
+但是很不优雅，这样每次发布都需要修改 systemd unit 的内容。最好的办法就是把版本信息打到二进制包中，通过执行某个参数时自动打印。
+</p>
+
+<p>
+Go build <code>-ldflags</code> 支持注入变量，比如：
+</p>
+
+<p>
+<code>go build -ldflags -X main.Version=1.0.0 -X main.BuildTime=2020-06-29 15:29:45</code>
+</p>
+
+<p>
+将在模块 <code>main</code> 中寻找变量 <code>Version</code> 和 <code>BuildTime</code> ，然后动态赋值。可以这样写 makefile：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">VERSION=`git rev-parse HEAD`
+BUILD_TIME=`date +'%Y-%m-%d %H:%M:%S'`
+LDFLAGS=-ldflags "-X 'main.Version=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}'"
+
+build:
+    go build ${LDFLAGS} -o xxx *.go
+</pre>
+</div>
+
+<p>
+然后在 <code>main</code> 中声明变量:
+</p>
+
+<pre class="example">
+Version   string = ""
+BuildTime string = ""
+</pre>
+
+<p>
+程序开始打印变量即可。
+</p>
+</div>
+</div>
+</div>
+</div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-13 17:17:51 <br />Last updated: 2021-04-28 Wed 21:35 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-04-28 Wed 21:31 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>

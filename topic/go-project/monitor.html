@@ -6,7 +6,7 @@
 <!-- 2021-04-28 Wed 21:36 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>构建 Go 项目最佳实践</title>
+<title>Go API 监控</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,85 +221,70 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">构建 Go 项目最佳实践</h1>
+<h1 class="title">Go API 监控</h1>
 <p>
-实践心得，比较零散，不一定正确。
-</p>
-
-<hr />
-
-<p>
-Go 中的 package 针对的抽象层面是 module，并不是单个实体（面向对象中的类）。我理解 Go 最小粒度的抽象体现在文件层面，而非 package。
+使用 prometheus_client 暴露 API metrics，对接 promethues 之后可以很方便的监控 API 调用情况，调用耗时、状态码等等。因为 Prometheus 是 pull
+的模式，所以服务很好解耦，不会依赖 promethues server。
 </p>
 
 <p>
-如果将 package 作为做小的粒度容易带来的问题：
+<a href="https://github.com/prometheus/client_golang">prometheus/client_golang</a> 是 Go 的客户端。对于 gin，你可以写一个中间件来完成 API 耗时统计：
 </p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">var</span> <span style="color: #707183;">(</span>
+    <span style="color: #BA36A5;">APICalledLatency</span> = prometheus.<span style="color: #006699;">NewSummaryVec</span><span style="color: #7388D6;">(</span>
+        <span style="color: #6434A3;">prometheus.SummaryOpts</span><span style="color: #909183;">{</span>
+            <span style="color: #D0372D;">Name</span>: <span style="color: #008000;">"metaserver_api_called_latency"</span>,
+            <span style="color: #D0372D;">Help</span>: <span style="color: #008000;">"Latency in microseconds"</span>,
+        <span style="color: #909183;">}</span>,
+        <span style="color: #909183;">[]</span><span style="color: #6434A3;">string</span><span style="color: #909183;">{</span><span style="color: #008000;">"api"</span>, <span style="color: #008000;">"method"</span>, <span style="color: #008000;">"status_code"</span><span style="color: #909183;">}</span>,
+    <span style="color: #7388D6;">)</span>
+<span style="color: #707183;">)</span>
+
+<span style="color: #0000FF;">func</span> <span style="color: #006699;">init</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+    prometheus.<span style="color: #006699;">MustRegister</span><span style="color: #7388D6;">(</span>APICalledLatency<span style="color: #7388D6;">)</span>
+<span style="color: #707183;">}</span>
+
+<span style="color: #0000FF;">func</span> <span style="color: #006699;">SinceInMicroseconds</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">start</span> <span style="color: #6434A3;">time.Time</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">float64</span> <span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">return</span> <span style="color: #006699;">float64</span><span style="color: #7388D6;">(</span>time.<span style="color: #006699;">Since</span><span style="color: #909183;">(</span>start<span style="color: #909183;">)</span>.<span style="color: #006699;">Nanoseconds</span><span style="color: #909183;">()</span> / time.Microsecond.<span style="color: #006699;">Nanoseconds</span><span style="color: #909183;">()</span><span style="color: #7388D6;">)</span>
+<span style="color: #707183;">}</span>
+
+<span style="color: #0000FF;">func</span> <span style="color: #006699;">metricsExport</span><span style="color: #707183;">()</span> <span style="color: #6434A3;">gin.HandlerFunc</span> <span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">return</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span><span style="color: #BA36A5;">c</span> *<span style="color: #6434A3;">gin.Context</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #BA36A5;">start</span> := time.<span style="color: #006699;">Now</span><span style="color: #909183;">()</span>
+        <span style="color: #0000FF;">defer</span> <span style="color: #0000FF;">func</span><span style="color: #909183;">()</span> <span style="color: #909183;">{</span>
+            <span style="color: #BA36A5;">cost</span> := <span style="color: #006699;">SinceInMicroseconds</span><span style="color: #709870;">(</span>start<span style="color: #709870;">)</span>
+            <span style="color: #BA36A5;">api</span> := c.Request.URL.Path
+            <span style="color: #BA36A5;">method</span> := c.Request.Method
+            <span style="color: #BA36A5;">status</span> := strconv.<span style="color: #006699;">Itoa</span><span style="color: #709870;">(</span>c.Writer.<span style="color: #006699;">Status</span><span style="color: #907373;">()</span><span style="color: #709870;">)</span>
+
+            <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">set ignore itself in here</span>
+            <span style="color: #0000FF;">if</span> api == <span style="color: #008000;">"/metrics"</span> <span style="color: #709870;">{</span>
+                <span style="color: #0000FF;">return</span>
+            <span style="color: #709870;">}</span>
+
+            APICalledLatency.<span style="color: #006699;">WithLabelValues</span><span style="color: #709870;">(</span>api, method, status<span style="color: #709870;">)</span>.<span style="color: #006699;">Observe</span><span style="color: #709870;">(</span>cost<span style="color: #709870;">)</span>
+            logrus.<span style="color: #006699;">Tracef</span><span style="color: #709870;">(</span><span style="color: #008000;">"api run time, api=%s, method=%s, status=%s, time=%f(ms)"</span>, api, method, status, cost/1000<span style="color: #709870;">)</span>
+        <span style="color: #909183;">}()</span>
+
+        c.<span style="color: #006699;">Next</span><span style="color: #909183;">()</span>
+    <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
 
 <p>
-当两个 package 存在一些共同的抽象，这一层的抽象就很难表达。在公共部分加一个 utils，用来作为公共抽象，那么这个公共抽象会越来越重度，
-实际上 utils 应该是放一些业务无关的工具。还有一种解决办法是在同级别 package 加一层 utils 用来做公共业务的抽象，这是可行的，但是比较丑陋。
-因为原则上来讲同一个层级的 package 的职责应该是相同的，加一个工具 utils 不优雅。
+因为 gin 的 Handler 不是标准库的 <code>ServeHTTP(ResponseWriter, *Request)</code> ，但是它提供了一个转换函数，我们可以这样：
 </p>
 
-<p>
-解决此类问题的最佳实践是将放大 package 的抽象粒度，作为一个 module ，包含很多个相关联的实体，如果有业务抽象在内部新增一个文件抽象即可。
-减少 package 级别的业务再此抽象。
-</p>
-
-<p>
-以前我还不太理解很多开源项目的 go 文件是平铺开来的，很少加内部 package，经过实践看来，通过 go 文件来表达实体要比 package 要能省很多事情。
-</p>
-
-<p>
-<b>避免过度抽象，过度设计。</b>
-</p>
-
-<hr />
-
-<p>
-类型定义和函数定义分开，统一维护一份类型定义（大都是与存储相关的）。这里的类型一般指的是公共的类型，如果是一次性的类型定义，放哪里都无所谓的。
-</p>
-
-<p>
-为什么要这么做呢?
-</p>
-
-<p>
-针对函数层面的循环依赖一般是架构设计不合理，但是 A package 调用了 B package 中的 <i>函数</i> ，B package 中使用了 A package 中的 <i>类型</i> 却是很常见的情况。
-所以为了避免循环依赖，把所有的类型统一到一起，它不会依赖于任何外部的类型或者函数。
-</p>
-
-<p>
-另外，在代码维护角度这么做也更易维护代码，否则到处都是 struct，引用起来乱七八糟，想复用也比较难。
-</p>
-
-<p>
-再另外，工具类 package (比如 util，common) 可以依赖外部的类型定义，但不要依赖外部的函数。
-</p>
-
-<hr />
-
-<p>
-上面的办法也不好，如果单纯把类型和函数定义分开，容易乱。
-</p>
-
-<p>
-如果把所有的公共类型全部抽离到 types 中是简单的，但是类型一般会携带一些 method，也就是说会有一些业务逻辑在里面。
-那这样的话，types 就不能算是「公共」部分了，而是与业务强相关的部分。
-</p>
-
-<p>
-解决办法是再抽一级目录，比如说定义的 <code>types</code> 用来标识项目的公共类型；子模块中再加一个 <code>types</code> 目录，
-用来表示该子模块相关的 type，业务逻辑放在上一层。
-</p>
-
-<p>
-这样就可以相对完美的解决模块依赖问题了。
-</p>
+<div class="org-src-container">
+<pre class="src src-go">r.<span style="color: #006699;">GET</span><span style="color: #707183;">(</span><span style="color: #008000;">"/metrics"</span>, gin.<span style="color: #006699;">WrapH</span><span style="color: #7388D6;">(</span>promhttp.<span style="color: #006699;">Handler</span><span style="color: #909183;">()</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-13 17:17:51 <br />Last updated: 2021-04-28 Wed 21:35 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-04-28 Wed 21:14 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>

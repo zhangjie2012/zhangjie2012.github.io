@@ -6,7 +6,7 @@
 <!-- 2021-04-28 Wed 21:36 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>构建 Go 项目最佳实践</title>
+<title>Go 测试用例</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,85 +221,143 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">构建 Go 项目最佳实践</h1>
+<h1 class="title">Go 测试用例</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgfe4cedb">1. 基础</a></li>
+<li><a href="#org99e7877">2. 常用命令</a></li>
+</ul>
+</div>
+</div>
 <p>
-实践心得，比较零散，不一定正确。
+<code>go help test</code> 查看说明，更多: <a href="https://golang.org/pkg/testing/">https://golang.org/pkg/testing/</a>。
 </p>
 
-<hr />
+<div id="outline-container-orgfe4cedb" class="outline-2">
+<h2 id="orgfe4cedb"><span class="section-number-2">1</span> 基础</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><code>go test</code> 命令会自动执行带有 <code>func TestXxx(*testing.T)</code> 格式的函数。</li>
+<li>以 <code>_test.go</code> 结尾的文件会被认为是测试用例文件，其中包含 TestXxx 这样的测试用例。</li>
+<li><code>*_test</code> 的包在执行 test 的时候会重新编译，每个 package 都是会生成单独的二进制不会干扰。以 "_" 或者 "." 开始的文件会被自动忽略。
+包括 "_test.go" 。</li>
+<li>go 工具会自动忽略 "testdata" 文件夹，可用来放置一些测试所需要的辅助数据。</li>
+<li>测试文件和要被测试的文件放在同一个包中，比如 <code>redis.go</code> 和 <code>redis_test.go</code></li>
+</ul>
 
 <p>
-Go 中的 package 针对的抽象层面是 module，并不是单个实体（面向对象中的类）。我理解 Go 最小粒度的抽象体现在文件层面，而非 package。
+Go test 的两种运行模式：
 </p>
 
-<p>
-如果将 package 作为做小的粒度容易带来的问题：
-</p>
+<ol class="org-ol">
+<li>针对本地目录 <code>go test</code> 或者 <code>go test -v</code> ，这种情况下只会运行当前目录下的测试；</li>
+<li>针对包列表，设置包参数 <code>go test math</code> 或者 <code>go test ./..</code> 甚至是 <code>go test .</code> ，这种情况下它会编译命令行指定的每一个包，全部执行测试</li>
+</ol>
 
 <p>
-当两个 package 存在一些共同的抽象，这一层的抽象就很难表达。在公共部分加一个 utils，用来作为公共抽象，那么这个公共抽象会越来越重度，
-实际上 utils 应该是放一些业务无关的工具。还有一种解决办法是在同级别 package 加一层 utils 用来做公共业务的抽象，这是可行的，但是比较丑陋。
-因为原则上来讲同一个层级的 package 的职责应该是相同的，加一个工具 utils 不优雅。
-</p>
-
-<p>
-解决此类问题的最佳实践是将放大 package 的抽象粒度，作为一个 module ，包含很多个相关联的实体，如果有业务抽象在内部新增一个文件抽象即可。
-减少 package 级别的业务再此抽象。
-</p>
-
-<p>
-以前我还不太理解很多开源项目的 go 文件是平铺开来的，很少加内部 package，经过实践看来，通过 go 文件来表达实体要比 package 要能省很多事情。
-</p>
-
-<p>
-<b>避免过度抽象，过度设计。</b>
-</p>
-
-<hr />
-
-<p>
-类型定义和函数定义分开，统一维护一份类型定义（大都是与存储相关的）。这里的类型一般指的是公共的类型，如果是一次性的类型定义，放哪里都无所谓的。
-</p>
-
-<p>
-为什么要这么做呢?
+在第二种情况下，go test 会缓存成成功执行的包的测试结果避免重复执行测试用例，输出结果会以 '(cached)' 标识。
+但是在指定了测试参数，比如 <code>-cpu</code>, <code>-list</code>, <code>-parallel</code>, <code>-run</code>, <code>-short</code>, <code>-v</code> 等将不会被缓存。管用的一种显式禁用缓存的方法是使用 <code>-count=1</code> 参数。
 </p>
 
 <p>
-针对函数层面的循环依赖一般是架构设计不合理，但是 A package 调用了 B package 中的 <i>函数</i> ，B package 中使用了 A package 中的 <i>类型</i> 却是很常见的情况。
-所以为了避免循环依赖，把所有的类型统一到一起，它不会依赖于任何外部的类型或者函数。
+<b>Benchmarks(基准测试)</b>
+</p>
+
+<ul class="org-ul">
+<li>在 "go test" 命令指定了 bench 标识的情况下，会运行 <code>func BenchmarkXxx(*testing.B)</code> 格式的函数。基准测试是按照顺序执行的。</li>
+<li>基准测试会单单独输出测试结果（执行 b.N 次）。</li>
+</ul>
+
+<p>
+<b>Examples</b>
 </p>
 
 <p>
-另外，在代码维护角度这么做也更易维护代码，否则到处都是 struct，引用起来乱七八糟，想复用也比较难。
+Example 函数包含一个总结行，以 "Output:" 开始，会比较实际输出的结果是否一致。Example 函数以 <code>Example</code> 开始。没有输出注释 <code>// Output:</code> 的 Example 函数不会被执行。
 </p>
 
 <p>
-再另外，工具类 package (比如 util，common) 可以依赖外部的类型定义，但不要依赖外部的函数。
-</p>
-
-<hr />
-
-<p>
-上面的办法也不好，如果单纯把类型和函数定义分开，容易乱。
+Example 函数也有自己的命名约定，函数是 F，类型是 T，类型上的方法是 <code>T_M</code> .
 </p>
 
 <p>
-如果把所有的公共类型全部抽离到 types 中是简单的，但是类型一般会携带一些 method，也就是说会有一些业务逻辑在里面。
-那这样的话，types 就不能算是「公共」部分了，而是与业务强相关的部分。
+<b>Skipping</b>
 </p>
 
 <p>
-解决办法是再抽一级目录，比如说定义的 <code>types</code> 用来标识项目的公共类型；子模块中再加一个 <code>types</code> 目录，
-用来表示该子模块相关的 type，业务逻辑放在上一层。
+通过调用 <code>*T</code> 或者 <code>*B</code> 的 <code>Skip</code> 方法可以跳过测试。
 </p>
 
 <p>
-这样就可以相对完美的解决模块依赖问题了。
+<b>子测试和子基准测试</b>
+</p>
+
+<p>
+对于需要有资源安装和清理的测试用例，子测试很有用。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">TestFoo</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">t</span> *<span style="color: #6434A3;">testing.T</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&lt;setup code&gt;</span>
+    t.<span style="color: #006699;">Run</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"A=1"</span>, <span style="color: #0000FF;">func</span><span style="color: #909183;">(</span><span style="color: #BA36A5;">t</span> *<span style="color: #6434A3;">testing.T</span><span style="color: #909183;">)</span> <span style="color: #909183;">{</span> ... <span style="color: #909183;">}</span><span style="color: #7388D6;">)</span>
+    t.<span style="color: #006699;">Run</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"A=2"</span>, <span style="color: #0000FF;">func</span><span style="color: #909183;">(</span><span style="color: #BA36A5;">t</span> *<span style="color: #6434A3;">testing.T</span><span style="color: #909183;">)</span> <span style="color: #909183;">{</span> ... <span style="color: #909183;">}</span><span style="color: #7388D6;">)</span>
+    t.<span style="color: #006699;">Run</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"B=1"</span>, <span style="color: #0000FF;">func</span><span style="color: #909183;">(</span><span style="color: #BA36A5;">t</span> *<span style="color: #6434A3;">testing.T</span><span style="color: #909183;">)</span> <span style="color: #909183;">{</span> ... <span style="color: #909183;">}</span><span style="color: #7388D6;">)</span>
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&lt;tear-down code&gt;</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>每个子测试或者子基准测试，都有一个唯一的名字。可以在执行测试的时候通过名字筛选测试。比如 <code>go test -run Foo/A=</code></li>
+</ul>
+
+<p>
+<b>Main</b>
+</p>
+
+<p>
+很多时候在测试程序开始和结束有额外的安装和卸载。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">TestMain</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">m</span> *<span style="color: #6434A3;">testing.M</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+那么会在执行测试时先调用 <code>TestMain(m)</code> 而不是其它的测试用例。所有的测试用例会在 <code>m.Run()</code> 中执行，那么在它之前你可以做一些初始化，之后做清理工作。
+最简单的 TestMain：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">TestMain</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">m</span> *<span style="color: #6434A3;">testing.M</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">call flag.Parse() here if TestMain uses flags</span>
+    os.<span style="color: #006699;">Exit</span><span style="color: #7388D6;">(</span>m.<span style="color: #006699;">Run</span><span style="color: #909183;">()</span><span style="color: #7388D6;">)</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+<i>在每一个 test 文件中都可以有一个 TestMain，看起来更适合做初始化和销毁工作。</i>
 </p>
 </div>
+</div>
+
+<div id="outline-container-org99e7877" class="outline-2">
+<h2 id="org99e7877"><span class="section-number-2">2</span> 常用命令</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>运行所有测试用例： <code>go test -count=1 -v ./...</code></li>
+<li>运行单个模块： <code>go test -count=1 -v module_name</code></li>
+<li>运行单个模块的单个 case：  <code>go test -count=1 -v module_name -run.test funcName</code></li>
+</ul>
+</div>
+</div>
+</div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-13 17:17:51 <br />Last updated: 2021-04-28 Wed 21:35 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2020-05-15 11:05:17 <br />Last updated: 2021-04-28 Wed 21:26 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>

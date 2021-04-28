@@ -6,7 +6,7 @@
 <!-- 2021-04-28 Wed 21:36 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>构建 Go 项目最佳实践</title>
+<title>Go MySQL</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,85 +221,120 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">构建 Go 项目最佳实践</h1>
+<h1 class="title">Go MySQL</h1>
 <p>
-实践心得，比较零散，不一定正确。
-</p>
-
-<hr />
-
-<p>
-Go 中的 package 针对的抽象层面是 module，并不是单个实体（面向对象中的类）。我理解 Go 最小粒度的抽象体现在文件层面，而非 package。
+使用 <a href="https://github.com/go-sql-driver/mysql">go-sql-driver/mysql</a>，但是它是一个驱动，使用使用 SQL 的 CRUD，还是要看 Go 的标准库 <a href="https://golang.org/pkg/database/sql/">database/sql</a>。
+看起来有些蛋疼，但我觉得这是 Go 标准化做的好的一个体现。不管是你用的什么 SQL，只要有驱动，就可以一视同仁。
+这样的话，比如从 MySQL 到 MS SQL Server，只需要在初始化的做一下变更，其它部分代码基本上不需要动。
 </p>
 
 <p>
-如果将 package 作为做小的粒度容易带来的问题：
+驱动列表可以见：<a href="https://github.com/golang/go/wiki/SQLDrivers">https://github.com/golang/go/wiki/SQLDrivers</a>
 </p>
 
 <p>
-当两个 package 存在一些共同的抽象，这一层的抽象就很难表达。在公共部分加一个 utils，用来作为公共抽象，那么这个公共抽象会越来越重度，
-实际上 utils 应该是放一些业务无关的工具。还有一种解决办法是在同级别 package 加一层 utils 用来做公共业务的抽象，这是可行的，但是比较丑陋。
-因为原则上来讲同一个层级的 package 的职责应该是相同的，加一个工具 utils 不优雅。
+官方的使用范例：<a href="https://github.com/golang/go/wiki/SQLInterface">https://github.com/golang/go/wiki/SQLInterface</a>
 </p>
 
 <p>
-解决此类问题的最佳实践是将放大 package 的抽象粒度，作为一个 module ，包含很多个相关联的实体，如果有业务抽象在内部新增一个文件抽象即可。
-减少 package 级别的业务再此抽象。
+<i>Python 也提供了 <a href="https://www.python.org/dev/peps/pep-0249/">PEP 249 &#x2013; Python Database API Specification v2.0</a>，但它更像是一个协议上的约束，并不是实际限制库的实现。</i>
 </p>
 
 <p>
-以前我还不太理解很多开源项目的 go 文件是平铺开来的，很少加内部 package，经过实践看来，通过 go 文件来表达实体要比 package 要能省很多事情。
+使用标准库对 DB 操作时，需要手写 SQL 的 CRUD，一方面不方便，另外一方面也不安全。有一些包提供 SQL 构建器（用来生成 SQL 语句）。
 </p>
 
 <p>
-<b>避免过度抽象，过度设计。</b>
+比如：<a href="https://github.com/doug-martin/goqu">doug-martin/goqu</a>，你可以这样：
 </p>
 
-<hr />
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #BA36A5;">ds</span> := goqu.<span style="color: #006699;">Insert</span><span style="color: #707183;">(</span><span style="color: #008000;">"user"</span><span style="color: #707183;">)</span>.
+    <span style="color: #006699;">Cols</span><span style="color: #707183;">(</span><span style="color: #008000;">"first_name"</span>, <span style="color: #008000;">"last_name"</span><span style="color: #707183;">)</span>.
+    <span style="color: #006699;">Vals</span><span style="color: #707183;">(</span>
+        <span style="color: #6434A3;">goqu.Vals</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"Greg"</span>, <span style="color: #008000;">"Farley"</span><span style="color: #7388D6;">}</span>,
+        <span style="color: #6434A3;">goqu.Vals</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"Jimmy"</span>, <span style="color: #008000;">"Stewart"</span><span style="color: #7388D6;">}</span>,
+        <span style="color: #6434A3;">goqu.Vals</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"Jeff"</span>, <span style="color: #008000;">"Jeffers"</span><span style="color: #7388D6;">}</span>,
+    <span style="color: #707183;">)</span>
+<span style="color: #BA36A5;">insertSQL</span>, <span style="color: #BA36A5;">args</span>, <span style="color: #BA36A5;">_</span> := ds.<span style="color: #006699;">ToSQL</span><span style="color: #707183;">()</span>
+fmt.<span style="color: #006699;">Println</span><span style="color: #707183;">(</span>insertSQL, args<span style="color: #707183;">)</span>
+</pre>
+</div>
 
 <p>
-类型定义和函数定义分开，统一维护一份类型定义（大都是与存储相关的）。这里的类型一般指的是公共的类型，如果是一次性的类型定义，放哪里都无所谓的。
+会输出：
 </p>
 
-<p>
-为什么要这么做呢?
-</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #0000FF;">INSERT</span> <span style="color: #0000FF;">INTO</span> "<span style="color: #006FE0;">user</span>" <span style="color: #707183;">(</span>"first_name", "last_name"<span style="color: #707183;">)</span> <span style="color: #0000FF;">VALUES</span> <span style="color: #707183;">(</span><span style="color: #008000;">'Greg'</span>, <span style="color: #008000;">'Farley'</span><span style="color: #707183;">)</span>, <span style="color: #707183;">(</span><span style="color: #008000;">'Jimmy'</span>, <span style="color: #008000;">'Stewart'</span><span style="color: #707183;">)</span>, <span style="color: #707183;">(</span><span style="color: #008000;">'Jeff'</span>, <span style="color: #008000;">'Jeffers'</span><span style="color: #707183;">)</span> <span style="color: #707183;">[]</span>
+</pre>
+</div>
 
 <p>
-针对函数层面的循环依赖一般是架构设计不合理，但是 A package 调用了 B package 中的 <i>函数</i> ，B package 中使用了 A package 中的 <i>类型</i> 却是很常见的情况。
-所以为了避免循环依赖，把所有的类型统一到一起，它不会依赖于任何外部的类型或者函数。
-</p>
-
-<p>
-另外，在代码维护角度这么做也更易维护代码，否则到处都是 struct，引用起来乱七八糟，想复用也比较难。
-</p>
-
-<p>
-再另外，工具类 package (比如 util，common) 可以依赖外部的类型定义，但不要依赖外部的函数。
-</p>
-
-<hr />
-
-<p>
-上面的办法也不好，如果单纯把类型和函数定义分开，容易乱。
+它是一个 SQL 语句生成器，并不会实际的执行。
 </p>
 
 <p>
-如果把所有的公共类型全部抽离到 types 中是简单的，但是类型一般会携带一些 method，也就是说会有一些业务逻辑在里面。
-那这样的话，types 就不能算是「公共」部分了，而是与业务强相关的部分。
+再比如：<a href="https://github.com/Masterminds/squirrel">squirrel</a> ，你可以这样：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #BA36A5;">sql</span>, <span style="color: #BA36A5;">args</span>, <span style="color: #BA36A5;">err</span> := sq.
+    <span style="color: #006699;">Insert</span><span style="color: #707183;">(</span><span style="color: #008000;">"users"</span><span style="color: #707183;">)</span>.<span style="color: #006699;">Columns</span><span style="color: #707183;">(</span><span style="color: #008000;">"name"</span>, <span style="color: #008000;">"age"</span><span style="color: #707183;">)</span>.
+    <span style="color: #006699;">Values</span><span style="color: #707183;">(</span><span style="color: #008000;">"moe"</span>, 13<span style="color: #707183;">)</span>.<span style="color: #006699;">Values</span><span style="color: #707183;">(</span><span style="color: #008000;">"larry"</span>, sq.<span style="color: #006699;">Expr</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"? + 5"</span>, 12<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>.
+    <span style="color: #006699;">ToSql</span><span style="color: #707183;">()</span>
+</pre>
+</div>
+
+<p>
+它会生成：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #0000FF;">sql</span> == "<span style="color: #0000FF;">INSERT</span> <span style="color: #0000FF;">INTO</span> users <span style="color: #707183;">(</span><span style="color: #0000FF;">name</span>,age<span style="color: #707183;">)</span> <span style="color: #0000FF;">VALUES</span> <span style="color: #707183;">(</span>?,?<span style="color: #707183;">)</span>,<span style="color: #707183;">(</span>?,? + 5<span style="color: #707183;">)</span>"
+</pre>
+</div>
+
+<p>
+但是它也允许直接执行 SQL 语句：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #BA36A5;">stooges</span> := users.<span style="color: #006699;">Where</span><span style="color: #707183;">(</span><span style="color: #6434A3;">sq.Eq</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"username"</span>: <span style="color: #909183;">[]</span><span style="color: #6434A3;">string</span><span style="color: #909183;">{</span><span style="color: #008000;">"moe"</span>, <span style="color: #008000;">"larry"</span>, <span style="color: #008000;">"curly"</span>, <span style="color: #008000;">"shemp"</span><span style="color: #909183;">}</span><span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>
+<span style="color: #BA36A5;">three_stooges</span> := stooges.<span style="color: #006699;">Limit</span><span style="color: #707183;">(</span>3<span style="color: #707183;">)</span>
+<span style="color: #BA36A5;">rows</span>, <span style="color: #BA36A5;">err</span> := three_stooges.<span style="color: #006699;">RunWith</span><span style="color: #707183;">(</span>db<span style="color: #707183;">)</span>.<span style="color: #006699;">Query</span><span style="color: #707183;">()</span>
+</pre>
+</div>
+
+<p>
+等价于：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #BA36A5;">rows</span>, <span style="color: #BA36A5;">err</span> := db.<span style="color: #006699;">Query</span><span style="color: #707183;">(</span><span style="color: #008000;">"SELECT * FROM users WHERE username IN (?,?,?,?) LIMIT 3"</span>,
+    <span style="color: #008000;">"moe"</span>, <span style="color: #008000;">"larry"</span>, <span style="color: #008000;">"curly"</span>, <span style="color: #008000;">"shemp"</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+goqu 和 squirrel 是社区比较出名的两个 SQL 构建器。我自己使用下来：
+</p>
+
+<ul class="org-ul">
+<li>goqu 基本上没有什么学习成本，也很好 debug，但自己还是要封装 SQL 调用和异常处理；</li>
+<li>squirrel 基本上封装了 SQL 调用这一层，自己全做了，用起来省事，但有一定的学习成本；</li>
+</ul>
+
+<p>
+具体用哪个看个人。
 </p>
 
 <p>
-解决办法是再抽一级目录，比如说定义的 <code>types</code> 用来标识项目的公共类型；子模块中再加一个 <code>types</code> 目录，
-用来表示该子模块相关的 type，业务逻辑放在上一层。
-</p>
-
-<p>
-这样就可以相对完美的解决模块依赖问题了。
+<span class="timestamp-wrapper"><span class="timestamp">&lt;2020-05-13 Wed 17:44&gt; </span></span> squirrel 用习惯了真舒服，推荐！
 </p>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-13 17:17:51 <br />Last updated: 2021-04-28 Wed 21:35 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-04-28 Wed 21:07 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>

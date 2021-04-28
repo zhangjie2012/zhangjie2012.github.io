@@ -6,7 +6,7 @@
 <!-- 2021-04-28 Wed 21:36 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>构建 Go 项目最佳实践</title>
+<title>Go Web 框架</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,85 +221,126 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">构建 Go 项目最佳实践</h1>
+<h1 class="title">Go Web 框架</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6a0b6d5">1. 原生</a></li>
+<li><a href="#org805a9b6">2. gin</a></li>
+<li><a href="#org97e56e1">3. 结论</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org6a0b6d5" class="outline-2">
+<h2 id="org6a0b6d5"><span class="section-number-2">1</span> 原生</h2>
+<div class="outline-text-2" id="text-1">
 <p>
-实践心得，比较零散，不一定正确。
+Go 的 <code>net/http</code> 库比较丰富，借助 <a href="https://github.com/gorilla/mux">mux</a> 即可自己完成一个 server 基本需求。
 </p>
 
-<hr />
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #BA36A5;">router</span> := mux.<span style="color: #006699;">NewRouter</span><span style="color: #707183;">()</span>
+router.<span style="color: #006699;">HandleFunc</span><span style="color: #707183;">(</span><span style="color: #008000;">"/"</span>, <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span><span style="color: #BA36A5;">resp</span> <span style="color: #6434A3;">http.ResponseWriter</span>, <span style="color: #BA36A5;">req</span> *<span style="color: #6434A3;">http.Request</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
+    resp.<span style="color: #006699;">Write</span><span style="color: #909183;">(</span><span style="color: #709870;">[]</span><span style="color: #006699;">byte</span><span style="color: #709870;">(</span><span style="color: #008000;">"ok"</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span>
+<span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>
+
+<span style="color: #BA36A5;">httpServer</span> := &amp;<span style="color: #6434A3;">http.Server</span><span style="color: #707183;">{</span>
+    <span style="color: #D0372D;">Addr</span>:    <span style="color: #008000;">":8080"</span>,
+    <span style="color: #D0372D;">Handler</span>: router,
+<span style="color: #707183;">}</span>
+
+<span style="color: #0000FF;">go</span> <span style="color: #0000FF;">func</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">if</span> <span style="color: #BA36A5;">err</span> := s.HTTPServer.<span style="color: #006699;">ListenAndServe</span><span style="color: #7388D6;">()</span>; err != <span style="color: #D0372D;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #7388D6;">{</span>
+        log.<span style="color: #006699;">Fatalf</span><span style="color: #909183;">(</span><span style="color: #008000;">"server error, %s\n"</span>, err<span style="color: #909183;">)</span>
+    <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}()</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org805a9b6" class="outline-2">
+<h2 id="org805a9b6"><span class="section-number-2">2</span> gin</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<a href="https://github.com/gin-gonic/gin">gin</a> 是一个 Go 的 Web 框架，当然很多的其它框架。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #BA36A5;">router</span> := gin.<span style="color: #006699;">New</span><span style="color: #707183;">()</span>
+
+router.<span style="color: #006699;">GET</span><span style="color: #707183;">(</span><span style="color: #008000;">"/"</span>, <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span><span style="color: #BA36A5;">c</span> *<span style="color: #6434A3;">gin.Context</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
+    c.<span style="color: #006699;">String</span><span style="color: #909183;">(</span>http.StatusOK, <span style="color: #008000;">"ok"</span><span style="color: #909183;">)</span>
+<span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>
+
+<span style="color: #BA36A5;">srv</span> := &amp;<span style="color: #6434A3;">http.Server</span><span style="color: #707183;">{</span>
+    <span style="color: #D0372D;">Addr</span>:    <span style="color: #008000;">":8080"</span>,
+    <span style="color: #D0372D;">Handler</span>: router,
+<span style="color: #707183;">}</span>
+
+<span style="color: #0000FF;">go</span> <span style="color: #0000FF;">func</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">if</span> <span style="color: #BA36A5;">err</span> := server.HttpServer.<span style="color: #006699;">ListenAndServe</span><span style="color: #7388D6;">()</span>; err != <span style="color: #D0372D;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #7388D6;">{</span>
+        log.<span style="color: #006699;">Fatalf</span><span style="color: #909183;">(</span><span style="color: #008000;">"server failure : %s\n"</span>, err<span style="color: #909183;">)</span>
+    <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}()</span>
+
+</pre>
+</div>
 
 <p>
-Go 中的 package 针对的抽象层面是 module，并不是单个实体（面向对象中的类）。我理解 Go 最小粒度的抽象体现在文件层面，而非 package。
+有没发现，gin 的定位类似 mux，也是在解决路由问题。
 </p>
 
 <p>
-如果将 package 作为做小的粒度容易带来的问题：
+当然，gin 除了提供 router 之外，还提供了 middleware 的功能，middleware 对于一个 Web Server 来讲是至关重要的，比如你可以：
 </p>
 
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">AuthRequired</span><span style="color: #707183;">()</span> <span style="color: #6434A3;">gin.HandlerFunc</span> <span style="color: #707183;">{</span>
+    <span style="color: #0000FF;">return</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span><span style="color: #BA36A5;">c</span> *<span style="color: #6434A3;">gin.Context</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
+        <span style="color: #BA36A5;">token</span> := c.Request.Header.<span style="color: #006699;">Get</span><span style="color: #909183;">(</span><span style="color: #008000;">"X-Login-Token"</span><span style="color: #909183;">)</span>
+        <span style="color: #0000FF;">if</span> token != <span style="color: #008000;">"xxx"</span> <span style="color: #909183;">{</span>
+            c.<span style="color: #006699;">String</span><span style="color: #709870;">(</span>http.StatusUnauthorized, <span style="color: #008000;">"login required"</span><span style="color: #709870;">)</span>
+            c.<span style="color: #006699;">Abort</span><span style="color: #709870;">()</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">must abort to next handler</span>
+            <span style="color: #0000FF;">return</span>
+        <span style="color: #909183;">}</span>
+
+        c.<span style="color: #006699;">Set</span><span style="color: #909183;">(</span><span style="color: #008000;">"username"</span>, <span style="color: #008000;">"xxx"</span><span style="color: #909183;">)</span>
+
+        c.<span style="color: #006699;">Next</span><span style="color: #909183;">()</span>
+    <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+
+<span style="color: #BA36A5;">apiv1</span> := r.<span style="color: #006699;">Group</span><span style="color: #707183;">(</span><span style="color: #008000;">"/api/v1"</span><span style="color: #707183;">)</span>
+apiv1.<span style="color: #006699;">Use</span><span style="color: #707183;">(</span><span style="color: #006699;">AuthRequired</span><span style="color: #7388D6;">()</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org97e56e1" class="outline-2">
+<h2 id="org97e56e1"><span class="section-number-2">3</span> 结论</h2>
+<div class="outline-text-2" id="text-3">
 <p>
-当两个 package 存在一些共同的抽象，这一层的抽象就很难表达。在公共部分加一个 utils，用来作为公共抽象，那么这个公共抽象会越来越重度，
-实际上 utils 应该是放一些业务无关的工具。还有一种解决办法是在同级别 package 加一层 utils 用来做公共业务的抽象，这是可行的，但是比较丑陋。
-因为原则上来讲同一个层级的 package 的职责应该是相同的，加一个工具 utils 不优雅。
+使用原生的库还是框架，我的思路是：
 </p>
 
-<p>
-解决此类问题的最佳实践是将放大 package 的抽象粒度，作为一个 module ，包含很多个相关联的实体，如果有业务抽象在内部新增一个文件抽象即可。
-减少 package 级别的业务再此抽象。
-</p>
+<ul class="org-ul">
+<li>如果服务侧重于 agent/proxy 对外暴露的 API 比较单一，比如用于收集机器 metric 的 exporter，建议使用原生</li>
+<li>如果服务侧重于业务，对外暴露的 API 很多，需要分组和鉴权相关，建议用框架</li>
+</ul>
 
 <p>
-以前我还不太理解很多开源项目的 go 文件是平铺开来的，很少加内部 package，经过实践看来，通过 go 文件来表达实体要比 package 要能省很多事情。
-</p>
-
-<p>
-<b>避免过度抽象，过度设计。</b>
-</p>
-
-<hr />
-
-<p>
-类型定义和函数定义分开，统一维护一份类型定义（大都是与存储相关的）。这里的类型一般指的是公共的类型，如果是一次性的类型定义，放哪里都无所谓的。
-</p>
-
-<p>
-为什么要这么做呢?
-</p>
-
-<p>
-针对函数层面的循环依赖一般是架构设计不合理，但是 A package 调用了 B package 中的 <i>函数</i> ，B package 中使用了 A package 中的 <i>类型</i> 却是很常见的情况。
-所以为了避免循环依赖，把所有的类型统一到一起，它不会依赖于任何外部的类型或者函数。
-</p>
-
-<p>
-另外，在代码维护角度这么做也更易维护代码，否则到处都是 struct，引用起来乱七八糟，想复用也比较难。
-</p>
-
-<p>
-再另外，工具类 package (比如 util，common) 可以依赖外部的类型定义，但不要依赖外部的函数。
-</p>
-
-<hr />
-
-<p>
-上面的办法也不好，如果单纯把类型和函数定义分开，容易乱。
-</p>
-
-<p>
-如果把所有的公共类型全部抽离到 types 中是简单的，但是类型一般会携带一些 method，也就是说会有一些业务逻辑在里面。
-那这样的话，types 就不能算是「公共」部分了，而是与业务强相关的部分。
-</p>
-
-<p>
-解决办法是再抽一级目录，比如说定义的 <code>types</code> 用来标识项目的公共类型；子模块中再加一个 <code>types</code> 目录，
-用来表示该子模块相关的 type，业务逻辑放在上一层。
-</p>
-
-<p>
-这样就可以相对完美的解决模块依赖问题了。
+<i>本文档的示例用的都是 gin，其实区别不大的。</i>
 </p>
 </div>
+</div>
+</div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-13 17:17:51 <br />Last updated: 2021-04-28 Wed 21:35 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-04-28 Wed 21:12 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>
