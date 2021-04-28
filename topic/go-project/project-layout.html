@@ -6,7 +6,7 @@
 <!-- 2021-04-28 Wed 17:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>find</title>
+<title>Go 项目布局</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,149 +221,251 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">find</h1>
+<h1 class="title">Go 项目布局</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org85e4f93">1. 查找规则</a></li>
-<li><a href="#orgb8cffba">2. 执行 action</a></li>
+<li><a href="#orge28c217">1. 概览</a></li>
+<li><a href="#org72ed802">2. Go 目录</a>
+<ul>
+<li><a href="#org16e5f3f">2.1. <code>/cmd</code></a></li>
+<li><a href="#org2625ce3">2.2. <code>/pkg</code></a>
+<ul>
+<li><a href="#org425e5c9">2.2.1. <code>/pkg/api</code></a></li>
+<li><a href="#orgf71257a">2.2.2. <code>/pkg/types</code></a></li>
+<li><a href="#orgf1ba709">2.2.3. <code>/pkg/controller</code></a></li>
+<li><a href="#org8a6443a">2.2.4. <code>/pkg/store</code></a></li>
+<li><a href="#orgcbf26a0">2.2.5. <code>/pkg/cache</code></a></li>
+<li><a href="#orgbe315eb">2.2.6. <code>thirdparty</code></a></li>
+<li><a href="#orgb53a905">2.2.7. <code>...</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgfa02467">3. 其他目录</a>
+<ul>
+<li><a href="#org664a868">3.1. <code>/configs</code></a></li>
+<li><a href="#orge4da698">3.2. <code>/sqls</code></a></li>
+<li><a href="#orge432538">3.3. <code>/scripts</code></a></li>
+<li><a href="#org79bc413">3.4. <code>/docs</code></a></li>
+</ul>
+</li>
+<li><a href="#orgec7cb1e">4. 其他文件</a></li>
 </ul>
 </div>
 </div>
-<pre class="example" id="org20bf6d0">
-find [查找目录] [查找规则/目标] [查找完之后执行的 action]
-</pre>
 
-<div id="outline-container-org85e4f93" class="outline-2">
-<h2 id="org85e4f93"><span class="section-number-2">1</span> 查找规则</h2>
+<div id="outline-container-orge28c217" class="outline-2">
+<h2 id="orge28c217"><span class="section-number-2">1</span> 概览</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-1、根据文件名
+根据多年写 Go 的经历，按照项目布局结构可以分为两类：
 </p>
 
 <ul class="org-ul">
-<li><code>-name</code> 根据文件名精确查找</li>
-<li><code>-iname</code> 忽略大小写查找，也算是精确查找</li>
-<li>通配符：
-
-<ul class="org-ul">
-<li><code>*</code> 匹配任意字符</li>
-<li><code>?</code> 匹配任意的单个字符</li>
-<li><code>[]</code> 匹配括号里面的任意一个字符</li>
-</ul></li>
+<li>扁平（flat）结构，所有的 Go 源文件都放在一个目录下，包括 Makefile, scripts 等。
+这种结构适合相对简单的业务，类似 agent 的场景；</li>
+<li>多目录结构，也是本文要说的内容。扁平的结构在业务场景复杂的情况，模块化无法划分，后期维护成本高，一个略微复杂的 Web 服务器
+就不太适合扁平结构。</li>
 </ul>
 
 <p>
-2、根据文件所属用户和组
-</p>
-
-<ul class="org-ul">
-<li><code>-user</code> 根据所属用户来查找</li>
-<li><code>-group</code> 根据所属组来查找</li>
-</ul>
-
-<p>
-同时也可以用 <code>uid</code> 和 <code>gid</code> 来查找
-</p>
-
-<p>
-3、条件匹配
-</p>
-
-<ul class="org-ul">
-<li><code>-a</code> 必须同时满足两个条件</li>
-<li><code>-o</code> 满足其中的一个条件</li>
-<li><code>-not</code> 取反</li>
-</ul>
-
-<p>
-4、文件属性
-</p>
-
-<ul class="org-ul">
-<li><code>-atime</code> <code>-mtime</code>
-=-ctime=：最新一次访问时间、最近一次内容修改、最近一次属性修改，单位是天</li>
-<li><code>-amin</code> <code>-mmin</code> <code>-cmin</code> ：同上，单位是分钟</li>
-</ul>
-
-<p>
-比如：
-</p>
-
-<ul class="org-ul">
-<li><code>find /data/log/ -atime +30</code> 30 天内没有访问过的日志文件</li>
-<li><code>find /data/log -atime -30</code> 30 天内访问过的日志文件</li>
-</ul>
-
-<p>
-5、根据文件类型来查找文件
-</p>
-
-<p>
-<code>-type</code>
-</p>
-
-<ul class="org-ul">
-<li><code>f</code> 普通文件</li>
-<li><code>d</code> 目录</li>
-<li><code>l</code> 链接</li>
-<li><code>b</code> 块设备</li>
-<li><code>c</code> 字符设备</li>
-<li><code>p</code> 管道</li>
-<li><code>s</code> socket</li>
-</ul>
-
-<p>
-比如： <code>find /tmp -type s</code>
-</p>
-
-<p>
-6、根据文件大小来查找
-</p>
-
-<p>
-<code>-size</code>
-</p>
-
-<p>
-比如：
-</p>
-
-<ul class="org-ul">
-<li><code>find /tmp -size 2M</code> 查找等于 2M 的文件</li>
-<li><code>find /tmp -size +2M</code> 查找大于 2M 的文件</li>
-<li><code>find /tmp -size -2M</code> 查找小于 2M 的文件</li>
-</ul>
-
-<p>
-7、根据文件权限查找
-</p>
-
-<p>
-<code>-perm</code>
+我的很多项目都是参考 <a href="https://github.com/golang-standards/project-layout">project-layout</a> 来做的，但是他的粒度比较大，不够细致，而且不一定适合私有项目。
+<a href="https://github.com/zhangjie2012/go-project-layout-template">go-project-layout-template</a> 是我建的一个针对 Web 服务通常场景下的模板项目（可能会不定期的更新），本文介绍每个目录（模块）的职责。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgb8cffba" class="outline-2">
-<h2 id="orgb8cffba"><span class="section-number-2">2</span> 执行 action</h2>
+<div id="outline-container-org72ed802" class="outline-2">
+<h2 id="org72ed802"><span class="section-number-2">2</span> Go 目录</h2>
 <div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org16e5f3f" class="outline-3">
+<h3 id="org16e5f3f"><span class="section-number-3">2.1</span> <code>/cmd</code></h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+项目的主干，应用的入口（main）。逻辑尽可能简单，用作初始化资源和启动服务。如果一个应用程序可能输出多个二进制文件，那么可以在此目录下再创建对应的 app
+目录。如果只有一个输出，直接写 <code>main.go</code> 就可以了。
+</p>
+
+<p>
+通常应用程序有配置文件需要解析和初始化，可以在 cmd 中创建一个 options 目录，用于配置文件的解析和初始化工作。
+</p>
+
+<p>
+所以 cmd 目录下最终的目录结构可能是：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">&#9500;&#9472;&#9472; cmd
+&#9474;&#160;&#160; &#9500;&#9472;&#9472; main.go
+&#9474;&#160;&#160; &#9492;&#9472;&#9472; options
+&#9474;&#160;&#160;     &#9492;&#9472;&#9472; options.go
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2625ce3" class="outline-3">
+<h3 id="org2625ce3"><span class="section-number-3">2.2</span> <code>/pkg</code></h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+开源项目喜欢把 <code>/internal</code> 和 <code>/pkg</code> 分开，一个用户对内的，一个用户对外的；这样做是有必要的，开源项目的一些 package 会被当做 SDK 来用。
+而且开源项目本身都会自带一些组件化的属性。
+</p>
+
+<p>
+但是公司/个人的项目，服务之间调用大都是通过 RPC 的方式（当然本身都是公共组件是个例外），这种分隔往往会让开发者迷惑，实际划分模块的时候，不知道自己的
+服务应该是一个对内的还是对外的。
+</p>
+
+<p>
+所以，我只保留 <code>/pkg</code> 目录，用来放应用程序库代码。不抽象出一个 <code>/pkg</code> 目录是不是也可以，当然是可以的。只不过有一个弊端，让 <code>/pkg</code> 下的目录
+置于 <code>/cmd</code> 同级之后，同级的还会包含 <code>/docs</code> ， <code>/script</code> ， <code>sqls</code> 等目录。随着业务逻辑的的复杂，这一级的目录会越来越多，会很乱。
+</p>
+
+<p>
+因此， <code>/pkg</code> 的作用仅是把 Go 的 package（除了 main）统一的放在一个地方，保证结构上的清晰。
+</p>
+
+<p>
+子目录：
+</p>
+</div>
+
+<div id="outline-container-org425e5c9" class="outline-4">
+<h4 id="org425e5c9"><span class="section-number-4">2.2.1</span> <code>/pkg/api</code></h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+apiserver 的入口，本目录应该保持简单，少业务相关逻辑：
+</p>
+
 <ul class="org-ul">
-<li><code>-print</code> 默认执行的动作</li>
-<li><code>-ls</code> 查找后用 ls 显示出来</li>
-<li><code>-ok [command]</code> 查找后执行命令的时候询问用户是否要执行</li>
-<li><code>-exec [command]</code> 查找后执行命令（不询问，直接执行）</li>
+<li><code>server.go</code> server 的生命周期</li>
+<li><code>router.go</code> API 路由</li>
+<li><code>middleware.go</code> API 的中间件</li>
 </ul>
 
 <p>
-一个很常用的命令，查找 30 天未使用的日志文件，删除: <code>find /data/log -atime +30 -exec rm -rf {} \;</code>
+API 的 handler 根据 API 的版本号分隔到不同的目录： <code>/pkg/api/v1</code> <code>/pkg/api/v2</code> <code>/pkg/vpi/v3</code> &#x2026;.
 </p>
+
+<p>
+另外， <code>package api</code> 应该是顶层的 package，除了 <code>main</code> 之外，不应该有模块依赖它（否则很容易导致循环依赖）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf71257a" class="outline-4">
+<h4 id="orgf71257a"><span class="section-number-4">2.2.2</span> <code>/pkg/types</code></h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+通用类型定义，我的习惯是只要不是临时使用的类型，统一定义在 types 目录中。types 不应该依赖任何业务 package。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf1ba709" class="outline-4">
+<h4 id="orgf1ba709"><span class="section-number-4">2.2.3</span> <code>/pkg/controller</code></h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+controller 用于实现业务逻辑，往往被 api 的 handler 调用，实现业务逻辑处理。按照业务模块，再切分模块。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8a6443a" class="outline-4">
+<h4 id="org8a6443a"><span class="section-number-4">2.2.4</span> <code>/pkg/store</code></h4>
+<div class="outline-text-4" id="text-2-2-4">
+<p>
+持久化数据的 CRUD wrapper，去掉具体的存储库属性（MySQL/MongoDB），统一提供接口。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcbf26a0" class="outline-4">
+<h4 id="orgcbf26a0"><span class="section-number-4">2.2.5</span> <code>/pkg/cache</code></h4>
+<div class="outline-text-4" id="text-2-2-5">
+<p>
+缓存统一接口。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbe315eb" class="outline-4">
+<h4 id="orgbe315eb"><span class="section-number-4">2.2.6</span> <code>thirdparty</code></h4>
+<div class="outline-text-4" id="text-2-2-6">
+<p>
+第三方服务 RPC 封装调用，隐藏服务对接细节。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb53a905" class="outline-4">
+<h4 id="orgb53a905"><span class="section-number-4">2.2.7</span> <code>...</code></h4>
+<div class="outline-text-4" id="text-2-2-7">
+<p>
+其他业务相关的模块抽象。
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfa02467" class="outline-2">
+<h2 id="orgfa02467"><span class="section-number-2">3</span> 其他目录</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org664a868" class="outline-3">
+<h3 id="org664a868"><span class="section-number-3">3.1</span> <code>/configs</code></h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+存放应用程序启动所需的配置。可以区分环境： <code>app.dev.yaml</code> <code>app.test.yaml</code> 等等。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge4da698" class="outline-3">
+<h3 id="orge4da698"><span class="section-number-3">3.2</span> <code>/sqls</code></h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+sqls scheme。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge432538" class="outline-3">
+<h3 id="orge432538"><span class="section-number-3">3.3</span> <code>/scripts</code></h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+工具脚本。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org79bc413" class="outline-3">
+<h3 id="org79bc413"><span class="section-number-3">3.4</span> <code>/docs</code></h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+文档。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgec7cb1e" class="outline-2">
+<h2 id="orgec7cb1e"><span class="section-number-2">4</span> 其他文件</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li><code>Makefile</code></li>
+<li><code>Dockerfile</code></li>
+</ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-12-13 22:50 <br />Last updated: 2021-04-28 Wed 11:21 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2021-04-27 15:52:18 <br />Last updated: 2021-04-28 Wed 17:10 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>
