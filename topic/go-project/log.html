@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-04-28 Wed 21:36 -->
+<!-- 2021-05-09 Sun 17:03 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go log package 选择</title>
@@ -197,7 +197,7 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -213,7 +213,6 @@
        if(null != target) {
          elem.classList.remove("code-highlighted");
          target.classList.remove("code-highlighted");
-       }
      }
     /*]]>*///-->
 // @license-end
@@ -231,6 +230,12 @@
 <li><a href="#orgdf4b3cc">3. sirupsen/logrus</a></li>
 <li><a href="#org3dbdb67">4. uber-go/zap</a></li>
 <li><a href="#org3d3549b">5. 结论</a></li>
+<li><a href="#org821788c">6. 初始化范例</a>
+<ul>
+<li><a href="#orgcf76af2">6.1. logrus</a></li>
+<li><a href="#orgddc5fa7">6.2. zap</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -273,13 +278,48 @@ google 类似 C++ 日志版本的 Go 版本，性能较好，使用也比较简�
 </p>
 
 <ul class="org-ul">
-<li>优点：业内评价较高，易用性好，定制化也很强，人性化。</li>
+<li>业内评价较高，易用性好，定制化也很强，人性化。</li>
+<li>支持 hook，<a href="https://github.com/zhangjie2012/logrus-hook">logrus-hook</a> 我是自己写的 hook</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3dbdb67" class="outline-2">
+<h2 id="org3dbdb67"><span class="section-number-2">4</span> <a href="https://github.com/uber-go/zap">uber-go/zap</a></h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Uber 开源的日志系统。
+</p>
+
+<ul class="org-ul">
+<li>性能 <span class="underline"><span class="underline">非常</span></span> 好</li>
+<li>支持 Hook</li>
+<li>可能是设计就是为了设计之初就是为了高性能，定制性很强，就是非常不人性化，以至于不知道怎么定制···，好在有这个 <a href="https://github.com/sandipb/zap-examples">sandipb/zap-examples</a></li>
 </ul>
 
 <p>
-使用范例
+性能相比： <code>zap &gt; glog &gt; logrus &gt; log</code> ，值得一提的是，zap 是远大于 glog 和 logrus 的。
 </p>
+</div>
+</div>
 
+<div id="outline-container-org3d3549b" class="outline-2">
+<h2 id="org3d3549b"><span class="section-number-2">5</span> 结论</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>高性能的系统，推荐使用 zap；</li>
+<li>业务系统使用 zap/logrus，glog 的日志级别（ <code>V()</code> ）很容易误导开发人员，体验并不是很好。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org821788c" class="outline-2">
+<h2 id="org821788c"><span class="section-number-2">6</span> 初始化范例</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orgcf76af2" class="outline-3">
+<h3 id="orgcf76af2"><span class="section-number-3">6.1</span> logrus</h3>
+<div class="outline-text-3" id="text-6-1">
 <div class="org-src-container">
 <pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">init</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
     <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">TEXT</span>
@@ -325,36 +365,32 @@ google 类似 C++ 日志版本的 Go 版本，性能较好，使用也比较简�
 </div>
 </div>
 
-<div id="outline-container-org3dbdb67" class="outline-2">
-<h2 id="org3dbdb67"><span class="section-number-2">4</span> <a href="https://github.com/uber-go/zap">uber-go/zap</a></h2>
-<div class="outline-text-2" id="text-4">
-<p>
-Uber 开源的日志系统。
-</p>
-
-<ul class="org-ul">
-<li>优点：性能 <span class="underline"><span class="underline">非常</span></span> 好</li>
-<li>缺点：可能是设计就是为了设计之初就是为了高性能，定制性很强，就是非常不人性化，以至于不知道怎么定制···，好在有这个 <a href="https://github.com/sandipb/zap-examples">sandipb/zap-examples</a></li>
-</ul>
-
-<p>
-性能相比： <code>zap &gt; glog &gt; logrus &gt; log</code> ，值得一提的是，zap 是远大于 glog 和 logrus 的。
-</p>
+<div id="outline-container-orgddc5fa7" class="outline-3">
+<h3 id="orgddc5fa7"><span class="section-number-3">6.2</span> zap</h3>
+<div class="outline-text-3" id="text-6-2">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #BA36A5;">logger</span>, <span style="color: #BA36A5;">_</span> := <span style="color: #6434A3;">zap.Config</span><span style="color: #707183;">{</span>
+    <span style="color: #D0372D;">Encoding</span>:      <span style="color: #008000;">"console"</span>,
+    <span style="color: #D0372D;">Level</span>:         zap.<span style="color: #006699;">NewAtomicLevelAt</span><span style="color: #7388D6;">(</span>logLevel<span style="color: #7388D6;">)</span>,
+    <span style="color: #D0372D;">DisableCaller</span>: <span style="color: #D0372D;">true</span>,
+    <span style="color: #D0372D;">OutputPaths</span>:   <span style="color: #7388D6;">[]</span><span style="color: #6434A3;">string</span><span style="color: #7388D6;">{</span><span style="color: #008000;">"stdout"</span><span style="color: #7388D6;">}</span>,
+    <span style="color: #D0372D;">EncoderConfig</span>: <span style="color: #6434A3;">zapcore.EncoderConfig</span><span style="color: #7388D6;">{</span>
+        <span style="color: #D0372D;">TimeKey</span>:     <span style="color: #008000;">"ts"</span>,
+        <span style="color: #D0372D;">LevelKey</span>:    <span style="color: #008000;">"level"</span>,
+        <span style="color: #D0372D;">MessageKey</span>:  <span style="color: #008000;">"msg"</span>,
+        <span style="color: #D0372D;">EncodeLevel</span>: zapcore.CapitalLevelEncoder,
+        <span style="color: #D0372D;">EncodeTime</span>:  zapcore.RFC3339TimeEncoder,
+    <span style="color: #7388D6;">}</span>,
+<span style="color: #707183;">}</span>.<span style="color: #006699;">Build</span><span style="color: #707183;">()</span>
+zap.<span style="color: #006699;">ReplaceGlobals</span><span style="color: #707183;">(</span>logger<span style="color: #707183;">)</span>
+</pre>
 </div>
 </div>
-
-<div id="outline-container-org3d3549b" class="outline-2">
-<h2 id="org3d3549b"><span class="section-number-2">5</span> 结论</h2>
-<div class="outline-text-2" id="text-5">
-<ul class="org-ul">
-<li>高性能的系统，推荐使用 zap；</li>
-<li>业务系统推荐使用 logrus，glog 的日志级别（ <code>V()</code> ）很容易误导开发人员，体验并不是很好。</li>
-</ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-03-14 17:50:00 <br />Last updated: 2021-04-28 Wed 21:16 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2019-03-14 17:50:00 <br />Last updated: 2021-05-07 Fri 14:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>
