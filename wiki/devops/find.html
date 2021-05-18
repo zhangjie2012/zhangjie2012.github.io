@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-04-28 Wed 17:12 -->
+<!-- 2021-05-18 Tue 10:23 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>find</title>
@@ -197,7 +197,7 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -213,7 +213,6 @@
        if(null != target) {
          elem.classList.remove("code-highlighted");
          target.classList.remove("code-highlighted");
-       }
      }
     /*]]>*///-->
 // @license-end
@@ -228,12 +227,14 @@
 <ul>
 <li><a href="#org85e4f93">1. 查找规则</a></li>
 <li><a href="#orgb8cffba">2. 执行 action</a></li>
+<li><a href="#org22e06b2">3. 最佳实践</a></li>
 </ul>
 </div>
 </div>
-<pre class="example" id="org20bf6d0">
-find [查找目录] [查找规则/目标] [查找完之后执行的 action]
+<div class="org-src-container">
+<pre class="src src-sh">find <span style="color: #707183;">[</span>&#26597;&#25214;&#30446;&#24405;<span style="color: #707183;">]</span> <span style="color: #707183;">[</span>&#26597;&#25214;&#35268;&#21017;/&#30446;&#26631;<span style="color: #707183;">]</span> <span style="color: #707183;">[</span>&#26597;&#25214;&#23436;&#20043;&#21518;&#25191;&#34892;&#30340; action<span style="color: #707183;">]</span>
 </pre>
+</div>
 
 <div id="outline-container-org85e4f93" class="outline-2">
 <h2 id="org85e4f93"><span class="section-number-2">1</span> 查找规则</h2>
@@ -246,7 +247,6 @@ find [查找目录] [查找规则/目标] [查找完之后执行的 action]
 <li><code>-name</code> 根据文件名精确查找</li>
 <li><code>-iname</code> 忽略大小写查找，也算是精确查找</li>
 <li>通配符：
-
 <ul class="org-ul">
 <li><code>*</code> 匹配任意字符</li>
 <li><code>?</code> 匹配任意的单个字符</li>
@@ -282,8 +282,7 @@ find [查找目录] [查找规则/目标] [查找完之后执行的 action]
 </p>
 
 <ul class="org-ul">
-<li><code>-atime</code> <code>-mtime</code>
-=-ctime=：最新一次访问时间、最近一次内容修改、最近一次属性修改，单位是天</li>
+<li><code>-atime</code> <code>-mtime</code> <code>-ctime</code> ：最新一次访问时间、最近一次内容修改、最近一次属性修改，单位是天</li>
 <li><code>-amin</code> <code>-mmin</code> <code>-cmin</code> ：同上，单位是分钟</li>
 </ul>
 
@@ -292,7 +291,7 @@ find [查找目录] [查找规则/目标] [查找完之后执行的 action]
 </p>
 
 <ul class="org-ul">
-<li><code>find /data/log/ -atime +30</code> 30 天内没有访问过的日志文件</li>
+<li><code>find /data/log -atime +30</code> 30 天内没有访问过的日志文件</li>
 <li><code>find /data/log -atime -30</code> 30 天内访问过的日志文件</li>
 </ul>
 
@@ -355,15 +354,41 @@ find [查找目录] [查找规则/目标] [查找完之后执行的 action]
 <li><code>-ok [command]</code> 查找后执行命令的时候询问用户是否要执行</li>
 <li><code>-exec [command]</code> 查找后执行命令（不询问，直接执行）</li>
 </ul>
+</div>
+</div>
+
+<div id="outline-container-org22e06b2" class="outline-2">
+<h2 id="org22e06b2"><span class="section-number-2">3</span> 最佳实践</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+查找 30 天未使用的日志文件并删除: <code>find /data/log -type f -atime +30 -exec rm -rf {} \;</code>
+</p>
 
 <p>
-一个很常用的命令，查找 30 天未使用的日志文件，删除: <code>find /data/log -atime +30 -exec rm -rf {} \;</code>
+如何在 Linux 中查找最大 10 个文件<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>：
+</p>
+
+<p>
+<code>find / -type f -print0 | xargs -0 du -h | sort -rh | head -n 10</code>
+<code>find / -type f -exec du -Sh {} + | sort -rh | head -n 10</code>
+<code>find / -type f -print0 | xargs -0 du | sort -n | tail -10 | cut -f2 | xargs -I{} du -sh {}</code>
+<code>find / -type f -ls | sort -k 7 -r -n | head -10 | column -t | awk '{print $7,$11}'</code>
 </p>
 </div>
 </div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://linux.cn/article-9495-1.html">https://linux.cn/article-9495-1.html</a>
+</p></div></div>
+
+
 </div>
+</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-12-13 22:50 <br />Last updated: 2021-04-28 Wed 11:21 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2018-12-13 22:50 <br />Last updated: 2021-05-18 Tue 10:19 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>
