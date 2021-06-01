@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-05-11 Tue 18:03 -->
+<!-- 2021-06-01 Tue 21:08 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>云原生</title>
@@ -422,6 +422,14 @@ Kubernetes v1.20 开始废弃了 Dockershim 之后，对于研发人员、管理
 <li><a href="https://object-storage-ca-ymq-1.vexxhost.net/swift/v1/6e4619c416ff4bd19e1c087f27a43eea/www-assets-prod/presentation-media/hyper-kata-frakti-cri2.pdf">Unified Kubernetes CRI runtimes based on Kata Containers</a> PPT，理解 Kubernetes 中的运行时</li>
 <li><a href="https://brennerm.github.io/posts/kubernetes-overview-diagrams.html">Kubernetes Overview Diagrams</a> Kubernetes 概述图（很帅），涵盖架构，工作负载，网络存储，RBAC，资源 requests 和 limits 等</li>
 <li><a href="kubernetes/gce-kubernetes-best-practive-series.html">GCE Kubernetes 最佳实践系列</a></li>
+<li><a href="https://jimmysong.io/kubernetes-handbook/concepts/pause-container.html">Pause 容器</a>，也称之为 Infra 容器，Pause 即暂停，但并不是停止状态，而是启动之后就会把自己阻塞住，什么都不干
+<ul class="org-ul">
+<li>目标是为了解决多个容器之间最高效的共享某些资源和数据（打破 Linux Namespace/cgroups 隔离），
+Pause 是为了解决网络问题（如何共享网络）；</li>
+<li>Pod 中的其他容器 Join namespace 的方式加入到 Pause 容器的 Network namespace。所以其他容器所看到的网络设备、IP 地址、
+Mac 地址等网络信息都是 Pause 容器的；</li>
+<li>Pause 容器为业务容器提供：1. Linux namespace 的基础；2. 启用 pid 命名空间，开启 init 进程。</li>
+</ul></li>
 </ul>
 </div>
 
@@ -464,7 +472,7 @@ Kubernetes v1.20 开始废弃了 Dockershim 之后，对于研发人员、管理
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2021-05-11 Tue 17:10 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2021-05-31 Mon 11:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
 </div>
 </body>
 </html>
