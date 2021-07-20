@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-05-11 Tue 18:03 -->
+<!-- 2021-07-20 Tue 14:32 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GCE 的 Kubernetes 最佳实践系列</title>
@@ -213,6 +213,7 @@
        if(null != target) {
          elem.classList.remove("code-highlighted");
          target.classList.remove("code-highlighted");
+       }
      }
     /*]]>*///-->
 // @license-end
@@ -225,41 +226,107 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge240485">1. <span class="todo TODO">TODO</span> Kubernetes 最佳实践指引</a></li>
-<li><a href="#org387bd8b">2. <span class="todo TODO">TODO</span> 构建最小化镜像（为什么要这么做，如何做）</a></li>
-<li><a href="#org2687a82">3. <span class="todo TODO">TODO</span> 使用命令空间进行组织</a></li>
-<li><a href="#org258caac">4. <span class="todo TODO">TODO</span> 使用就绪探针和存活探针进行健康检测</a></li>
-<li><a href="#orga76ce09">5. <span class="todo TODO">TODO</span> 资源的 requests 和 limits</a></li>
-<li><a href="#org24e0df3">6. 优雅终止</a></li>
-<li><a href="#orgb721caa">7. <span class="todo TODO">TODO</span> 外部服务映射</a></li>
-<li><a href="#orgef75084">8. <span class="todo TODO">TODO</span> 零宕机更新集群</a></li>
+<li><a href="#org2687a82">1. 使用命令空间进行组织</a>
+<ul>
+<li><a href="#org061c122">1.1. 服务发现</a></li>
+<li><a href="#org03d670f">1.2. 空间的粒度</a></li>
+</ul>
+</li>
+<li><a href="#org258caac">2. 使用就绪探针和存活探针进行健康检测</a></li>
+<li><a href="#orga76ce09">3. 资源的 requests 和 limits</a></li>
+<li><a href="#org24e0df3">4. 优雅终止</a></li>
+<li><a href="#orgb721caa">5. 外部服务映射</a></li>
+<li><a href="#orgef75084">6. 零宕机更新集群</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge240485" class="outline-2">
-<h2 id="orge240485"><span class="section-number-2">1</span> <span class="todo TODO">TODO</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/your-guide-kubernetes-best-practices">Kubernetes 最佳实践指引</a></h2>
-</div>
-
-<div id="outline-container-org387bd8b" class="outline-2">
-<h2 id="org387bd8b"><span class="section-number-2">2</span> <span class="todo TODO">TODO</span> <a href="https://cloud.google.com/blog/topics/kubernetes-best-practices">构建最小化镜像（为什么要这么做，如何做）</a></h2>
-</div>
-
 <div id="outline-container-org2687a82" class="outline-2">
-<h2 id="org2687a82"><span class="section-number-2">3</span> <span class="todo TODO">TODO</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-organizing-with-namespaces">使用命令空间进行组织</a></h2>
+<h2 id="org2687a82"><span class="section-number-2">1.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-organizing-with-namespaces">使用命令空间进行组织</a></h2>
+<div class="outline-text-2" id="text-1">
+<p>
+命名空间可以理解成 Kubernetes 集群中的虚拟集群，一个 Kubernetes 集群中可以包含多个命名空间，逻辑上相互隔离；
+</p>
+
+<p>
+一般情况下，Kubernetes 默认会创建三个空间：
+</p>
+
+<ul class="org-ul">
+<li><code>default</code></li>
+<li><code>kube-system</code> 用于 Kubernetes 组件</li>
+<li><code>kube-public</code> 用户公共资源</li>
+</ul>
+
+<p>
+<code>kube-public</code> 通常不怎么使用， <code>kube-system</code> 相对独立，所以你的 services 和 apps 通常会被创建在 <code>default</code> 空间中。
+<code>default</code> 空间没有什么特别的，除了默认会创建还有你不能通过 kubectl 删掉他。适合很小的集群，但是不建议在生产环境中这么用
+（同一个空间中的应用名是不可重复的，所以很容易被别人覆盖掉）。
+</p>
+</div>
+
+<div id="outline-container-org061c122" class="outline-3">
+<h3 id="org061c122"><span class="section-number-3">1.1.</span> 服务发现</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Kubernetes 中 Services 使用以下的通用 DNS 模式来暴露他们的端点（endpoints）。类似这样：
+</p>
+
+<pre class="example">
+&lt;Service Name&gt;.&lt;Namespace Name&gt;.svc.cluster.local
+</pre>
+
+<p>
+通常只需要指定 Service 名字，DNS 会自动解析全路径。跨空间的情况下需要携带空间名字，比如： <code>database.test</code> <code>database.production</code> 。
+</p>
+
+<p>
+<b>警告：</b> 如果你创建一个 <code>com</code> 或者 <code>org</code> 这样的顶级域名，然后创建和网站同名的服务，比如 "google" 或者 "reddit" 。这会导致你的服务请求 <code>"google.com"</code>
+会映射到 Service 上。这通常对于测试和代理非常有用，但也很容易破坏集群中的东西。
+</p>
+
+<p>
+*注意：*如果你想隔离命名空间，你应该使用 <a href="https://ahmet.im/blog/kubernetes-network-policy/">网络策略</a> 来实现他。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org03d670f" class="outline-3">
+<h3 id="org03d670f"><span class="section-number-3">1.2.</span> 空间的粒度</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+视公司的阶段和规模而定。大公司下业务比较复杂（技术栈丰富），团队较多，需要配合 CI/CD 工具来使用，使用 RBAC 和资源配合是个好主意。
+</p>
+</div>
+</div>
 </div>
 
 <div id="outline-container-org258caac" class="outline-2">
-<h2 id="org258caac"><span class="section-number-2">4</span> <span class="todo TODO">TODO</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-setting-up-health-checks-with-readiness-and-liveness-probes">使用就绪探针和存活探针进行健康检测</a></h2>
+<h2 id="org258caac"><span class="section-number-2">2.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-setting-up-health-checks-with-readiness-and-liveness-probes">使用就绪探针和存活探针进行健康检测</a></h2>
 </div>
 
 <div id="outline-container-orga76ce09" class="outline-2">
-<h2 id="orga76ce09"><span class="section-number-2">5</span> <span class="todo TODO">TODO</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits">资源的 requests 和 limits</a></h2>
+<h2 id="orga76ce09"><span class="section-number-2">3.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits">资源的 requests 和 limits</a></h2>
+<div class="outline-text-2" id="text-3">
+<p>
+requests 和 limits 是 Kubernetes 控制 CPU 和内存资源的机制。Requests 的值是 Kubernetes 一定给服务分配到的，分配不到就会提示
+资源不足；Limits 是服务可用的最大资源限制。所以 Limits 的值不能小于 Requests（否则会抛错，容器也运行不起来）。
+</p>
+
+<ul class="org-ul">
+<li>CPU 到达 Limits 之后，程序的性能会受影响，但是不会被终止（因为 CPU 是可压缩的资源）；</li>
+<li>内存到达 Limits 之后，程序会被终止（OOM，因为内存是不可压缩的资源）；</li>
+</ul>
+
+<p>
+命名空间级别也可以配置资源限制：通过 ResourceQuotas 和 LimitRanges。
+</p>
+</div>
 </div>
 
 <div id="outline-container-org24e0df3" class="outline-2">
-<h2 id="org24e0df3"><span class="section-number-2">6</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-terminating-with-grace">优雅终止</a></h2>
-<div class="outline-text-2" id="text-6">
+<h2 id="org24e0df3"><span class="section-number-2">4.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-terminating-with-grace">优雅终止</a></h2>
+<div class="outline-text-2" id="text-4">
 <ol class="org-ol">
 <li>Pod 被设置为 "Terminating" 时，会从 Service 中的 endpoints 列表中移出；</li>
 <li>执行 preStop Hook，preStop Hook 可以帮助你做应用程序的优雅关闭；</li>
@@ -275,15 +342,29 @@
 </div>
 
 <div id="outline-container-orgb721caa" class="outline-2">
-<h2 id="orgb721caa"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> <a href="https://prog.world/kubernetes-best-practices-mapping-external-services/">外部服务映射</a></h2>
+<h2 id="orgb721caa"><span class="section-number-2">5.</span> <a href="https://prog.world/kubernetes-best-practices-mapping-external-services/">外部服务映射</a></h2>
+<div class="outline-text-2" id="text-5">
+<p>
+类似数据库这样的服务通常是运行在集群外部的，在集群内部通常会有这样一个需求：一个服务在不同的环境，有相同的配置，但是却要连到不同
+的数据库上（测试用测试的，生产用生产的，但是他们连接配置的名字希望是一样的）。
+</p>
+
+<p>
+这种需求下，你可以指定将 Service  的 <code>type</code> 指定为 <code>ExternalName</code> 来实现。具体见：
+</p>
+
+<p>
+<a href="https://blog.opskumu.com/kubernetes-ext-service.html">https://blog.opskumu.com/kubernetes-ext-service.html</a>
+</p>
+</div>
 </div>
 
 <div id="outline-container-orgef75084" class="outline-2">
-<h2 id="orgef75084"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-upgrading-your-clusters-with-zero-downtime">零宕机更新集群</a></h2>
+<h2 id="orgef75084"><span class="section-number-2">6.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-upgrading-your-clusters-with-zero-downtime">零宕机更新集群</a></h2>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-05-11 16:58:20 <br />Last updated: 2021-05-11 Tue 17:10 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2021-05-11 16:58:20 <br />Last updated: 2021-07-09 Fri 17:45 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

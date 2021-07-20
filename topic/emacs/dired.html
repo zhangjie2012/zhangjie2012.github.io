@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-06-24 Thu 14:38 -->
+<!-- 2021-06-15 Tue 18:08 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Emacs Orgmode</title>
+<title>Emacs Dired</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,47 +221,28 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">Emacs Orgmode</h1>
+<h1 class="title">Emacs Dired</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4e0c407">1. 介绍</a></li>
-<li><a href="#org835a5b7">2. 扩展资料</a></li>
-<li><a href="#org801c3ab">3. 常见问题</a></li>
-<li><a href="#orgd81ec80">4. org-mode theme</a></li>
+<li><a href="#orge17ad2c">1. navigation</a></li>
+<li><a href="#org51764be">2. 选中</a></li>
+<li><a href="#orgcae386f">3. 文件/目录操作</a></li>
 </ul>
 </div>
 </div>
+<p>
+我的使用习惯的 <code>&lt;f9&gt;-j</code> 绑定 <code>dired-jump</code> 快速跳转到当前文件所在的目录。为了子目录更好的操作，额外使用了 dired-subtree 插件。
+</p>
 
-<div id="outline-container-org4e0c407" class="outline-2">
-<h2 id="org4e0c407"><span class="section-number-2">1.</span> 介绍</h2>
+<p>
+你也可以使用 <code>C-x d</code> 进入 <code>dired</code> 。
+</p>
+
+<div id="outline-container-orge17ad2c" class="outline-2">
+<h2 id="orge17ad2c"><span class="section-number-2">1.</span> navigation</h2>
 <div class="outline-text-2" id="text-1">
-<p>
-<a href="https://orgmode.org/">org-mode</a> 是 Emacs 最强力的插件，没有之一。可以用来做 GTD，博客/Wiki工具，写书，写论文等。
-orgmode 是 emacs 自带的 package，但是一般自带的版本比较低。更新到最新版本的办法：
-</p>
-
-<p>
-将 <code>("org" . "https://orgmode.org/elpa/")</code> 添加到 <code>package-archives</code> 中，然后：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #707183;">(</span><span style="color: #a020f0;">use-package</span> <span style="color: #008b8b;">org</span>
-  <span style="color: #483d8b;">:pin</span> org
-  <span style="color: #483d8b;">:ensure</span> org-plus-contrib
-  <span style="color: #707183;">)</span>
-</pre>
-</div>
-
-<p>
-注意是 <code>org-plus-contrib</code> ，而不是 <code>org</code> 。
-</p>
-
-<p>
-常用快捷键：
-</p>
-
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -270,115 +251,184 @@ orgmode 是 emacs 自带的 package，但是一般自带的版本比较低。更
 
 <col  class="org-left" />
 </colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">快捷键</th>
-<th scope="col" class="org-left">功能</th>
-</tr>
-</thead>
 <tbody>
 <tr>
-<td class="org-left"><code>C-c C-e</code></td>
-<td class="org-left">Export or Publish</td>
+<td class="org-left">快捷键</td>
+<td class="org-left">说明</td>
 </tr>
 
 <tr>
-<td class="org-left"><code>C-c C-l</code></td>
-<td class="org-left">插入链接等</td>
+<td class="org-left"><code>q</code></td>
+<td class="org-left">退出</td>
 </tr>
 
 <tr>
-<td class="org-left"><code>C-c '</code></td>
-<td class="org-left">在另外一个窗口编辑：代码，表格，公式等</td>
+<td class="org-left"><code>g</code></td>
+<td class="org-left">刷新</td>
 </tr>
 
 <tr>
-<td class="org-left"><code>C-c C-x p</code></td>
-<td class="org-left">插入标题 <code>PROPERTIES</code></td>
+<td class="org-left"><code>(</code></td>
+<td class="org-left">显示、隐藏信息</td>
 </tr>
 
 <tr>
-<td class="org-left"><code>C-c C-o</code></td>
-<td class="org-left">打开当前链接 <code>org-open-at-point</code></td>
+<td class="org-left"><code>&lt;</code></td>
+<td class="org-left">移动到上一级目录，跳转到 <code>.</code></td>
 </tr>
 
 <tr>
-<td class="org-left"><code>C-c C-,</code></td>
-<td class="org-left">插入结构化模板（类似代码，引用等），orgmode 9.2 版本之后支持</td>
+<td class="org-left"><code>&gt;</code></td>
+<td class="org-left">移动到下一级目录，跳转到 <code>..</code></td>
 </tr>
 
 <tr>
-<td class="org-left"><code>C-c C-c</code></td>
-<td class="org-left">标题上添加 Tag，可以用来分类或者打标签</td>
+<td class="org-left"><code>^</code></td>
+<td class="org-left">到上一级目录</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>s</code></td>
+<td class="org-left">排序</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>i</code></td>
+<td class="org-left">进入子目录</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>;</code></td>
+<td class="org-left">关闭子目录</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>n</code></td>
+<td class="org-left">下一个文件/目录</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>p</code></td>
+<td class="org-left">上一个文件/目录</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 
-<div id="outline-container-org835a5b7" class="outline-2">
-<h2 id="org835a5b7"><span class="section-number-2">2.</span> 扩展资料</h2>
+<div id="outline-container-org51764be" class="outline-2">
+<h2 id="org51764be"><span class="section-number-2">2.</span> 选中</h2>
 <div class="outline-text-2" id="text-2">
-<ul class="org-ul">
-<li><a href="https://devhints.io/org-mode">org-mode cheatsheet</a></li>
-<li><a href="../../../blog/2019/build-site-with-org-mode.html">使用 org-mode 搭建网站</a>   <i>我写的</i></li>
-<li><a href="../../../blog/2019/emacs-slide.html">Emacs 基于 org-reveal 做幻灯片</a> <i>我写的</i></li>
-<li>GTD 相关文章：
-<ul class="org-ul">
-<li><a href="https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html">Orgmode for GTD</a></li>
-<li><a href="http://members.optusnet.com.au/~charles57/GTD/gtd_workflow.html">How I use Emacs and Org-mode to implement GTD</a></li>
-</ul></li>
-</ul>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">快捷键</td>
+<td class="org-left">说明</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>m</code></td>
+<td class="org-left">选中</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>u</code></td>
+<td class="org-left">反选</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>U</code></td>
+<td class="org-left">全部取消选中</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>d</code></td>
+<td class="org-left">标记为待删除</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>t</code></td>
+<td class="org-left">反选所有文件 mark 标记</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>% m</code></td>
+<td class="org-left">正则表达式选中</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>% d</code></td>
+<td class="org-left">正则表达是标记待删除</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<code>d</code> 选中的文件， <code>x</code> 开始执行。
+</p>
 </div>
 </div>
 
-<div id="outline-container-org801c3ab" class="outline-2">
-<h2 id="org801c3ab"><span class="section-number-2">3.</span> 常见问题</h2>
+<div id="outline-container-orgcae386f" class="outline-2">
+<h2 id="orgcae386f"><span class="section-number-2">3.</span> 文件/目录操作</h2>
 <div class="outline-text-2" id="text-3">
-<p>
-<span class="timestamp-wrapper"><span class="timestamp">&lt;2020-02-15 Sat 10:15&gt;</span></span>
-</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
-<p>
-orgmode 9.2 之后不再直接支持 <code>&lt;s [Tab]</code> 的快捷方式插入代码块，而提供了统一的 <code>org-insert-structure-template</code> 函数，快捷键为 <code>C-c C-,</code> 。
-如果想要提供以前的简洁方式，需要引入 <code>org-tempo</code> ，比如 <code>(require 'org-tempo)</code> 我使用的是 <code>(use-package org-tempo)</code> 。具体见：
-</p>
 
-<ul class="org-ul">
-<li><a href="https://emacs.stackexchange.com/questions/46988/why-do-easy-templates-e-g-s-tab-in-org-9-2-not-work">Why do easy templates, .e.g, “&lt; s TAB” in org 9.2 not work?</a></li>
-<li><a href="https://orgmode.org/manual/Structure-Templates.html">org-mode 16.2 Structure Templates</a></li>
-</ul>
+<colgroup>
+<col  class="org-left" />
 
-<p>
-<span class="timestamp-wrapper"><span class="timestamp">&lt;2020-03-09 Mon 17:13&gt;</span></span>
-</p>
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">快捷键</td>
+<td class="org-left">说明</td>
+</tr>
 
-<p>
-orgmode 中 <code>_</code> 和 <code>^</code> 会被输出成下标和上标语法，可以在 <code>+OPTIONS</code> 中设置 <code>^:nil</code> 来禁掉它。
-</p>
+<tr>
+<td class="org-left"><code>C-x C-f</code></td>
+<td class="org-left">新建文件</td>
+</tr>
 
-<ul class="org-ul">
-<li><a href="https://emacs.stackexchange.com/questions/10549/org-mode-how-to-export-underscore-as-underscore-instead-of-highlight-in-html">https://emacs.stackexchange.com/questions/10549/org-mode-how-to-export-underscore-as-underscore-instead-of-highlight-in-html</a></li>
-</ul>
-</div>
-</div>
+<tr>
+<td class="org-left"><code>+</code></td>
+<td class="org-left">新建目录</td>
+</tr>
 
-<div id="outline-container-orgd81ec80" class="outline-2">
-<h2 id="orgd81ec80"><span class="section-number-2">4.</span> org-mode theme</h2>
-<div class="outline-text-2" id="text-4">
-<ul class="org-ul">
-<li><a href="https://jessekelly881-imagine.surge.sh">Imagine</a>: 范例 <a href="https://jessekelly.tk/">Jesse Kelly</a></li>
-<li><a href="https://jessekelly881-rethink.surge.sh">Rethink</a></li>
-<li><a href="https://github.com/gongzhitaao/orgcss">orgcss</a>: 范例 <a href="https://gongzhitaao.org/orgcss/">CSS for Org-exported HTML</a></li>
-<li><a href="https://github.com/fniessen/org-html-themes">org-html-themes</a></li>
-<li>我自己网站的 CSS 文件：<a href="https://raw.githubusercontent.com/zhangjie2012/site/master/static/site.css">https://raw.githubusercontent.com/zhangjie2012/site/master/static/site.css</a>
-参考了 orgcss 的配色</li>
-</ul>
+<tr>
+<td class="org-left"><code>C</code></td>
+<td class="org-left">拷贝文件</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>D</code></td>
+<td class="org-left">删除文件</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>R</code></td>
+<td class="org-left">重命名</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>x</code></td>
+<td class="org-left">删除被设置标记的文件</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-28 20:40:08 <br />Last updated: 2021-06-24 Thu 14:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2021-06-15 17:47:59 <br />Last updated: 2021-06-15 Tue 18:07 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

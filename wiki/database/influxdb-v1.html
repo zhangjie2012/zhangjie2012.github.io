@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-04-24 Sat 13:26 -->
+<!-- 2021-06-24 Thu 14:21 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>InfluxDB v1.x</title>
@@ -197,7 +197,7 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -222,6 +222,52 @@
 <body>
 <div id="content">
 <h1 class="title">InfluxDB v1.x</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7d8d0ed">1. InfluxQL</a>
+<ul>
+<li><a href="#orgc574035">1.1. SELECT 语句</a></li>
+<li><a href="#orga7fbd6f">1.2. FROM 语句</a>
+<ul>
+<li><a href="#orgffa938d">1.2.1. 引号</a></li>
+<li><a href="#org197bd9d">1.2.2. 范例</a></li>
+</ul>
+</li>
+<li><a href="#orgcda7783">1.3. WHERE 语句</a>
+<ul>
+<li><a href="#orgfac8eec">1.3.1. Fields</a></li>
+<li><a href="#org23deb5f">1.3.2. Tags</a></li>
+<li><a href="#org2bba85a">1.3.3. Timestamps</a></li>
+</ul>
+</li>
+<li><a href="#org2c7ec60">1.4. GROUP BY 语句</a>
+<ul>
+<li><a href="#orga84abe6">1.4.1. GROUP BY tags</a></li>
+<li><a href="#orga8f033d">1.4.2. GROUP BY time intervals</a>
+<ul>
+<li><a href="#orgf995747">1.4.2.1. Basic GROUP BY time() syntax</a></li>
+<li><a href="#org4aadca0">1.4.2.2. Advanced GROUP BY time() syntax</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org8878767">1.5. INTO 语法</a></li>
+<li><a href="#orgdf7b479">1.6. ORDER BY time DESC</a></li>
+<li><a href="#orgfdf255c">1.7. LIMIT 和 SLIMIT 语句</a>
+<ul>
+<li><a href="#orgec9645d">1.7.1. LIMIT 语句</a></li>
+<li><a href="#org4b48f84">1.7.2. SLIMIT 语句</a></li>
+</ul>
+</li>
+<li><a href="#org3821065">1.8. OFFSET 和 SOFFSET 语句</a></li>
+<li><a href="#org7f986cd">1.9. 时区（time zone）语句</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <p>
 <b>Retention policy DURATION</b> 决定 InfluxDB 保留数据的时长。 <b>SHARD DURATION</b> 决定子语句确定分片组覆盖的时间范围。对应关系：
 </p>
@@ -257,9 +303,399 @@
 </tr>
 </tbody>
 </table>
+
+<div id="outline-container-org7d8d0ed" class="outline-2">
+<h2 id="org7d8d0ed"><span class="section-number-2">1.</span> InfluxQL</h2>
+<div class="outline-text-2" id="text-1">
 </div>
+<div id="outline-container-orgc574035" class="outline-3">
+<h3 id="orgc574035"><span class="section-number-3">1.1.</span> SELECT 语句</h3>
+<div class="outline-text-3" id="text-1-1">
+<pre class="example">
+SELECT &lt;field_key&gt;[,&lt;field_key&gt;,&lt;tag_key&gt;] FROM &lt;measurement_name&gt;[,&lt;measurement_name&gt;]
+</pre>
+
+<p>
+当 SELECT 中包含 tag 时，只要需要同时包含一个 field。当 tag 和 field 的名字相同的时候可以携带标识符类型来区分。
+比如： <code>"&lt;field_key&gt;"::field</code> 表示 field， <code>"&lt;tag_key&gt;::tag"</code> 表示 tag。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga7fbd6f" class="outline-3">
+<h3 id="orga7fbd6f"><span class="section-number-3">1.2.</span> FROM 语句</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+<code>FROM</code> 语句支持一个或者多个 measurement(s)：
+</p>
+
+<ul class="org-ul">
+<li><code>FROM &lt;measurement_name&gt;</code> 查询单个表</li>
+<li><code>FROM &lt;measurement_name&gt;,&lt;measurement_name&gt;</code> 查询多个表</li>
+<li><code>FROM &lt;database_name&gt;.&lt;retention_policy_name&gt;.&lt;measurement_name&gt;</code> 指定数据库和保留策略</li>
+<li><code>FROM &lt;database_name&gt;..&lt;measurement_name&gt;</code> 指定数据库，使用默认的保留策略</li>
+</ul>
+</div>
+
+<div id="outline-container-orgffa938d" class="outline-4">
+<h4 id="orgffa938d"><span class="section-number-4">1.2.1.</span> 引号</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+如果标识符包含除了 <code>[A-z,0-9,_]</code> 以外的字符、以数字开头或者是 InfluxQL 关键则，那么标识符必须用双引号引起来。
+虽然不总是必要，但是建议你使用双引号。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org197bd9d" class="outline-4">
+<h4 id="org197bd9d"><span class="section-number-4">1.2.2.</span> 范例</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+查询所有的 fields <code>SELECT *::field</code> ，但是不能通过这个方法来查询所有的 tags。
+</p>
+
+<p>
+数学运算： <code>SELECT ("water_level" * 2) + 4 FROM "h2o_feet"</code> 。
+</p>
+
+<p>
+常见 SELECT 问题：在 SELECT 中只包含 tag，会查询不到数据。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcda7783" class="outline-3">
+<h3 id="orgcda7783"><span class="section-number-3">1.3.</span> WHERE 语句</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+<code>WHERE</code> 基于 fields，tags 和 timestamps 的过滤。
+</p>
+
+<pre class="example">
+SELECT_clause FROM_clause WHERE &lt;conditional_expression&gt; [(AND|OR) &lt;conditional_expression&gt; [...]]
+</pre>
+
+<p>
+<b>注意</b> InfluxDB 不支持在 WHERE 语句中用多个时间范围之间用 <code>OR</code> 运算。如下语句会返回空：
+</p>
+
+<pre class="example">
+&gt; SELECT * FROM "absolutismus" WHERE time = '2016-07-31T20:07:00Z' OR time = '2016-07-31T23:07:17Z'
+</pre>
+</div>
+
+<div id="outline-container-orgfac8eec" class="outline-4">
+<h4 id="orgfac8eec"><span class="section-number-4">1.3.1.</span> Fields</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<pre class="example">
+field_key &lt;operator&gt; ['string' | boolean | float | integer]
+</pre>
+
+<p>
+field 值支持字符串，布尔，浮点型和整型比较。 <code>WHERE</code> 中字符串使用单引号。
+</p>
+
+<p>
+支持的比较运算符：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Operator</th>
+<th scope="col" class="org-left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>=</code></td>
+<td class="org-left">等于</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;&gt;</code></td>
+<td class="org-left">不等于</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>!=</code></td>
+<td class="org-left">不等于</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&gt;</code></td>
+<td class="org-left">大于</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&gt;=</code></td>
+<td class="org-left">大于等于</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;</code></td>
+<td class="org-left">小于</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;=</code></td>
+<td class="org-left">小于等于</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org23deb5f" class="outline-4">
+<h4 id="org23deb5f"><span class="section-number-4">1.3.2.</span> Tags</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<pre class="example">
+tag_key &lt;operator&gt; ['tag_value']
+</pre>
+
+<p>
+tags 的值要使用单引号。支持的运算符：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Operator</th>
+<th scope="col" class="org-left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>=</code></td>
+<td class="org-left">等于</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;&gt;</code></td>
+<td class="org-left">不等于</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>!=</code></td>
+<td class="org-left">不等于</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org2bba85a" class="outline-4">
+<h4 id="org2bba85a"><span class="section-number-4">1.3.3.</span> Timestamps</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<p>
+对于大部分的 <code>SELECT</code> 语句，默认的时间范围是 <code>1677-09-21T00:12:43.145224194Z</code> 和 <code>2262-04-11T23:47:16.854775806Z</code> 之间。
+</p>
+
+<p>
+<code>SELECT</code> 使用 <code>GROUP BY time()</code> 时，默认的时间范围是 <code>1677-09-21T00:12:43.145224194Z</code> 和 <code>now()</code> 之间。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2c7ec60" class="outline-3">
+<h3 id="org2c7ec60"><span class="section-number-3">1.4.</span> GROUP BY 语句</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+<code>GROUP BY</code> 对查询结果进行分组：
+</p>
+
+<ul class="org-ul">
+<li>基于一个或者多个 tags</li>
+<li>指定时间间隔</li>
+</ul>
+
+<p>
+<b>注意：</b> 你不可以对 fields 使用 <code>GROUP BY</code> 。
+</p>
+</div>
+
+<div id="outline-container-orga84abe6" class="outline-4">
+<h4 id="orga84abe6"><span class="section-number-4">1.4.1.</span> GROUP BY tags</h4>
+<div class="outline-text-4" id="text-1-4-1">
+<pre class="example">
+SELECT_clause FROM_clause [WHERE_clause] GROUP BY [* | &lt;tag_key&gt;[,&lt;tag_key]]
+</pre>
+
+<p>
+<code>GROUP BY *</code> 按照所有 tag 分组
+</p>
+
+<p>
+<code>GROUP BY &lt;tag_key&gt;</code> 按照单个 tag 分组
+</p>
+
+<p>
+<code>GROUP BY &lt;tag_key&gt;,&lt;tag_key&gt;</code> 多个 tag 分组，tag 的顺序无关紧要
+</p>
+
+<p>
+<b>如果包含 <code>WHERE</code> 语句， <code>GROUP BY</code> 语句必须出现在 <code>WHERE</code> 之后</b>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga8f033d" class="outline-4">
+<h4 id="orga8f033d"><span class="section-number-4">1.4.2.</span> GROUP BY time intervals</h4>
+<div class="outline-text-4" id="text-1-4-2">
+</div>
+<div id="outline-container-orgf995747" class="outline-5">
+<h5 id="orgf995747"><span class="section-number-5">1.4.2.1.</span> Basic GROUP BY time() syntax</h5>
+<div class="outline-text-5" id="text-1-4-2-1">
+<pre class="example">
+SELECT &lt;function&gt;(&lt;field_key&gt;) FROM_clause WHERE &lt;time_range&gt; GROUP BY time(&lt;time_interval&gt;),[tag_key] [fill(&lt;fill_option&gt;)]
+</pre>
+
+<ul class="org-ul">
+<li><code>time(time_interval)</code> 按照持续时间进行分组</li>
+<li><code>fill(&lt;fill_option&gt;)</code> 可选的，它会更改为没有数据的时间间隔报告的值</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4aadca0" class="outline-5">
+<h5 id="org4aadca0"><span class="section-number-5">1.4.2.2.</span> Advanced GROUP BY time() syntax</h5>
+<div class="outline-text-5" id="text-1-4-2-2">
+<pre class="example">
+SELECT &lt;function&gt;(&lt;field_key&gt;) FROM_clause WHERE &lt;time_range&gt; GROUP BY time(&lt;time_interval&gt;,&lt;offset_interval&gt;),[tag_key] [fill(&lt;fill_option&gt;)]
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8878767" class="outline-3">
+<h3 id="org8878767"><span class="section-number-3">1.5.</span> INTO 语法</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+INTO 将查询结果写入到用户指定的 measurment。
+</p>
+
+<pre class="example">
+SELECT_clause INTO &lt;measurement_name&gt; FROM_clause [WHERE_clause] [GROUP_BY_clause]
+</pre>
+
+<p>
+<code>measurement_name</code> 与 FROM 后紧跟的库表语法规范类似。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdf7b479" class="outline-3">
+<h3 id="orgdf7b479"><span class="section-number-3">1.6.</span> ORDER BY time DESC</h3>
+<div class="outline-text-3" id="text-1-6">
+<pre class="example">
+SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] ORDER BY time DESC
+</pre>
+
+<p>
+如果包含 <code>GROUP BY</code> 条件的话， <code>ORDER by time DESC</code> 必须出现在 <code>GROUP BY</code> 之后。如果查询包含 <code>WHERE</code> 但是没有
+<code>GROUP BY</code> 条件， <code>ORDER by time DESC</code> 必须在 <code>WHERE</code> 之后。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfdf255c" class="outline-3">
+<h3 id="orgfdf255c"><span class="section-number-3">1.7.</span> LIMIT 和 SLIMIT 语句</h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+<code>LIMIT</code> 和 <code>SLIMIT</code> 限制 points 和 series 查询的返回数量。
+</p>
+</div>
+
+
+<div id="outline-container-orgec9645d" class="outline-4">
+<h4 id="orgec9645d"><span class="section-number-4">1.7.1.</span> LIMIT 语句</h4>
+<div class="outline-text-4" id="text-1-7-1">
+<pre class="example">
+SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_BY_clause] LIMIT &lt;N&gt;
+</pre>
+
+<p>
+注意 <code>LIMIT</code> 必须放在上面所有语句的最后。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4b48f84" class="outline-4">
+<h4 id="org4b48f84"><span class="section-number-4">1.7.2.</span> SLIMIT 语句</h4>
+<div class="outline-text-4" id="text-1-7-2">
+<pre class="example">
+SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] GROUP BY *[,time(&lt;time_interval&gt;)] [ORDER_BY_clause] SLIMIT &lt;N&gt;
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org3821065" class="outline-3">
+<h3 id="org3821065"><span class="section-number-3">1.8.</span> OFFSET 和 SOFFSET 语句</h3>
+<div class="outline-text-3" id="text-1-8">
+<p>
+<code>OFFSET &lt;N&gt;</code> 对查询结果进行 N points 的分页。
+</p>
+
+<pre class="example">
+SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_BY_clause] LIMIT_clause OFFSET &lt;N&gt; [SLIMIT_clause]
+</pre>
+
+<p>
+<code>OFFSET</code> 需要和 <code>LIMIT</code> 一起使用，否则会导致查询结果不一致。整体表达的是： <code>OFFSET</code> 之后的 <code>LIMIT</code> 个元素。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org7f986cd" class="outline-3">
+<h3 id="org7f986cd"><span class="section-number-3">1.9.</span> 时区（time zone）语句</h3>
+<div class="outline-text-3" id="text-1-9">
+<p>
+<code>tz()</code> 语句指定时区<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
+</p>
+
+<pre class="example">
+SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_BY_clause] [LIMIT_clause] [OFFSET_clause] [SLIMIT_clause] [SOFFSET_clause] tz('&lt;time_zone&gt;')
+</pre>
+
+<p>
+默认情况下，InfluxDB 存储和返回 UTC 时间戳。
+</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List">https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List</a>
+</p></div></div>
+
+
+</div>
+</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-23 14:02:41 <br />Last updated: 2021-04-23 Fri 14:10 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2021-04-23 14:02:41 <br />Last updated: 2021-06-24 Thu 14:20 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>
