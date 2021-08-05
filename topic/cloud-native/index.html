@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-06-15 Tue 18:08 -->
+<!-- 2021-08-05 Thu 10:49 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>云原生</title>
@@ -353,38 +353,123 @@ API server 和它暴露的 HTTP API。用户和集群的不同组件以及外部
 </ul></li>
 <li><a href="kubernetes/workloads.html">工作负载（workloads）</a>
 <ul class="org-ul">
-<li><a href="kubernetes/workloads-pods.html">Pods</a>
+<li><a href="kubernetes/workloads-pods.html">Pods</a> <code>[3/6]</code>
 <ul class="org-ul">
-<li><a href="kubernetes/workloads-pods-pod-lifecycle.html">Pod Lifecyle</a></li>
-<li><a href="kubernetes/workloads-pods-init-containers.html">Init Containers</a></li>
-<li><i>stop in here</i></li>
+<li class="on"><code>[X]</code> <a href="kubernetes/pod.html">Pod</a>: 概念、为什么需要 Pod、状态标识、健康检查、生命周期等</li>
+<li class="on"><code>[X]</code> <a href="kubernetes/workloads-pods-pod-lifecycle.html">Pod Lifecyle</a></li>
+<li class="on"><code>[X]</code> <a href="kubernetes/workloads-pods-init-containers.html">Init Containers</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/">Pod 拓扑扩展约束</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/workloads/pods/disruptions/">中断</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/">临时容器</a></li>
 </ul></li>
-<li>工作负载资源</li>
-</ul></li>
-<li><a href="kubernetes/pod.html">Pod</a>: 概念、为什么需要 Pod、状态标识、健康检查、生命周期等</li>
-<li>控制器(controller):
+<li>工作负载资源
 <ul class="org-ul">
-<li><a href="kubernetes/controller-replicaset.html">ReplicaSet</a>: 保证一组 Pod 副本在集群的正常运行</li>
-<li><del>ReplicationController</del>: ReplicaSet 是下一代的 RC（支持新的基于集合的标签选择器），建议使用 RS</li>
 <li><a href="kubernetes/controller-deployments.html">Deployments</a>: 用于无状态服务部署，在 ReplicaSet 基础上提供了更新策略等</li>
+<li><a href="kubernetes/controller-replicaset.html">ReplicaSet</a>: 保证一组 Pod 副本在集群的正常运行</li>
 <li><a href="kubernetes/controller-statefulsets.html">StatefulSets</a>: 用于部署无状态应用（ZooKeeper，Kafka，Redis 等）</li>
 <li><a href="kubernetes/controller-daemonset.html">DaemonSet</a>: 每个节点上跑一个 Pod，用作类似日志收集、系统监控等功能</li>
-<li><a href="kubernetes/controller-gc.html">Garbage Collection</a>: 负责集群资源回收</li>
-<li><a href="kubernetes/controller-ttlafterfinished.html">TTL Controller for Finished Resources</a>: 在对象执行完成后 TTL 秒，回收资源（目前仅用于 Job）</li>
 <li><a href="kubernetes/controller-job.html">Jobs</a> 一次性的任务</li>
-<li><a href="kubernetes/controller-cronjobs.html">CronJobs</a></li>
+<li><a href="kubernetes/controller-ttlafterfinished.html">TTL Controller for Finished Resources</a>: 在对象执行完成后 TTL 秒，回收资源（目前仅用于 Job）</li>
+<li><a href="kubernetes/controller-cronjobs.html">CronJobs</a> 定时任务</li>
+<li><del>ReplicationController</del>: ReplicaSet 是下一代的 RC（支持新的基于集合的标签选择器），建议使用 RS</li>
+<li><a href="kubernetes/controller-gc.html">Garbage Collection</a>: 负责集群资源回收</li>
 </ul></li>
-<li><a href="kubernetes/services-networking.html">Services、负载均衡和集群网络</a>
+</ul></li>
+<li><a href="kubernetes/services-networking.html">Services、负载均衡和集群网络</a> <code>[1/11]</code>
 <ul class="org-ul">
-<li><a href="kubernetes/service.html">Service</a> 集群内部的服务暴露抽象，提供虚拟 IP ，然后通过负载均衡策略，将流量转发到 Endpoints。
+<li class="on"><code>[X]</code> <a href="kubernetes/service.html">Service</a> 集群内部的服务暴露抽象，提供虚拟 IP，然后通过负载均衡策略，将流量转发到 Endpoints。
 底层实现是 kube-proxy，它支持三种模式（用户空间，iptables，IPVS），主流都是使用 IPVS</li>
 <li class="off"><code>[&#xa0;]</code> <a href="kubernetes/service-topology.html">服务拓扑</a> 实现基于 Service 的亲和性</li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/">Services 和 Pods 的 DNS</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/">使用 Services 连接应用</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/ingress/">Ingress</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/">Ingress Controllers</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/">EndpointSlices</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/service-traffic-policy/">Service 内部流量策略</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/topology-aware-hints/">拓扑感知提示</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/network-policies/">网络策略</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/dual-stack/">IPv4/IPv6 双栈</a></li>
 </ul></li>
-<li>存储: Volumes, Persistent Volumes, Storage Class 等</li>
-<li>调度: 调度器和调度策略</li>
+<li>存储: Volumes, Persistent Volumes, Storage Class 等 <code>[1/11]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/volumes/">Volumes</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">持久化卷</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/volume-snapshots/">卷快照</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/">CSI 卷克隆</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">Storage Classes</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/">Volume Snapshot Classes</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/">Dynamic Volume Provisioning</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/storage-capacity/">Storage Capacity</a></li>
+<li class="on"><code>[X]</code> <a href="kubernetes/storage-ephemeral-volumes.html">临时卷</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/storage-limits/">Node-specific Volume Limits</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/volume-health-monitoring/">Volume Health Monitoring</a></li>
+</ul></li>
+<li>配置 <code>[0/5]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/configuration/overview/">配置最佳实践</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/configuration/configmap/">ConfigMaps</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/configuration/secret/">Secrets</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/">为容器管理资源</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/">Organizing Cluster Access Using kubeconfig Files</a></li>
+</ul></li>
+<li>安全 <code>[0/3]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/security/overview/">云原生安全概览</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/security/pod-security-standards/">Pod 安全标准</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/security/controlling-access/">控制 Kubernetes API 访问</a></li>
+</ul></li>
+<li>策略（Policies） <code>[0/5]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/policy/limit-range/">Limit Ranges</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/policy/resource-quotas/">Resource Quotas</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/policy/pod-security-policy/">Pod 安全策略</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/policy/pid-limiting/">进程 ID 限制和保留</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/policy/node-resource-managers/">节点资源管理器</a></li>
+</ul></li>
+<li><a href="https://kubernetes.io/docs/concepts/scheduling-eviction/">调度，抢占（Preemption）和驱逐（Eviction）</a> <code>[0/10]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/">Kubernetes 调度器</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/">把 Pods 分配给节点</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/pod-overhead/">Pod 开销</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">污点和容忍</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/">Pod 优先级和抢占（Pod Priority and Preeemption）</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/">节点压力驱逐</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/api-eviction/">API 发起的驱逐</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/resource-bin-packing/">Resource Bin Packing for Extended Resources</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/scheduling-framework/">调度框架</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/scheduler-perf-tuning/">调度器性能调优</a></li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/">集群管理</a> <code>[0/9]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/certificates/">证书</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/">管理资源</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/networking/">集群网络</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/logging/">日志架构</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/system-metrics/">Kubernetes 系统组件指标</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/system-logs/">系统日志</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/proxies/">Kubernetes 中的代理</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/flow-control/">API Priority and Fairness</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/addons/">安装插件</a></li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> 扩展 Kubernetes <code>[0/4]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/">扩展 Kubernetes API</a>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/">自定义资源</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/">Extending the Kubernetes API with the aggregation layer</a></li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> 计算，存储和网络扩展
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/">网络插件</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/">设备插件</a></li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/operator/">Operator 模式</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/service-catalog/">Service Catalog</a></li>
+</ul></li>
 </ul>
 </div>
 </div>
+
 
 <div id="outline-container-orgfe1c95c" class="outline-3">
 <h3 id="orgfe1c95c"><span class="section-number-3">5.2.</span> 监控告警</h3>
@@ -485,7 +570,7 @@ Mac 地址等网络信息都是 Pause 容器的；</li>
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2021-06-10 Thu 14:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2021-07-28 Wed 18:07 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

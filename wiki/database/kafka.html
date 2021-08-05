@@ -6,7 +6,7 @@
 <!-- 2021-08-05 Thu 10:49 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Services, Load Balancing, and Networking</title>
+<title>Kafka</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,24 +221,45 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">Services, Load Balancing, and Networking</h1>
-<p>
-<a href="https://kubernetes.io/docs/concepts/services-networking/">https://kubernetes.io/docs/concepts/services-networking/</a>
-</p>
-
-<p>
-Kubernetes 网络解决了四个问题：
-</p>
-
-<ul class="org-ul">
-<li>Pod 中的容器通过 loopback 使用网络进行通信；</li>
-<li>集群网络提供了不同的 Pods 之间的通信；</li>
-<li>通过 Service 资源，可以将 Pod 中运行的应用程序被集群外部访问；</li>
-<li>可以用 Services 来发布仅对集群内部使用的服务；</li>
+<h1 class="title">Kafka</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org172a1d2">1. FAQ</a>
+<ul>
+<li><a href="#orgd685991">1.1. kafka-topics.sh 执行命令报错 <code>java.rmi.server.ExportException: Port already in use: 5555; nested exception is:</code></a></li>
+</ul>
+</li>
 </ul>
 </div>
+</div>
+
+
+<div id="outline-container-org172a1d2" class="outline-2">
+<h2 id="org172a1d2"><span class="section-number-2">1.</span> FAQ</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgd685991" class="outline-3">
+<h3 id="orgd685991"><span class="section-number-3">1.1.</span> kafka-topics.sh 执行命令报错 <code>java.rmi.server.ExportException: Port already in use: 5555; nested exception is:</code></h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+也有人提问：<a href="https://github.com/ches/docker-kafka/issues/49">https://github.com/ches/docker-kafka/issues/49</a>
+</p>
+
+<p>
+答案：<a href="https://github.com/ches/docker-kafka/pull/11#issuecomment-292752506">https://github.com/ches/docker-kafka/pull/11#issuecomment-292752506</a>
+</p>
+
+<p>
+在必须要使用 <code>docker exec</code> 的时候指定环境变量 <code>--env JMX_PORT=</code> 但是 <code>kubectl</code> 似乎没有 <code>--env</code> 参数。可以在 exec 之后，命令行 <code>export JMX_PORT=""</code> 即可。
+</p>
+</div>
+</div>
+</div>
+</div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-01-24 21:50:23 <br />Last updated: 2021-07-28 Wed 10:37 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2021-08-04 11:27:28 <br />Last updated: 2021-08-04 Wed 11:35 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

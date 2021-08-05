@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-04-28 Wed 21:36 -->
+<!-- 2021-08-05 Thu 10:50 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go MongoDB</title>
@@ -197,7 +197,7 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -226,11 +226,12 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgab95058">1. interface{} decode to bson.M</a></li>
-<li><a href="#orgc74df6a">2. 分页、排序</a></li>
-<li><a href="#orgda05adb">3. 只取 Document 中的一部分</a></li>
-<li><a href="#orga4e7807">4. 存储时间时区问题</a></li>
-<li><a href="#orge0a7987">5. mongo-go-driver 构建索引报错：</a></li>
+<li><a href="#orgead2668">1. 连接报错</a></li>
+<li><a href="#orgab95058">2. interface{} decode to bson.M</a></li>
+<li><a href="#orgc74df6a">3. 分页、排序</a></li>
+<li><a href="#orgda05adb">4. 只取 Document 中的一部分</a></li>
+<li><a href="#orga4e7807">5. 存储时间时区问题</a></li>
+<li><a href="#orge0a7987">6. mongo-go-driver 构建索引报错：</a></li>
 </ul>
 </div>
 </div>
@@ -238,10 +239,28 @@
 建议使用 <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a>，目前已经 v1.5.1。mgo.v2 我也用过一段时间，但是目前已经不在维护了。
 </p>
 
+<div id="outline-container-orgead2668" class="outline-2">
+<h2 id="orgead2668"><span class="section-number-2">1.</span> 连接报错</h2>
+<div class="outline-text-2" id="text-1">
+<pre class="example">
+connection() error occured during connection handshake: auth error: sasl conversation error: unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.
+</pre>
+
+<p>
+MongoDB 的权限比较复杂，我也折腾不明白。不过报这个错，肯定是因为权限的问题。
+</p>
+
+<p>
+在连接 MongoDB 时，URI 格式一般为： <code>mongodb://&lt;username&gt;:&lt;password&gt;@localhost:27017</code> ，此时的 <code>username</code> 和 <code>password</code> 对应的是 MongoDB 超级管理员，
+如果对应的 <code>username</code> 和 <code>password</code> 不是超级管理员，而是某一个 database 的权限，则会报如上的错。解决办法是在 uri 中携带 database 的名字。如：
+<code>mongodb://&lt;username&gt;:&lt;password&gt;@localhost:27017/&lt;database&gt;</code> <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
+</p>
+</div>
+</div>
 
 <div id="outline-container-orgab95058" class="outline-2">
-<h2 id="orgab95058"><span class="section-number-2">1</span> interface{} decode to bson.M</h2>
-<div class="outline-text-2" id="text-1">
+<h2 id="orgab95058"><span class="section-number-2">2.</span> interface{} decode to bson.M</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 业务场景是这样的：在插入 MongoDB 时，会插入一个前端给的 JSON，而后端对 JSON 的具体格式并不确定，希望怎么插入就怎么输出。
 所以，后端（Go）就声明成了一个 <code>interface{}</code> ，insert 之后没有任何问题，在 MongoDB 中存储的也达到了期望。
@@ -257,9 +276,9 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #BA36A5;">tM</span> := reflect.<span style="color: #006699;">TypeOf</span><span style="color: #707183;">(</span><span style="color: #6434A3;">bson.M</span><span style="color: #7388D6;">{}</span><span style="color: #707183;">)</span>
-<span style="color: #BA36A5;">reg</span> := bson.<span style="color: #006699;">NewRegistryBuilder</span><span style="color: #707183;">()</span>.<span style="color: #006699;">RegisterTypeMapEntry</span><span style="color: #707183;">(</span>bsontype.EmbeddedDocument, tM<span style="color: #707183;">)</span>.<span style="color: #006699;">Build</span><span style="color: #707183;">()</span>
-<span style="color: #BA36A5;">client</span>, <span style="color: #BA36A5;">err</span> := mongo.<span style="color: #006699;">Connect</span><span style="color: #707183;">(</span>ctx, options.<span style="color: #006699;">Client</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">ApplyURI</span><span style="color: #7388D6;">(</span>uri<span style="color: #7388D6;">)</span>.<span style="color: #006699;">SetRegistry</span><span style="color: #7388D6;">(</span>reg<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-go"><span style="color: #00538b;">tM</span> := reflect.<span style="color: #721045;">TypeOf</span><span style="color: #000000;">(</span><span style="color: #005a5f;">bson.M</span><span style="color: #a8007f;">{}</span><span style="color: #000000;">)</span>
+<span style="color: #00538b;">reg</span> := bson.<span style="color: #721045;">NewRegistryBuilder</span><span style="color: #000000;">()</span>.<span style="color: #721045;">RegisterTypeMapEntry</span><span style="color: #000000;">(</span>bsontype.EmbeddedDocument, tM<span style="color: #000000;">)</span>.<span style="color: #721045;">Build</span><span style="color: #000000;">()</span>
+<span style="color: #00538b;">client</span>, <span style="color: #00538b;">err</span> := mongo.<span style="color: #721045;">Connect</span><span style="color: #000000;">(</span>ctx, options.<span style="color: #721045;">Client</span><span style="color: #a8007f;">()</span>.<span style="color: #721045;">ApplyURI</span><span style="color: #a8007f;">(</span>uri<span style="color: #a8007f;">)</span>.<span style="color: #721045;">SetRegistry</span><span style="color: #a8007f;">(</span>reg<span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>
 </pre>
 </div>
 
@@ -268,18 +287,18 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">RegisterTypeMapEntry will register the provided type to the BSON type. The primary usage for this</span>
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">mapping is decoding situations where an empty interface is used and a default type needs to be</span>
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">created and decoded into.</span>
-<span style="color: #8D8D84;">//</span>
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">By default, BSON documents will decode into interface{} values as bson.D. To change the default type for BSON</span>
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">documents, a type map entry for bsontype.EmbeddedDocument should be registered. For example, to force BSON documents</span>
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">to decode to bson.Raw, use the following code:</span>
-<span style="color: #8D8D84;">//  </span><span style="color: #8D8D84; font-style: italic;">rb.RegisterTypeMapEntry(bsontype.EmbeddedDocument, reflect.TypeOf(bson.Raw{}))</span>
-<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">rb</span> *<span style="color: #6434A3;">RegistryBuilder</span><span style="color: #707183;">)</span> <span style="color: #006699;">RegisterTypeMapEntry</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">bt</span> <span style="color: #6434A3;">bsontype.Type</span>, <span style="color: #BA36A5;">rt</span> <span style="color: #6434A3;">reflect.Type</span><span style="color: #707183;">)</span> *<span style="color: #6434A3;">RegistryBuilder</span> <span style="color: #707183;">{</span>
-    rb.typeMap<span style="color: #7388D6;">[</span>bt<span style="color: #7388D6;">]</span> = rt
-    <span style="color: #0000FF;">return</span> rb
-<span style="color: #707183;">}</span>
+<pre class="src src-go"><span style="color: #505050;">// </span><span style="color: #505050;">RegisterTypeMapEntry will register the provided type to the BSON type. The primary usage for this</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">mapping is decoding situations where an empty interface is used and a default type needs to be</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">created and decoded into.</span>
+<span style="color: #505050;">//</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">By default, BSON documents will decode into interface{} values as bson.D. To change the default type for BSON</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">documents, a type map entry for bsontype.EmbeddedDocument should be registered. For example, to force BSON documents</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">to decode to bson.Raw, use the following code:</span>
+<span style="color: #505050;">//  </span><span style="color: #505050;">rb.RegisterTypeMapEntry(bsontype.EmbeddedDocument, reflect.TypeOf(bson.Raw{}))</span>
+<span style="color: #5317ac;">func</span> <span style="color: #000000;">(</span><span style="color: #00538b;">rb</span> *<span style="color: #005a5f;">RegistryBuilder</span><span style="color: #000000;">)</span> <span style="color: #721045;">RegisterTypeMapEntry</span><span style="color: #000000;">(</span><span style="color: #00538b;">bt</span> <span style="color: #005a5f;">bsontype.Type</span>, <span style="color: #00538b;">rt</span> <span style="color: #005a5f;">reflect.Type</span><span style="color: #000000;">)</span> *<span style="color: #005a5f;">RegistryBuilder</span> <span style="color: #000000;">{</span>
+    rb.typeMap<span style="color: #a8007f;">[</span>bt<span style="color: #a8007f;">]</span> = rt
+    <span style="color: #5317ac;">return</span> rb
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -295,8 +314,8 @@
 </div>
 
 <div id="outline-container-orgc74df6a" class="outline-2">
-<h2 id="orgc74df6a"><span class="section-number-2">2</span> 分页、排序</h2>
-<div class="outline-text-2" id="text-2">
+<h2 id="orgc74df6a"><span class="section-number-2">3.</span> 分页、排序</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 MongoDB 在查询时的选项都是有 <code>FindOptions</code> 控制的。分页通过 <code>FindOptions</code> 的 <code>Skip</code> 和 <code>Limit</code> 来实现：
 </p>
@@ -317,8 +336,8 @@ options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.M{"create_timestamp": 
 </div>
 
 <div id="outline-container-orgda05adb" class="outline-2">
-<h2 id="orgda05adb"><span class="section-number-2">3</span> 只取 Document 中的一部分</h2>
-<div class="outline-text-2" id="text-3">
+<h2 id="orgda05adb"><span class="section-number-2">4.</span> 只取 Document 中的一部分</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 很多时候，把 Document 中的所有的字段全部取出来性能是很低下的，而且真实的业务场景也是需要其中的部分字段。
 </p>
@@ -334,8 +353,8 @@ options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.M{"create_timestamp": 
 </div>
 
 <div id="outline-container-orga4e7807" class="outline-2">
-<h2 id="orga4e7807"><span class="section-number-2">4</span> 存储时间时区问题</h2>
-<div class="outline-text-2" id="text-4">
+<h2 id="orga4e7807"><span class="section-number-2">5.</span> 存储时间时区问题</h2>
+<div class="outline-text-2" id="text-5">
 <p>
 MongoDB 在存储的时候本地时间会自动转换成 <a href="https://time.is/zh/UTC">UTC</a> 时间。在 Mongo cli 查询需要 <code>ISODate</code> 加上本地时区做转换。
 比如 <code>ISODate("2020-10-10T11:43:06.027+-8:00")</code> ，在 Go 代码中 insert 和 query 要保持一致的 locale。
@@ -349,8 +368,8 @@ MongoDB 在存储的时候本地时间会自动转换成 <a href="https://time.i
 </div>
 
 <div id="outline-container-orge0a7987" class="outline-2">
-<h2 id="orge0a7987"><span class="section-number-2">5</span> <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a> 构建索引报错：</h2>
-<div class="outline-text-2" id="text-5">
+<h2 id="orge0a7987"><span class="section-number-2">6.</span> <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a> 构建索引报错：</h2>
+<div class="outline-text-2" id="text-6">
 <blockquote>
 <p>
 (BadValue) Invalid field specified for createIndexes command:
@@ -363,30 +382,30 @@ maxTimeMS
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">yieldIndexModel</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">key</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">unique</span> <span style="color: #6434A3;">bool</span>, <span style="color: #BA36A5;">order</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">mongo.IndexModel</span> <span style="color: #707183;">{</span>
-    <span style="color: #BA36A5;">keys</span> := <span style="color: #6434A3;">bsonx.Doc</span><span style="color: #7388D6;">{</span><span style="color: #909183;">{</span><span style="color: #D0372D;">Key</span>: key, <span style="color: #D0372D;">Value</span>: bsonx.<span style="color: #006699;">Int32</span><span style="color: #709870;">(</span><span style="color: #006699;">int32</span><span style="color: #907373;">(</span>order<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">}</span><span style="color: #7388D6;">}</span>
-    <span style="color: #BA36A5;">index</span> := <span style="color: #6434A3;">mongo.IndexModel</span><span style="color: #7388D6;">{</span>
-        <span style="color: #D0372D;">Keys</span>: keys,
-    <span style="color: #7388D6;">}</span>
-    <span style="color: #0000FF;">if</span> unique <span style="color: #7388D6;">{</span>
-        index.Options = options.<span style="color: #006699;">Index</span><span style="color: #909183;">()</span>.<span style="color: #006699;">SetUnique</span><span style="color: #909183;">(</span><span style="color: #D0372D;">true</span><span style="color: #909183;">)</span>
-    <span style="color: #7388D6;">}</span>
-    <span style="color: #0000FF;">return</span> index
-<span style="color: #707183;">}</span>
+<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">yieldIndexModel</span><span style="color: #000000;">(</span><span style="color: #00538b;">key</span> <span style="color: #005a5f;">string</span>, <span style="color: #00538b;">unique</span> <span style="color: #005a5f;">bool</span>, <span style="color: #00538b;">order</span> <span style="color: #005a5f;">int</span><span style="color: #000000;">)</span> <span style="color: #005a5f;">mongo.IndexModel</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">keys</span> := <span style="color: #005a5f;">bsonx.Doc</span><span style="color: #a8007f;">{</span><span style="color: #005f88;">{</span><span style="color: #0000c0;">Key</span>: key, <span style="color: #0000c0;">Value</span>: bsonx.<span style="color: #721045;">Int32</span><span style="color: #904200;">(</span><span style="color: #721045;">int32</span><span style="color: #7f10d0;">(</span>order<span style="color: #7f10d0;">)</span><span style="color: #904200;">)</span><span style="color: #005f88;">}</span><span style="color: #a8007f;">}</span>
+    <span style="color: #00538b;">index</span> := <span style="color: #005a5f;">mongo.IndexModel</span><span style="color: #a8007f;">{</span>
+        <span style="color: #0000c0;">Keys</span>: keys,
+    <span style="color: #a8007f;">}</span>
+    <span style="color: #5317ac;">if</span> unique <span style="color: #a8007f;">{</span>
+        index.Options = options.<span style="color: #721045;">Index</span><span style="color: #005f88;">()</span>.<span style="color: #721045;">SetUnique</span><span style="color: #005f88;">(</span><span style="color: #0000c0;">true</span><span style="color: #005f88;">)</span>
+    <span style="color: #a8007f;">}</span>
+    <span style="color: #5317ac;">return</span> index
+<span style="color: #000000;">}</span>
 
-<span style="color: #0000FF;">func</span> <span style="color: #707183;">(</span><span style="color: #BA36A5;">sc</span> *<span style="color: #6434A3;">StorageClient</span><span style="color: #707183;">)</span> <span style="color: #006699;">BuildIndex</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">name</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">key</span> <span style="color: #6434A3;">string</span>, <span style="color: #BA36A5;">unique</span> <span style="color: #6434A3;">bool</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">error</span> <span style="color: #707183;">{</span>
-    <span style="color: #BA36A5;">db</span>, <span style="color: #BA36A5;">err</span> := sc.<span style="color: #006699;">GetDatabase</span><span style="color: #7388D6;">()</span>
-    <span style="color: #0000FF;">if</span> err != <span style="color: #D0372D;">nil</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #0000FF;">return</span> err
-    <span style="color: #7388D6;">}</span>
+<span style="color: #5317ac;">func</span> <span style="color: #000000;">(</span><span style="color: #00538b;">sc</span> *<span style="color: #005a5f;">StorageClient</span><span style="color: #000000;">)</span> <span style="color: #721045;">BuildIndex</span><span style="color: #000000;">(</span><span style="color: #00538b;">name</span> <span style="color: #005a5f;">string</span>, <span style="color: #00538b;">key</span> <span style="color: #005a5f;">string</span>, <span style="color: #00538b;">unique</span> <span style="color: #005a5f;">bool</span><span style="color: #000000;">)</span> <span style="color: #005a5f;">error</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">db</span>, <span style="color: #00538b;">err</span> := sc.<span style="color: #721045;">GetDatabase</span><span style="color: #a8007f;">()</span>
+    <span style="color: #5317ac;">if</span> err != <span style="color: #0000c0;">nil</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #5317ac;">return</span> err
+    <span style="color: #a8007f;">}</span>
 
-    <span style="color: #BA36A5;">collection</span> := db.<span style="color: #006699;">Collection</span><span style="color: #7388D6;">(</span>name<span style="color: #7388D6;">)</span>
-    <span style="color: #BA36A5;">opts</span> := options.<span style="color: #006699;">CreateIndexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">SetMaxTime</span><span style="color: #7388D6;">(</span>20 * time.Second<span style="color: #7388D6;">)</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">set max build time</span>
-    <span style="color: #BA36A5;">indexModel</span> := <span style="color: #006699;">yieldIndexModel</span><span style="color: #7388D6;">(</span>key, unique, ASCENDING<span style="color: #7388D6;">)</span>
-    <span style="color: #BA36A5;">indexName</span>, <span style="color: #BA36A5;">err</span> := collection.<span style="color: #006699;">Indexes</span><span style="color: #7388D6;">()</span>.<span style="color: #006699;">CreateOne</span><span style="color: #7388D6;">(</span>context.<span style="color: #006699;">Background</span><span style="color: #909183;">()</span>, indexModel, opts<span style="color: #7388D6;">)</span>
+    <span style="color: #00538b;">collection</span> := db.<span style="color: #721045;">Collection</span><span style="color: #a8007f;">(</span>name<span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">opts</span> := options.<span style="color: #721045;">CreateIndexes</span><span style="color: #a8007f;">()</span>.<span style="color: #721045;">SetMaxTime</span><span style="color: #a8007f;">(</span>20 * time.Second<span style="color: #a8007f;">)</span> <span style="color: #505050;">// </span><span style="color: #505050;">set max build time</span>
+    <span style="color: #00538b;">indexModel</span> := <span style="color: #721045;">yieldIndexModel</span><span style="color: #a8007f;">(</span>key, unique, ASCENDING<span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">indexName</span>, <span style="color: #00538b;">err</span> := collection.<span style="color: #721045;">Indexes</span><span style="color: #a8007f;">()</span>.<span style="color: #721045;">CreateOne</span><span style="color: #a8007f;">(</span>context.<span style="color: #721045;">Background</span><span style="color: #005f88;">()</span>, indexModel, opts<span style="color: #a8007f;">)</span>
 
-    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">...</span>
-<span style="color: #707183;">}</span>
+    <span style="color: #505050;">// </span><span style="color: #505050;">...</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -399,9 +418,19 @@ maxTimeMS
 </p>
 </div>
 </div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://groups.google.com/g/mongodb-go-driver/c/nlkVePkOiGc">https://groups.google.com/g/mongodb-go-driver/c/nlkVePkOiGc</a>
+</p></div></div>
+
+
 </div>
+</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-04-28 Wed 21:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-07-28 Wed 10:37 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

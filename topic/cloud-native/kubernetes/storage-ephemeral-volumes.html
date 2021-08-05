@@ -6,7 +6,7 @@
 <!-- 2021-08-05 Thu 10:49 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Services, Load Balancing, and Networking</title>
+<title>Kubernetes 存储：临时卷（ephemeral volumes）</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid"
@@ -221,24 +221,86 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">Services, Load Balancing, and Networking</h1>
+<h1 class="title">Kubernetes 存储：临时卷（ephemeral volumes）</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1ac6fb7">1. 临时卷的类型</a></li>
+<li><a href="#org584a6d6">2. <span class="todo TODO">TODO</span> CSI 临时卷</a></li>
+<li><a href="#org06dd280">3. <span class="todo TODO">TODO</span> 通用的临时卷</a></li>
+<li><a href="#org9fb4754">4. <span class="todo TODO">TODO</span> 生命周期和 PersistentVolumeClaim</a></li>
+<li><a href="#org214d6b0">5. <span class="todo TODO">TODO</span> PersistentVolumeClaim 命名</a></li>
+<li><a href="#org9153c58">6. <span class="todo TODO">TODO</span> 安全</a></li>
+</ul>
+</div>
+</div>
 <p>
-<a href="https://kubernetes.io/docs/concepts/services-networking/">https://kubernetes.io/docs/concepts/services-networking/</a>
-</p>
-
-<p>
-Kubernetes 网络解决了四个问题：
+建议先熟悉一下 volumes，特别是 PersisentVolumeClaim 和 PersistentVolume。
 </p>
 
 <ul class="org-ul">
-<li>Pod 中的容器通过 loopback 使用网络进行通信；</li>
-<li>集群网络提供了不同的 Pods 之间的通信；</li>
-<li>通过 Service 资源，可以将 Pod 中运行的应用程序被集群外部访问；</li>
-<li>可以用 Services 来发布仅对集群内部使用的服务；</li>
+<li>一些应用程序需要额外的存储，但并不会关心在 Pod 重启之后是否能够持久化。比如说缓存服务通常会受内存的限制，把不常用的数据迁移到比内存慢的存储中，但是对整体性能影响不大。</li>
+<li>还有些应用程序希望数据放在只读文件中，比如配置数据和秘钥（secret keys）。</li>
 </ul>
+
+
+<p>
+临时卷是为这些场景设计的。在 Pod 的 spec 中内联指定临时卷，这样简化了应用程序的部署和管理。
+</p>
+
+<div id="outline-container-org1ac6fb7" class="outline-2">
+<h2 id="org1ac6fb7"><span class="section-number-2">1.</span> 临时卷的类型</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+出于不同的目的，Kubernetes 支持几种不同类型的临时卷：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://kubernetes.io/docs/concepts/storage/volumes/#emptydir">emptyDir</a>：Pod 启动时为空，存储在本地或者 RAM 中；</li>
+<li><a href="https://kubernetes.io/docs/concepts/storage/volumes/#configmap">configMap</a>，<a href="https://kubernetes.io/docs/concepts/storage/volumes/#downwardapi">downwardAPI</a>，<a href="https://kubernetes.io/docs/concepts/storage/volumes/#secret">secret</a>：将不同类型的 Kubernetes 数据注入到 Pod 中；</li>
+<li><a href="https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/#csi-ephemeral-volumes">CSI 临时卷</a>：与前面几种类型卷类似，但是由专门支持 <a href="https://kubernetes-csi.github.io/docs/drivers.html">此功能的</a> 特殊的 <a href="https://github.com/container-storage-interface/spec/blob/master/spec.md">CSI 驱动</a> 提供；</li>
+<li><a href="https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/#generic-ephemeral-volumes">通用的临时卷</a> 它可以由所有支持持久卷的存储驱动程序提供；</li>
+</ul>
+
+
+<p>
+<code>emptyDir</code>, <code>configMap</code>, <code>downwardAPI</code>, <code>secret</code> 由 <a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#local-ephemeral-storage">本地临时存储</a> 提供，由每个节点上的 kubelet 管理。
+</p>
+
+<p>
+CSI 临时卷必须提供第三方的 CSI 存储驱动。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org584a6d6" class="outline-2">
+<h2 id="org584a6d6"><span class="section-number-2">2.</span> <span class="todo TODO">TODO</span> CSI 临时卷</h2>
+</div>
+
+<div id="outline-container-org06dd280" class="outline-2">
+<h2 id="org06dd280"><span class="section-number-2">3.</span> <span class="todo TODO">TODO</span> 通用的临时卷</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+这是个比较新的特性， <code>v1.21[beta]</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9fb4754" class="outline-2">
+<h2 id="org9fb4754"><span class="section-number-2">4.</span> <span class="todo TODO">TODO</span> 生命周期和 PersistentVolumeClaim</h2>
+</div>
+
+<div id="outline-container-org214d6b0" class="outline-2">
+<h2 id="org214d6b0"><span class="section-number-2">5.</span> <span class="todo TODO">TODO</span> PersistentVolumeClaim 命名</h2>
+</div>
+
+<div id="outline-container-org9153c58" class="outline-2">
+<h2 id="org9153c58"><span class="section-number-2">6.</span> <span class="todo TODO">TODO</span> 安全</h2>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-01-24 21:50:23 <br />Last updated: 2021-07-28 Wed 10:37 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2021-07-28 16:57:43 <br />Last updated: 2021-07-28 Wed 18:06 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>
