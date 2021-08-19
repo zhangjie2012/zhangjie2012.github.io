@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-04-28 Wed 21:36 -->
+<!-- 2021-08-19 Thu 14:52 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go API 监控</title>
@@ -197,7 +197,7 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -232,45 +232,42 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">var</span> <span style="color: #707183;">(</span>
-    <span style="color: #BA36A5;">APICalledLatency</span> = prometheus.<span style="color: #006699;">NewSummaryVec</span><span style="color: #7388D6;">(</span>
-        <span style="color: #6434A3;">prometheus.SummaryOpts</span><span style="color: #909183;">{</span>
-            <span style="color: #D0372D;">Name</span>: <span style="color: #008000;">"metaserver_api_called_latency"</span>,
-            <span style="color: #D0372D;">Help</span>: <span style="color: #008000;">"Latency in microseconds"</span>,
-        <span style="color: #909183;">}</span>,
-        <span style="color: #909183;">[]</span><span style="color: #6434A3;">string</span><span style="color: #909183;">{</span><span style="color: #008000;">"api"</span>, <span style="color: #008000;">"method"</span>, <span style="color: #008000;">"status_code"</span><span style="color: #909183;">}</span>,
-    <span style="color: #7388D6;">)</span>
-<span style="color: #707183;">)</span>
+<pre class="src src-go"><span style="color: #5317ac;">var</span> <span style="color: #000000;">(</span>
+    <span style="color: #00538b;">APICalledLatency</span> = prometheus.<span style="color: #721045;">NewSummaryVec</span><span style="color: #a8007f;">(</span>
+        <span style="color: #005a5f;">prometheus.SummaryOpts</span><span style="color: #005f88;">{</span>
+            <span style="color: #0000c0;">Namespace</span>: <span style="color: #2544bb;">""</span>,
+            <span style="color: #0000c0;">Subsystem</span>: <span style="color: #2544bb;">""</span>,
+            <span style="color: #0000c0;">Name</span>: <span style="color: #2544bb;">"api_called_latency"</span>,
+            <span style="color: #0000c0;">Help</span>: <span style="color: #2544bb;">"Latency in microseconds"</span>,
+        <span style="color: #005f88;">}</span>,
+        <span style="color: #005f88;">[]</span><span style="color: #005a5f;">string</span><span style="color: #005f88;">{</span><span style="color: #2544bb;">"api"</span>, <span style="color: #2544bb;">"method"</span>, <span style="color: #2544bb;">"status_code"</span><span style="color: #005f88;">}</span>,
+    <span style="color: #a8007f;">)</span>
+<span style="color: #000000;">)</span>
 
-<span style="color: #0000FF;">func</span> <span style="color: #006699;">init</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-    prometheus.<span style="color: #006699;">MustRegister</span><span style="color: #7388D6;">(</span>APICalledLatency<span style="color: #7388D6;">)</span>
-<span style="color: #707183;">}</span>
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">init</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    prometheus.<span style="color: #721045;">MustRegister</span><span style="color: #a8007f;">(</span>APICalledLatency<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
 
-<span style="color: #0000FF;">func</span> <span style="color: #006699;">SinceInMicroseconds</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">start</span> <span style="color: #6434A3;">time.Time</span><span style="color: #707183;">)</span> <span style="color: #6434A3;">float64</span> <span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">return</span> <span style="color: #006699;">float64</span><span style="color: #7388D6;">(</span>time.<span style="color: #006699;">Since</span><span style="color: #909183;">(</span>start<span style="color: #909183;">)</span>.<span style="color: #006699;">Nanoseconds</span><span style="color: #909183;">()</span> / time.Microsecond.<span style="color: #006699;">Nanoseconds</span><span style="color: #909183;">()</span><span style="color: #7388D6;">)</span>
-<span style="color: #707183;">}</span>
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">metricsExport</span><span style="color: #000000;">()</span> <span style="color: #005a5f;">gin.HandlerFunc</span> <span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">return</span> <span style="color: #5317ac;">func</span><span style="color: #a8007f;">(</span><span style="color: #00538b;">c</span> *<span style="color: #005a5f;">gin.Context</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #00538b;">start</span> := time.<span style="color: #721045;">Now</span><span style="color: #005f88;">()</span>
+        <span style="color: #5317ac;">defer</span> <span style="color: #5317ac;">func</span><span style="color: #005f88;">()</span> <span style="color: #005f88;">{</span>
+            <span style="color: #00538b;">cost</span> := time.<span style="color: #721045;">Since</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span>.<span style="color: #721045;">Nanoseconds</span><span style="color: #904200;">()</span>
+            <span style="color: #00538b;">api</span> := c.Request.URL.Path
+            <span style="color: #00538b;">method</span> := c.Request.Method
+            <span style="color: #00538b;">status</span> := strconv.<span style="color: #721045;">Itoa</span><span style="color: #904200;">(</span>c.Writer.<span style="color: #721045;">Status</span><span style="color: #7f10d0;">()</span><span style="color: #904200;">)</span>
 
-<span style="color: #0000FF;">func</span> <span style="color: #006699;">metricsExport</span><span style="color: #707183;">()</span> <span style="color: #6434A3;">gin.HandlerFunc</span> <span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">return</span> <span style="color: #0000FF;">func</span><span style="color: #7388D6;">(</span><span style="color: #BA36A5;">c</span> *<span style="color: #6434A3;">gin.Context</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #BA36A5;">start</span> := time.<span style="color: #006699;">Now</span><span style="color: #909183;">()</span>
-        <span style="color: #0000FF;">defer</span> <span style="color: #0000FF;">func</span><span style="color: #909183;">()</span> <span style="color: #909183;">{</span>
-            <span style="color: #BA36A5;">cost</span> := <span style="color: #006699;">SinceInMicroseconds</span><span style="color: #709870;">(</span>start<span style="color: #709870;">)</span>
-            <span style="color: #BA36A5;">api</span> := c.Request.URL.Path
-            <span style="color: #BA36A5;">method</span> := c.Request.Method
-            <span style="color: #BA36A5;">status</span> := strconv.<span style="color: #006699;">Itoa</span><span style="color: #709870;">(</span>c.Writer.<span style="color: #006699;">Status</span><span style="color: #907373;">()</span><span style="color: #709870;">)</span>
+            <span style="color: #505050;">// </span><span style="color: #505050;">set ignore itself in here</span>
+            <span style="color: #5317ac;">if</span> api == <span style="color: #2544bb;">"/metrics"</span> <span style="color: #904200;">{</span>
+                <span style="color: #5317ac;">return</span>
+            <span style="color: #904200;">}</span>
 
-            <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">set ignore itself in here</span>
-            <span style="color: #0000FF;">if</span> api == <span style="color: #008000;">"/metrics"</span> <span style="color: #709870;">{</span>
-                <span style="color: #0000FF;">return</span>
-            <span style="color: #709870;">}</span>
+            APICalledLatency.<span style="color: #721045;">WithLabelValues</span><span style="color: #904200;">(</span>api, method, status<span style="color: #904200;">)</span>.<span style="color: #721045;">Observe</span><span style="color: #904200;">(</span><span style="color: #721045;">float64</span><span style="color: #7f10d0;">(</span>cost<span style="color: #7f10d0;">)</span><span style="color: #904200;">)</span>
+        <span style="color: #005f88;">}()</span>
 
-            APICalledLatency.<span style="color: #006699;">WithLabelValues</span><span style="color: #709870;">(</span>api, method, status<span style="color: #709870;">)</span>.<span style="color: #006699;">Observe</span><span style="color: #709870;">(</span>cost<span style="color: #709870;">)</span>
-            logrus.<span style="color: #006699;">Tracef</span><span style="color: #709870;">(</span><span style="color: #008000;">"api run time, api=%s, method=%s, status=%s, time=%f(ms)"</span>, api, method, status, cost/1000<span style="color: #709870;">)</span>
-        <span style="color: #909183;">}()</span>
-
-        c.<span style="color: #006699;">Next</span><span style="color: #909183;">()</span>
-    <span style="color: #7388D6;">}</span>
-<span style="color: #707183;">}</span>
+        c.<span style="color: #721045;">Next</span><span style="color: #005f88;">()</span>
+    <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -279,12 +276,12 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go">r.<span style="color: #006699;">GET</span><span style="color: #707183;">(</span><span style="color: #008000;">"/metrics"</span>, gin.<span style="color: #006699;">WrapH</span><span style="color: #7388D6;">(</span>promhttp.<span style="color: #006699;">Handler</span><span style="color: #909183;">()</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-go">r.<span style="color: #721045;">GET</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"/metrics"</span>, gin.<span style="color: #721045;">WrapH</span><span style="color: #a8007f;">(</span>promhttp.<span style="color: #721045;">Handler</span><span style="color: #005f88;">()</span><span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>
 </pre>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-04-28 Wed 21:14 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-08-16 Mon 16:48 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

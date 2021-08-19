@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-06-24 Thu 14:21 -->
+<!-- 2021-08-19 Thu 14:51 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>InfluxDB v1.x</title>
@@ -263,6 +263,22 @@
 </li>
 <li><a href="#org3821065">1.8. OFFSET 和 SOFFSET 语句</a></li>
 <li><a href="#org7f986cd">1.9. 时区（time zone）语句</a></li>
+</ul>
+</li>
+<li><a href="#orgc2bff5c">2. 监控</a>
+<ul>
+<li><a href="#org7b11d85">2.1. InfluxDB _internal 1.x 表和字段</a>
+<ul>
+<li><a href="#orga0d137c">2.1.1. 在生产环境下禁用 _internal 库</a></li>
+<li><a href="#orgeffb88c">2.1.2. 将内部指标存储在外部监控中</a></li>
+<li><a href="#orge424f91">2.1.3. 那 InfluxDB 生产的实例到底怎么监控呢？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgad81e93">3. FAQ</a>
+<ul>
+<li><a href="#org4e75cd2">3.1. InfluxDB 如何处理重复的点？</a></li>
 </ul>
 </li>
 </ul>
@@ -647,7 +663,6 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] GROUP BY *[,time(&lt;time
 </div>
 </div>
 
-
 <div id="outline-container-org3821065" class="outline-3">
 <h3 id="org3821065"><span class="section-number-3">1.8.</span> OFFSET 和 SOFFSET 语句</h3>
 <div class="outline-text-3" id="text-1-8">
@@ -664,7 +679,6 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_
 </p>
 </div>
 </div>
-
 
 <div id="outline-container-org7f986cd" class="outline-3">
 <h3 id="org7f986cd"><span class="section-number-3">1.9.</span> 时区（time zone）语句</h3>
@@ -683,6 +697,167 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_
 </div>
 </div>
 </div>
+
+
+<div id="outline-container-orgc2bff5c" class="outline-2">
+<h2 id="orgc2bff5c"><span class="section-number-2">2.</span> 监控</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org7b11d85" class="outline-3">
+<h3 id="org7b11d85"><span class="section-number-3">2.1.</span> InfluxDB _internal 1.x 表和字段</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+<a href="https://docs.influxdata.com/platform/monitoring/influxdata-platform/tools/measurements-internal/">https://docs.influxdata.com/platform/monitoring/influxdata-platform/tools/measurements-internal/</a>
+</p>
+
+<p>
+默认情况下，InfluxDB 生成内部的指标保存到 <code>_internal</code> 库中。
+</p>
+</div>
+
+<div id="outline-container-orga0d137c" class="outline-4">
+<h4 id="orga0d137c"><span class="section-number-4">2.1.1.</span> 在生产环境下禁用 _internal 库</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+InfluxData 不推荐在生产集群中使用 <code>_internal</code> 。它带来了不必要的开销，特别是集群比较忙的情况下，会加重集群的复杂。
+_internal 数据库中存储的指标主要衡量工作负载性能，只能在非生产环境使用。
+</p>
+
+<p>
+InfluxDB 配置文件将 <code>[monitor]</code> 下的 <code>store-enabled</code> 设置成 <code>false</code> 可以关闭 <code>_internal</code> 数据库。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text"># ...
+[monitor]
+  # ...
+  # Whether to record statistics internally.
+  store-enabled = false
+  #...
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgeffb88c" class="outline-4">
+<h4 id="orgeffb88c"><span class="section-number-4">2.1.2.</span> 将内部指标存储在外部监控中</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+在生产的集群中 InfluxDB <code>_internal</code> 指标，使用 Telegraf 和 <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb">influxdb 输入插件</a> 来捕获 <code>/debug/vars</code> 端点下的指标然后存储在外部的 InfluxDB
+监控实例中。具体看：<a href="https://docs.influxdata.com/platform/monitoring/influxdata-platform/external-monitor-setup/">配置监控的监控</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge424f91" class="outline-4">
+<h4 id="orge424f91"><span class="section-number-4">2.1.3.</span> 那 InfluxDB 生产的实例到底怎么监控呢？</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<ol class="org-ol">
+<li>InfluxDB 实例会暴露 <a href="http://localhost:8086/debug/vars">http://localhost:8086/debug/vars</a></li>
+<li>本机的 Telegraf 添加 InfluxDB Input 插件</li>
+<li>Telegraf 配置数据暴露给 Prometheus</li>
+<li>Prometheus 新增 Target</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgad81e93" class="outline-2">
+<h2 id="orgad81e93"><span class="section-number-2">3.</span> FAQ</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org4e75cd2" class="outline-3">
+<h3 id="org4e75cd2"><span class="section-number-3">3.1.</span> <a href="https://docs.influxdata.com/influxdb/v1.8/troubleshooting/frequently-asked-questions/#how-does-influxdb-handle-duplicate-points">InfluxDB 如何处理重复的点？</a></h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+Point（点）由表名，tag 集合和时间戳唯一标识。如果你提交的一个 point 和现有的 point 有相同的标识，fields 集合会变成新的 field
+和老的 field 的合集，关联关系会指向新的 field 集合。这是预料中的事。
+</p>
+
+<p>
+比如：
+</p>
+
+<ul class="org-ul">
+<li>Old point: <code>cpu_load,hostname=server02,az=us_west val_1=24.5,val_2=7 1234567890000000</code></li>
+<li>New point: <code>cpu_load,hostname=server02,az=us_west val_1=5.24 1234567890000000</code></li>
+</ul>
+
+<p>
+提交新的 point 之后，InfluxDB 会覆写 <code>val_1</code> 的新值， 不管 <code>val_2</code> 。最终的结果是：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql">&gt; <span style="color: #5317ac;">SELECT</span> * <span style="color: #5317ac;">FROM</span> "cpu_load" <span style="color: #5317ac;">WHERE</span> <span style="color: #005a5f;">time</span> = 1234567890000000
+<span style="color: #5317ac;">name</span>: cpu_load
+<span style="color: #505050;">--------------</span>
+<span style="color: #005a5f;">time</span>                      az        hostname   val_1   val_2
+1970-01-15T06:56:07.89Z   us_west   server02   5.24    7
+</pre>
+</div>
+
+<p>
+为了存储这两个 points：
+</p>
+
+<ul class="org-ul">
+<li><p>
+引入一个任意的新标签来强制保持唯一
+</p>
+
+<p>
+Old point: <code>cpu_load,hostname=server02,az=us_west,uniq=1 val_1=24.5,val_2=7 1234567890000000</code>
+</p>
+
+<p>
+New point: <code>cpu_load,hostname=server02,az=us_west,uniq=2 val_1=5.24 1234567890000000</code>
+</p>
+
+<p>
+在 New point 写入到 InfluxDB 之后：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql">&gt; <span style="color: #5317ac;">SELECT</span> * <span style="color: #5317ac;">FROM</span> "cpu_load" <span style="color: #5317ac;">WHERE</span> <span style="color: #005a5f;">time</span> = 1234567890000000
+<span style="color: #5317ac;">name</span>: cpu_load
+<span style="color: #505050;">--------------</span>
+<span style="color: #005a5f;">time</span>                      az        hostname   uniq   val_1   val_2
+1970-01-15T06:56:07.89Z   us_west   server02   1      24.5    7
+1970-01-15T06:56:07.89Z   us_west   server02   2      5.24
+
+</pre>
+</div></li>
+
+<li><p>
+时间上增加一个纳秒
+</p>
+
+<p>
+Old point: <code>cpu_load,hostname=server02,az=us_west,uniq=1 val_1=24.5,val_2=7 1234567890000000</code>
+</p>
+
+<p>
+New point: <code>cpu_load,hostname=server02,az=us_west,uniq=2 val_1=5.24 1234567890000000</code>
+</p>
+
+<p>
+在 New point 写入到 InfluxDB 之后：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql">&gt; <span style="color: #5317ac;">SELECT</span> * <span style="color: #5317ac;">FROM</span> "cpu_load" <span style="color: #5317ac;">WHERE</span> <span style="color: #005a5f;">time</span> &gt;= 1234567890000000 <span style="color: #5317ac;">and</span> <span style="color: #005a5f;">time</span> &lt;= 1234567890000001
+<span style="color: #5317ac;">name</span>: cpu_load
+<span style="color: #505050;">--------------</span>
+<span style="color: #005a5f;">time</span>                             az        hostname   val_1   val_2
+1970-01-15T06:56:07.89Z          us_west   server02   24.5    7
+1970-01-15T06:56:07.890000001Z   us_west   server02   5.24
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
 <div id="footnotes">
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
@@ -695,7 +870,7 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-23 14:02:41 <br />Last updated: 2021-06-24 Thu 14:20 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2021-04-23 14:02:41 <br />Last updated: 2021-08-19 Thu 14:51 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>
