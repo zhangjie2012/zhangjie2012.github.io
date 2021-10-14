@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2021-10-13 Wed 17:32 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Protocol Buffers 生成代码</title>
@@ -42,7 +42,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +54,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -197,50 +197,26 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -257,7 +233,7 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-org323fcdc" class="outline-2">
-<h2 id="org323fcdc"><span class="section-number-2">1</span> 生成结果</h2>
+<h2 id="org323fcdc"><span class="section-number-2">1.</span> 生成结果</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 protobuf 编译器运行一个 <code>.proto</code> 文件，会编译生成具体语言的源代码（定义的类型、get/set 接口，序列化和反序列化接口）。
@@ -337,28 +313,28 @@ protobuf 编译器运行一个 <code>.proto</code> 文件，会编译生成具�
 </div>
 
 <div id="outline-container-orgdefc8af" class="outline-2">
-<h2 id="orgdefc8af"><span class="section-number-2">2</span> 命令行</h2>
+<h2 id="orgdefc8af"><span class="section-number-2">2.</span> 命令行</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 安装编译器（用于将 .proto 文件生成不同语言的源代码）：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh"><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">macOS</span>
+<pre class="src src-sh"><span style="color: #505050;"># </span><span style="color: #505050;">macOS</span>
 brew install protobuf -&gt; protoc &#21629;&#20196;
-<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Ubuntu</span>
+<span style="color: #505050;"># </span><span style="color: #505050;">Ubuntu</span>
 apt install protobuf-compiler
 </pre>
 </div>
 
 <div class="org-src-container">
-<pre class="src src-sh">protoc --proto_path=IMPORT_PATH <span style="color: #008000;">\</span>
-       --cpp_out=DST_DIR --java_out=DST_DIR <span style="color: #008000;">\</span>
-       --python_out=DST_DIR <span style="color: #008000;">\</span>
-       --go_out=DST_DIR <span style="color: #008000;">\</span>
-       --ruby_out=DST_DIR <span style="color: #008000;">\</span>
-       --objc_out=DST_DIR <span style="color: #008000;">\</span>
-       --csharp_out=DST_DIR <span style="color: #008000;">\</span>
+<pre class="src src-sh">protoc --proto_path=IMPORT_PATH <span style="color: #2544bb;">\</span>
+       --cpp_out=DST_DIR --java_out=DST_DIR <span style="color: #2544bb;">\</span>
+       --python_out=DST_DIR <span style="color: #2544bb;">\</span>
+       --go_out=DST_DIR <span style="color: #2544bb;">\</span>
+       --ruby_out=DST_DIR <span style="color: #2544bb;">\</span>
+       --objc_out=DST_DIR <span style="color: #2544bb;">\</span>
+       --csharp_out=DST_DIR <span style="color: #2544bb;">\</span>
        path/to/file.proto
 </pre>
 </div>
@@ -375,19 +351,20 @@ apt install protobuf-compiler
 比如：
 </p>
 
-<pre class="example" id="orgadc9da0">
-syntax = "proto3";
+<div class="org-src-container">
+<pre class="src src-protobuf" id="orgadc9da0">syntax = <span style="color: #2544bb;">"proto3"</span>;
 
-message User {
-  enum Gender {
-		MALE = 0;
-		FEMALE = 1;
+<span style="color: #5317ac;">message</span> <span style="color: #005a5f;">User</span> {
+  <span style="color: #5317ac;">enum</span> <span style="color: #005a5f;">Gender</span> {
+        MALE = 0;
+        FEMALE = 1;
   }
-  string username = 1;
-  int32 age = 2;
-  Gender gender = 3;
+  <span style="color: #005a5f;">string</span> <span style="color: #00538b;">username</span> = 1;
+  <span style="color: #005a5f;">int32</span> <span style="color: #00538b;">age</span> = 2;
+  <span style="color: #005a5f;">Gender</span> <span style="color: #00538b;">gender</span> = 3;
 }
 </pre>
+</div>
 
 <p>
 生成 C++ 代码：
@@ -420,7 +397,8 @@ message User {
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">go get github.com/golang/protobuf/protoc-gen-go
+<pre class="src src-sh">go install google.golang.org/protobuf/cmd/protoc-gen-go@lastest
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@lastest
 </pre>
 </div>
 
@@ -433,7 +411,7 @@ option go_package = "github.com/zhangjie2012/xxxx/libproto"
 </pre>
 
 <p>
-如果这只了 <code>go_package</code> ，输出文件会放在 go 当前目录中的的 <code>github.com/zhangjiee2020/xxx/libproto/</code> 下面。上面的例子中会相对于 <code>.proto</code> 目录。
+如果这指了 <code>go_package</code> ，输出文件会放在 go 当前目录中的的 <code>github.com/zhangjiee2020/xxx/libproto/</code> 下面。上面的例子中会相对于 <code>.proto</code> 目录。
 </p>
 
 <p>
@@ -441,14 +419,14 @@ option go_package = "github.com/zhangjie2012/xxxx/libproto"
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">protoc --proto_path=. --go_out=. --go_opt=<span style="color: #BA36A5;">paths</span>=source_relative user.proto
+<pre class="src src-sh">protoc -I=pblib --go-grpc_out=pblib --go-grpc_opt=<span style="color: #00538b;">paths</span>=source_relative  pblib/*.proto
 </pre>
 </div>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-20 14:50:18 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2020-05-20 14:50:18 <br />Last updated: 2021-08-19 Thu 16:00 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

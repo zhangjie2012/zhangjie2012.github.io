@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-08-19 Thu 14:52 -->
+<!-- 2021-10-13 Wed 17:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>云原生</title>
@@ -514,16 +514,13 @@ Kubernetes v1.20 开始废弃了 Dockershim 之后，对于研发人员、管理
 Pause 是为了解决网络问题（如何共享网络）；</li>
 <li>Pod 中的其他容器 Join namespace 的方式加入到 Pause 容器的 Network namespace。所以其他容器所看到的网络设备、IP 地址、
 Mac 地址等网络信息都是 Pause 容器的；</li>
-<li>Pause 容器为业务容器提供：1. Linux namespace 的基础；2. 启用 pid 命名空间，开启 init 进程。</li>
+<li>Pause 容器为业务容器提供：
+<ol class="org-ol">
+<li>Linux namespace 的基础；</li>
+<li>启用 pid 命名空间，开启 init 进程。</li>
+</ol></li>
 </ul></li>
-<li><a href="https://stackoverflow.com/questions/53239081/how-does-minreadyseconds-affect-readiness-probe">minReadySeconds 与 Readiness Probe</a> 这两个容易混掉：
-<ul class="org-ul">
-<li><code>.spec.minReadySeconds</code> 是一个可选的字段，用于指定 Pod 从创建到就绪所需要的最小秒数，这个时间结束之后会被视为 Pod 可用。
-默认值是 0<sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>；</li>
-<li><code>initialDelaySeconds</code> 表示容器启用探针之前的秒数。假设 Pod 启动需要 <code>t</code> 秒，那么在 <code>t+initialDelaySeconds</code> 之后；
-探针开始执行。假设 <code>t1</code> 秒之后 Pod 就绪(<code>t1&gt;t+initialDelaySeconds</code>)，那么 Pod 会在 <code>t1+minReadySeconds</code> 之后认为可用；</li>
-<li>也就是说 <code>initialDelaySeconds</code> 和健康检测，都是发生在 <code>minReadySeconds</code> 之前的；</li>
-</ul></li>
+<li><a href="kubernetes/minreadyseconds-and-readiness.html">minReadySeconds 与 Readiness Probe</a> 更好的理解 Pod 启动</li>
 </ul>
 </div>
 
@@ -562,15 +559,11 @@ Mac 地址等网络信息都是 Pause 容器的；</li>
 <a href="https://wiki.aquasec.com/display/containers/Kubernetes+Architecture+101">https://wiki.aquasec.com/display/containers/Kubernetes+Architecture+101</a>
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">
-<a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes">https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes</a>
-</p></div></div>
-
 
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2021-08-10 Tue 15:09 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2021-10-13 Wed 17:31 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>
