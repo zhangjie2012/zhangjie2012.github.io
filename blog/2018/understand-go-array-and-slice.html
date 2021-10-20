@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-01-18 Mon 15:29 -->
+<!-- 2021-10-20 Wed 09:45 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>理解 Go 的 Array 和 slice</title>
@@ -197,7 +197,7 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -226,17 +226,18 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgee045b6">1. Array</a></li>
-<li><a href="#org8c36f9d">2. Slice</a></li>
-<li><a href="#orgc76ec49">3. 总结</a></li>
+<li><a href="#orgee045b6">0.1. Array</a></li>
+<li><a href="#org8c36f9d">0.2. Slice</a></li>
+<li><a href="#orgc76ec49">0.3. 总结</a></li>
 </ul>
-</div>
+</li>
+<li><a href="#org60c4991">1. 更新记录</a></div>
 </div>
 <p>
 今早 <a href="https://blog.opskumu.com/">磊磊</a> 在 Twitter 上看到一条消息，大致意思是问下面代码的执行结果是什么：
 </p>
 
-<pre class="example" id="org1b06b16">
+<pre class="example" id="org0e3b9bb">
 package main
 
 import "fmt"
@@ -268,18 +269,18 @@ func main() {
 本以为像 Go这样一个比较「先进」的语言，自然会规避这种深浅拷贝的问题，但实际上并没有，所以对这道题有点迷糊。于是就花时间研究了一下 Go 中的 Array 和 Slice。
 </p>
 
-<div id="outline-container-orgee045b6" class="outline-2">
-<h2 id="orgee045b6"><span class="section-number-2">1</span> Array</h2>
-<div class="outline-text-2" id="text-1">
+<div id="outline-container-orgee045b6" class="outline-3">
+<h3 id="orgee045b6"><span class="section-number-3">0.1.</span> Array</h3>
+<div class="outline-text-3" id="text-0-1">
 <p>
 Go 中的 Array 是通过 <code>[n]int</code> 这种样式来声明的，一如数据结构学到的那样，Array 必须是固定长度的。Go 的 Array（我一直拿 C 的 Array 类比）可以理解成一个像 int 一样的内置类型，是一块连续的内存结构，比较好理解。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org8c36f9d" class="outline-2">
-<h2 id="org8c36f9d"><span class="section-number-2">2</span> Slice</h2>
-<div class="outline-text-2" id="text-2">
+<div id="outline-container-org8c36f9d" class="outline-3">
+<h3 id="org8c36f9d"><span class="section-number-3">0.2.</span> Slice</h3>
+<div class="outline-text-3" id="text-0-2">
 <p>
 实际编码过程中， Array 逐渐满足不了需求，比如一个解析 HTTP 请求的 body 体或者从文件读入内容，不好提前知道内容的长度，所以大部分时候都需要变长的 Array 。
 slice 就是实现了「可变长度的 Array 」的抽象，类似 C++ 中的 vector。
@@ -309,7 +310,7 @@ C++ 中的 vector 也是类似的实现，只不过它提供了拷贝构造函�
 再回到刚才之前的问题上，当把 s 传递给 four 的时候是一次浅拷贝，为了没有命名歧义，four 中的传入的 s 先叫成 sc。传参类似于做了 <code>sc = s</code> 的操作：
 </p>
 
-<pre class="example" id="org5c944cc">
+<pre class="example" id="orgeefb35d">
 sc.buffer = s.buffer
 sc.len = s.len
 sc.cap = s.cap
@@ -331,7 +332,7 @@ len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改
 再看一段代码：
 </p>
 
-<pre class="example" id="org0e603fa">
+<pre class="example" id="orgbee28c0">
 package main
 
 import "fmt"
@@ -362,7 +363,7 @@ func main() {
 两种办法可以验证这个想法，第一种是把内存的的数据打印出来：
 </p>
 
-<pre class="example" id="org7711607">
+<pre class="example" id="org31a48db">
 package main
 
 import (
@@ -404,7 +405,7 @@ func main() {
 但是，Go 的 slice 的 slice，真有个使用上的陷阱。比如对一个 slice 做 slice 操作：
 </p>
 
-<pre class="example" id="org2f0310c">
+<pre class="example" id="org4bd0ce6">
 s = []{1, 2, 3, 4, 5, 6}
 t := s[1:3]
 </pre>
@@ -422,7 +423,7 @@ Go <a href="https://blog.golang.org/go-slices-usage-and-internals">有篇官方�
 如果原有的 slice 很大，slice 之后的很小，因为小的 slice 一直占用内存，导致大的 buffer 一直无法释放，举个例子：
 </p>
 
-<pre class="example" id="org57ab00b">
+<pre class="example" id="org4756456">
 var digitRegexp = regexp.MustCompile("[0-9]+")
 
 func FindDigits(filename string) []byte {
@@ -435,7 +436,7 @@ func FindDigits(filename string) []byte {
 这会导致 <code>FindDigits</code> 返回的 <code>[]byte</code> 一直占用整个文件内容相同大小的 buffer，直到 <code>[]byte</code> 的变量释放。为了解决这个问题，在返回时新建一个所需实际大小的 buffer，然后拷贝过去，再返回。类似这样：
 </p>
 
-<pre class="example" id="orgeeca7e8">
+<pre class="example" id="org314efe9">
 func CopyDigits(filename string) []byte {
     b, _ := ioutil.ReadFile(filename)
     b = digitRegexp.Find(b)
@@ -451,15 +452,18 @@ func CopyDigits(filename string) []byte {
 </div>
 </div>
 
-<div id="outline-container-orgc76ec49" class="outline-2">
-<h2 id="orgc76ec49"><span class="section-number-2">3</span> 总结</h2>
-<div class="outline-text-2" id="text-3">
+<div id="outline-container-orgc76ec49" class="outline-3">
+<h3 id="orgc76ec49"><span class="section-number-3">0.3.</span> 总结</h3>
+<div class="outline-text-3" id="text-0-3">
 <p>
 本文从一个问题入手讨论了 Go 的 Array 和 Slice 的区别、Slice 的设计以及浅拷贝可能会带来的「陷阱」。Go 官方博客有两篇博客 <a href="https://blog.golang.org/go-slices-usage-and-internals">Go Slices: usage and internals</a> 和 <a href="https://blog.golang.org/slices">Arrays, slices (and strings): The mechanics of 'append'</a> 也对相关的实现和特性做了介绍，推荐阅读。
 </p>
+</div>
+</div>
 
-<hr />
-
+<div id="outline-container-org60c4991" class="outline-2">
+<h2 id="org60c4991"><span class="section-number-2">1.</span> 更新记录</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 <b>2018-07-24 16:55:03 更新：</b>
 </p>
@@ -471,8 +475,9 @@ func CopyDigits(filename string) []byte {
 <ul class="org-ul">
 <li>数组是值，赋值时会把所有的数据拷贝一份</li>
 <li>如果把数组传递给函数，函数拿到的是数组的 copy ，而不是指针</li>
-<li>数组的大小是类型的一部分。 <code>[10]int</code> 和 <code>[20]int</code> 是不同的</li>
-</ul>
+<li><p>
+数组的大小是类型的一部分。 <code>[10]int</code> 和 <code>[20]int</code> 是不同的
+</p>
 
 <p>
 其实，Go 不仅仅是 C-safe language，很多的实现细节都不同，也并不是一门简单的语言。
@@ -488,7 +493,7 @@ func CopyDigits(filename string) []byte {
 今天遇到个问题，默认初始化的 slices 被 json 序列化之后，值竟然是 <code>nil</code> 而不是 <code>[]</code> ，但是正常输出是却为 <code>[]</code> 。
 </p>
 
-<pre class="example" id="org2df4878">
+<pre class="example" id="org449cb80">
 package main
 
 import (
@@ -513,7 +518,7 @@ func main() {
 输出结果为：
 </p>
 
-<pre class="example" id="orgb6f7f06">
+<pre class="example" id="orgc73f85d">
 {[]}
 {"xxx":null}
 </pre>
@@ -537,11 +542,25 @@ func main() {
 <p>
 这里的图片很好的说明 Go Slice 的基本原理： <a href="https://ueokande.github.io/go-slice-tricks/">https://ueokande.github.io/go-slice-tricks/</a>
 </p>
+
+<p>
+<b>2021-10-19 18:49:53 更新：</b>
+</p>
+
+<p>
+Go Slice 更蛋疼的一个地方是， 在执行 <code>append</code> 的时候，一个 <code>nil</code> 的 slice 依旧可以被 <code>append</code> ，会自动扩容。
+但是当你对一个 <code>nil</code> 的 map 赋值直接就 crash 了，告诉你 <code>nil</code> map 不可以直接使用。WTF ？？
+</p>
+
+<p>
+<a href="https://stackoverflow.com/questions/38543825/appending-one-element-to-nil-slice-increases-capacity-by-two">https://stackoverflow.com/questions/38543825/appending-one-element-to-nil-slice-increases-capacity-by-two</a>
+</p></li>
+</ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2021-01-18 Mon 10:33 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2021-10-19 Tue 18:52 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
