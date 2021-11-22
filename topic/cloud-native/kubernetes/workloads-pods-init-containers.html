@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-08-05 Thu 10:49 -->
+<!-- 2021-11-22 Mon 16:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 工作负载：Pod - Init Containers</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -195,7 +193,6 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -220,34 +217,38 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Kubernetes 工作负载：Pod - Init Containers</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge4fe9ae">1. 理解 init containers</a>
+<li><a href="#orga102621">1. 理解 init containers</a>
 <ul>
-<li><a href="#org24cbb9d">1.1. 与普通容器的不同</a></li>
+<li><a href="#org77abc09">1.1. 与普通容器的不同</a></li>
 </ul>
 </li>
-<li><a href="#orgd07d64c">2. 使用 init containers</a>
+<li><a href="#orgdd4c34c">2. 使用 init containers</a>
 <ul>
-<li><a href="#orgb2217fa">2.1. 例子</a>
+<li><a href="#orgbd6e579">2.1. 例子</a>
 <ul>
-<li><a href="#orgdeb62ac">2.1.1. 使用中的 Init containers</a></li>
+<li><a href="#org0a8e679">2.1.1. 使用中的 Init containers</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org72c458d">3. 详细行为</a>
+<li><a href="#orgd1a37ee">3. 详细行为</a>
 <ul>
-<li><a href="#orga689463">3.1. 资源</a></li>
-<li><a href="#orgac8aa0f">3.2. Pod 重启原因</a></li>
+<li><a href="#org62c45d1">3.1. 资源</a></li>
+<li><a href="#org10edf2e">3.2. Pod 重启原因</a></li>
 </ul>
 </li>
-<li><a href="#org4d8eeae">4. 下一步</a></li>
-<li><a href="#org9722154">5. 其他资料</a></li>
+<li><a href="#orgfacc8ff">4. 下一步</a></li>
+<li><a href="#orga6a15db">5. 其他资料</a></li>
 </ul>
 </div>
 </div>
@@ -263,8 +264,8 @@ Init containers 是在 Pod 中的应用容器之前运行的专有容器；Init 
 你可以在 Pod 规范（Spec）中与 <code>containers</code> 数组一起指定 init containers。
 </p>
 
-<div id="outline-container-orge4fe9ae" class="outline-2">
-<h2 id="orge4fe9ae"><span class="section-number-2">1.</span> 理解 init containers</h2>
+<div id="outline-container-orga102621" class="outline-2">
+<h2 id="orga102621"><span class="section-number-2">1.</span> 理解 init containers</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Pod 中可以有多个运行应用程序的容器，同时也可以有一个或者多个 init containers，它们会在应用容器启动之前运行。
@@ -290,8 +291,8 @@ Never，并且在 Pod 启动期间 init container 失败了，Kubernetes 会将�
 </p>
 </div>
 
-<div id="outline-container-org24cbb9d" class="outline-3">
-<h3 id="org24cbb9d"><span class="section-number-3">1.1.</span> 与普通容器的不同</h3>
+<div id="outline-container-org77abc09" class="outline-3">
+<h3 id="org77abc09"><span class="section-number-3">1.1.</span> 与普通容器的不同</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Init containers 支持应用程序容器的所有字段和功能，包括资源限制，卷和安全设置。但是，如 <a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#resources">资源</a> 文档中所说，init container 的资源请求（requests）
@@ -311,8 +312,8 @@ Init containers 支持应用程序容器的所有字段和功能，包括资源�
 </div>
 </div>
 
-<div id="outline-container-orgd07d64c" class="outline-2">
-<h2 id="orgd07d64c"><span class="section-number-2">2.</span> 使用 init containers</h2>
+<div id="outline-container-orgdd4c34c" class="outline-2">
+<h2 id="orgdd4c34c"><span class="section-number-2">2.</span> 使用 init containers</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 由于 init containers 和应用容器的镜像是分开的，所以它们在启动相关代码的时候有一些优点：
@@ -330,8 +331,8 @@ Init containers 支持应用程序容器的所有字段和功能，包括资源�
 </ul>
 </div>
 
-<div id="outline-container-orgb2217fa" class="outline-3">
-<h3 id="orgb2217fa"><span class="section-number-3">2.1.</span> 例子</h3>
+<div id="outline-container-orgbd6e579" class="outline-3">
+<h3 id="orgbd6e579"><span class="section-number-3">2.1.</span> 例子</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 以下是如何使用初始化容器的一些想法：
@@ -365,8 +366,8 @@ Init containers 支持应用程序容器的所有字段和功能，包括资源�
 </ul>
 </div>
 
-<div id="outline-container-orgdeb62ac" class="outline-4">
-<h4 id="orgdeb62ac"><span class="section-number-4">2.1.1.</span> 使用中的 Init containers</h4>
+<div id="outline-container-org0a8e679" class="outline-4">
+<h4 id="org0a8e679"><span class="section-number-4">2.1.1.</span> 使用中的 Init containers</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 本示例定义了一个简单的 Pod 包含两个 init containers。第一个等待 <code>myservice</code> ，第二个等待 <code>myapp</code> 。一旦两个初始化容器都完成，
@@ -563,8 +564,8 @@ myapp-pod   1/1       Running   0          9m
 </div>
 </div>
 
-<div id="outline-container-org72c458d" class="outline-2">
-<h2 id="org72c458d"><span class="section-number-2">3.</span> 详细行为</h2>
+<div id="outline-container-orgd1a37ee" class="outline-2">
+<h2 id="orgd1a37ee"><span class="section-number-2">3.</span> 详细行为</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 在 Pod 启动期间，kubelet 会延迟运行 init containers 直到网络和存储就绪。然后，kubelet 按照 Pod spec 中出现的顺序运行 Pod
@@ -609,8 +610,8 @@ Pod 中的每个应用和 init container 的名称必须唯一；任何一个名
 </p>
 </div>
 
-<div id="outline-container-orga689463" class="outline-3">
-<h3 id="orga689463"><span class="section-number-3">3.1.</span> 资源</h3>
+<div id="outline-container-org62c45d1" class="outline-3">
+<h3 id="org62c45d1"><span class="section-number-3">3.1.</span> 资源</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 考虑到 init container 的有序执行，适用于以下资源的使用规则：
@@ -639,8 +640,8 @@ Pod level control groups (cgroups) are based on the effective Pod request and li
 </div>
 </div>
 
-<div id="outline-container-orgac8aa0f" class="outline-3">
-<h3 id="orgac8aa0f"><span class="section-number-3">3.2.</span> Pod 重启原因</h3>
+<div id="outline-container-org10edf2e" class="outline-3">
+<h3 id="org10edf2e"><span class="section-number-3">3.2.</span> Pod 重启原因</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 A Pod can restart, causing re-execution of init containers, for the following reasons:
@@ -661,8 +662,8 @@ consult the documentation for the version you are using.
 </div>
 </div>
 
-<div id="outline-container-org4d8eeae" class="outline-2">
-<h2 id="org4d8eeae"><span class="section-number-2">4.</span> 下一步</h2>
+<div id="outline-container-orgfacc8ff" class="outline-2">
+<h2 id="orgfacc8ff"><span class="section-number-2">4.</span> 下一步</h2>
 <div class="outline-text-2" id="text-4">
 <ul class="org-ul">
 <li>阅读 <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-initialization/#create-a-pod-that-has-an-init-container">Create a Pod that has an Init Container</a></li>
@@ -672,8 +673,8 @@ consult the documentation for the version you are using.
 </div>
 
 
-<div id="outline-container-org9722154" class="outline-2">
-<h2 id="org9722154"><span class="section-number-2">5.</span> 其他资料</h2>
+<div id="outline-container-orga6a15db" class="outline-2">
+<h2 id="orga6a15db"><span class="section-number-2">5.</span> 其他资料</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li><a href="https://medium.com/bb-tutorials-and-thoughts/kubernetes-learn-init-container-pattern-7a757742de6b">https://medium.com/bb-tutorials-and-thoughts/kubernetes-learn-init-container-pattern-7a757742de6b</a></li>
@@ -682,7 +683,7 @@ consult the documentation for the version you are using.
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-25 21:11:40 <br />Last updated: 2021-07-28 Wed 10:37 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2021-04-25 21:11:40 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

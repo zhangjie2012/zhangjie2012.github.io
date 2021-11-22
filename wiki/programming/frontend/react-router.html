@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2021-11-22 Mon 16:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>React Router</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,98 +193,77 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">React Router</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orga631539">1. 指南</a>
+<li><a href="#orga403cbe">1. 指南</a>
 <ul>
-<li><a href="#org4098d0c">1.1. 主要组件</a>
+<li><a href="#orgd8c8434">1.1. 主要组件</a>
 <ul>
-<li><a href="#orgb7138ac">1.1.1. 路由器</a></li>
-<li><a href="#org7bf9790">1.1.2. 路由匹配</a></li>
-<li><a href="#orgeadbf93">1.1.3. 路由变更（Nav）</a></li>
+<li><a href="#org9c14ed0">1.1.1. 路由器</a></li>
+<li><a href="#org8234d5c">1.1.2. 路由匹配</a></li>
+<li><a href="#orgea514e7">1.1.3. 路由变更（Nav）</a></li>
 </ul>
 </li>
-<li><a href="#org42de6de">1.2. <span class="todo TODO">TODO</span> 服务端渲染（Server Rendering）</a></li>
-<li><a href="#org9e215ad">1.3. 代码拆分（Code Splitting）</a></li>
-<li><a href="#org72d2dbc">1.4. 滚动恢复</a>
+<li><a href="#org6418527">1.2. <span class="todo TODO">TODO</span> 服务端渲染（Server Rendering）</a></li>
+<li><a href="#orgbeda7c3">1.3. 代码拆分（Code Splitting）</a></li>
+<li><a href="#org3adfc2f">1.4. 滚动恢复</a>
 <ul>
-<li><a href="#org1bfac16">1.4.1. 滚动到顶部</a></li>
-<li><a href="#org310156a">1.4.2. 通用的解决方案</a></li>
+<li><a href="#org6ea71c3">1.4.1. 滚动到顶部</a></li>
+<li><a href="#orgc9f83d3">1.4.2. 通用的解决方案</a></li>
 </ul>
 </li>
-<li><a href="#org7777b20">1.5. 原理</a>
+<li><a href="#org7794882">1.5. 原理</a>
 <ul>
-<li><a href="#orgf85425e">1.5.1. 静态路由</a></li>
-<li><a href="#orgbf0e92e">1.5.2. 动态路由</a></li>
-<li><a href="#org73e71b2">1.5.3. 嵌套路由</a></li>
-<li><a href="#orga065969">1.5.4. 响应式路由</a></li>
+<li><a href="#org23b4d7c">1.5.1. 静态路由</a></li>
+<li><a href="#org6d957fc">1.5.2. 动态路由</a></li>
+<li><a href="#orgf4239b1">1.5.3. 嵌套路由</a></li>
+<li><a href="#org215298d">1.5.4. 响应式路由</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgdee8273">2. API</a>
+<li><a href="#org226c96d">2. API</a>
 <ul>
-<li><a href="#org90f8bca">2.1. Hooks</a></li>
-<li><a href="#orgc8a6a03">2.2. <code>&lt;BrowserRouter&gt;</code></a></li>
-<li><a href="#org41446be">2.3. <code>&lt;HashRouter&gt;</code></a></li>
-<li><a href="#orgdeaee81">2.4. <code>&lt;Link&gt;</code></a></li>
-<li><a href="#orgcc0513a">2.5. <code>&lt;NavLink&gt;</code></a></li>
-<li><a href="#org98dce0f">2.6. <code>&lt;MemoryRouter&gt;</code></a></li>
-<li><a href="#org994876f">2.7. <code>&lt;Redirect&gt;</code></a></li>
-<li><a href="#org00cb3c9">2.8. <code>&lt;Route&gt;</code></a></li>
+<li><a href="#org1c0015f">2.1. Hooks</a></li>
+<li><a href="#orgcc11640">2.2. <code>&lt;BrowserRouter&gt;</code></a></li>
+<li><a href="#orgd27d727">2.3. <code>&lt;HashRouter&gt;</code></a></li>
+<li><a href="#orgabb72a2">2.4. <code>&lt;Link&gt;</code></a></li>
+<li><a href="#org10f1fc4">2.5. <code>&lt;NavLink&gt;</code></a></li>
+<li><a href="#orge60d9ac">2.6. <code>&lt;MemoryRouter&gt;</code></a></li>
+<li><a href="#org946af81">2.7. <code>&lt;Redirect&gt;</code></a></li>
+<li><a href="#org8efc676">2.8. <code>&lt;Route&gt;</code></a></li>
 </ul>
 </li>
 </ul>
@@ -296,12 +273,12 @@ for the JavaScript code in this tag.
 <a href="https://reacttraining.com/react-router/web/guides/quick-start">react-router</a>
 </p>
 
-<div id="outline-container-orga631539" class="outline-2">
-<h2 id="orga631539"><span class="section-number-2">1</span> 指南</h2>
+<div id="outline-container-orga403cbe" class="outline-2">
+<h2 id="orga403cbe"><span class="section-number-2">1.</span> 指南</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org4098d0c" class="outline-3">
-<h3 id="org4098d0c"><span class="section-number-3">1.1</span> 主要组件</h3>
+<div id="outline-container-orgd8c8434" class="outline-3">
+<h3 id="orgd8c8434"><span class="section-number-3">1.1.</span> 主要组件</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 React Router 主要分三类组件：
@@ -318,8 +295,8 @@ React Router 主要分三类组件：
 </p>
 </div>
 
-<div id="outline-container-orgb7138ac" class="outline-4">
-<h4 id="orgb7138ac"><span class="section-number-4">1.1.1</span> 路由器</h4>
+<div id="outline-container-org9c14ed0" class="outline-4">
+<h4 id="org9c14ed0"><span class="section-number-4">1.1.1.</span> 路由器</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <p>
 路由组件的核心是 React Router，对于 Web 项目， <code>react-router-dom</code> 提供了 <code>&lt;BrowserRouter&gt;</code> 和 <code>&lt;HashRouter&gt;</code> 两种 routers。
@@ -337,27 +314,27 @@ hash 值不会发送到服务器中，也就意味着不需要特殊的服务器
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">import</span> React from <span style="color: #008000;">"react"</span>;
-<span style="color: #0000FF;">import</span> ReactDOM from <span style="color: #008000;">"react-dom"</span>;
-<span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> BrowserRouter <span style="color: #707183;">}</span> from <span style="color: #008000;">"react-router-dom"</span>;
+<pre class="src src-javascript"><span style="color: #5317ac;">import</span> React from <span style="color: #2544bb;">"react"</span>;
+<span style="color: #5317ac;">import</span> ReactDOM from <span style="color: #2544bb;">"react-dom"</span>;
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">{</span> BrowserRouter <span style="color: #000000;">}</span> from <span style="color: #2544bb;">"react-router-dom"</span>;
 
-<span style="color: #0000FF;">function</span> <span style="color: #006699;">App</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-  <span style="color: #0000FF;">return</span> &lt;h1&gt;Hello React Router&lt;/h1&gt;;
-<span style="color: #707183;">}</span>
+<span style="color: #5317ac;">function</span> <span style="color: #721045;">App</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">return</span> <span style="color: #a8007f;">&lt;</span><span style="color: #721045;">h1</span><span style="color: #a8007f;">&gt;</span><span style="color: #000000; background-color: #ffffff;">Hello React Router</span><span style="color: #a8007f;">&lt;</span>/<span style="color: #721045;">h1</span><span style="color: #a8007f;">&gt;</span>;
+<span style="color: #000000;">}</span>
 
-ReactDOM.render<span style="color: #707183;">(</span>
-  &lt;BrowserRouter&gt;
-    &lt;App /&gt;
-  &lt;/BrowserRouter&gt;,
-  document.getElementById<span style="color: #7388D6;">(</span><span style="color: #008000;">"root"</span><span style="color: #7388D6;">)</span>
-<span style="color: #707183;">)</span>;
+ReactDOM.render<span style="color: #000000;">(</span>
+  <span style="color: #a8007f;">&lt;</span><span style="color: #721045;">BrowserRouter</span><span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">    </span><span style="color: #a8007f;">&lt;</span><span style="color: #721045;">App</span> /<span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">  </span><span style="color: #a8007f;">&lt;</span>/<span style="color: #721045;">BrowserRouter</span><span style="color: #a8007f;">&gt;</span>,
+  document.getElementById<span style="color: #a8007f;">(</span><span style="color: #2544bb;">"root"</span><span style="color: #a8007f;">)</span>
+<span style="color: #000000;">)</span>;
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org7bf9790" class="outline-4">
-<h4 id="org7bf9790"><span class="section-number-4">1.1.2</span> 路由匹配</h4>
+<div id="outline-container-org8234d5c" class="outline-4">
+<h4 id="org8234d5c"><span class="section-number-4">1.1.2.</span> 路由匹配</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <p>
 有两个路由匹配组件： <code>Switch</code> 和 <code>Route</code> 。当 <code>&lt;Switch&gt;</code> 渲染的时候，它会搜索它的 <span class="underline">子</span> <code>&lt;Route&gt;</code> 元素，找到与当前 URL 匹配的元素。
@@ -375,8 +352,8 @@ ReactDOM.render<span style="color: #707183;">(</span>
 </div>
 </div>
 
-<div id="outline-container-orgeadbf93" class="outline-4">
-<h4 id="orgeadbf93"><span class="section-number-4">1.1.3</span> 路由变更（Nav）</h4>
+<div id="outline-container-orgea514e7" class="outline-4">
+<h4 id="orgea514e7"><span class="section-number-4">1.1.3.</span> 路由变更（Nav）</h4>
 <div class="outline-text-4" id="text-1-1-3">
 <p>
 React Router 提供了 <code>&lt;Link&gt;</code> 组件来创建链接。当使用 <code>&lt;Link&gt;</code> 的时候，会渲染成 anchor（ <code>&lt;a&gt;</code> ）。
@@ -387,9 +364,9 @@ React Router 提供了 <code>&lt;Link&gt;</code> 组件来创建链接。当使�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-html">&lt;<span style="color: #006699;">NavLink</span> <span style="color: #BA36A5;">to</span>=<span style="color: #008000;">"/react"</span> <span style="color: #BA36A5;">activeClassName</span>=<span style="color: #008000;">"hurray"</span>&gt;
+<pre class="src src-html">&lt;<span style="color: #721045;">NavLink</span> <span style="color: #00538b;">to</span>=<span style="color: #2544bb;">"/react"</span> <span style="color: #00538b;">activeClassName</span>=<span style="color: #2544bb;">"hurray"</span>&gt;
   React
-&lt;/<span style="color: #006699;">NavLink</span>&gt;
+&lt;/<span style="color: #721045;">NavLink</span>&gt;
 </pre>
 </div>
 
@@ -404,11 +381,11 @@ React Router 提供了 <code>&lt;Link&gt;</code> 组件来创建链接。当使�
 </div>
 </div>
 
-<div id="outline-container-org42de6de" class="outline-3">
-<h3 id="org42de6de"><span class="section-number-3">1.2</span> <span class="todo TODO">TODO</span> 服务端渲染（Server Rendering）</h3>
+<div id="outline-container-org6418527" class="outline-3">
+<h3 id="org6418527"><span class="section-number-3">1.2.</span> <span class="todo TODO">TODO</span> 服务端渲染（Server Rendering）</h3>
 </div>
-<div id="outline-container-org9e215ad" class="outline-3">
-<h3 id="org9e215ad"><span class="section-number-3">1.3</span> 代码拆分（Code Splitting）</h3>
+<div id="outline-container-orgbeda7c3" class="outline-3">
+<h3 id="orgbeda7c3"><span class="section-number-3">1.3.</span> 代码拆分（Code Splitting）</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 代码拆分可以理解成代码按需加载。为了实现这个目标，需要使用 webpack， <code>@babel/plugin-syntax-dynamic-import</code> 和 loadable-components。
@@ -420,10 +397,10 @@ webpack 默认支持动态导入；但是，你如果使用了 Babel（比如：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #707183;">{</span>
-  <span style="color: #008000;">"presets"</span>: <span style="color: #7388D6;">[</span><span style="color: #008000;">"@babel/preset-react"</span><span style="color: #7388D6;">]</span>,
-  <span style="color: #008000;">"plugins"</span>: <span style="color: #7388D6;">[</span><span style="color: #008000;">"@babel/plugin-syntax-dynamic-import"</span><span style="color: #7388D6;">]</span>
-<span style="color: #707183;">}</span>
+<pre class="src src-javascript"><span style="color: #000000;">{</span>
+  <span style="color: #2544bb;">"presets"</span>: <span style="color: #a8007f;">[</span><span style="color: #2544bb;">"@babel/preset-react"</span><span style="color: #a8007f;">]</span>,
+  <span style="color: #2544bb;">"plugins"</span>: <span style="color: #a8007f;">[</span><span style="color: #2544bb;">"@babel/plugin-syntax-dynamic-import"</span><span style="color: #a8007f;">]</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -432,18 +409,18 @@ loadable-components 是一个库加载组件用来动态导入。它自动处理
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">import</span> loadable from <span style="color: #008000;">"@loadable/component"</span>;
-<span style="color: #0000FF;">import</span> Loading from <span style="color: #008000;">"./Loading.js"</span>;
+<pre class="src src-javascript"><span style="color: #5317ac;">import</span> loadable from <span style="color: #2544bb;">"@loadable/component"</span>;
+<span style="color: #5317ac;">import</span> Loading from <span style="color: #2544bb;">"./Loading.js"</span>;
 
-<span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">LoadableComponent</span> = loadable<span style="color: #707183;">(</span><span style="color: #7388D6;">()</span> =&gt; <span style="color: #0000FF;">import</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"./Dashboard.js"</span><span style="color: #7388D6;">)</span>, <span style="color: #7388D6;">{</span>
+<span style="color: #5317ac;">const</span> <span style="color: #00538b;">LoadableComponent</span> = loadable<span style="color: #000000;">(</span><span style="color: #a8007f;">()</span> =&gt; <span style="color: #5317ac;">import</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"./Dashboard.js"</span><span style="color: #a8007f;">)</span>, <span style="color: #a8007f;">{</span>
   fallback: &lt;Loading /&gt;
-<span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>;
+<span style="color: #a8007f;">}</span><span style="color: #000000;">)</span>;
 
-<span style="color: #0000FF;">export</span> <span style="color: #0000FF;">default</span> <span style="color: #0000FF;">class</span> LoadableDashboard <span style="color: #0000FF;">extends</span> React.Component <span style="color: #707183;">{</span>
-  render<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-    <span style="color: #0000FF;">return</span> &lt;LoadableComponent /&gt;;
-  <span style="color: #7388D6;">}</span>
-<span style="color: #707183;">}</span>
+<span style="color: #5317ac;">export</span> <span style="color: #5317ac;">default</span> <span style="color: #5317ac;">class</span> LoadableDashboard <span style="color: #5317ac;">extends</span> React.Component <span style="color: #000000;">{</span>
+  render<span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+    <span style="color: #5317ac;">return</span> &lt;LoadableComponent /&gt;;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -453,30 +430,30 @@ loadable-components 是一个库加载组件用来动态导入。它自动处理
 </div>
 </div>
 
-<div id="outline-container-org72d2dbc" class="outline-3">
-<h3 id="org72d2dbc"><span class="section-number-3">1.4</span> 滚动恢复</h3>
+<div id="outline-container-org3adfc2f" class="outline-3">
+<h3 id="org3adfc2f"><span class="section-number-3">1.4.</span> 滚动恢复</h3>
 <div class="outline-text-3" id="text-1-4">
 </div>
-<div id="outline-container-org1bfac16" class="outline-4">
-<h4 id="org1bfac16"><span class="section-number-4">1.4.1</span> 滚动到顶部</h4>
+<div id="outline-container-org6ea71c3" class="outline-4">
+<h4 id="org6ea71c3"><span class="section-number-4">1.4.1.</span> 滚动到顶部</h4>
 <div class="outline-text-4" id="text-1-4-1">
 <p>
 当有一个长页面时，经常有滚动到顶部的需求。使用 <code>&lt;ScrollToTop&gt;</code> 可以轻松解决这个问题，该组件将在每次导航时向上滚动窗口。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> useEffect <span style="color: #707183;">}</span> from <span style="color: #008000;">"react"</span>;
-<span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> useLocation <span style="color: #707183;">}</span> from <span style="color: #008000;">"react-router-dom"</span>;
+<pre class="src src-javascript"><span style="color: #5317ac;">import</span> <span style="color: #000000;">{</span> useEffect <span style="color: #000000;">}</span> from <span style="color: #2544bb;">"react"</span>;
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">{</span> useLocation <span style="color: #000000;">}</span> from <span style="color: #2544bb;">"react-router-dom"</span>;
 
-<span style="color: #0000FF;">export</span> <span style="color: #0000FF;">default</span> <span style="color: #0000FF;">function</span> ScrollToTop<span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-  <span style="color: #0000FF;">const</span> <span style="color: #7388D6;">{</span> pathname <span style="color: #7388D6;">}</span> = useLocation<span style="color: #7388D6;">()</span>;
+<span style="color: #5317ac;">export</span> <span style="color: #5317ac;">default</span> <span style="color: #5317ac;">function</span> ScrollToTop<span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">const</span> <span style="color: #a8007f;">{</span> pathname <span style="color: #a8007f;">}</span> = useLocation<span style="color: #a8007f;">()</span>;
 
-  useEffect<span style="color: #7388D6;">(</span><span style="color: #909183;">()</span> =&gt; <span style="color: #909183;">{</span>
-    window.scrollTo<span style="color: #709870;">(</span>0, 0<span style="color: #709870;">)</span>;
-  <span style="color: #909183;">}</span>, <span style="color: #909183;">[</span>pathname<span style="color: #909183;">]</span><span style="color: #7388D6;">)</span>;
+  useEffect<span style="color: #a8007f;">(</span><span style="color: #005f88;">()</span> =&gt; <span style="color: #005f88;">{</span>
+    window.scrollTo<span style="color: #904200;">(</span>0, 0<span style="color: #904200;">)</span>;
+  <span style="color: #005f88;">}</span>, <span style="color: #005f88;">[</span>pathname<span style="color: #005f88;">]</span><span style="color: #a8007f;">)</span>;
 
-  <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">null</span>;
-<span style="color: #707183;">}</span>
+  <span style="color: #5317ac;">return</span> <span style="color: #0000c0;">null</span>;
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -485,24 +462,24 @@ loadable-components 是一个库加载组件用来动态导入。它自动处理
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">import</span> React from <span style="color: #008000;">"react"</span>;
-<span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> withRouter <span style="color: #707183;">}</span> from <span style="color: #008000;">"react-router-dom"</span>;
+<pre class="src src-javascript"><span style="color: #5317ac;">import</span> React from <span style="color: #2544bb;">"react"</span>;
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">{</span> withRouter <span style="color: #000000;">}</span> from <span style="color: #2544bb;">"react-router-dom"</span>;
 
-<span style="color: #0000FF;">class</span> ScrollToTop <span style="color: #0000FF;">extends</span> React.Component <span style="color: #707183;">{</span>
-  componentDidUpdate<span style="color: #7388D6;">(</span>prevProps<span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
-    <span style="color: #0000FF;">if</span> <span style="color: #909183;">(</span>
-      <span style="color: #D0372D;">this</span>.props.location.pathname !== prevProps.location.pathname
-    <span style="color: #909183;">)</span> <span style="color: #909183;">{</span>
-      window.scrollTo<span style="color: #709870;">(</span>0, 0<span style="color: #709870;">)</span>;
-    <span style="color: #909183;">}</span>
-  <span style="color: #7388D6;">}</span>
+<span style="color: #5317ac;">class</span> ScrollToTop <span style="color: #5317ac;">extends</span> React.Component <span style="color: #000000;">{</span>
+  componentDidUpdate<span style="color: #a8007f;">(</span>prevProps<span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
+    <span style="color: #5317ac;">if</span> <span style="color: #005f88;">(</span>
+      <span style="color: #0000c0;">this</span>.props.location.pathname !== prevProps.location.pathname
+    <span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
+      window.scrollTo<span style="color: #904200;">(</span>0, 0<span style="color: #904200;">)</span>;
+    <span style="color: #005f88;">}</span>
+  <span style="color: #a8007f;">}</span>
 
-  render<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-    <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">null</span>;
-  <span style="color: #7388D6;">}</span>
-<span style="color: #707183;">}</span>
+  render<span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+    <span style="color: #5317ac;">return</span> <span style="color: #0000c0;">null</span>;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
 
-<span style="color: #0000FF;">export</span> <span style="color: #0000FF;">default</span> withRouter<span style="color: #707183;">(</span>ScrollToTop<span style="color: #707183;">)</span>;
+<span style="color: #5317ac;">export</span> <span style="color: #5317ac;">default</span> withRouter<span style="color: #000000;">(</span>ScrollToTop<span style="color: #000000;">)</span>;
 </pre>
 </div>
 
@@ -513,10 +490,10 @@ loadable-components 是一个库加载组件用来动态导入。它自动处理
 <pre class="example">
 function App() {
   return (
-	&lt;Router&gt;
-	  &lt;ScrollToTop /&gt;
-	  &lt;App /&gt;
-	&lt;/Router&gt;
+    &lt;Router&gt;
+      &lt;ScrollToTop /&gt;
+      &lt;App /&gt;
+    &lt;/Router&gt;
   );
 }
 </pre>
@@ -526,28 +503,28 @@ function App() {
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> useEffect <span style="color: #707183;">}</span> from <span style="color: #008000;">"react"</span>;
+<pre class="src src-javascript"><span style="color: #5317ac;">import</span> <span style="color: #000000;">{</span> useEffect <span style="color: #000000;">}</span> from <span style="color: #2544bb;">"react"</span>;
 
-<span style="color: #0000FF;">function</span> <span style="color: #006699;">ScrollToTopOnMount</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-  useEffect<span style="color: #7388D6;">(</span><span style="color: #909183;">()</span> =&gt; <span style="color: #909183;">{</span>
-    window.scrollTo<span style="color: #709870;">(</span>0, 0<span style="color: #709870;">)</span>;
-  <span style="color: #909183;">}</span>, <span style="color: #909183;">[]</span><span style="color: #7388D6;">)</span>;
+<span style="color: #5317ac;">function</span> <span style="color: #721045;">ScrollToTopOnMount</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+  useEffect<span style="color: #a8007f;">(</span><span style="color: #005f88;">()</span> =&gt; <span style="color: #005f88;">{</span>
+    window.scrollTo<span style="color: #904200;">(</span>0, 0<span style="color: #904200;">)</span>;
+  <span style="color: #005f88;">}</span>, <span style="color: #005f88;">[]</span><span style="color: #a8007f;">)</span>;
 
-  <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">null</span>;
-<span style="color: #707183;">}</span>
+  <span style="color: #5317ac;">return</span> <span style="color: #0000c0;">null</span>;
+<span style="color: #000000;">}</span>
 
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Render this somewhere using:</span>
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&lt;Route path="..." children={&lt;LongContent /&gt;} /&gt;</span>
-<span style="color: #0000FF;">function</span> <span style="color: #006699;">LongContent</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
-  <span style="color: #0000FF;">return</span> <span style="color: #7388D6;">(</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">Render this somewhere using:</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">&lt;Route path="..." children={&lt;LongContent /&gt;} /&gt;</span>
+<span style="color: #5317ac;">function</span> <span style="color: #721045;">LongContent</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">return</span> <span style="color: #a8007f;">(</span>
     &lt;div&gt;
       &lt;ScrollToTopOnMount /&gt;
 
-      &lt;h1&gt;Here is my <span style="color: #6434A3;">long</span> <span style="color: #BA36A5;">content</span> page&lt;/h1&gt;
+      &lt;h1&gt;Here is my <span style="color: #005a5f;">long</span> <span style="color: #00538b;">content</span> page&lt;/h1&gt;
       &lt;p&gt;...&lt;/p&gt;
     &lt;/div&gt;
-  <span style="color: #7388D6;">)</span>;
-<span style="color: #707183;">}</span>
+  <span style="color: #a8007f;">)</span>;
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -556,39 +533,39 @@ function App() {
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">import</span> React from <span style="color: #008000;">"react"</span>;
+<pre class="src src-javascript"><span style="color: #5317ac;">import</span> React from <span style="color: #2544bb;">"react"</span>;
 
-<span style="color: #0000FF;">class</span> ScrollToTopOnMount <span style="color: #0000FF;">extends</span> React.Component <span style="color: #707183;">{</span>
-  componentDidMount<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-    window.scrollTo<span style="color: #909183;">(</span>0, 0<span style="color: #909183;">)</span>;
-  <span style="color: #7388D6;">}</span>
+<span style="color: #5317ac;">class</span> ScrollToTopOnMount <span style="color: #5317ac;">extends</span> React.Component <span style="color: #000000;">{</span>
+  componentDidMount<span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+    window.scrollTo<span style="color: #005f88;">(</span>0, 0<span style="color: #005f88;">)</span>;
+  <span style="color: #a8007f;">}</span>
 
-  render<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-    <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">null</span>;
-  <span style="color: #7388D6;">}</span>
-<span style="color: #707183;">}</span>
+  render<span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+    <span style="color: #5317ac;">return</span> <span style="color: #0000c0;">null</span>;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
 
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Render this somewhere using:</span>
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&lt;Route path="..." children={&lt;LongContent /&gt;} /&gt;</span>
-<span style="color: #0000FF;">class</span> LongContent <span style="color: #0000FF;">extends</span> React.Component <span style="color: #707183;">{</span>
-  render<span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-    <span style="color: #0000FF;">return</span> <span style="color: #909183;">(</span>
-      &lt;div&gt;
-        &lt;ScrollToTopOnMount /&gt;
+<span style="color: #505050;">// </span><span style="color: #505050;">Render this somewhere using:</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">&lt;Route path="..." children={&lt;LongContent /&gt;} /&gt;</span>
+<span style="color: #5317ac;">class</span> LongContent <span style="color: #5317ac;">extends</span> React.Component <span style="color: #000000;">{</span>
+  render<span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+    <span style="color: #5317ac;">return</span> <span style="color: #005f88;">(</span>
+      <span style="color: #904200;">&lt;</span><span style="color: #721045;">div</span><span style="color: #904200;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">        </span><span style="color: #904200;">&lt;</span><span style="color: #721045;">ScrollToTopOnMount</span> /<span style="color: #904200;">&gt;</span>
 
-        &lt;h1&gt;Here is my <span style="color: #6434A3;">long</span> <span style="color: #BA36A5;">content</span> page&lt;/h1&gt;
-        &lt;p&gt;...&lt;/p&gt;
-      &lt;/div&gt;
-    <span style="color: #909183;">)</span>;
-  <span style="color: #7388D6;">}</span>
-<span style="color: #707183;">}</span>
+<span style="color: #000000; background-color: #ffffff;">        </span><span style="color: #904200;">&lt;</span><span style="color: #721045;">h1</span><span style="color: #904200;">&gt;</span><span style="color: #000000; background-color: #ffffff;">Here is my long content page</span><span style="color: #904200;">&lt;</span>/<span style="color: #721045;">h1</span><span style="color: #904200;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">        </span><span style="color: #904200;">&lt;</span><span style="color: #721045;">p</span><span style="color: #904200;">&gt;</span><span style="color: #000000; background-color: #ffffff;">...</span><span style="color: #904200;">&lt;</span>/<span style="color: #721045;">p</span><span style="color: #904200;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">      </span><span style="color: #904200;">&lt;</span>/<span style="color: #721045;">div</span><span style="color: #904200;">&gt;</span>
+    <span style="color: #005f88;">)</span>;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org310156a" class="outline-4">
-<h4 id="org310156a"><span class="section-number-4">1.4.2</span> 通用的解决方案</h4>
+<div id="outline-container-orgc9f83d3" class="outline-4">
+<h4 id="orgc9f83d3"><span class="section-number-4">1.4.2.</span> 通用的解决方案</h4>
 <div class="outline-text-4" id="text-1-4-2">
 <p>
 对于通用的解决办法（浏览器已经开始原生实现），我们讨论两件事情：
@@ -609,8 +586,8 @@ function App() {
     &lt;div&gt;
       &lt;h1&gt;App&lt;/h1&gt;
 
-      &lt;RestoredScroll id=<span style="color: #008000;">"bunny"</span>&gt;
-        &lt;div style=<span style="color: #707183;">{</span><span style="color: #7388D6;">{</span> height: <span style="color: #008000;">"200px"</span>, overflow: <span style="color: #008000;">"auto"</span> <span style="color: #7388D6;">}</span><span style="color: #707183;">}</span>&gt;
+      &lt;RestoredScroll id=<span style="color: #2544bb;">"bunny"</span>&gt;
+        &lt;div style=<span style="color: #000000;">{</span><span style="color: #a8007f;">{</span> height: <span style="color: #2544bb;">"200px"</span>, overflow: <span style="color: #2544bb;">"auto"</span> <span style="color: #a8007f;">}</span><span style="color: #000000;">}</span>&gt;
           I will overflow
         &lt;/div&gt;
       &lt;/RestoredScroll&gt;
@@ -632,16 +609,16 @@ function App() {
 </div>
 </div>
 
-<div id="outline-container-org7777b20" class="outline-3">
-<h3 id="org7777b20"><span class="section-number-3">1.5</span> 原理</h3>
+<div id="outline-container-org7794882" class="outline-3">
+<h3 id="org7794882"><span class="section-number-3">1.5.</span> 原理</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 这份指南的目的是说明使用 React Router 时要具有的思维模型。我们称作「动态路由」，与你熟悉的「静态路由」完全不同 。
 </p>
 </div>
 
-<div id="outline-container-orgf85425e" class="outline-4">
-<h4 id="orgf85425e"><span class="section-number-4">1.5.1</span> 静态路由</h4>
+<div id="outline-container-org23b4d7c" class="outline-4">
+<h4 id="org23b4d7c"><span class="section-number-4">1.5.1.</span> 静态路由</h4>
 <div class="outline-text-4" id="text-1-5-1">
 <p>
 如果你用过 Rails，Express，Angular 等。那你就已经用过静态路由了。在这些框架中，所有的路由部分都要放在应用初始化任何渲染的前面。
@@ -649,13 +626,13 @@ React Router pre-v4 也是静态的（大部分）。让我们看一下在 Expre
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Express Style routing:</span>
-app.get<span style="color: #707183;">(</span><span style="color: #008000;">"/"</span>, handleIndex<span style="color: #707183;">)</span>;
-app.get<span style="color: #707183;">(</span><span style="color: #008000;">"/invoices"</span>, handleInvoices<span style="color: #707183;">)</span>;
-app.get<span style="color: #707183;">(</span><span style="color: #008000;">"/invoices/:id"</span>, handleInvoice<span style="color: #707183;">)</span>;
-app.get<span style="color: #707183;">(</span><span style="color: #008000;">"/invoices/:id/edit"</span>, handleInvoiceEdit<span style="color: #707183;">)</span>;
+<pre class="src src-javascript"><span style="color: #505050;">// </span><span style="color: #505050;">Express Style routing:</span>
+app.get<span style="color: #000000;">(</span><span style="color: #2544bb;">"/"</span>, handleIndex<span style="color: #000000;">)</span>;
+app.get<span style="color: #000000;">(</span><span style="color: #2544bb;">"/invoices"</span>, handleInvoices<span style="color: #000000;">)</span>;
+app.get<span style="color: #000000;">(</span><span style="color: #2544bb;">"/invoices/:id"</span>, handleInvoice<span style="color: #000000;">)</span>;
+app.get<span style="color: #000000;">(</span><span style="color: #2544bb;">"/invoices/:id/edit"</span>, handleInvoiceEdit<span style="color: #000000;">)</span>;
 
-app.listen<span style="color: #707183;">()</span>;
+app.listen<span style="color: #000000;">()</span>;
 </pre>
 </div>
 
@@ -665,36 +642,36 @@ app.listen<span style="color: #707183;">()</span>;
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Angular Style routing:</span>
-<span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">appRoutes</span>: Routes = <span style="color: #707183;">[</span>
-  <span style="color: #7388D6;">{</span>
-    path: <span style="color: #008000;">"crisis-center"</span>,
+<pre class="src src-javascript"><span style="color: #505050;">// </span><span style="color: #505050;">Angular Style routing:</span>
+<span style="color: #5317ac;">const</span> <span style="color: #00538b;">appRoutes</span>: Routes = <span style="color: #000000;">[</span>
+  <span style="color: #a8007f;">{</span>
+    path: <span style="color: #2544bb;">"crisis-center"</span>,
     component: CrisisListComponent
-  <span style="color: #7388D6;">}</span>,
-  <span style="color: #7388D6;">{</span>
-    path: <span style="color: #008000;">"hero/:id"</span>,
+  <span style="color: #a8007f;">}</span>,
+  <span style="color: #a8007f;">{</span>
+    path: <span style="color: #2544bb;">"hero/:id"</span>,
     component: HeroDetailComponent
-  <span style="color: #7388D6;">}</span>,
-  <span style="color: #7388D6;">{</span>
-    path: <span style="color: #008000;">"heroes"</span>,
+  <span style="color: #a8007f;">}</span>,
+  <span style="color: #a8007f;">{</span>
+    path: <span style="color: #2544bb;">"heroes"</span>,
     component: HeroListComponent,
-    data: <span style="color: #909183;">{</span> title: <span style="color: #008000;">"Heroes List"</span> <span style="color: #909183;">}</span>
-  <span style="color: #7388D6;">}</span>,
-  <span style="color: #7388D6;">{</span>
-    path: <span style="color: #008000;">""</span>,
-    redirectTo: <span style="color: #008000;">"/heroes"</span>,
-    pathMatch: <span style="color: #008000;">"full"</span>
-  <span style="color: #7388D6;">}</span>,
-  <span style="color: #7388D6;">{</span>
-    path: <span style="color: #008000;">"**"</span>,
+    data: <span style="color: #005f88;">{</span> title: <span style="color: #2544bb;">"Heroes List"</span> <span style="color: #005f88;">}</span>
+  <span style="color: #a8007f;">}</span>,
+  <span style="color: #a8007f;">{</span>
+    path: <span style="color: #2544bb;">""</span>,
+    redirectTo: <span style="color: #2544bb;">"/heroes"</span>,
+    pathMatch: <span style="color: #2544bb;">"full"</span>
+  <span style="color: #a8007f;">}</span>,
+  <span style="color: #a8007f;">{</span>
+    path: <span style="color: #2544bb;">"**"</span>,
     component: PageNotFoundComponent
-  <span style="color: #7388D6;">}</span>
-<span style="color: #707183;">]</span>;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">]</span>;
 
-@NgModule<span style="color: #707183;">(</span><span style="color: #7388D6;">{</span>
-  imports: <span style="color: #909183;">[</span>RouterModule.forRoot<span style="color: #709870;">(</span>appRoutes<span style="color: #709870;">)</span><span style="color: #909183;">]</span>
-<span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>
-<span style="color: #0000FF;">export</span> <span style="color: #0000FF;">class</span> AppModule <span style="color: #707183;">{}</span>
+@NgModule<span style="color: #000000;">(</span><span style="color: #a8007f;">{</span>
+  imports: <span style="color: #005f88;">[</span>RouterModule.forRoot<span style="color: #904200;">(</span>appRoutes<span style="color: #904200;">)</span><span style="color: #005f88;">]</span>
+<span style="color: #a8007f;">}</span><span style="color: #000000;">)</span>
+<span style="color: #5317ac;">export</span> <span style="color: #5317ac;">class</span> AppModule <span style="color: #000000;">{}</span>
 </pre>
 </div>
 
@@ -703,16 +680,16 @@ Ember 使用了比较常规的 <code>routes.js</code> 文件，但也是在你�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Ember Style Router:</span>
-Router.map<span style="color: #707183;">(</span><span style="color: #0000FF;">function</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-  <span style="color: #D0372D;">this</span>.route<span style="color: #909183;">(</span><span style="color: #008000;">"about"</span><span style="color: #909183;">)</span>;
-  <span style="color: #D0372D;">this</span>.route<span style="color: #909183;">(</span><span style="color: #008000;">"contact"</span><span style="color: #909183;">)</span>;
-  <span style="color: #D0372D;">this</span>.route<span style="color: #909183;">(</span><span style="color: #008000;">"rentals"</span>, <span style="color: #0000FF;">function</span><span style="color: #709870;">()</span> <span style="color: #709870;">{</span>
-    <span style="color: #D0372D;">this</span>.route<span style="color: #907373;">(</span><span style="color: #008000;">"show"</span>, <span style="color: #6276BA;">{</span> path: <span style="color: #008000;">"/:rental_id"</span> <span style="color: #6276BA;">}</span><span style="color: #907373;">)</span>;
-  <span style="color: #709870;">}</span><span style="color: #909183;">)</span>;
-<span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>;
+<pre class="src src-javascript"><span style="color: #505050;">// </span><span style="color: #505050;">Ember Style Router:</span>
+Router.map<span style="color: #000000;">(</span><span style="color: #5317ac;">function</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+  <span style="color: #0000c0;">this</span>.route<span style="color: #005f88;">(</span><span style="color: #2544bb;">"about"</span><span style="color: #005f88;">)</span>;
+  <span style="color: #0000c0;">this</span>.route<span style="color: #005f88;">(</span><span style="color: #2544bb;">"contact"</span><span style="color: #005f88;">)</span>;
+  <span style="color: #0000c0;">this</span>.route<span style="color: #005f88;">(</span><span style="color: #2544bb;">"rentals"</span>, <span style="color: #5317ac;">function</span><span style="color: #904200;">()</span> <span style="color: #904200;">{</span>
+    <span style="color: #0000c0;">this</span>.route<span style="color: #7f10d0;">(</span><span style="color: #2544bb;">"show"</span>, <span style="color: #006800;">{</span> path: <span style="color: #2544bb;">"/:rental_id"</span> <span style="color: #006800;">}</span><span style="color: #7f10d0;">)</span>;
+  <span style="color: #904200;">}</span><span style="color: #005f88;">)</span>;
+<span style="color: #a8007f;">}</span><span style="color: #000000;">)</span>;
 
-<span style="color: #0000FF;">export</span> <span style="color: #0000FF;">default</span> Router;
+<span style="color: #5317ac;">export</span> <span style="color: #5317ac;">default</span> Router;
 </pre>
 </div>
 
@@ -726,8 +703,8 @@ Router.map<span style="color: #707183;">(</span><span style="color: #0000FF;">fu
 </div>
 </div>
 
-<div id="outline-container-orgbf0e92e" class="outline-4">
-<h4 id="orgbf0e92e"><span class="section-number-4">1.5.2</span> 动态路由</h4>
+<div id="outline-container-org6d957fc" class="outline-4">
+<h4 id="org6d957fc"><span class="section-number-4">1.5.2.</span> 动态路由</h4>
 <div class="outline-text-4" id="text-1-5-2">
 <p>
 所谓动态路由指的是在应用渲染的时候进行的路由，不是程序之外的配置或者约定。也就是说所有的路由都是 React Router 中的组件。
@@ -739,18 +716,18 @@ Router.map<span style="color: #707183;">(</span><span style="color: #0000FF;">fu
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">react-native</span>
-<span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> NativeRouter <span style="color: #707183;">}</span> from <span style="color: #008000;">"react-router-native"</span>;
+<pre class="src src-javascript"><span style="color: #505050;">// </span><span style="color: #505050;">react-native</span>
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">{</span> NativeRouter <span style="color: #000000;">}</span> from <span style="color: #2544bb;">"react-router-native"</span>;
 
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">react-dom (what we'll use here)</span>
-<span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> BrowserRouter <span style="color: #707183;">}</span> from <span style="color: #008000;">"react-router-dom"</span>;
+<span style="color: #505050;">// </span><span style="color: #505050;">react-dom (what we'll use here)</span>
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">{</span> BrowserRouter <span style="color: #000000;">}</span> from <span style="color: #2544bb;">"react-router-dom"</span>;
 
-ReactDOM.render<span style="color: #707183;">(</span>
+ReactDOM.render<span style="color: #000000;">(</span>
   &lt;BrowserRouter&gt;
     &lt;App /&gt;
   &lt;/BrowserRouter&gt;,
   el
-<span style="color: #707183;">)</span>;
+<span style="color: #000000;">)</span>;
 </pre>
 </div>
 
@@ -759,13 +736,13 @@ ReactDOM.render<span style="color: #707183;">(</span>
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">App</span> = <span style="color: #707183;">()</span> =&gt; <span style="color: #707183;">(</span>
+<pre class="src src-javascript"><span style="color: #5317ac;">const</span> <span style="color: #00538b;">App</span> = <span style="color: #000000;">()</span> =&gt; <span style="color: #000000;">(</span>
   &lt;div&gt;
     &lt;nav&gt;
-      &lt;Link to=<span style="color: #008000;">"/dashboard"</span>&gt;Dashboard&lt;/Link&gt;
+      &lt;Link to=<span style="color: #2544bb;">"/dashboard"</span>&gt;Dashboard&lt;/Link&gt;
     &lt;/nav&gt;
   &lt;/div&gt;
-<span style="color: #707183;">)</span>;
+<span style="color: #000000;">)</span>;
 </pre>
 </div>
 
@@ -774,16 +751,16 @@ ReactDOM.render<span style="color: #707183;">(</span>
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">App</span> = <span style="color: #707183;">()</span> =&gt; <span style="color: #707183;">(</span>
+<pre class="src src-javascript"><span style="color: #5317ac;">const</span> <span style="color: #00538b;">App</span> = <span style="color: #000000;">()</span> =&gt; <span style="color: #000000;">(</span>
   &lt;div&gt;
     &lt;nav&gt;
-      &lt;Link to=<span style="color: #008000;">"/dashboard"</span>&gt;Dashboard&lt;/Link&gt;
+      &lt;Link to=<span style="color: #2544bb;">"/dashboard"</span>&gt;Dashboard&lt;/Link&gt;
     &lt;/nav&gt;
     &lt;div&gt;
-      &lt;Route path=<span style="color: #008000;">"/dashboard"</span> component=<span style="color: #7388D6;">{</span>Dashboard<span style="color: #7388D6;">}</span> /&gt;
+      &lt;Route path=<span style="color: #2544bb;">"/dashboard"</span> component=<span style="color: #a8007f;">{</span>Dashboard<span style="color: #a8007f;">}</span> /&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-<span style="color: #707183;">)</span>;
+<span style="color: #000000;">)</span>;
 </pre>
 </div>
 
@@ -794,49 +771,49 @@ Route 会渲染成 <code>&lt;Dashboard {...props}/&gt;</code>, <code>props</code
 </div>
 </div>
 
-<div id="outline-container-org73e71b2" class="outline-4">
-<h4 id="org73e71b2"><span class="section-number-4">1.5.3</span> 嵌套路由</h4>
+<div id="outline-container-orgf4239b1" class="outline-4">
+<h4 id="orgf4239b1"><span class="section-number-4">1.5.3.</span> 嵌套路由</h4>
 <div class="outline-text-4" id="text-1-5-3">
 <p>
 许多路由器都有嵌套路由的概念，如果你用了 V4 的 React Router，那么你就知道它也是这样的。只要嵌套 <code>div</code> 就可以了：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">App</span> = <span style="color: #707183;">()</span> =&gt; <span style="color: #707183;">(</span>
+<pre class="src src-javascript"><span style="color: #5317ac;">const</span> <span style="color: #00538b;">App</span> = <span style="color: #000000;">()</span> =&gt; <span style="color: #000000;">(</span>
   &lt;BrowserRouter&gt;
-    <span style="color: #7388D6;">{</span><span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">here's a div */</span><span style="color: #7388D6;">}</span>
+    <span style="color: #a8007f;">{</span><span style="color: #505050;">/* </span><span style="color: #505050;">here's a div</span><span style="color: #505050;"> */</span><span style="color: #a8007f;">}</span>
     &lt;div&gt;
-      <span style="color: #7388D6;">{</span><span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">here's a Route */</span><span style="color: #7388D6;">}</span>
-      &lt;Route path=<span style="color: #008000;">"/tacos"</span> component=<span style="color: #7388D6;">{</span>Tacos<span style="color: #7388D6;">}</span> /&gt;
+      <span style="color: #a8007f;">{</span><span style="color: #505050;">/* </span><span style="color: #505050;">here's a Route</span><span style="color: #505050;"> */</span><span style="color: #a8007f;">}</span>
+      &lt;Route path=<span style="color: #2544bb;">"/tacos"</span> component=<span style="color: #a8007f;">{</span>Tacos<span style="color: #a8007f;">}</span> /&gt;
     &lt;/div&gt;
   &lt;/BrowserRouter&gt;
-<span style="color: #707183;">)</span>;
+<span style="color: #000000;">)</span>;
 
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">when the url matches `/tacos` this component renders</span>
-<span style="color: #0000FF;">const</span> <span style="color: #BA36A5;">Tacos</span> = <span style="color: #707183;">(</span><span style="color: #7388D6;">{</span> match <span style="color: #7388D6;">}</span><span style="color: #707183;">)</span> =&gt; <span style="color: #707183;">(</span>
-  <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">here's a nested div</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">when the url matches `/tacos` this component renders</span>
+<span style="color: #5317ac;">const</span> <span style="color: #00538b;">Tacos</span> = <span style="color: #000000;">(</span><span style="color: #a8007f;">{</span> match <span style="color: #a8007f;">}</span><span style="color: #000000;">)</span> =&gt; <span style="color: #000000;">(</span>
+  <span style="color: #505050;">// </span><span style="color: #505050;">here's a nested div</span>
   &lt;div&gt;
-    <span style="color: #7388D6;">{</span><span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">here's a nested Route,</span>
-<span style="color: #8D8D84; font-style: italic;">        match.url helps us make a relative path */</span><span style="color: #7388D6;">}</span>
-    &lt;Route path=<span style="color: #7388D6;">{</span>match.url + <span style="color: #008000;">"/carnitas"</span><span style="color: #7388D6;">}</span> component=<span style="color: #7388D6;">{</span>Carnitas<span style="color: #7388D6;">}</span> /&gt;
+    <span style="color: #a8007f;">{</span><span style="color: #505050;">/* </span><span style="color: #505050;">here's a nested Route,</span>
+<span style="color: #505050;">        match.url helps us make a relative path</span><span style="color: #505050;"> */</span><span style="color: #a8007f;">}</span>
+    &lt;Route path=<span style="color: #a8007f;">{</span>match.url + <span style="color: #2544bb;">"/carnitas"</span><span style="color: #a8007f;">}</span> component=<span style="color: #a8007f;">{</span>Carnitas<span style="color: #a8007f;">}</span> /&gt;
   &lt;/div&gt;
-<span style="color: #707183;">)</span>;
+<span style="color: #000000;">)</span>;
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orga065969" class="outline-4">
-<h4 id="orga065969"><span class="section-number-4">1.5.4</span> 响应式路由</h4>
+<div id="outline-container-org215298d" class="outline-4">
+<h4 id="org215298d"><span class="section-number-4">1.5.4.</span> 响应式路由</h4>
 </div>
 </div>
 </div>
-<div id="outline-container-orgdee8273" class="outline-2">
-<h2 id="orgdee8273"><span class="section-number-2">2</span> API</h2>
+<div id="outline-container-org226c96d" class="outline-2">
+<h2 id="org226c96d"><span class="section-number-2">2.</span> API</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org90f8bca" class="outline-3">
-<h3 id="org90f8bca"><span class="section-number-3">2.1</span> Hooks</h3>
+<div id="outline-container-org1c0015f" class="outline-3">
+<h3 id="org1c0015f"><span class="section-number-3">2.1.</span> Hooks</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用的 hooks：
@@ -851,8 +828,8 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 </div>
 </div>
 
-<div id="outline-container-orgc8a6a03" class="outline-3">
-<h3 id="orgc8a6a03"><span class="section-number-3">2.2</span> <code>&lt;BrowserRouter&gt;</code></h3>
+<div id="outline-container-orgcc11640" class="outline-3">
+<h3 id="orgcc11640"><span class="section-number-3">2.2.</span> <code>&lt;BrowserRouter&gt;</code></h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 <code>&lt;Router&gt;</code> 使用 HTML5 history API 保证 UI 界面与 URL 同步。
@@ -860,10 +837,10 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 
 <div class="org-src-container">
 <pre class="src src-javascript">&lt;BrowserRouter
-  basename=<span style="color: #707183;">{</span>optionalString<span style="color: #707183;">}</span>
-  forceRefresh=<span style="color: #707183;">{</span>optionalBool<span style="color: #707183;">}</span>
-  getUserConfirmation=<span style="color: #707183;">{</span>optionalFunc<span style="color: #707183;">}</span>
-  keyLength=<span style="color: #707183;">{</span>optionalNumber<span style="color: #707183;">}</span>
+  basename=<span style="color: #000000;">{</span>optionalString<span style="color: #000000;">}</span>
+  forceRefresh=<span style="color: #000000;">{</span>optionalBool<span style="color: #000000;">}</span>
+  getUserConfirmation=<span style="color: #000000;">{</span>optionalFunc<span style="color: #000000;">}</span>
+  keyLength=<span style="color: #000000;">{</span>optionalNumber<span style="color: #000000;">}</span>
 &gt;
   &lt;App /&gt;
 &lt;/BrowserRouter&gt;
@@ -880,8 +857,8 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 </div>
 </div>
 
-<div id="outline-container-org41446be" class="outline-3">
-<h3 id="org41446be"><span class="section-number-3">2.3</span> <code>&lt;HashRouter&gt;</code></h3>
+<div id="outline-container-orgd27d727" class="outline-3">
+<h3 id="orgd27d727"><span class="section-number-3">2.3.</span> <code>&lt;HashRouter&gt;</code></h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 <code>&lt;Router&gt;</code> 使用 URL 中的 hash 部分（比如 <code>window.location.hash</code> ）来保证你的 UI 与 URL 同步。
@@ -893,9 +870,9 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 
 <div class="org-src-container">
 <pre class="src src-javascript">&lt;HashRouter
-  basename=<span style="color: #707183;">{</span>optionalString<span style="color: #707183;">}</span>
-  getUserConfirmation=<span style="color: #707183;">{</span>optionalFunc<span style="color: #707183;">}</span>
-  hashType=<span style="color: #707183;">{</span>optionalString<span style="color: #707183;">}</span>
+  basename=<span style="color: #000000;">{</span>optionalString<span style="color: #000000;">}</span>
+  getUserConfirmation=<span style="color: #000000;">{</span>optionalFunc<span style="color: #000000;">}</span>
+  hashType=<span style="color: #000000;">{</span>optionalString<span style="color: #000000;">}</span>
 &gt;
   &lt;App /&gt;
 &lt;/HashRouter&gt;
@@ -915,15 +892,15 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 </ul>
 </div>
 </div>
-<div id="outline-container-orgdeaee81" class="outline-3">
-<h3 id="orgdeaee81"><span class="section-number-3">2.4</span> <code>&lt;Link&gt;</code></h3>
+<div id="outline-container-orgabb72a2" class="outline-3">
+<h3 id="orgabb72a2"><span class="section-number-3">2.4.</span> <code>&lt;Link&gt;</code></h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 应用内部的导航（可路由的 URL）。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript">&lt;Link to=<span style="color: #008000;">"/about"</span>&gt;About&lt;/Link&gt;
+<pre class="src src-javascript">&lt;Link to=<span style="color: #2544bb;">"/about"</span>&gt;About&lt;/Link&gt;
 </pre>
 </div>
 
@@ -934,7 +911,7 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 <code>string</code> 字符串将 location.pathname, search, hash 属性拼接起来
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript">&lt;Link to=<span style="color: #008000;">"/courses?sort=name"</span> /&gt;
+<pre class="src src-javascript">&lt;Link to=<span style="color: #2544bb;">"/courses?sort=name"</span> /&gt;
 </pre>
 </div></li>
 <li><code>object</code> 包含一下任何属性的对象
@@ -947,13 +924,13 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 </p>
 <div class="org-src-container">
 <pre class="src src-javascript">&lt;Link
-  to=<span style="color: #707183;">{</span><span style="color: #7388D6;">{</span>
-  pathname: <span style="color: #008000;">"/courses"</span>,
-  search: <span style="color: #008000;">"?sort=name"</span>,
-  hash: <span style="color: #008000;">"#the-hash"</span>,
-  state: <span style="color: #909183;">{</span> fromDashboard: <span style="color: #D0372D;">true</span> <span style="color: #909183;">}</span>
-  <span style="color: #7388D6;">}</span><span style="color: #707183;">}</span>
-<span style="color: #008000;">/&gt;</span>
+  to=<span style="color: #000000;">{</span><span style="color: #a8007f;">{</span>
+  pathname: <span style="color: #2544bb;">"/courses"</span>,
+  search: <span style="color: #2544bb;">"?sort=name"</span>,
+  hash: <span style="color: #2544bb;">"#the-hash"</span>,
+  state: <span style="color: #005f88;">{</span> fromDashboard: <span style="color: #0000c0;">true</span> <span style="color: #005f88;">}</span>
+  <span style="color: #a8007f;">}</span><span style="color: #000000;">}</span>
+<span style="color: #2544bb;">/&gt;</span>
 </pre>
 </div></li>
 </ul></li>
@@ -961,8 +938,8 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 <code>function</code> 当前位置作为参数传给函数，返回字符串形式的或者对象形式的位置
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript">&lt;Link to=<span style="color: #707183;">{</span>location =&gt; <span style="color: #7388D6;">(</span><span style="color: #909183;">{</span> ...location, pathname: <span style="color: #008000;">"/courses"</span> <span style="color: #909183;">}</span><span style="color: #7388D6;">)</span><span style="color: #707183;">}</span> /&gt;
-&lt;Link to=<span style="color: #707183;">{</span>location =&gt; <span style="color: #7388D6;">(</span><span style="color: #909183;">{</span> ...location, pathname: <span style="color: #008000;">"/courses"</span> <span style="color: #909183;">}</span><span style="color: #7388D6;">)</span><span style="color: #707183;">}</span> /&gt;
+<pre class="src src-javascript">&lt;Link to=<span style="color: #000000;">{</span>location =&gt; <span style="color: #a8007f;">(</span><span style="color: #005f88;">{</span> ...location, pathname: <span style="color: #2544bb;">"/courses"</span> <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span><span style="color: #000000;">}</span> /&gt;
+&lt;Link to=<span style="color: #000000;">{</span>location =&gt; <span style="color: #a8007f;">(</span><span style="color: #005f88;">{</span> ...location, pathname: <span style="color: #2544bb;">"/courses"</span> <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span><span style="color: #000000;">}</span> /&gt;
 </pre>
 </div></li>
 </ul></li>
@@ -972,15 +949,15 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 </div>
 </div>
 
-<div id="outline-container-orgcc0513a" class="outline-3">
-<h3 id="orgcc0513a"><span class="section-number-3">2.5</span> <code>&lt;NavLink&gt;</code></h3>
+<div id="outline-container-org10f1fc4" class="outline-3">
+<h3 id="org10f1fc4"><span class="section-number-3">2.5.</span> <code>&lt;NavLink&gt;</code></h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 <code>&lt;Link&gt;</code> 的特殊版本，如果匹配当前的 URL 时，自动添加风格属性。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript">&lt;NavLink to=<span style="color: #008000;">"/about"</span>&gt;About&lt;/NavLink&gt;
+<pre class="src src-javascript">&lt;NavLink to=<span style="color: #2544bb;">"/about"</span>&gt;About&lt;/NavLink&gt;
 </pre>
 </div>
 
@@ -989,7 +966,7 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 <code>activeClassName: string</code> 激活状态下给定元素的 <code>class</code> ，默认是 <code>active</code> ，或者 <code>className</code> 属性联合起来
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript">&lt;NavLink to=<span style="color: #008000;">"/faq"</span> activeClassName=<span style="color: #008000;">"selected"</span>&gt;
+<pre class="src src-javascript">&lt;NavLink to=<span style="color: #2544bb;">"/faq"</span> activeClassName=<span style="color: #2544bb;">"selected"</span>&gt;
   FAQs
 &lt;/NavLink&gt;
 </pre>
@@ -999,11 +976,11 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 </p>
 <div class="org-src-container">
 <pre class="src src-javascript">&lt;NavLink
-  to=<span style="color: #008000;">"/faq"</span>
-  activeStyle=<span style="color: #707183;">{</span><span style="color: #7388D6;">{</span>
-    fontWeight: <span style="color: #008000;">"bold"</span>,
-    color: <span style="color: #008000;">"red"</span>
-  <span style="color: #7388D6;">}</span><span style="color: #707183;">}</span>
+  to=<span style="color: #2544bb;">"/faq"</span>
+  activeStyle=<span style="color: #000000;">{</span><span style="color: #a8007f;">{</span>
+    fontWeight: <span style="color: #2544bb;">"bold"</span>,
+    color: <span style="color: #2544bb;">"red"</span>
+  <span style="color: #a8007f;">}</span><span style="color: #000000;">}</span>
 &gt;
   FAQs
 &lt;/NavLink&gt;
@@ -1014,7 +991,7 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 <code>strict: bool</code> true 时，匹配是否考虑路径名上的斜杠，更多可查看 <code>&lt;Route strict&gt;</code> 文档
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript">&lt;NavLink strict to=<span style="color: #008000;">"/events/"</span>&gt;
+<pre class="src src-javascript">&lt;NavLink strict to=<span style="color: #2544bb;">"/events/"</span>&gt;
   Events
 &lt;/NavLink&gt;
 </pre>
@@ -1024,8 +1001,8 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 </ul>
 </div>
 </div>
-<div id="outline-container-org98dce0f" class="outline-3">
-<h3 id="org98dce0f"><span class="section-number-3">2.6</span> <code>&lt;MemoryRouter&gt;</code></h3>
+<div id="outline-container-orge60d9ac" class="outline-3">
+<h3 id="orge60d9ac"><span class="section-number-3">2.6.</span> <code>&lt;MemoryRouter&gt;</code></h3>
 <div class="outline-text-3" id="text-2-6">
 <p>
 将 URL 记录保留在内存中（不在地址栏读取或者写入），在测试和非浏览器环境中（React Native）很有用。
@@ -1033,8 +1010,8 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 </div>
 </div>
 
-<div id="outline-container-org994876f" class="outline-3">
-<h3 id="org994876f"><span class="section-number-3">2.7</span> <code>&lt;Redirect&gt;</code></h3>
+<div id="outline-container-org946af81" class="outline-3">
+<h3 id="org946af81"><span class="section-number-3">2.7.</span> <code>&lt;Redirect&gt;</code></h3>
 <div class="outline-text-3" id="text-2-7">
 <p>
 重定向到另外一个位置，新的位置将覆盖历史记录堆栈中的当前位置，类似服务端的 redirects （HTTP 3xx） 干的事情。
@@ -1043,16 +1020,16 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 <ul class="org-ul">
 <li><code>to: string</code> 字符串表达的位置</li>
 <li><p>
-<code>to: object</code> 对象表达的位置，路径格式必须要被 <a href="https://github.com/pillarjs/path-to-regexp/tree/v1.7.0">path-to-regexp@^1.7.0</a> 理解
+<code>to: object</code> 对象表达的位置，路径格式必须要被 <a href="https://github.com/pillarjs/path-to-regexp/tree/v1.7.0">path-to-regexp@<sup>1.7.0</sup></a> 理解
 </p>
 <div class="org-src-container">
 <pre class="src src-javascript">&lt;Redirect
-  to=<span style="color: #707183;">{</span><span style="color: #7388D6;">{</span>
-    pathname: <span style="color: #008000;">"/login"</span>,
-    search: <span style="color: #008000;">"?utm=your+face"</span>,
-    state: <span style="color: #909183;">{</span> referrer: currentLocation <span style="color: #909183;">}</span>
-  <span style="color: #7388D6;">}</span><span style="color: #707183;">}</span>
-<span style="color: #008000;">/&gt;</span>
+  to=<span style="color: #000000;">{</span><span style="color: #a8007f;">{</span>
+    pathname: <span style="color: #2544bb;">"/login"</span>,
+    search: <span style="color: #2544bb;">"?utm=your+face"</span>,
+    state: <span style="color: #005f88;">{</span> referrer: currentLocation <span style="color: #005f88;">}</span>
+  <span style="color: #a8007f;">}</span><span style="color: #000000;">}</span>
+<span style="color: #2544bb;">/&gt;</span>
 </pre>
 </div>
 <p>
@@ -1063,10 +1040,10 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 <code>from: string</code> 重定向的来源 URL，参数会被传递到 <code>to</code> 中：
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Redirect with matched parameters</span>
+<pre class="src src-javascript"><span style="color: #505050;">// </span><span style="color: #505050;">Redirect with matched parameters</span>
 &lt;Switch&gt;
-  &lt;Redirect from=<span style="color: #008000;">'/users/:id'</span> to=<span style="color: #008000;">'/users/profile/:id'</span>/&gt;
-  &lt;Route path=<span style="color: #008000;">'/users/profile/:id'</span>&gt;
+  &lt;Redirect from=<span style="color: #2544bb;">'/users/:id'</span> to=<span style="color: #2544bb;">'/users/profile/:id'</span>/&gt;
+  &lt;Route path=<span style="color: #2544bb;">'/users/profile/:id'</span>&gt;
     &lt;Profile /&gt;
   &lt;/Route&gt;
 &lt;/Switch&gt;
@@ -1083,31 +1060,31 @@ React 16.8 版本之后，React Router 利用 hook 机制添加了几种常用�
 </div>
 </div>
 
-<div id="outline-container-org00cb3c9" class="outline-3">
-<h3 id="org00cb3c9"><span class="section-number-3">2.8</span> <code>&lt;Route&gt;</code></h3>
+<div id="outline-container-org8efc676" class="outline-3">
+<h3 id="org8efc676"><span class="section-number-3">2.8.</span> <code>&lt;Route&gt;</code></h3>
 <div class="outline-text-3" id="text-2-8">
 <p>
 Route 可能是 React Router 中最需要理解和学习的组件。它的职责是当它的路径和当前 URL 相匹配的时候，显示 UI。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">import</span> React from <span style="color: #008000;">"react"</span>;
-<span style="color: #0000FF;">import</span> ReactDOM from <span style="color: #008000;">"react-dom"</span>;
-<span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> BrowserRouter as Router, Route <span style="color: #707183;">}</span> from <span style="color: #008000;">"react-router-dom"</span>;
+<pre class="src src-javascript"><span style="color: #5317ac;">import</span> React from <span style="color: #2544bb;">"react"</span>;
+<span style="color: #5317ac;">import</span> ReactDOM from <span style="color: #2544bb;">"react-dom"</span>;
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">{</span> BrowserRouter as Router, Route <span style="color: #000000;">}</span> from <span style="color: #2544bb;">"react-router-dom"</span>;
 
-ReactDOM.render<span style="color: #707183;">(</span>
-  &lt;Router&gt;
-    &lt;div&gt;
-      &lt;Route exact path=<span style="color: #008000;">"/"</span>&gt;
-        &lt;Home /&gt;
-      &lt;/Route&gt;
-      &lt;Route path=<span style="color: #008000;">"/news"</span>&gt;
-        &lt;NewsFeed /&gt;
-      &lt;/Route&gt;
-    &lt;/div&gt;
-  &lt;/Router&gt;,
+ReactDOM.render<span style="color: #000000;">(</span>
+  <span style="color: #a8007f;">&lt;</span><span style="color: #721045;">Router</span><span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">    </span><span style="color: #a8007f;">&lt;</span><span style="color: #721045;">div</span><span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">      </span><span style="color: #a8007f;">&lt;</span><span style="color: #721045;">Route</span> <span style="color: #00538b;">exact</span> <span style="color: #00538b;">path</span>=<span style="color: #2544bb;">"/"</span><span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">        </span><span style="color: #a8007f;">&lt;</span><span style="color: #721045;">Home</span> /<span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">      </span><span style="color: #a8007f;">&lt;</span>/<span style="color: #721045;">Route</span><span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">      </span><span style="color: #a8007f;">&lt;</span><span style="color: #721045;">Route</span> <span style="color: #00538b;">path</span>=<span style="color: #2544bb;">"/news"</span><span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">        </span><span style="color: #a8007f;">&lt;</span><span style="color: #721045;">NewsFeed</span> /<span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">      </span><span style="color: #a8007f;">&lt;</span>/<span style="color: #721045;">Route</span><span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">    </span><span style="color: #a8007f;">&lt;</span>/<span style="color: #721045;">div</span><span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">  </span><span style="color: #a8007f;">&lt;</span>/<span style="color: #721045;">Router</span><span style="color: #a8007f;">&gt;</span>,
   node
-<span style="color: #707183;">)</span>;
+<span style="color: #000000;">)</span>;
 </pre>
 </div>
 
@@ -1140,21 +1117,21 @@ ReactDOM.render<span style="color: #707183;">(</span>
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #0000FF;">import</span> React from <span style="color: #008000;">"react"</span>;
-<span style="color: #0000FF;">import</span> ReactDOM from <span style="color: #008000;">"react-dom"</span>;
-<span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> BrowserRouter as Router, Route <span style="color: #707183;">}</span> from <span style="color: #008000;">"react-router-dom"</span>;
+<pre class="src src-javascript"><span style="color: #5317ac;">import</span> React from <span style="color: #2544bb;">"react"</span>;
+<span style="color: #5317ac;">import</span> ReactDOM from <span style="color: #2544bb;">"react-dom"</span>;
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">{</span> BrowserRouter as Router, Route <span style="color: #000000;">}</span> from <span style="color: #2544bb;">"react-router-dom"</span>;
 
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">All route props (match, location and history) are available to User</span>
-<span style="color: #0000FF;">function</span> <span style="color: #006699;">User</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">props</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-  <span style="color: #0000FF;">return</span> &lt;h1&gt;Hello <span style="color: #7388D6;">{</span>props.match.params.username<span style="color: #7388D6;">}</span>!&lt;/h1&gt;;
-<span style="color: #707183;">}</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">All route props (match, location and history) are available to User</span>
+<span style="color: #5317ac;">function</span> <span style="color: #721045;">User</span><span style="color: #000000;">(</span><span style="color: #00538b;">props</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">return</span> <span style="color: #a8007f;">&lt;</span><span style="color: #721045;">h1</span><span style="color: #a8007f;">&gt;</span><span style="color: #000000; background-color: #ffffff;">Hello </span><span style="color: #a8007f;">{</span>props.match.params.username<span style="color: #a8007f;">}</span><span style="color: #000000; background-color: #ffffff;">!</span><span style="color: #a8007f;">&lt;</span>/<span style="color: #721045;">h1</span><span style="color: #a8007f;">&gt;</span>;
+<span style="color: #000000;">}</span>
 
-ReactDOM.render<span style="color: #707183;">(</span>
-  &lt;Router&gt;
-    &lt;Route path=<span style="color: #008000;">"/user/:username"</span> component=<span style="color: #7388D6;">{</span>User<span style="color: #7388D6;">}</span> /&gt;
-  &lt;/Router&gt;,
+ReactDOM.render<span style="color: #000000;">(</span>
+  <span style="color: #a8007f;">&lt;</span><span style="color: #721045;">Router</span><span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">    </span><span style="color: #a8007f;">&lt;</span><span style="color: #721045;">Route</span> <span style="color: #00538b;">path</span>=<span style="color: #2544bb;">"/user/:username"</span> <span style="color: #00538b;">component</span>=<span style="color: #005f88;">{</span>User<span style="color: #005f88;">}</span> /<span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">  </span><span style="color: #a8007f;">&lt;</span>/<span style="color: #721045;">Router</span><span style="color: #a8007f;">&gt;</span>,
   node
-<span style="color: #707183;">)</span>;
+<span style="color: #000000;">)</span>;
 </pre>
 </div>
 
@@ -1173,39 +1150,39 @@ ReactDOM.render<span style="color: #707183;">(</span>
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js"><span style="color: #0000FF;">import</span> React from <span style="color: #008000;">"react"</span>;
-<span style="color: #0000FF;">import</span> ReactDOM from <span style="color: #008000;">"react-dom"</span>;
-<span style="color: #0000FF;">import</span> <span style="color: #707183;">{</span> BrowserRouter as Router, Route <span style="color: #707183;">}</span> from <span style="color: #008000;">"react-router-dom"</span>;
+<pre class="src src-js"><span style="color: #5317ac;">import</span> React from <span style="color: #2544bb;">"react"</span>;
+<span style="color: #5317ac;">import</span> ReactDOM from <span style="color: #2544bb;">"react-dom"</span>;
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">{</span> BrowserRouter as Router, Route <span style="color: #000000;">}</span> from <span style="color: #2544bb;">"react-router-dom"</span>;
 
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">convenient inline rendering</span>
-ReactDOM.render<span style="color: #707183;">(</span>
-  &lt;Router&gt;
-    &lt;Route path=<span style="color: #008000;">"/home"</span> render=<span style="color: #7388D6;">{</span><span style="color: #909183;">()</span> =&gt; &lt;div&gt;Home&lt;/div&gt;<span style="color: #7388D6;">}</span> /&gt;
-  &lt;/Router&gt;,
+<span style="color: #505050;">// </span><span style="color: #505050;">convenient inline rendering</span>
+ReactDOM.render<span style="color: #000000;">(</span>
+  <span style="color: #a8007f;">&lt;</span><span style="color: #721045;">Router</span><span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">    </span><span style="color: #a8007f;">&lt;</span><span style="color: #721045;">Route</span> <span style="color: #00538b;">path</span>=<span style="color: #2544bb;">"/home"</span> <span style="color: #00538b;">render</span>=<span style="color: #005f88;">{</span><span style="color: #904200;">()</span> =&gt; <span style="color: #904200;">&lt;</span><span style="color: #721045;">div</span><span style="color: #904200;">&gt;</span><span style="color: #000000; background-color: #ffffff;">Home</span><span style="color: #904200;">&lt;</span>/<span style="color: #721045;">div</span><span style="color: #904200;">&gt;</span><span style="color: #005f88;">}</span> /<span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">  </span><span style="color: #a8007f;">&lt;</span>/<span style="color: #721045;">Router</span><span style="color: #a8007f;">&gt;</span>,
   node
-<span style="color: #707183;">)</span>;
+<span style="color: #000000;">)</span>;
 
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">wrapping/composing</span>
-<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">You can spread routeProps to make them available to your rendered Component</span>
-<span style="color: #0000FF;">function</span> <span style="color: #006699;">FadingRoute</span><span style="color: #707183;">(</span><span style="color: #7388D6;">{</span> component: Component, ...rest <span style="color: #7388D6;">}</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-  <span style="color: #0000FF;">return</span> <span style="color: #7388D6;">(</span>
-    &lt;Route
-      <span style="color: #909183;">{</span>...rest<span style="color: #909183;">}</span>
-      render=<span style="color: #909183;">{</span>routeProps =&gt; <span style="color: #709870;">(</span>
-        &lt;FadeIn&gt;
-          &lt;Component <span style="color: #907373;">{</span>...routeProps<span style="color: #907373;">}</span> /&gt;
-        &lt;/FadeIn&gt;
-      <span style="color: #709870;">)</span><span style="color: #909183;">}</span>
-    /&gt;
-  <span style="color: #7388D6;">)</span>;
-<span style="color: #707183;">}</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">wrapping/composing</span>
+<span style="color: #505050;">// </span><span style="color: #505050;">You can spread routeProps to make them available to your rendered Component</span>
+<span style="color: #5317ac;">function</span> <span style="color: #721045;">FadingRoute</span><span style="color: #000000;">(</span><span style="color: #a8007f;">{</span> component: Component, ...rest <span style="color: #a8007f;">}</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">return</span> <span style="color: #a8007f;">(</span>
+    <span style="color: #005f88;">&lt;</span><span style="color: #721045;">Route</span>
+      <span style="color: #904200;">{</span>...rest<span style="color: #904200;">}</span>
+      <span style="color: #00538b;">render</span>=<span style="color: #904200;">{</span>routeProps =&gt; <span style="color: #7f10d0;">(</span>
+        <span style="color: #006800;">&lt;</span><span style="color: #721045;">FadeIn</span><span style="color: #006800;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">          </span><span style="color: #006800;">&lt;</span><span style="color: #721045;">Component</span> <span style="color: #b60000;">{</span>...routeProps<span style="color: #b60000;">}</span> /<span style="color: #006800;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">        </span><span style="color: #006800;">&lt;</span>/<span style="color: #721045;">FadeIn</span><span style="color: #006800;">&gt;</span>
+      <span style="color: #7f10d0;">)</span><span style="color: #904200;">}</span>
+    /<span style="color: #005f88;">&gt;</span>
+  <span style="color: #a8007f;">)</span>;
+<span style="color: #000000;">}</span>
 
-ReactDOM.render<span style="color: #707183;">(</span>
-  &lt;Router&gt;
-    &lt;FadingRoute path=<span style="color: #008000;">"/cool"</span> component=<span style="color: #7388D6;">{</span>Something<span style="color: #7388D6;">}</span> /&gt;
-  &lt;/Router&gt;,
+ReactDOM.render<span style="color: #000000;">(</span>
+  <span style="color: #a8007f;">&lt;</span><span style="color: #721045;">Router</span><span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">    </span><span style="color: #a8007f;">&lt;</span><span style="color: #721045;">FadingRoute</span> <span style="color: #00538b;">path</span>=<span style="color: #2544bb;">"/cool"</span> <span style="color: #00538b;">component</span>=<span style="color: #005f88;">{</span>Something<span style="color: #005f88;">}</span> /<span style="color: #a8007f;">&gt;</span>
+<span style="color: #000000; background-color: #ffffff;">  </span><span style="color: #a8007f;">&lt;</span>/<span style="color: #721045;">Router</span><span style="color: #a8007f;">&gt;</span>,
   node
-<span style="color: #707183;">)</span>;
+<span style="color: #000000;">)</span>;
 </pre>
 </div>
 
@@ -1237,7 +1214,7 @@ TODO，看不懂。
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-11-27 14:41:40 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
+<p class="postamble">First created: 2019-11-27 14:41:40 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2021-11-22 Mon 16:24 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DevOps - 日志收集 ELK</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,81 +193,60 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">DevOps - 日志收集 ELK</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1b6c863">1. 一个简易的日志收集方案</a></li>
-<li><a href="#orga205c34">2. ELK</a></li>
-<li><a href="#orga631898">3. 组件</a>
+<li><a href="#org526cb84">1. 一个简易的日志收集方案</a></li>
+<li><a href="#orgdd3aa1b">2. ELK</a></li>
+<li><a href="#org84effcb">3. 组件</a>
 <ul>
-<li><a href="#orgd014d9e">3.1. Journalbeat</a></li>
+<li><a href="#orgf8cd2e6">3.1. Journalbeat</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1b6c863" class="outline-2">
-<h2 id="org1b6c863"><span class="section-number-2">1</span> 一个简易的日志收集方案</h2>
+<div id="outline-container-org526cb84" class="outline-2">
+<h2 id="org526cb84"><span class="section-number-2">1.</span> 一个简易的日志收集方案</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 设计图：
 </p>
 
 
-<div class="figure">
+<div id="org1065e67" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/log.png" alt="log.png" />
 </p>
 </div>
@@ -298,8 +275,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orga205c34" class="outline-2">
-<h2 id="orga205c34"><span class="section-number-2">2</span> ELK</h2>
+<div id="outline-container-orgdd3aa1b" class="outline-2">
+<h2 id="orgdd3aa1b"><span class="section-number-2">2.</span> ELK</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 上面只是一个简易的日志收集方案，业内常用的标准是 ELK：
@@ -414,8 +391,8 @@ ELK 技术栈现在也有很多人称为 EFK。
 </div>
 </div>
 
-<div id="outline-container-orga631898" class="outline-2">
-<h2 id="orga631898"><span class="section-number-2">3</span> 组件</h2>
+<div id="outline-container-org84effcb" class="outline-2">
+<h2 id="org84effcb"><span class="section-number-2">3.</span> 组件</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 beats 的 目录结构，以及默认的配置。
@@ -426,8 +403,8 @@ beats 的 目录结构，以及默认的配置。
 </p>
 </div>
 
-<div id="outline-container-orgd014d9e" class="outline-3">
-<h3 id="orgd014d9e"><span class="section-number-3">3.1</span> Journalbeat</h3>
+<div id="outline-container-orgf8cd2e6" class="outline-3">
+<h3 id="orgf8cd2e6"><span class="section-number-3">3.1.</span> Journalbeat</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 <a href="https://www.elastic.co/guide/en/beats/journalbeat/master/index.html">https://www.elastic.co/guide/en/beats/journalbeat/master/index.html</a>
@@ -498,7 +475,7 @@ sudo rpm -vi journalbeat-7.8.0-x86_64.rpm
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-04-11 15:48 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
+<p class="postamble">First created: 2019-04-11 15:48 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

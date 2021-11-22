@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-04-28 Wed 21:36 -->
+<!-- 2021-11-22 Mon 16:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 测试用例</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -195,9 +193,8 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -220,14 +217,18 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Go 测试用例</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgfe4cedb">1. 基础</a></li>
-<li><a href="#org99e7877">2. 常用命令</a></li>
+<li><a href="#orgd75161a">1. 基础</a></li>
+<li><a href="#org7623d03">2. 常用命令</a></li>
 </ul>
 </div>
 </div>
@@ -235,14 +236,14 @@
 <code>go help test</code> 查看说明，更多: <a href="https://golang.org/pkg/testing/">https://golang.org/pkg/testing/</a>。
 </p>
 
-<div id="outline-container-orgfe4cedb" class="outline-2">
-<h2 id="orgfe4cedb"><span class="section-number-2">1</span> 基础</h2>
+<div id="outline-container-orgd75161a" class="outline-2">
+<h2 id="orgd75161a"><span class="section-number-2">1.</span> 基础</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><code>go test</code> 命令会自动执行带有 <code>func TestXxx(*testing.T)</code> 格式的函数。</li>
 <li>以 <code>_test.go</code> 结尾的文件会被认为是测试用例文件，其中包含 TestXxx 这样的测试用例。</li>
 <li><code>*_test</code> 的包在执行 test 的时候会重新编译，每个 package 都是会生成单独的二进制不会干扰。以 "_" 或者 "." 开始的文件会被自动忽略。
-包括 "_test.go" 。</li>
+包括 "<sub>test.go</sub>" 。</li>
 <li>go 工具会自动忽略 "testdata" 文件夹，可用来放置一些测试所需要的辅助数据。</li>
 <li>测试文件和要被测试的文件放在同一个包中，比如 <code>redis.go</code> 和 <code>redis_test.go</code></li>
 </ul>
@@ -299,13 +300,13 @@ Example 函数也有自己的命名约定，函数是 F，类型是 T，类型�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">TestFoo</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">t</span> *<span style="color: #6434A3;">testing.T</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&lt;setup code&gt;</span>
-    t.<span style="color: #006699;">Run</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"A=1"</span>, <span style="color: #0000FF;">func</span><span style="color: #909183;">(</span><span style="color: #BA36A5;">t</span> *<span style="color: #6434A3;">testing.T</span><span style="color: #909183;">)</span> <span style="color: #909183;">{</span> ... <span style="color: #909183;">}</span><span style="color: #7388D6;">)</span>
-    t.<span style="color: #006699;">Run</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"A=2"</span>, <span style="color: #0000FF;">func</span><span style="color: #909183;">(</span><span style="color: #BA36A5;">t</span> *<span style="color: #6434A3;">testing.T</span><span style="color: #909183;">)</span> <span style="color: #909183;">{</span> ... <span style="color: #909183;">}</span><span style="color: #7388D6;">)</span>
-    t.<span style="color: #006699;">Run</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"B=1"</span>, <span style="color: #0000FF;">func</span><span style="color: #909183;">(</span><span style="color: #BA36A5;">t</span> *<span style="color: #6434A3;">testing.T</span><span style="color: #909183;">)</span> <span style="color: #909183;">{</span> ... <span style="color: #909183;">}</span><span style="color: #7388D6;">)</span>
-    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">&lt;tear-down code&gt;</span>
-<span style="color: #707183;">}</span>
+<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">TestFoo</span><span style="color: #000000;">(</span><span style="color: #00538b;">t</span> *<span style="color: #005a5f;">testing.T</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    <span style="color: #505050;">// </span><span style="color: #505050;">&lt;setup code&gt;</span>
+    t.<span style="color: #721045;">Run</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"A=1"</span>, <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span><span style="color: #00538b;">t</span> *<span style="color: #005a5f;">testing.T</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span> ... <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
+    t.<span style="color: #721045;">Run</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"A=2"</span>, <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span><span style="color: #00538b;">t</span> *<span style="color: #005a5f;">testing.T</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span> ... <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
+    t.<span style="color: #721045;">Run</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"B=1"</span>, <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span><span style="color: #00538b;">t</span> *<span style="color: #005a5f;">testing.T</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span> ... <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
+    <span style="color: #505050;">// </span><span style="color: #505050;">&lt;tear-down code&gt;</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -322,7 +323,7 @@ Example 函数也有自己的命名约定，函数是 F，类型是 T，类型�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">TestMain</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">m</span> *<span style="color: #6434A3;">testing.M</span><span style="color: #707183;">)</span>
+<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">TestMain</span><span style="color: #000000;">(</span><span style="color: #00538b;">m</span> *<span style="color: #005a5f;">testing.M</span><span style="color: #000000;">)</span>
 </pre>
 </div>
 
@@ -332,10 +333,10 @@ Example 函数也有自己的命名约定，函数是 F，类型是 T，类型�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">func</span> <span style="color: #006699;">TestMain</span><span style="color: #707183;">(</span><span style="color: #BA36A5;">m</span> *<span style="color: #6434A3;">testing.M</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">call flag.Parse() here if TestMain uses flags</span>
-    os.<span style="color: #006699;">Exit</span><span style="color: #7388D6;">(</span>m.<span style="color: #006699;">Run</span><span style="color: #909183;">()</span><span style="color: #7388D6;">)</span>
-<span style="color: #707183;">}</span>
+<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">TestMain</span><span style="color: #000000;">(</span><span style="color: #00538b;">m</span> *<span style="color: #005a5f;">testing.M</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    <span style="color: #505050;">// </span><span style="color: #505050;">call flag.Parse() here if TestMain uses flags</span>
+    os.<span style="color: #721045;">Exit</span><span style="color: #a8007f;">(</span>m.<span style="color: #721045;">Run</span><span style="color: #005f88;">()</span><span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -345,8 +346,8 @@ Example 函数也有自己的命名约定，函数是 F，类型是 T，类型�
 </div>
 </div>
 
-<div id="outline-container-org99e7877" class="outline-2">
-<h2 id="org99e7877"><span class="section-number-2">2</span> 常用命令</h2>
+<div id="outline-container-org7623d03" class="outline-2">
+<h2 id="org7623d03"><span class="section-number-2">2.</span> 常用命令</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>运行所有测试用例： <code>go test -count=1 -v ./...</code></li>
@@ -357,7 +358,7 @@ Example 函数也有自己的命名约定，函数是 F，类型是 T，类型�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-15 11:05:17 <br />Last updated: 2021-04-28 Wed 21:26 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2020-05-15 11:05:17 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

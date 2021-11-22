@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-04-28 Wed 21:36 -->
+<!-- 2021-11-22 Mon 16:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>构建和部署</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -195,9 +193,8 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -220,40 +217,44 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">构建和部署</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3dcafc2">1. 打包</a></li>
-<li><a href="#org390b18d">2. 部署</a>
+<li><a href="#org99a926b">1. 打包</a></li>
+<li><a href="#orgc326d6c">2. 部署</a>
 <ul>
-<li><a href="#orgba1d667">2.1. 直接部署到主机上</a></li>
-<li><a href="#org50340c9">2.2. 部署到容器环境下</a></li>
-<li><a href="#org20952f5">2.3. 版本号</a></li>
+<li><a href="#orgc63e467">2.1. 直接部署到主机上</a></li>
+<li><a href="#org24cf06e">2.2. 部署到容器环境下</a></li>
+<li><a href="#org1d20c4b">2.3. 版本号</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org3dcafc2" class="outline-2">
-<h2 id="org3dcafc2"><span class="section-number-2">1</span> 打包</h2>
+<div id="outline-container-org99a926b" class="outline-2">
+<h2 id="org99a926b"><span class="section-number-2">1.</span> 打包</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Go 支持跨平台编译，这里假定服务名称为： <code>hello</code> ，构建 Docker 镜像：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-dockerfile"><span style="color: #0000FF;">FROM</span> <span style="color: #6434A3;">Ubuntu:18.04</span>
+<pre class="src src-dockerfile"><span style="color: #5317ac;">FROM</span> <span style="color: #005a5f; font-weight: bold;">Ubuntu:18.04</span>
 
-<span style="color: #0000FF;">COPY</span> hello /hello
-<span style="color: #0000FF;">COPY</span> config.yaml /etc/hello/config.yaml
+<span style="color: #5317ac;">COPY</span> hello /hello
+<span style="color: #5317ac;">COPY</span> config.yaml /etc/hello/config.yaml
 
-<span style="color: #0000FF;">EXPOSE</span> 8080
+<span style="color: #5317ac;">EXPOSE</span> 8080
 
-<span style="color: #0000FF;">CMD</span> <span style="color: #707183;">[</span><span style="color: #008000;">"/hello"</span>, <span style="color: #008000;">"-config-file"</span>, <span style="color: #008000;">"/etc/hello/config.yaml"</span><span style="color: #707183;">]</span>
+<span style="color: #5317ac;">CMD</span> <span style="color: #000000;">[</span><span style="color: #2544bb;">"/hello"</span>, <span style="color: #2544bb;">"-config-file"</span>, <span style="color: #2544bb;">"/etc/hello/config.yaml"</span><span style="color: #000000;">]</span>
 </pre>
 </div>
 
@@ -262,32 +263,32 @@ Go 支持跨平台编译，这里假定服务名称为： <code>hello</code> ，
 </p>
 
 <div class="org-src-container">
-<pre class="src src-makefile"><span style="color: #BA36A5;">OUTPUT</span>=hello
-<span style="color: #BA36A5;">TAG</span>=<span style="color: #008000;">`git rev-parse --short HEAD`</span>
+<pre class="src src-makefile"><span style="color: #00538b;">OUTPUT</span>=hello
+<span style="color: #00538b;">TAG</span>=<span style="color: #2544bb;">`git rev-parse --short HEAD`</span>
 
-<span style="color: #0000ff;">build</span>:
-go build -o $<span style="color: #707183;">{</span><span style="color: #BA36A5;">OUTPUT</span><span style="color: #707183;">}</span> cmd/main.go
+<span style="color: #721045;">build</span>:
+go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
 
-<span style="color: #0000ff;">build-linux</span>:
-<span style="color: #BA36A5;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #707183;">{</span><span style="color: #BA36A5;">OUTPUT</span><span style="color: #707183;">}</span> cmd/main.go
+<span style="color: #721045;">build-linux</span>:
+<span style="color: #00538b;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
 
-<span style="color: #0000ff;">build-docker</span>:
-<span style="color: #BA36A5;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #707183;">{</span><span style="color: #BA36A5;">OUTPUT</span><span style="color: #707183;">}</span> cmd/main.go
-<span style="color: #0000ff;">docker build -t &lt;your docker registry addr&gt;/$</span><span style="color: #707183;">{</span><span style="color: #0000ff;">OUTPUT</span><span style="color: #707183;">}</span>:$<span style="color: #707183;">{</span><span style="color: #BA36A5;">TAG</span><span style="color: #707183;">}</span> .
+<span style="color: #721045;">build-docker</span>:
+<span style="color: #00538b;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
+<span style="color: #721045;">docker build -t &lt;your docker registry addr&gt;/$</span><span style="color: #000000;">{</span><span style="color: #721045;">OUTPUT</span><span style="color: #000000;">}</span>:$<span style="color: #000000;">{</span><span style="color: #00538b;">TAG</span><span style="color: #000000;">}</span> .
 
-<span style="color: #0000ff;">push-docker</span>:
-<span style="color: #0000ff;">docker push &lt;your docker registry addr&gt;/$</span><span style="color: #707183;">{</span><span style="color: #0000ff;">OUTPUT</span><span style="color: #707183;">}</span>:$<span style="color: #707183;">{</span><span style="color: #BA36A5;">TAG</span><span style="color: #707183;">}</span>
+<span style="color: #721045;">push-docker</span>:
+<span style="color: #721045;">docker push &lt;your docker registry addr&gt;/$</span><span style="color: #000000;">{</span><span style="color: #721045;">OUTPUT</span><span style="color: #000000;">}</span>:$<span style="color: #000000;">{</span><span style="color: #00538b;">TAG</span><span style="color: #000000;">}</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org390b18d" class="outline-2">
-<h2 id="org390b18d"><span class="section-number-2">2</span> 部署</h2>
+<div id="outline-container-orgc326d6c" class="outline-2">
+<h2 id="orgc326d6c"><span class="section-number-2">2.</span> 部署</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgba1d667" class="outline-3">
-<h3 id="orgba1d667"><span class="section-number-3">2.1</span> 直接部署到主机上</h3>
+<div id="outline-container-orgc63e467" class="outline-3">
+<h3 id="orgc63e467"><span class="section-number-3">2.1.</span> 直接部署到主机上</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 构建对应平台的二进制包，Ubuntu 15.04 之后，以及 CentOS7 之后都使用 <a href="https://wiki.archlinux.org/index.php/Systemd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">systemd</a> 作为默认的系统和服务管理器了。
@@ -303,7 +304,7 @@ go build -o $<span style="color: #707183;">{</span><span style="color: #BA36A5;"
 </p>
 
 <div class="org-src-container">
-<pre class="src src-text" id="orgc3bacb2">[Unit]
+<pre class="src src-text" id="org00375ee">[Unit]
 Description=Command Scheduler
 After=auditd.service systemd-user-sessions.service time-sync.target
 
@@ -324,13 +325,13 @@ WantedBy=multi-user.target
 
 <p>
 使用 systemd 工具集，可以轻松的查看服务状态、查看日志、设置重启策略，开机启动等。具体可以看我之前梳理的文档：
-<a href="wiki/devops/systemd.html">systemd</a>、<a href="wiki/devops/journalctl.html">journalctl</a>。
+<a href="file:///Users/luannhua/site/org/wiki/devops/systemd.html">systemd</a>、<a href="file:///Users/luannhua/site/org/wiki/devops/journalctl.html">journalctl</a>。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org50340c9" class="outline-3">
-<h3 id="org50340c9"><span class="section-number-3">2.2</span> 部署到容器环境下</h3>
+<div id="outline-container-org24cf06e" class="outline-3">
+<h3 id="org24cf06e"><span class="section-number-3">2.2.</span> 部署到容器环境下</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 在有容器运行时的情况下，建议使用容器部署。
@@ -338,8 +339,8 @@ WantedBy=multi-user.target
 </div>
 </div>
 
-<div id="outline-container-org20952f5" class="outline-3">
-<h3 id="org20952f5"><span class="section-number-3">2.3</span> 版本号</h3>
+<div id="outline-container-org1d20c4b" class="outline-3">
+<h3 id="org1d20c4b"><span class="section-number-3">2.3.</span> 版本号</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 如果使用 Docker 部署时，版本号通常放到 docker tag 中。如果使用二进制文件直接部署的话，把版本号放在二进制名称上是一种办法，
@@ -385,7 +386,7 @@ BuildTime string = ""
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-04-28 Wed 21:31 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

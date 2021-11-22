@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-04-21 Wed 17:08 -->
+<!-- 2021-11-22 Mon 16:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 集群架构：云控制器管理器</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -195,9 +193,8 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -220,26 +217,30 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Kubernetes 集群架构：云控制器管理器</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org8b5de00">1. 设计</a></li>
-<li><a href="#orge2d60a5">2. 云控制器管理器功能</a>
+<li><a href="#org591d6b7">1. 设计</a></li>
+<li><a href="#orgd72038a">2. 云控制器管理器功能</a>
 <ul>
-<li><a href="#org9b65b17">2.1. 节点控制器</a></li>
-<li><a href="#org4cd431a">2.2. 路由（Route）控制器</a></li>
-<li><a href="#orgb0a4562">2.3. Service 控制器</a></li>
+<li><a href="#orgf93f64f">2.1. 节点控制器</a></li>
+<li><a href="#org17b2e94">2.2. 路由（Route）控制器</a></li>
+<li><a href="#orgac3aca5">2.3. Service 控制器</a></li>
 </ul>
 </li>
-<li><a href="#org2889fe8">3. 授权</a>
+<li><a href="#org6974f49">3. 授权</a>
 <ul>
-<li><a href="#orgc49c3fe">3.1. 节点控制器</a></li>
-<li><a href="#org4294a33">3.2. 路由控制器</a></li>
-<li><a href="#org6de995e">3.3. Service 控制器</a></li>
-<li><a href="#orgc110323">3.4. 其它</a></li>
+<li><a href="#org3872e12">3.1. 节点控制器</a></li>
+<li><a href="#org51a4137">3.2. 路由控制器</a></li>
+<li><a href="#org64a5d1e">3.3. Service 控制器</a></li>
+<li><a href="#orgd44cda7">3.4. 其它</a></li>
 </ul>
 </li>
 </ul>
@@ -267,11 +268,11 @@
 云控制器管理器使用插件机制构建，该机制允许不同的云提供商将其平台与 Kubernetes 集成。
 </p>
 
-<div id="outline-container-org8b5de00" class="outline-2">
-<h2 id="org8b5de00"><span class="section-number-2">1</span> 设计</h2>
+<div id="outline-container-org591d6b7" class="outline-2">
+<h2 id="org591d6b7"><span class="section-number-2">1.</span> 设计</h2>
 <div class="outline-text-2" id="text-1">
 
-<div id="orgfbfeba0" class="figure">
+<div id="org353f6de" class="figure">
 <p><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/2475489eaf20163ec0f54ddc1d92aa8d4c87c96b/e7c81/images/docs/components-of-kubernetes.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object>
 </p>
@@ -289,16 +290,16 @@ Sorry, your browser does not support SVG.</object>
 </div>
 </div>
 
-<div id="outline-container-orge2d60a5" class="outline-2">
-<h2 id="orge2d60a5"><span class="section-number-2">2</span> 云控制器管理器功能</h2>
+<div id="outline-container-orgd72038a" class="outline-2">
+<h2 id="orgd72038a"><span class="section-number-2">2.</span> 云控制器管理器功能</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 云控制器管理器内部的控制器包括：
 </p>
 </div>
 
-<div id="outline-container-org9b65b17" class="outline-3">
-<h3 id="org9b65b17"><span class="section-number-3">2.1</span> 节点控制器</h3>
+<div id="outline-container-orgf93f64f" class="outline-3">
+<h3 id="orgf93f64f"><span class="section-number-3">2.1.</span> 节点控制器</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 在云基础架构中创建新服务器时，节点控制器负责创建节点对象。节点控制器获取有关在租户内部通过云提供商运行的主机的信息。
@@ -319,8 +320,8 @@ Sorry, your browser does not support SVG.</object>
 </div>
 </div>
 
-<div id="outline-container-org4cd431a" class="outline-3">
-<h3 id="org4cd431a"><span class="section-number-3">2.2</span> 路由（Route）控制器</h3>
+<div id="outline-container-org17b2e94" class="outline-3">
+<h3 id="org17b2e94"><span class="section-number-3">2.2.</span> 路由（Route）控制器</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 路由控制器的责任是在云中配置路由规则来确保 Kubernetes 集群中不同节点的容器可以互通。
@@ -332,8 +333,8 @@ Sorry, your browser does not support SVG.</object>
 </div>
 </div>
 
-<div id="outline-container-orgb0a4562" class="outline-3">
-<h3 id="orgb0a4562"><span class="section-number-3">2.3</span> Service 控制器</h3>
+<div id="outline-container-orgac3aca5" class="outline-3">
+<h3 id="orgac3aca5"><span class="section-number-3">2.3.</span> Service 控制器</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Services 和云基础架构组件集成，比如管理负载均衡器，IP 地址，网络包过滤，和目标运行状态检查。当你声明一个 Service 资源说明你需要他们时，
@@ -343,16 +344,16 @@ service 控制器和云提供商 APIs 互动来设置负载均衡器和其他基
 </div>
 </div>
 
-<div id="outline-container-org2889fe8" class="outline-2">
-<h2 id="org2889fe8"><span class="section-number-2">3</span> 授权</h2>
+<div id="outline-container-org6974f49" class="outline-2">
+<h2 id="org6974f49"><span class="section-number-2">3.</span> 授权</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 本节将分解云控制器管理器对各种API对象进行执行操作所需的访问权限。
 </p>
 </div>
 
-<div id="outline-container-orgc49c3fe" class="outline-3">
-<h3 id="orgc49c3fe"><span class="section-number-3">3.1</span> 节点控制器</h3>
+<div id="outline-container-org3872e12" class="outline-3">
+<h3 id="org3872e12"><span class="section-number-3">3.1.</span> 节点控制器</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 节点控制器仅适用于节点对象。它需要完全访问权限才能读取和修改节点对象。
@@ -374,8 +375,8 @@ service 控制器和云提供商 APIs 互动来设置负载均衡器和其他基
 </div>
 </div>
 
-<div id="outline-container-org4294a33" class="outline-3">
-<h3 id="org4294a33"><span class="section-number-3">3.2</span> 路由控制器</h3>
+<div id="outline-container-org51a4137" class="outline-3">
+<h3 id="org51a4137"><span class="section-number-3">3.2.</span> 路由控制器</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 路由控制器监听节点对象的创建并适当地配置路由。它需要获得对节点对象的访问权限。
@@ -391,8 +392,8 @@ service 控制器和云提供商 APIs 互动来设置负载均衡器和其他基
 </div>
 </div>
 
-<div id="outline-container-org6de995e" class="outline-3">
-<h3 id="org6de995e"><span class="section-number-3">3.3</span> Service 控制器</h3>
+<div id="outline-container-org64a5d1e" class="outline-3">
+<h3 id="org64a5d1e"><span class="section-number-3">3.3.</span> Service 控制器</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 Service 控制器监听 Service 对象的 Create、Update 和 Delete 事件，然后为这些 Service 配置 Endpoints。
@@ -420,8 +421,8 @@ Service 控制器监听 Service 对象的 Create、Update 和 Delete 事件，�
 </div>
 </div>
 
-<div id="outline-container-orgc110323" class="outline-3">
-<h3 id="orgc110323"><span class="section-number-3">3.4</span> 其它</h3>
+<div id="outline-container-orgd44cda7" class="outline-3">
+<h3 id="orgd44cda7"><span class="section-number-3">3.4.</span> 其它</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 云控制器管理器核心的实现需要访问权限以创建事件对象，并且为了确保安全操作，还需要访问权限以创建 ServiceAccounts。
@@ -451,60 +452,60 @@ Service 控制器监听 Service 对象的 Create、Update 和 Delete 事件，�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: rbac.authorization.k8s.io/v1
-<span style="color: #BA36A5;">kind</span>: ClusterRole
-<span style="color: #BA36A5;">metadata</span>:
-  <span style="color: #BA36A5;">name</span>: cloud-controller-manager
-<span style="color: #BA36A5;">rules</span>:
-- <span style="color: #BA36A5;">apiGroups</span>:
-  - <span style="color: #008000;">""</span>
-  <span style="color: #BA36A5;">resources</span>:
+<pre class="src src-yaml"><span style="color: #00538b;">apiVersion</span>: rbac.authorization.k8s.io/v1
+<span style="color: #00538b;">kind</span>: ClusterRole
+<span style="color: #00538b;">metadata</span>:
+  <span style="color: #00538b;">name</span>: cloud-controller-manager
+<span style="color: #00538b;">rules</span>:
+- <span style="color: #00538b;">apiGroups</span>:
+  - <span style="color: #2544bb;">""</span>
+  <span style="color: #00538b;">resources</span>:
   - events
-  <span style="color: #BA36A5;">verbs</span>:
+  <span style="color: #00538b;">verbs</span>:
   - create
   - patch
   - update
-- <span style="color: #BA36A5;">apiGroups</span>:
-  - <span style="color: #008000;">""</span>
-  <span style="color: #BA36A5;">resources</span>:
+- <span style="color: #00538b;">apiGroups</span>:
+  - <span style="color: #2544bb;">""</span>
+  <span style="color: #00538b;">resources</span>:
   - nodes
-  <span style="color: #BA36A5;">verbs</span>:
-  - <span style="color: #008000;">'*'</span>
-- <span style="color: #BA36A5;">apiGroups</span>:
-  - <span style="color: #008000;">""</span>
-  <span style="color: #BA36A5;">resources</span>:
+  <span style="color: #00538b;">verbs</span>:
+  - <span style="color: #2544bb;">'*'</span>
+- <span style="color: #00538b;">apiGroups</span>:
+  - <span style="color: #2544bb;">""</span>
+  <span style="color: #00538b;">resources</span>:
   - nodes/status
-  <span style="color: #BA36A5;">verbs</span>:
+  <span style="color: #00538b;">verbs</span>:
   - patch
-- <span style="color: #BA36A5;">apiGroups</span>:
-  - <span style="color: #008000;">""</span>
-  <span style="color: #BA36A5;">resources</span>:
+- <span style="color: #00538b;">apiGroups</span>:
+  - <span style="color: #2544bb;">""</span>
+  <span style="color: #00538b;">resources</span>:
   - services
-  <span style="color: #BA36A5;">verbs</span>:
+  <span style="color: #00538b;">verbs</span>:
   - list
   - patch
   - update
   - watch
-- <span style="color: #BA36A5;">apiGroups</span>:
-  - <span style="color: #008000;">""</span>
-  <span style="color: #BA36A5;">resources</span>:
+- <span style="color: #00538b;">apiGroups</span>:
+  - <span style="color: #2544bb;">""</span>
+  <span style="color: #00538b;">resources</span>:
   - serviceaccounts
-  <span style="color: #BA36A5;">verbs</span>:
+  <span style="color: #00538b;">verbs</span>:
   - create
-- <span style="color: #BA36A5;">apiGroups</span>:
-  - <span style="color: #008000;">""</span>
-  <span style="color: #BA36A5;">resources</span>:
+- <span style="color: #00538b;">apiGroups</span>:
+  - <span style="color: #2544bb;">""</span>
+  <span style="color: #00538b;">resources</span>:
   - persistentvolumes
-  <span style="color: #BA36A5;">verbs</span>:
+  <span style="color: #00538b;">verbs</span>:
   - get
   - list
   - update
   - watch
-- <span style="color: #BA36A5;">apiGroups</span>:
-  - <span style="color: #008000;">""</span>
-  <span style="color: #BA36A5;">resources</span>:
+- <span style="color: #00538b;">apiGroups</span>:
+  - <span style="color: #2544bb;">""</span>
+  <span style="color: #00538b;">resources</span>:
   - endpoints
-  <span style="color: #BA36A5;">verbs</span>:
+  <span style="color: #00538b;">verbs</span>:
   - create
   - get
   - list
@@ -517,7 +518,7 @@ Service 控制器监听 Service 对象的 Create、Update 和 Delete 事件，�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-14 17:27:05 <br />Last updated: 2021-04-14 Wed 18:12 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.5)</p>
+<p class="postamble">First created: 2021-04-14 17:27:05 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

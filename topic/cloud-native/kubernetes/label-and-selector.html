@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-02-22 Mon 10:53 -->
+<!-- 2021-11-22 Mon 16:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes Labels 和 Selectors</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -195,9 +193,8 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -220,28 +217,32 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Kubernetes Labels 和 Selectors</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgea1e56b">1. 动机</a></li>
-<li><a href="#org6aee89a">2. 语法和字符集</a></li>
-<li><a href="#orgc143fa1">3. 标签选择器（Label selectors）</a>
+<li><a href="#org28f5b21">1. 动机</a></li>
+<li><a href="#orgfe236dd">2. 语法和字符集</a></li>
+<li><a href="#org246458e">3. 标签选择器（Label selectors）</a>
 <ul>
-<li><a href="#org497d9c2">3.1. 基于相等性的请求</a></li>
-<li><a href="#org37336b9">3.2. 基于集合的请求</a></li>
+<li><a href="#orge9d7c6d">3.1. 基于相等性的请求</a></li>
+<li><a href="#orgb53458f">3.2. 基于集合的请求</a></li>
 </ul>
 </li>
-<li><a href="#org05f7479">4. API</a>
+<li><a href="#org0b04fe4">4. API</a>
 <ul>
-<li><a href="#orgb250ff6">4.1. LIST 和 WATCH 过滤</a></li>
-<li><a href="#org9c433ca">4.2. API 对象中的设置参考</a>
+<li><a href="#org220a071">4.1. LIST 和 WATCH 过滤</a></li>
+<li><a href="#orgbb90a4d">4.2. API 对象中的设置参考</a>
 <ul>
-<li><a href="#org5b1593c">4.2.1. Service 和 ReplicationController</a></li>
-<li><a href="#org5bf55c9">4.2.2. 支持基于集合请求的资源</a></li>
-<li><a href="#orgc074058">4.2.3. 选择节点集合</a></li>
+<li><a href="#org7f279c6">4.2.1. Service 和 ReplicationController</a></li>
+<li><a href="#org15fe013">4.2.2. 支持基于集合请求的资源</a></li>
+<li><a href="#org36bae42">4.2.3. 选择节点集合</a></li>
 </ul>
 </li>
 </ul>
@@ -265,12 +266,12 @@
 </ul>
 
 <div class="org-src-container">
-<pre class="src src-js"><span style="color: #008000;">"metadata"</span>: <span style="color: #707183;">{</span>
-  <span style="color: #008000;">"labels"</span>: <span style="color: #7388D6;">{</span>
-    <span style="color: #008000;">"key1"</span> : <span style="color: #008000;">"value1"</span>,
-    <span style="color: #008000;">"key2"</span> : <span style="color: #008000;">"value2"</span>
-  <span style="color: #7388D6;">}</span>
-<span style="color: #707183;">}</span>
+<pre class="src src-js"><span style="color: #2544bb;">"metadata"</span>: <span style="color: #000000;">{</span>
+  <span style="color: #2544bb;">"labels"</span>: <span style="color: #a8007f;">{</span>
+    <span style="color: #2544bb;">"key1"</span> : <span style="color: #2544bb;">"value1"</span>,
+    <span style="color: #2544bb;">"key2"</span> : <span style="color: #2544bb;">"value2"</span>
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -279,8 +280,8 @@
 如果是非标识性的，尤其是大型的结构化数据应该使用<a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">注解</a>来记录，而不是标签。
 </p>
 
-<div id="outline-container-orgea1e56b" class="outline-2">
-<h2 id="orgea1e56b"><span class="section-number-2">1</span> 动机</h2>
+<div id="outline-container-org28f5b21" class="outline-2">
+<h2 id="org28f5b21"><span class="section-number-2">1.</span> 动机</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 标签使用户能够以松散耦合的方式将他们自己的组织结构映射到系统对象，而无需客户端存储这些映射。
@@ -304,8 +305,8 @@
 </div>
 </div>
 
-<div id="outline-container-org6aee89a" class="outline-2">
-<h2 id="org6aee89a"><span class="section-number-2">2</span> 语法和字符集</h2>
+<div id="outline-container-orgfe236dd" class="outline-2">
+<h2 id="orgfe236dd"><span class="section-number-2">2.</span> 语法和字符集</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 <i>键值对。</i>
@@ -338,26 +339,26 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
-<span style="color: #BA36A5;">kind</span>: Pod
-<span style="color: #BA36A5;">metadata</span>:
-  <span style="color: #BA36A5;">name</span>: label-demo
-  <span style="color: #BA36A5;">labels</span>:
-    <span style="color: #BA36A5;">environment</span>: production
-    <span style="color: #BA36A5;">app</span>: nginx
-<span style="color: #BA36A5;">spec</span>:
-  <span style="color: #BA36A5;">containers</span>:
-  - <span style="color: #BA36A5;">name</span>: nginx
-    <span style="color: #BA36A5;">image</span>: nginx:1.14.2
-    <span style="color: #BA36A5;">ports</span>:
-    - <span style="color: #BA36A5;">containerPort</span>: 80
+<pre class="src src-yaml"><span style="color: #00538b;">apiVersion</span>: v1
+<span style="color: #00538b;">kind</span>: Pod
+<span style="color: #00538b;">metadata</span>:
+  <span style="color: #00538b;">name</span>: label-demo
+  <span style="color: #00538b;">labels</span>:
+    <span style="color: #00538b;">environment</span>: production
+    <span style="color: #00538b;">app</span>: nginx
+<span style="color: #00538b;">spec</span>:
+  <span style="color: #00538b;">containers</span>:
+  - <span style="color: #00538b;">name</span>: nginx
+    <span style="color: #00538b;">image</span>: nginx:1.14.2
+    <span style="color: #00538b;">ports</span>:
+    - <span style="color: #00538b;">containerPort</span>: 80
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgc143fa1" class="outline-2">
-<h2 id="orgc143fa1"><span class="section-number-2">3</span> 标签选择器（Label selectors）</h2>
+<div id="outline-container-org246458e" class="outline-2">
+<h2 id="org246458e"><span class="section-number-2">3.</span> 标签选择器（Label selectors）</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 不像<a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/names/">名称和 UID</a>，标签不需要提供唯一性。而且，我们希望许多对象带有相同的标签。
@@ -391,8 +392,8 @@ API 目前支持两种类型的选择器： <i>基于相等性的</i> 和 <i>基
 </div>
 
 
-<div id="outline-container-org497d9c2" class="outline-3">
-<h3 id="org497d9c2"><span class="section-number-3">3.1</span> 基于相等性的请求</h3>
+<div id="outline-container-orge9d7c6d" class="outline-3">
+<h3 id="orge9d7c6d"><span class="section-number-3">3.1.</span> 基于相等性的请求</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 基于相等或者不相等的请求允许按照标签的 key 和 value 进行过滤。匹配的对象必须满足所有指定的标签约束，尽管它们可能还有额外的标签。
@@ -416,26 +417,26 @@ tier != frontend
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
-<span style="color: #BA36A5;">kind</span>: Pod
-<span style="color: #BA36A5;">metadata</span>:
-  <span style="color: #BA36A5;">name</span>: cuda-test
-<span style="color: #BA36A5;">spec</span>:
-  <span style="color: #BA36A5;">containers</span>:
-    - <span style="color: #BA36A5;">name</span>: cuda-test
-      <span style="color: #BA36A5;">image</span>: <span style="color: #008000;">"k8s.gcr.io/cuda-vector-add:v0.1"</span>
-      <span style="color: #BA36A5;">resources</span>:
-        <span style="color: #BA36A5;">limits</span>:
-          <span style="color: #BA36A5;">nvidia.com/gpu</span>: 1
-  <span style="color: #BA36A5;">nodeSelector</span>:
-    <span style="color: #BA36A5;">accelerator</span>: nvidia-tesla-p100
+<pre class="src src-yaml"><span style="color: #00538b;">apiVersion</span>: v1
+<span style="color: #00538b;">kind</span>: Pod
+<span style="color: #00538b;">metadata</span>:
+  <span style="color: #00538b;">name</span>: cuda-test
+<span style="color: #00538b;">spec</span>:
+  <span style="color: #00538b;">containers</span>:
+    - <span style="color: #00538b;">name</span>: cuda-test
+      <span style="color: #00538b;">image</span>: <span style="color: #2544bb;">"k8s.gcr.io/cuda-vector-add:v0.1"</span>
+      <span style="color: #00538b;">resources</span>:
+        <span style="color: #00538b;">limits</span>:
+          <span style="color: #00538b;">nvidia.com/gpu</span>: 1
+  <span style="color: #00538b;">nodeSelector</span>:
+    <span style="color: #00538b;">accelerator</span>: nvidia-tesla-p100
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org37336b9" class="outline-3">
-<h3 id="org37336b9"><span class="section-number-3">3.2</span> 基于集合的请求</h3>
+<div id="outline-container-orgb53458f" class="outline-3">
+<h3 id="orgb53458f"><span class="section-number-3">3.2.</span> 基于集合的请求</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 基于集合的请求允许根据一组值过滤 key。支持 3 种运算符： <code>in</code>, <code>notin</code> 和 <code>exists</code> 。比如：
@@ -467,12 +468,12 @@ partition
 </div>
 </div>
 
-<div id="outline-container-org05f7479" class="outline-2">
-<h2 id="org05f7479"><span class="section-number-2">4</span> API</h2>
+<div id="outline-container-org0b04fe4" class="outline-2">
+<h2 id="org0b04fe4"><span class="section-number-2">4.</span> API</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orgb250ff6" class="outline-3">
-<h3 id="orgb250ff6"><span class="section-number-3">4.1</span> LIST 和 WATCH 过滤</h3>
+<div id="outline-container-org220a071" class="outline-3">
+<h3 id="org220a071"><span class="section-number-3">4.1.</span> LIST 和 WATCH 过滤</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 LIST 和 WATCH 操作可以指定标签选择器以过滤使用查询参数（query string）返回的对象集。这两种请求都是允许的：
@@ -489,7 +490,7 @@ LIST 和 WATCH 操作可以指定标签选择器以过滤使用查询参数（qu
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">kubectl get pods -l <span style="color: #BA36A5;">environment</span>=production,<span style="color: #BA36A5;">tier</span>=frontend
+<pre class="src src-sh">kubectl get pods -l <span style="color: #00538b;">environment</span>=production,<span style="color: #00538b;">tier</span>=frontend
 </pre>
 </div>
 
@@ -498,22 +499,22 @@ LIST 和 WATCH 操作可以指定标签选择器以过滤使用查询参数（qu
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">kubectl get pods -l <span style="color: #008000;">'environment in (production),tier in (frontend)'</span>
+<pre class="src src-sh">kubectl get pods -l <span style="color: #2544bb;">'environment in (production),tier in (frontend)'</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org9c433ca" class="outline-3">
-<h3 id="org9c433ca"><span class="section-number-3">4.2</span> API 对象中的设置参考</h3>
+<div id="outline-container-orgbb90a4d" class="outline-3">
+<h3 id="orgbb90a4d"><span class="section-number-3">4.2.</span> API 对象中的设置参考</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 一些 Kubernetes 对象，比如 <a href="https://kubernetes.io/docs/concepts/services-networking/service/">services</a> 和 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/">replicationcontrollers</a>，也可以使用标签选择器来指定其它资源集，比如 <a href="https://kubernetes.io/docs/concepts/workloads/pods/">pods</a>。
 </p>
 </div>
 
-<div id="outline-container-org5b1593c" class="outline-4">
-<h4 id="org5b1593c"><span class="section-number-4">4.2.1</span> Service 和 ReplicationController</h4>
+<div id="outline-container-org7f279c6" class="outline-4">
+<h4 id="org7f279c6"><span class="section-number-4">4.2.1.</span> Service 和 ReplicationController</h4>
 <div class="outline-text-4" id="text-4-2-1">
 <p>
 <code>service</code> 指向的 pods 集合通过标签选择器来定义。类似的， <code>replicationcontroller</code> 使用标签定义了它所管理的 pods 数量。
@@ -524,42 +525,42 @@ LIST 和 WATCH 操作可以指定标签选择器以过滤使用查询参数（qu
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js"><span style="color: #008000;">"selector"</span>: <span style="color: #707183;">{</span>
-    <span style="color: #008000;">"component"</span> : <span style="color: #008000;">"redis"</span>,
-<span style="color: #707183;">}</span>
+<pre class="src src-js"><span style="color: #2544bb;">"selector"</span>: <span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"component"</span> : <span style="color: #2544bb;">"redis"</span>,
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
 <div class="org-src-container">
-<pre class="src src-yaml"><span style="color: #BA36A5;">selector</span>:
-    <span style="color: #BA36A5;">component</span>: redis
+<pre class="src src-yaml"><span style="color: #00538b;">selector</span>:
+    <span style="color: #00538b;">component</span>: redis
 </pre>
 </div>
 </div>
 </div>
 
 
-<div id="outline-container-org5bf55c9" class="outline-4">
-<h4 id="org5bf55c9"><span class="section-number-4">4.2.2</span> 支持基于集合请求的资源</h4>
+<div id="outline-container-org15fe013" class="outline-4">
+<h4 id="org15fe013"><span class="section-number-4">4.2.2.</span> 支持基于集合请求的资源</h4>
 <div class="outline-text-4" id="text-4-2-2">
 <p>
 较新的资源，比如 Job，Deployment，ReplicaSet 和 DaemonSet，也支持基于集合的请求。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml"><span style="color: #BA36A5;">selector</span>:
-  <span style="color: #BA36A5;">matchLabels</span>:
-    <span style="color: #BA36A5;">component</span>: redis
-  <span style="color: #BA36A5;">matchExpressions</span>:
-    - {<span style="color: #BA36A5;">key</span>: tier, <span style="color: #BA36A5;">operator</span>: In, <span style="color: #BA36A5;">values</span>: [cache]}
-    - {<span style="color: #BA36A5;">key</span>: environment, <span style="color: #BA36A5;">operator</span>: NotIn, <span style="color: #BA36A5;">values</span>: [dev]}
+<pre class="src src-yaml"><span style="color: #00538b;">selector</span>:
+  <span style="color: #00538b;">matchLabels</span>:
+    <span style="color: #00538b;">component</span>: redis
+  <span style="color: #00538b;">matchExpressions</span>:
+    - {<span style="color: #00538b;">key</span>: tier, <span style="color: #00538b;">operator</span>: In, <span style="color: #00538b;">values</span>: [cache]}
+    - {<span style="color: #00538b;">key</span>: environment, <span style="color: #00538b;">operator</span>: NotIn, <span style="color: #00538b;">values</span>: [dev]}
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgc074058" class="outline-4">
-<h4 id="orgc074058"><span class="section-number-4">4.2.3</span> 选择节点集合</h4>
+<div id="outline-container-org36bae42" class="outline-4">
+<h4 id="org36bae42"><span class="section-number-4">4.2.3.</span> 选择节点集合</h4>
 <div class="outline-text-4" id="text-4-2-3">
 <p>
 标签选择器的一个用例是约束 pod 可以调度的节点集合。在<a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/">节点选择</a>文档中有更多的描述。
@@ -570,7 +571,7 @@ LIST 和 WATCH 操作可以指定标签选择器以过滤使用查询参数（qu
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-05 12:25:24 <br />Last updated: 2021-02-22 Mon 10:52 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2020-02-05 12:25:24 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

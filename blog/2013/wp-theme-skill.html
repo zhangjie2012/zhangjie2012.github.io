@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2021-11-22 Mon 16:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>WordPress主题开发总结（下）：技巧</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">WordPress主题开发总结（下）：技巧</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -268,10 +245,10 @@ for the JavaScript code in this tag.
 注意：看这些技巧之前，首先一定要了解基本的 WordPress 主题结构。
 </p>
 
-<div id="outline-container-org9eec6ec" class="outline-2">
-<h2 id="获取发布文章"><span class="section-number-2">1</span> 获取发布文章</h2>
+<div id="outline-container-获取发布文章" class="outline-2">
+<h2 id="获取发布文章"><span class="section-number-2">1.</span> 获取发布文章</h2>
 <div class="outline-text-2" id="text-获取发布文章">
-<pre class="example">
+<pre class="example" id="org95c2352">
 &lt;?php
     $args = array( 'numberposts' =&gt; 12, 'orderby' =&gt; 'pubdate' );
     $rand_posts = get_posts( $args );
@@ -291,14 +268,14 @@ numberposts 指的是文章数量。orderby 值为 pubdate 表示最近发布，
 </div>
 </div>
 
-<div id="outline-container-orge42a8e4" class="outline-2">
-<h2 id="显示热点文章列表"><span class="section-number-2">2</span> 显示热"点"文章列表</h2>
+<div id="outline-container-显示热点文章列表" class="outline-2">
+<h2 id="显示热点文章列表"><span class="section-number-2">2.</span> 显示热"点"文章列表</h2>
 <div class="outline-text-2" id="text-显示热点文章列表">
 <p>
 首先要实现文章浏览量，就这个功能而言，把下面的两个函数添加到 functions.php 中。
 </p>
 
-<pre class="example">
+<pre class="example" id="org3c5ffd5">
 function getPostViews($postID) {
     $count_key = 'post_views_count';
     $count = get_post_meta ( $postID, $count_key, true );
@@ -328,16 +305,16 @@ function setPostViews($postID) {
 在主循环中添加如下代码，应该都能看懂，第一个是在浏览的时候记录，第二是显示浏览次数。
 </p>
 
-<pre class="example">
+<pre class="example" id="org16b66cd">
 &lt;?php setPostViews(get_the_ID()); ?&gt;
 &lt;?php echo getPostViews(get_the_ID()); ?&gt;[/php]
 </pre>
 
 <p>
-但是，如果要把热门点击文章按列表显示，上面这个方法就不行了，我用的是插件（WP-PostViews）。在需要显示该文章浏览次数处，调用 the_views 方法：
+但是，如果要把热门点击文章按列表显示，上面这个方法就不行了，我用的是插件（WP-PostViews）。在需要显示该文章浏览次数处，调用 the<sub>views</sub> 方法：
 </p>
 
-<pre class="example">
+<pre class="example" id="org464517c">
 &lt;?php if(function_exists('the_views')) { the_views(); } ?&gt;
 </pre>
 
@@ -345,7 +322,7 @@ function setPostViews($postID) {
 在想要显示列表的调用 <code>get_most_viewed</code> 方法：
 </p>
 
-<pre class="example">
+<pre class="example" id="org6c25894">
 &lt;?php if (function_exists('get_most_viewed')): ?&gt;
    &lt;ul&gt;
    &lt;?php get_most_viewed('both', 12);?&gt;
@@ -359,15 +336,15 @@ function setPostViews($postID) {
 </div>
 </div>
 
-<div id="outline-container-orge5401b4" class="outline-2">
-<h2 id="显示热评文章列表"><span class="section-number-2">3</span> 显示热"评"文章列表</h2>
+<div id="outline-container-显示热评文章列表" class="outline-2">
+<h2 id="显示热评文章列表"><span class="section-number-2">3.</span> 显示热"评"文章列表</h2>
 <div class="outline-text-2" id="text-显示热评文章列表">
 <p>
-在 functions.php 中添加如下 simple_get_most_review，这个函数我是从网上拷贝的，foreach 中添加了显示文章评论个数的代码，
+在 functions.php 中添加如下 simple<sub>get</sub><sub>most</sub><sub>review</sub>，这个函数我是从网上拷贝的，foreach 中添加了显示文章评论个数的代码，
 否则显示出来的只是热评文章的标题。你在使用的时候，建议手动修改一下。
 </p>
 
-<pre class="example">
+<pre class="example" id="org50236cf">
 /*
 $termId:分类目录 ID,为 0 时是检索所有分类目录
 $posts_num:显示热评文章的数量
@@ -415,7 +392,7 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 在需要显示热评列表的地方，调用 <code>simple_get_most_review</code> （参数含义请看函数声明）。
 </p>
 
-<pre class="example">
+<pre class="example" id="org18ef659">
 &lt;ul&gt;
 &lt;?php if (function_exists('simple_get_most_review')) {simple_get_most_review(0,12,36500); }  ?&gt;
 &lt;/ul&gt;
@@ -423,10 +400,10 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 </div>
 </div>
 
-<div id="outline-container-org7c2b6c6" class="outline-2">
-<h2 id="显示-siteinfo"><span class="section-number-2">4</span> 显示 SITEINFO</h2>
+<div id="outline-container-显示-siteinfo" class="outline-2">
+<h2 id="显示-siteinfo"><span class="section-number-2">4.</span> 显示 SITEINFO</h2>
 <div class="outline-text-2" id="text-显示-siteinfo">
-<pre class="example">
+<pre class="example" id="orgb786ea4">
 文章数量：&lt;?php $count_posts = wp_count_posts();echo $published_posts = $count_posts-&gt;publish;?&gt;
 分类数量：&lt;?php echo $count_categories =wp_count_terms('category'); ?&gt;
 标签数量：&lt;?php echo $count_tags =wp_count_terms('post_tag'); ?&gt;
@@ -439,8 +416,8 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 </div>
 </div>
 
-<div id="outline-container-org3bc4e4d" class="outline-2">
-<h2 id="无插件实现-pagenav"><span class="section-number-2">5</span> 无插件实现 PageNav</h2>
+<div id="outline-container-无插件实现-pagenav" class="outline-2">
+<h2 id="无插件实现-pagenav"><span class="section-number-2">5.</span> 无插件实现 PageNav</h2>
 <div class="outline-text-2" id="text-无插件实现-pagenav">
 <p>
 <a href="http://blog.wpjam.com/m/native-pagenavi/">WordPress 技巧：不用插件实现 Pagenavi 功能</a>
@@ -448,8 +425,8 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 </div>
 </div>
 
-<div id="outline-container-org324a0ff" class="outline-2">
-<h2 id="杂项"><span class="section-number-2">6</span> 杂项</h2>
+<div id="outline-container-杂项" class="outline-2">
+<h2 id="杂项"><span class="section-number-2">6.</span> 杂项</h2>
 <div class="outline-text-2" id="text-杂项">
 <ul class="org-ul">
 <li><code>&lt;?php bloginfo('stylesheet_url'); ?&gt;</code> 获取 style.css 文件所在路径</li>
@@ -463,8 +440,8 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 <li><code>the_category(',')</code> 日志所在分类（用','分隔开）</li>
 <li><code>the_author()</code> 当前日志作者名</li>
 <li><code>comments_popup_link('No Comments &amp;#187;', '1 Comment &amp;#187;', '% Comments &amp;#187;');</code>
-当弹出留言的功能激活的话，=comment_popup_link()=
-调用一个弹出的留言窗口，如果没有激活，=comment_popup_link()=
+当弹出留言的功能激活的话，=comment<sub>popup</sub><sub>link</sub>()=
+调用一个弹出的留言窗口，如果没有激活，=comment<sub>popup</sub><sub>link</sub>()=
 则只是简单的显示留言列表。=No Comments &amp;#187=
 是在没有留言的时候显示的。 <code>1 Comment &amp;#187;</code> 是用于当刚好只有 1
 条留言的时候。=% Comments &amp;187;= 显示多余 1 条留言的时候。</li>
@@ -474,8 +451,8 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 </div>
 </div>
 
-<div id="outline-container-orgc4bf32f" class="outline-2">
-<h2 id="参考文章"><span class="section-number-2">7</span> 参考文章</h2>
+<div id="outline-container-参考文章" class="outline-2">
+<h2 id="参考文章"><span class="section-number-2">7.</span> 参考文章</h2>
 <div class="outline-text-2" id="text-参考文章">
 <ul class="org-ul">
 <li><a href="http://www.32133.com/labrary/450.html">http://www.32133.com/labrary/450.html</a></li>
@@ -486,7 +463,7 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2013-01-17 15:46:33 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2013-01-17 15:46:33 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

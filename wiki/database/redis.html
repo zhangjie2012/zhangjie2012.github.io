@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-10-10 Sat 17:47 -->
+<!-- 2021-11-22 Mon 16:24 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Redis</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,9 +193,8 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -220,46 +217,50 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Redis</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5ca3e8a">1. 使用基础</a>
+<li><a href="#orge155ae7">1. 使用基础</a>
 <ul>
-<li><a href="#orgfdfef2c">1.1. 数据结构和应用场景</a></li>
-<li><a href="#orge334ba1">1.2. Key 使用建议</a></li>
+<li><a href="#org0475451">1.1. 数据结构和应用场景</a></li>
+<li><a href="#orgd0bcab4">1.2. Key 使用建议</a></li>
 </ul>
 </li>
-<li><a href="#org210bfbd">2. Command</a></li>
-<li><a href="#orge520276">3. Redis cluster</a>
+<li><a href="#org17a4d64">2. Command</a></li>
+<li><a href="#orgc9f0e1f">3. Redis cluster</a>
 <ul>
-<li><a href="#orgd1ffc6d">3.1. 数据分片</a></li>
+<li><a href="#org3ba1b91">3.1. 数据分片</a></li>
 </ul>
 </li>
-<li><a href="#org17c79f1">4. 持久化</a>
+<li><a href="#org94645aa">4. 持久化</a>
 <ul>
-<li><a href="#org2521f8e">4.1. RDB</a></li>
-<li><a href="#orgde0361a">4.2. AOF</a></li>
-<li><a href="#orgf5f8456">4.3. 从 RDB 切换到 AOF</a></li>
+<li><a href="#org8533e0a">4.1. RDB</a></li>
+<li><a href="#orgf52d425">4.2. AOF</a></li>
+<li><a href="#orgf882fbc">4.3. 从 RDB 切换到 AOF</a></li>
 </ul>
 </li>
-<li><a href="#org044e784">5. Resource</a></li>
+<li><a href="#orgc9d3229">5. Resource</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5ca3e8a" class="outline-2">
-<h2 id="org5ca3e8a"><span class="section-number-2">1</span> 使用基础</h2>
+<div id="outline-container-orge155ae7" class="outline-2">
+<h2 id="orge155ae7"><span class="section-number-2">1.</span> 使用基础</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 <a href="https://redis.io/topics/data-types-intro">https://redis.io/topics/data-types-intro</a>
 </p>
 </div>
 
-<div id="outline-container-orgfdfef2c" class="outline-3">
-<h3 id="orgfdfef2c"><span class="section-number-3">1.1</span> 数据结构和应用场景</h3>
+<div id="outline-container-org0475451" class="outline-3">
+<h3 id="org0475451"><span class="section-number-3">1.1.</span> 数据结构和应用场景</h3>
 <div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
 <li>strings：最常用。</li>
@@ -280,8 +281,8 @@
 </div>
 </div>
 
-<div id="outline-container-orge334ba1" class="outline-3">
-<h3 id="orge334ba1"><span class="section-number-3">1.2</span> Key 使用建议</h3>
+<div id="outline-container-orgd0bcab4" class="outline-3">
+<h3 id="orgd0bcab4"><span class="section-number-3">1.2.</span> Key 使用建议</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 可以使用任何二进制的序列作为 key，当然最常用的是 string。
@@ -296,8 +297,8 @@
 </div>
 </div>
 
-<div id="outline-container-org210bfbd" class="outline-2">
-<h2 id="org210bfbd"><span class="section-number-2">2</span> Command</h2>
+<div id="outline-container-org17a4d64" class="outline-2">
+<h2 id="org17a4d64"><span class="section-number-2">2.</span> Command</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>启动: <code>redis-server redis.conf</code></li>
@@ -317,12 +318,12 @@
 </div>
 </div>
 
-<div id="outline-container-orge520276" class="outline-2">
-<h2 id="orge520276"><span class="section-number-2">3</span> Redis cluster</h2>
+<div id="outline-container-orgc9f0e1f" class="outline-2">
+<h2 id="orgc9f0e1f"><span class="section-number-2">3.</span> Redis cluster</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgd1ffc6d" class="outline-3">
-<h3 id="orgd1ffc6d"><span class="section-number-3">3.1</span> 数据分片</h3>
+<div id="outline-container-org3ba1b91" class="outline-3">
+<h3 id="org3ba1b91"><span class="section-number-3">3.1.</span> 数据分片</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 集群没使用一致的散列方式，而是使用不同形式的分片，每个 key
@@ -351,8 +352,8 @@
 </div>
 </div>
 
-<div id="outline-container-org17c79f1" class="outline-2">
-<h2 id="org17c79f1"><span class="section-number-2">4</span> 持久化</h2>
+<div id="outline-container-org94645aa" class="outline-2">
+<h2 id="org94645aa"><span class="section-number-2">4.</span> 持久化</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Redis 有两种持久化的方式：快照（RDB 文件）和追加式文件（AOF 文件）：
@@ -377,8 +378,8 @@ Redis 有两种持久化的方式：快照（RDB 文件）和追加式文件（A
 </p>
 </div>
 
-<div id="outline-container-org2521f8e" class="outline-3">
-<h3 id="org2521f8e"><span class="section-number-3">4.1</span> RDB</h3>
+<div id="outline-container-org8533e0a" class="outline-3">
+<h3 id="org8533e0a"><span class="section-number-3">4.1.</span> RDB</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 优点：
@@ -406,8 +407,8 @@ Redis 停止服务几毫秒。如果数据量很大且 CPU 性能不是很好的
 </div>
 </div>
 
-<div id="outline-container-orgde0361a" class="outline-3">
-<h3 id="orgde0361a"><span class="section-number-3">4.2</span> AOF</h3>
+<div id="outline-container-orgf52d425" class="outline-3">
+<h3 id="orgf52d425"><span class="section-number-3">4.2.</span> AOF</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 快照并不是很可靠。如果你的电脑突然宕机了，或者电源断了，又或者不小心杀掉了进程，那么最新的数据就会丢失。而
@@ -453,8 +454,8 @@ FLUSHALL
 </div>
 </div>
 
-<div id="outline-container-orgf5f8456" class="outline-3">
-<h3 id="orgf5f8456"><span class="section-number-3">4.3</span> 从 RDB 切换到 AOF</h3>
+<div id="outline-container-orgf882fbc" class="outline-3">
+<h3 id="orgf882fbc"><span class="section-number-3">4.3.</span> 从 RDB 切换到 AOF</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
 这里只说 <code>Redis &gt;= 2.2</code> 版本的方式：
@@ -468,7 +469,7 @@ FLUSHALL
 运行以下两条命令：
 </p>
 
-<pre class="example" id="org23890ff">
+<pre class="example" id="orga1820a2">
 $ redis-cli config set appendonly yes
 $ redis-cli config set save ""
 </pre>
@@ -493,8 +494,8 @@ AOF，因为命令行方式修改配置在重启 Redis 后就会失效。
 </div>
 </div>
 
-<div id="outline-container-org044e784" class="outline-2">
-<h2 id="org044e784"><span class="section-number-2">5</span> Resource</h2>
+<div id="outline-container-orgc9d3229" class="outline-2">
+<h2 id="orgc9d3229"><span class="section-number-2">5.</span> Resource</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>官方网站: <a href="http://redis.io/">http://redis.io/</a></li>
@@ -506,7 +507,7 @@ AOF，因为命令行方式修改配置在重启 Redis 后就会失效。
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2017-12-04 10:58:35 <br />Last updated: 2020-10-10 Sat 12:53 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
+<p class="postamble">First created: 2017-12-04 10:58:35 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

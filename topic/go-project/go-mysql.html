@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-06-09 Wed 17:42 -->
+<!-- 2021-11-22 Mon 16:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go MySQL</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -195,7 +193,6 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -220,7 +217,11 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Go MySQL</h1>
 <p>
 使用 <a href="https://github.com/go-sql-driver/mysql">go-sql-driver/mysql</a>，但是它是一个驱动，使用使用 SQL 的 CRUD，还是要看 Go 的标准库 <a href="https://golang.org/pkg/database/sql/">database/sql</a>。
@@ -249,15 +250,15 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #845A84;">ds</span> := goqu.<span style="color: #4C7A90;">Insert</span><span style="color: #4d9391;">(</span><span style="color: #39854C;">"user"</span><span style="color: #4d9391;">)</span>.
-    <span style="color: #4C7A90;">Cols</span><span style="color: #4d9391;">(</span><span style="color: #39854C;">"first_name"</span>, <span style="color: #39854C;">"last_name"</span><span style="color: #4d9391;">)</span>.
-    <span style="color: #4C7A90;">Vals</span><span style="color: #4d9391;">(</span>
-        <span style="color: #E36B3F;">goqu.Vals</span><span style="color: #a9779c;">{</span><span style="color: #39854C;">"Greg"</span>, <span style="color: #39854C;">"Farley"</span><span style="color: #a9779c;">}</span>,
-        <span style="color: #E36B3F;">goqu.Vals</span><span style="color: #a9779c;">{</span><span style="color: #39854C;">"Jimmy"</span>, <span style="color: #39854C;">"Stewart"</span><span style="color: #a9779c;">}</span>,
-        <span style="color: #E36B3F;">goqu.Vals</span><span style="color: #a9779c;">{</span><span style="color: #39854C;">"Jeff"</span>, <span style="color: #39854C;">"Jeffers"</span><span style="color: #a9779c;">}</span>,
-    <span style="color: #4d9391;">)</span>
-<span style="color: #845A84;">insertSQL</span>, <span style="color: #845A84;">args</span>, <span style="color: #845A84;">_</span> := ds.<span style="color: #4C7A90;">ToSQL</span><span style="color: #4d9391;">()</span>
-fmt.<span style="color: #4C7A90;">Println</span><span style="color: #4d9391;">(</span>insertSQL, args<span style="color: #4d9391;">)</span>
+<pre class="src src-go"><span style="color: #00538b;">ds</span> := goqu.<span style="color: #721045;">Insert</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"user"</span><span style="color: #000000;">)</span>.
+    <span style="color: #721045;">Cols</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"first_name"</span>, <span style="color: #2544bb;">"last_name"</span><span style="color: #000000;">)</span>.
+    <span style="color: #721045;">Vals</span><span style="color: #000000;">(</span>
+        <span style="color: #005a5f;">goqu.Vals</span><span style="color: #a8007f;">{</span><span style="color: #2544bb;">"Greg"</span>, <span style="color: #2544bb;">"Farley"</span><span style="color: #a8007f;">}</span>,
+        <span style="color: #005a5f;">goqu.Vals</span><span style="color: #a8007f;">{</span><span style="color: #2544bb;">"Jimmy"</span>, <span style="color: #2544bb;">"Stewart"</span><span style="color: #a8007f;">}</span>,
+        <span style="color: #005a5f;">goqu.Vals</span><span style="color: #a8007f;">{</span><span style="color: #2544bb;">"Jeff"</span>, <span style="color: #2544bb;">"Jeffers"</span><span style="color: #a8007f;">}</span>,
+    <span style="color: #000000;">)</span>
+<span style="color: #00538b;">insertSQL</span>, <span style="color: #00538b;">args</span>, <span style="color: #00538b;">_</span> := ds.<span style="color: #721045;">ToSQL</span><span style="color: #000000;">()</span>
+fmt.<span style="color: #721045;">Println</span><span style="color: #000000;">(</span>insertSQL, args<span style="color: #000000;">)</span>
 </pre>
 </div>
 
@@ -266,7 +267,7 @@ fmt.<span style="color: #4C7A90;">Println</span><span style="color: #4d9391;">(<
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #13665F;">INSERT</span> <span style="color: #13665F;">INTO</span> "<span style="color: #4C7A90;">user</span>" <span style="color: #4d9391;">(</span>"first_name", "last_name"<span style="color: #4d9391;">)</span> <span style="color: #13665F;">VALUES</span> <span style="color: #4d9391;">(</span><span style="color: #39854C;">'Greg'</span>, <span style="color: #39854C;">'Farley'</span><span style="color: #4d9391;">)</span>, <span style="color: #4d9391;">(</span><span style="color: #39854C;">'Jimmy'</span>, <span style="color: #39854C;">'Stewart'</span><span style="color: #4d9391;">)</span>, <span style="color: #4d9391;">(</span><span style="color: #39854C;">'Jeff'</span>, <span style="color: #39854C;">'Jeffers'</span><span style="color: #4d9391;">)</span> <span style="color: #4d9391;">[]</span>
+<pre class="src src-sql"><span style="color: #5317ac;">INSERT</span> <span style="color: #5317ac;">INTO</span> "<span style="color: #8f0075;">user</span>" <span style="color: #000000;">(</span>"first_name", "last_name"<span style="color: #000000;">)</span> <span style="color: #5317ac;">VALUES</span> <span style="color: #000000;">(</span><span style="color: #2544bb;">'Greg'</span>, <span style="color: #2544bb;">'Farley'</span><span style="color: #000000;">)</span>, <span style="color: #000000;">(</span><span style="color: #2544bb;">'Jimmy'</span>, <span style="color: #2544bb;">'Stewart'</span><span style="color: #000000;">)</span>, <span style="color: #000000;">(</span><span style="color: #2544bb;">'Jeff'</span>, <span style="color: #2544bb;">'Jeffers'</span><span style="color: #000000;">)</span> <span style="color: #000000;">[]</span>
 </pre>
 </div>
 
@@ -279,10 +280,10 @@ fmt.<span style="color: #4C7A90;">Println</span><span style="color: #4d9391;">(<
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #845A84;">sql</span>, <span style="color: #845A84;">args</span>, <span style="color: #845A84;">err</span> := sq.
-    <span style="color: #4C7A90;">Insert</span><span style="color: #4d9391;">(</span><span style="color: #39854C;">"users"</span><span style="color: #4d9391;">)</span>.<span style="color: #4C7A90;">Columns</span><span style="color: #4d9391;">(</span><span style="color: #39854C;">"name"</span>, <span style="color: #39854C;">"age"</span><span style="color: #4d9391;">)</span>.
-    <span style="color: #4C7A90;">Values</span><span style="color: #4d9391;">(</span><span style="color: #39854C;">"moe"</span>, 13<span style="color: #4d9391;">)</span>.<span style="color: #4C7A90;">Values</span><span style="color: #4d9391;">(</span><span style="color: #39854C;">"larry"</span>, sq.<span style="color: #4C7A90;">Expr</span><span style="color: #a9779c;">(</span><span style="color: #39854C;">"? + 5"</span>, 12<span style="color: #a9779c;">)</span><span style="color: #4d9391;">)</span>.
-    <span style="color: #4C7A90;">ToSql</span><span style="color: #4d9391;">()</span>
+<pre class="src src-go"><span style="color: #00538b;">sql</span>, <span style="color: #00538b;">args</span>, <span style="color: #00538b;">err</span> := sq.
+    <span style="color: #721045;">Insert</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"users"</span><span style="color: #000000;">)</span>.<span style="color: #721045;">Columns</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"name"</span>, <span style="color: #2544bb;">"age"</span><span style="color: #000000;">)</span>.
+    <span style="color: #721045;">Values</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"moe"</span>, 13<span style="color: #000000;">)</span>.<span style="color: #721045;">Values</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"larry"</span>, sq.<span style="color: #721045;">Expr</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"? + 5"</span>, 12<span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>.
+    <span style="color: #721045;">ToSql</span><span style="color: #000000;">()</span>
 </pre>
 </div>
 
@@ -291,7 +292,7 @@ fmt.<span style="color: #4C7A90;">Println</span><span style="color: #4d9391;">(<
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #13665F;">sql</span> == "<span style="color: #13665F;">INSERT</span> <span style="color: #13665F;">INTO</span> users <span style="color: #4d9391;">(</span><span style="color: #13665F;">name</span>,age<span style="color: #4d9391;">)</span> <span style="color: #13665F;">VALUES</span> <span style="color: #4d9391;">(</span>?,?<span style="color: #4d9391;">)</span>,<span style="color: #4d9391;">(</span>?,? + 5<span style="color: #4d9391;">)</span>"
+<pre class="src src-sql"><span style="color: #5317ac;">sql</span> == "<span style="color: #5317ac;">INSERT</span> <span style="color: #5317ac;">INTO</span> users <span style="color: #000000;">(</span><span style="color: #5317ac;">name</span>,age<span style="color: #000000;">)</span> <span style="color: #5317ac;">VALUES</span> <span style="color: #000000;">(</span>?,?<span style="color: #000000;">)</span>,<span style="color: #000000;">(</span>?,? + 5<span style="color: #000000;">)</span>"
 </pre>
 </div>
 
@@ -300,9 +301,9 @@ fmt.<span style="color: #4C7A90;">Println</span><span style="color: #4d9391;">(<
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #845A84;">stooges</span> := users.<span style="color: #4C7A90;">Where</span><span style="color: #4d9391;">(</span><span style="color: #E36B3F;">sq.Eq</span><span style="color: #a9779c;">{</span><span style="color: #39854C;">"username"</span>: <span style="color: #4C7A90;">[]</span><span style="color: #E36B3F;">string</span><span style="color: #4C7A90;">{</span><span style="color: #39854C;">"moe"</span>, <span style="color: #39854C;">"larry"</span>, <span style="color: #39854C;">"curly"</span>, <span style="color: #39854C;">"shemp"</span><span style="color: #4C7A90;">}</span><span style="color: #a9779c;">}</span><span style="color: #4d9391;">)</span>
-<span style="color: #845A84;">three_stooges</span> := stooges.<span style="color: #4C7A90;">Limit</span><span style="color: #4d9391;">(</span>3<span style="color: #4d9391;">)</span>
-<span style="color: #845A84;">rows</span>, <span style="color: #845A84;">err</span> := three_stooges.<span style="color: #4C7A90;">RunWith</span><span style="color: #4d9391;">(</span>db<span style="color: #4d9391;">)</span>.<span style="color: #4C7A90;">Query</span><span style="color: #4d9391;">()</span>
+<pre class="src src-go"><span style="color: #00538b;">stooges</span> := users.<span style="color: #721045;">Where</span><span style="color: #000000;">(</span><span style="color: #005a5f;">sq.Eq</span><span style="color: #a8007f;">{</span><span style="color: #2544bb;">"username"</span>: <span style="color: #005f88;">[]</span><span style="color: #005a5f;">string</span><span style="color: #005f88;">{</span><span style="color: #2544bb;">"moe"</span>, <span style="color: #2544bb;">"larry"</span>, <span style="color: #2544bb;">"curly"</span>, <span style="color: #2544bb;">"shemp"</span><span style="color: #005f88;">}</span><span style="color: #a8007f;">}</span><span style="color: #000000;">)</span>
+<span style="color: #00538b;">three_stooges</span> := stooges.<span style="color: #721045;">Limit</span><span style="color: #000000;">(</span>3<span style="color: #000000;">)</span>
+<span style="color: #00538b;">rows</span>, <span style="color: #00538b;">err</span> := three_stooges.<span style="color: #721045;">RunWith</span><span style="color: #000000;">(</span>db<span style="color: #000000;">)</span>.<span style="color: #721045;">Query</span><span style="color: #000000;">()</span>
 </pre>
 </div>
 
@@ -311,8 +312,8 @@ fmt.<span style="color: #4C7A90;">Println</span><span style="color: #4d9391;">(<
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #845A84;">rows</span>, <span style="color: #845A84;">err</span> := db.<span style="color: #4C7A90;">Query</span><span style="color: #4d9391;">(</span><span style="color: #39854C;">"SELECT * FROM users WHERE username IN (?,?,?,?) LIMIT 3"</span>,
-    <span style="color: #39854C;">"moe"</span>, <span style="color: #39854C;">"larry"</span>, <span style="color: #39854C;">"curly"</span>, <span style="color: #39854C;">"shemp"</span><span style="color: #4d9391;">)</span>
+<pre class="src src-go"><span style="color: #00538b;">rows</span>, <span style="color: #00538b;">err</span> := db.<span style="color: #721045;">Query</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"SELECT * FROM users WHERE username IN (?,?,?,?) LIMIT 3"</span>,
+    <span style="color: #2544bb;">"moe"</span>, <span style="color: #2544bb;">"larry"</span>, <span style="color: #2544bb;">"curly"</span>, <span style="color: #2544bb;">"shemp"</span><span style="color: #000000;">)</span>
 </pre>
 </div>
 
@@ -346,7 +347,7 @@ DSL 全路径 <code>`${username}:${password}@tcp(${address})/${dbname}`</code> �
 </p>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-06-08 Tue 17:24 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

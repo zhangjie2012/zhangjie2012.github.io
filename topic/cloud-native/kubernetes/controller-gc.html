@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-01-05 Tue 10:25 -->
+<!-- 2021-11-22 Mon 16:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Garbage Collection</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,9 +193,8 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -220,18 +217,22 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Kubernetes - Garbage Collection</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org8ac853b">1. Owners 和依赖</a></li>
-<li><a href="#orgc837ae5">2. 控制垃圾回收器如何删除依赖项</a>
+<li><a href="#orgd03d73e">1. Owners 和依赖</a></li>
+<li><a href="#orgfdabf4b">2. 控制垃圾回收器如何删除依赖项</a>
 <ul>
-<li><a href="#org6bd666b">2.1. 前台级联删除</a></li>
-<li><a href="#org8712751">2.2. 后台级联删除</a></li>
-<li><a href="#orgb979336">2.3. 设置级联删除策略</a></li>
+<li><a href="#org1718006">2.1. 前台级联删除</a></li>
+<li><a href="#orgff18c34">2.2. 后台级联删除</a></li>
+<li><a href="#org1e8c605">2.3. 设置级联删除策略</a></li>
 </ul>
 </li>
 </ul>
@@ -241,8 +242,8 @@
 Kubernetes 垃圾回收器的作用是删除曾经有 owner，但是后来没有 owner 的对象。
 </p>
 
-<div id="outline-container-org8ac853b" class="outline-2">
-<h2 id="org8ac853b"><span class="section-number-2">1</span> Owners 和依赖</h2>
+<div id="outline-container-orgd03d73e" class="outline-2">
+<h2 id="orgd03d73e"><span class="section-number-2">1.</span> Owners 和依赖</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Kubernetes 中一些对象是另外一些对象的 owner。比如，ReplicaSet 是一组 Pods 的 owner。被 owner 的对象称作 <i>依赖于</i> owner 对象。
@@ -264,17 +265,17 @@ Pod 中 owner 显示一般如下：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
-<span style="color: #BA36A5;">kind</span>: Pod
-<span style="color: #BA36A5;">metadata</span>:
+<pre class="src src-yaml"><span style="color: #00538b;">apiVersion</span>: v1
+<span style="color: #00538b;">kind</span>: Pod
+<span style="color: #00538b;">metadata</span>:
   ...
-  <span style="color: #BA36A5;">ownerReferences</span>:
-  - <span style="color: #BA36A5;">apiVersion</span>: apps/v1
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">controller</span>: <span style="color: #D0372D;">true</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">blockOwnerDeletion</span>: <span style="color: #D0372D;">true</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">kind</span>: ReplicaSet
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">name</span>: my-repset
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">uid</span>: d9607e19-f88f-11e6-a518-42010a800195
+  <span style="color: #00538b;">ownerReferences</span>:
+  - <span style="color: #00538b;">apiVersion</span>: apps/v1
+    <span style="color: #00538b;">controller</span>: <span style="color: #0000c0;">true</span>
+    <span style="color: #00538b;">blockOwnerDeletion</span>: <span style="color: #0000c0;">true</span>
+    <span style="color: #00538b;">kind</span>: ReplicaSet
+    <span style="color: #00538b;">name</span>: my-repset
+    <span style="color: #00538b;">uid</span>: d9607e19-f88f-11e6-a518-42010a800195
   ...
 </pre>
 </div>
@@ -291,8 +292,8 @@ Pod 中 owner 显示一般如下：
 </div>
 </div>
 
-<div id="outline-container-orgc837ae5" class="outline-2">
-<h2 id="orgc837ae5"><span class="section-number-2">2</span> 控制垃圾回收器如何删除依赖项</h2>
+<div id="outline-container-orgfdabf4b" class="outline-2">
+<h2 id="orgfdabf4b"><span class="section-number-2">2.</span> 控制垃圾回收器如何删除依赖项</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 删除对象的时候，可以指定是否要同时自动删除对象的从属<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。自动删除依赖称作为 <i>级联删除</i> 。级联删除有两种模式：
@@ -304,8 +305,8 @@ Pod 中 owner 显示一般如下：
 </p>
 </div>
 
-<div id="outline-container-org6bd666b" class="outline-3">
-<h3 id="org6bd666b"><span class="section-number-3">2.1</span> 前台级联删除</h3>
+<div id="outline-container-org1718006" class="outline-3">
+<h3 id="org1718006"><span class="section-number-3">2.1.</span> 前台级联删除</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 前台级联删除的情况下，跟对象会进入”正在删除“状态，处于“正在删除”状态，以下情况是正常的：
@@ -335,8 +336,8 @@ Kubernetes 1.7 版本添加了准入控制器，它控制用户访问权限基�
 </div>
 </div>
 
-<div id="outline-container-org8712751" class="outline-3">
-<h3 id="org8712751"><span class="section-number-3">2.2</span> 后台级联删除</h3>
+<div id="outline-container-orgff18c34" class="outline-3">
+<h3 id="orgff18c34"><span class="section-number-3">2.2.</span> 后台级联删除</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 后台级联删除的情况下，Kubernetes 会理解删除 owner 对象，然后使用垃圾回收期在后台删除依赖项。
@@ -344,8 +345,8 @@ Kubernetes 1.7 版本添加了准入控制器，它控制用户访问权限基�
 </div>
 </div>
 
-<div id="outline-container-orgb979336" class="outline-3">
-<h3 id="orgb979336"><span class="section-number-3">2.3</span> 设置级联删除策略</h3>
+<div id="outline-container-org1e8c605" class="outline-3">
+<h3 id="org1e8c605"><span class="section-number-3">2.3.</span> 设置级联删除策略</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 要控制级联删除策略，在删除对象时 <code>deleteOptions</code> 参数上设置 <code>propagationPolicy</code> 字段。可选的值有“Orphan”，“Foreground” 或者
@@ -377,7 +378,7 @@ background 和 forground 直译成背景和前景，但是这里似乎前台和�
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-14 11:04:43 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.2)</p>
+<p class="postamble">First created: 2020-04-14 11:04:43 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

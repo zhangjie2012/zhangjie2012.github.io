@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-06-24 Thu 14:21 -->
+<!-- 2021-11-22 Mon 16:24 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>基于 Prometheus 监控告警</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -195,7 +193,6 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -220,38 +217,42 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">基于 Prometheus 监控告警</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbb03d37">1. 监控架构</a>
+<li><a href="#orgc37607c">1. 监控架构</a>
 <ul>
-<li><a href="#orga9b4495">1.1. 生成度量指标（metric）</a></li>
-<li><a href="#org536539a">1.2. metrics 收集</a></li>
-<li><a href="#orge1b49f0">1.3. UI 显示</a></li>
-<li><a href="#orgfd1cacc">1.4. 告警</a></li>
-<li><a href="#org3f39d74">1.5. 示例：本机系统监控平台搭建</a>
+<li><a href="#orgb1da23f">1.1. 生成度量指标（metric）</a></li>
+<li><a href="#orgd1547a1">1.2. metrics 收集</a></li>
+<li><a href="#orgf85580f">1.3. UI 显示</a></li>
+<li><a href="#org46e06a0">1.4. 告警</a></li>
+<li><a href="#orge67155c">1.5. 示例：本机系统监控平台搭建</a>
 <ul>
-<li><a href="#org01dc2f6">1.5.1. node_exporter</a></li>
-<li><a href="#orgc68de57">1.5.2. Prometheus</a></li>
-<li><a href="#org1f7a981">1.5.3. Grafana</a></li>
+<li><a href="#orge17cac8">1.5.1. node<sub>exporter</sub></a></li>
+<li><a href="#orgde771e7">1.5.2. Prometheus</a></li>
+<li><a href="#orgf22da38">1.5.3. Grafana</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orge290e63">2. 对接 Kubernetes</a></li>
-<li><a href="#orgaae6c24">3. 配置与 PromQL</a></li>
+<li><a href="#org05f5696">2. 对接 Kubernetes</a></li>
+<li><a href="#orgecde45c">3. 配置与 PromQL</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbb03d37" class="outline-2">
-<h2 id="orgbb03d37"><span class="section-number-2">1.</span> 监控架构</h2>
+<div id="outline-container-orgc37607c" class="outline-2">
+<h2 id="orgc37607c"><span class="section-number-2">1.</span> 监控架构</h2>
 <div class="outline-text-2" id="text-1">
 
-<div id="org711cd7d" class="figure">
+<div id="orgf508622" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/prom.png" alt="prom.png" />
 </p>
 </div>
@@ -261,8 +262,8 @@
 </p>
 </div>
 
-<div id="outline-container-orga9b4495" class="outline-3">
-<h3 id="orga9b4495"><span class="section-number-3">1.1.</span> 生成度量指标（metric）</h3>
+<div id="outline-container-orgb1da23f" class="outline-3">
+<h3 id="orgb1da23f"><span class="section-number-3">1.1.</span> 生成度量指标（metric）</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Prometheus 提供了各种 <a href="https://prometheus.io/docs/instrumenting/exporters/">exporter</a>，常见的系统和一些开源框架框架都已经支持。
@@ -275,8 +276,8 @@ Prometheus 提供了各种 <a href="https://prometheus.io/docs/instrumenting/exp
 </div>
 </div>
 
-<div id="outline-container-org536539a" class="outline-3">
-<h3 id="org536539a"><span class="section-number-3">1.2.</span> metrics 收集</h3>
+<div id="outline-container-orgd1547a1" class="outline-3">
+<h3 id="orgd1547a1"><span class="section-number-3">1.2.</span> metrics 收集</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Prometheus 中包含 TSDB（时间序列 DB），用作数据存储。
@@ -285,8 +286,8 @@ Prometheus 采用的是 pull 的方案，配置之后会按照规则定时获取
 </div>
 </div>
 
-<div id="outline-container-orge1b49f0" class="outline-3">
-<h3 id="orge1b49f0"><span class="section-number-3">1.3.</span> UI 显示</h3>
+<div id="outline-container-orgf85580f" class="outline-3">
+<h3 id="orgf85580f"><span class="section-number-3">1.3.</span> UI 显示</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 Promethues 有自己的 Web UI，但是比较简陋。业内的做法是对接 Grafana 显示数据。Grafana 提供了丰富的 <a href="https://grafana.com/dashboards">Dashboards</a>，直接导入即可。
@@ -294,8 +295,8 @@ Promethues 有自己的 Web UI，但是比较简陋。业内的做法是对接 G
 </div>
 </div>
 
-<div id="outline-container-orgfd1cacc" class="outline-3">
-<h3 id="orgfd1cacc"><span class="section-number-3">1.4.</span> 告警</h3>
+<div id="outline-container-org46e06a0" class="outline-3">
+<h3 id="org46e06a0"><span class="section-number-3">1.4.</span> 告警</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 Grafana 自身是支持告警的，但是比较蛋疼的点在于告警规则不支持模板变量，那就约等于没有了···
@@ -307,16 +308,16 @@ Grafana 自身是支持告警的，但是比较蛋疼的点在于告警规则不
 </div>
 </div>
 
-<div id="outline-container-org3f39d74" class="outline-3">
-<h3 id="org3f39d74"><span class="section-number-3">1.5.</span> 示例：本机系统监控平台搭建</h3>
+<div id="outline-container-orge67155c" class="outline-3">
+<h3 id="orge67155c"><span class="section-number-3">1.5.</span> 示例：本机系统监控平台搭建</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
-<i>示例限于 Linux 平台，我使用 Ubuntu 18.04 测试搭建，不同的平台安装方式 node_exporter 安装方式略有不同，但大同小异。</i>
+<i>示例限于 Linux 平台，我使用 Ubuntu 18.04 测试搭建，不同的平台安装方式 node<sub>exporter</sub> 安装方式略有不同，但大同小异。</i>
 </p>
 </div>
 
-<div id="outline-container-org01dc2f6" class="outline-4">
-<h4 id="org01dc2f6"><span class="section-number-4">1.5.1.</span> node_exporter</h4>
+<div id="outline-container-orge17cac8" class="outline-4">
+<h4 id="orge17cac8"><span class="section-number-4">1.5.1.</span> node<sub>exporter</sub></h4>
 <div class="outline-text-4" id="text-1-5-1">
 <ol class="org-ol">
 <li>下载，在 <a href="https://github.com/prometheus/node_exporter">https://github.com/prometheus/node_exporter</a> release 中找对应系统的安装包下载。
@@ -329,13 +330,13 @@ Grafana 自身是支持告警的，但是比较蛋疼的点在于告警规则不
 </ol>
 
 <p>
-node_exporter 默认的服务端口是 <code>9100</code> ，浏览器访问：  <code>127.0.0.1:9100</code> 即可查看暴露的 metric。
+node<sub>exporter</sub> 默认的服务端口是 <code>9100</code> ，浏览器访问：  <code>127.0.0.1:9100</code> 即可查看暴露的 metric。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc68de57" class="outline-4">
-<h4 id="orgc68de57"><span class="section-number-4">1.5.2.</span> Prometheus</h4>
+<div id="outline-container-orgde771e7" class="outline-4">
+<h4 id="orgde771e7"><span class="section-number-4">1.5.2.</span> Prometheus</h4>
 <div class="outline-text-4" id="text-1-5-2">
 <p>
 使用 Docker 部署。下载镜像： <code>docker pull prom/prometheus:v2.16.0</code>
@@ -356,30 +357,30 @@ node_exporter 默认的服务端口是 <code>9100</code> ，浏览器访问：  
 
 <div class="org-src-container">
 <pre class="src src-yaml"><span style="color: #00538b;">global</span>:
-  <span style="color: #00538b;">scrape_interval</span>:     15s <span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">Set the scrape interval to every 15 seconds. Default is every 1 minute.</span>
-  <span style="color: #00538b;">evaluation_interval</span>: 15s <span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">Evaluate rules every 15 seconds. The default is every 1 minute.</span>
-  <span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">scrape_timeout is set to the global default (10s).</span>
+  <span style="color: #00538b;">scrape_interval</span>:     15s <span style="color: #505050;"># </span><span style="color: #505050;">Set the scrape interval to every 15 seconds. Default is every 1 minute.</span>
+  <span style="color: #00538b;">evaluation_interval</span>: 15s <span style="color: #505050;"># </span><span style="color: #505050;">Evaluate rules every 15 seconds. The default is every 1 minute.</span>
+  <span style="color: #505050;"># </span><span style="color: #505050;">scrape_timeout is set to the global default (10s).</span>
 
-<span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">Alertmanager configuration</span>
+<span style="color: #505050;"># </span><span style="color: #505050;">Alertmanager configuration</span>
 <span style="color: #00538b;">alerting</span>:
   <span style="color: #00538b;">alertmanagers</span>:
   - <span style="color: #00538b;">static_configs</span>:
     - <span style="color: #00538b;">targets</span>:
-      <span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">- alertmanager:9093</span>
+      <span style="color: #505050;"># </span><span style="color: #505050;">- alertmanager:9093</span>
 
-<span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">Load rules once and periodically evaluate them according to the global 'evaluation_interval'.</span>
+<span style="color: #505050;"># </span><span style="color: #505050;">Load rules once and periodically evaluate them according to the global 'evaluation_interval'.</span>
 <span style="color: #00538b;">rule_files</span>:
-  <span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">- "first_rules.yml"</span>
-  <span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">- "second_rules.yml"</span>
+  <span style="color: #505050;"># </span><span style="color: #505050;">- "first_rules.yml"</span>
+  <span style="color: #505050;"># </span><span style="color: #505050;">- "second_rules.yml"</span>
 
-<span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">A scrape configuration containing exactly one endpoint to scrape:</span>
-<span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">Here it's Prometheus itself.</span>
+<span style="color: #505050;"># </span><span style="color: #505050;">A scrape configuration containing exactly one endpoint to scrape:</span>
+<span style="color: #505050;"># </span><span style="color: #505050;">Here it's Prometheus itself.</span>
 <span style="color: #00538b;">scrape_configs</span>:
-  <span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span>
+  <span style="color: #505050;"># </span><span style="color: #505050;">The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span>
   - <span style="color: #00538b;">job_name</span>: <span style="color: #2544bb;">'prometheus'</span>
 
-    <span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">metrics_path defaults to '/metrics'</span>
-    <span style="color: #505050; font-style: italic;"># </span><span style="color: #505050; font-style: italic;">scheme defaults to 'http'.</span>
+    <span style="color: #505050;"># </span><span style="color: #505050;">metrics_path defaults to '/metrics'</span>
+    <span style="color: #505050;"># </span><span style="color: #505050;">scheme defaults to 'http'.</span>
 
     <span style="color: #00538b;">static_configs</span>:
     - <span style="color: #00538b;">targets</span>: [<span style="color: #2544bb;">'localhost:9090'</span>]
@@ -403,7 +404,7 @@ node_exporter 默认的服务端口是 <code>9100</code> ，浏览器访问：  
 </p>
 
 <p>
-将之前 node_exporter 作为 job 添加到 prometheus 配置文件中。
+将之前 node<sub>exporter</sub> 作为 job 添加到 prometheus 配置文件中。
 </p>
 
 <div class="org-src-container">
@@ -442,8 +443,8 @@ yum install node_exporter
 </div>
 
 
-<div id="outline-container-org1f7a981" class="outline-4">
-<h4 id="org1f7a981"><span class="section-number-4">1.5.3.</span> Grafana</h4>
+<div id="outline-container-orgf22da38" class="outline-4">
+<h4 id="orgf22da38"><span class="section-number-4">1.5.3.</span> Grafana</h4>
 <div class="outline-text-4" id="text-1-5-3">
 <p>
 使用 Docker 部署， 下载镜像： <code>sudo docker pull grafana/grafana:6.6.2</code>
@@ -467,7 +468,7 @@ yum install node_exporter
 </p>
 
 <p>
-Grafana 官网提供了很多的 <a href="https://grafana.com/grafana/dashboards">dashboards</a>，找一个 node_exporter 的 dashboard ID 比如： <code>11074</code> ，在 Grafana 中导入即可（记得选择数据源）。
+Grafana 官网提供了很多的 <a href="https://grafana.com/grafana/dashboards">dashboards</a>，找一个 node<sub>exporter</sub> 的 dashboard ID 比如： <code>11074</code> ，在 Grafana 中导入即可（记得选择数据源）。
 </p>
 
 <p>
@@ -478,8 +479,8 @@ Grafana 官网提供了很多的 <a href="https://grafana.com/grafana/dashboards
 </div>
 </div>
 
-<div id="outline-container-orge290e63" class="outline-2">
-<h2 id="orge290e63"><span class="section-number-2">2.</span> 对接 Kubernetes</h2>
+<div id="outline-container-org05f5696" class="outline-2">
+<h2 id="org05f5696"><span class="section-number-2">2.</span> 对接 Kubernetes</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Kubernetes 原生暴露了很多的集群（节点、Job、Ingress、Namespace 等）的 metric，具体可以看 <a href="https://github.com/kubernetes/kube-state-metrics/">kubernetes/kube-state-metrics</a> 。
@@ -496,8 +497,8 @@ Kubernetes 原生暴露了很多的集群（节点、Job、Ingress、Namespace �
 </div>
 </div>
 
-<div id="outline-container-orgaae6c24" class="outline-2">
-<h2 id="orgaae6c24"><span class="section-number-2">3.</span> 配置与 PromQL</h2>
+<div id="outline-container-orgecde45c" class="outline-2">
+<h2 id="orgecde45c"><span class="section-number-2">3.</span> 配置与 PromQL</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 多个 metrics JOIN：
@@ -511,7 +512,7 @@ Kubernetes 原生暴露了很多的集群（节点、Job、Ingress、Namespace �
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-04-11 15:46 <br />Last updated: 2021-06-22 Tue 14:11 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2019-04-11 15:46 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

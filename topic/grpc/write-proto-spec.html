@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2021-11-22 Mon 16:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>书写 .proto 文件规范</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,99 +193,78 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">书写 .proto 文件规范</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org62d3b49">1. 定义消息类型</a>
+<li><a href="#org47215d8">1. 定义消息类型</a>
 <ul>
-<li><a href="#orgc5509b8">1.1. 字段类型</a></li>
-<li><a href="#org41a0cdc">1.2. 分配字段编号</a></li>
-<li><a href="#org52425a5">1.3. 字段规则</a></li>
-<li><a href="#orge2c959f">1.4. 消息类型</a></li>
-<li><a href="#org45d6785">1.5. 注释</a></li>
-<li><a href="#org54670a7">1.6. 保留字段</a></li>
+<li><a href="#org6d9dfe7">1.1. 字段类型</a></li>
+<li><a href="#orga2f18a1">1.2. 分配字段编号</a></li>
+<li><a href="#org559df05">1.3. 字段规则</a></li>
+<li><a href="#orgf9c4b28">1.4. 消息类型</a></li>
+<li><a href="#org64268c3">1.5. 注释</a></li>
+<li><a href="#org4c3a3c7">1.6. 保留字段</a></li>
 </ul>
 </li>
-<li><a href="#orgc7b0fea">2. 标量类型</a></li>
-<li><a href="#org784fdac">3. 默认值</a></li>
-<li><a href="#org63a3835">4. 枚举</a></li>
-<li><a href="#org33ef26e">5. 使用其它消息类型</a>
+<li><a href="#orgbe4114b">2. 标量类型</a></li>
+<li><a href="#org03752bc">3. 默认值</a></li>
+<li><a href="#orgcf05646">4. 枚举</a></li>
+<li><a href="#orga6281b5">5. 使用其它消息类型</a>
 <ul>
-<li><a href="#org85f7fd7">5.1. 导入定义</a></li>
+<li><a href="#org073868d">5.1. 导入定义</a></li>
 </ul>
 </li>
-<li><a href="#orgf33976d">6. 内嵌类型</a></li>
-<li><a href="#org03cd265">7. 更新消息类型</a></li>
-<li><a href="#orgf2ac2a6">8. 未知的字段</a></li>
-<li><a href="#org7d3fbce">9. Any</a></li>
-<li><a href="#orgee73604">10. Oneof</a>
+<li><a href="#orgf086179">6. 内嵌类型</a></li>
+<li><a href="#orgd5e21cc">7. 更新消息类型</a></li>
+<li><a href="#orgd8bf01f">8. 未知的字段</a></li>
+<li><a href="#org851843e">9. Any</a></li>
+<li><a href="#org506d019">10. Oneof</a>
 <ul>
-<li><a href="#org3b68638">10.1. 使用 Oneof</a></li>
-<li><a href="#org60f24ac">10.2. Oneof 特性</a></li>
-<li><a href="#orgde70164">10.3. 向后兼容问题</a></li>
+<li><a href="#org5b74fda">10.1. 使用 Oneof</a></li>
+<li><a href="#org4daadc8">10.2. Oneof 特性</a></li>
+<li><a href="#org69e1139">10.3. 向后兼容问题</a></li>
 </ul>
 </li>
-<li><a href="#orgef9cc7a">11. Maps</a>
+<li><a href="#org7fd2b85">11. Maps</a>
 <ul>
-<li><a href="#org0d692d3">11.1. 向后兼容</a></li>
+<li><a href="#org67f36e6">11.1. 向后兼容</a></li>
 </ul>
 </li>
-<li><a href="#org1350ba0">12. Package</a></li>
-<li><a href="#org924fc54">13. 定义服务(Defining Services)</a></li>
-<li><a href="#org629de64">14. JSON 映射</a></li>
-<li><a href="#orgace1103">15. 选项(Options)</a></li>
+<li><a href="#orga67ad98">12. Package</a></li>
+<li><a href="#orgbe6f6db">13. 定义服务(Defining Services)</a></li>
+<li><a href="#orge3c05e1">14. JSON 映射</a></li>
+<li><a href="#orga3a0a82">15. 选项(Options)</a></li>
 </ul>
 </div>
 </div>
@@ -295,8 +272,8 @@ for the JavaScript code in this tag.
 proto3: <a href="https://developers.google.com/protocol-buffers/docs/proto3">https://developers.google.com/protocol-buffers/docs/proto3</a>
 </p>
 
-<div id="outline-container-org62d3b49" class="outline-2">
-<h2 id="org62d3b49"><span class="section-number-2">1</span> 定义消息类型</h2>
+<div id="outline-container-org47215d8" class="outline-2">
+<h2 id="org47215d8"><span class="section-number-2">1.</span> 定义消息类型</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 使用 proto3 需要在 .proto 文件的最开始添加声明： <code>syntax = "proto3";</code> 否则将按照 proto2 来编译。
@@ -313,8 +290,8 @@ message SearchRequest {
 </pre>
 </div>
 
-<div id="outline-container-orgc5509b8" class="outline-3">
-<h3 id="orgc5509b8"><span class="section-number-3">1.1</span> 字段类型</h3>
+<div id="outline-container-org6d9dfe7" class="outline-3">
+<h3 id="org6d9dfe7"><span class="section-number-3">1.1.</span> 字段类型</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 见下面的标量类型，枚举等。
@@ -322,8 +299,8 @@ message SearchRequest {
 </div>
 </div>
 
-<div id="outline-container-org41a0cdc" class="outline-3">
-<h3 id="org41a0cdc"><span class="section-number-3">1.2</span> 分配字段编号</h3>
+<div id="outline-container-orga2f18a1" class="outline-3">
+<h3 id="orga2f18a1"><span class="section-number-3">1.2.</span> 分配字段编号</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 消息中定义的字段每个都要有一个 <b>唯一的编号</b> ，在编码的时候会用来确定字段，一旦类型定义之后不可以更改。
@@ -334,14 +311,14 @@ message SearchRequest {
 </p>
 
 <p>
-字段编号的最小值是 1，最大是 2^29 - 1 或者 536,870,911。 19000 ~ 19999 (<code>FieldDescriptor::kFirstReservedNumber ~ FieldDescriptor::kLastReservedNumber</code>)
+字段编号的最小值是 1，最大是 2<sup>29</sup> - 1 或者 536,870,911。 19000 ~ 19999 (<code>FieldDescriptor::kFirstReservedNumber ~ FieldDescriptor::kLastReservedNumber</code>)
 之间的数字预留给 Protocol Buffers 实现的。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org52425a5" class="outline-3">
-<h3 id="org52425a5"><span class="section-number-3">1.3</span> 字段规则</h3>
+<div id="outline-container-org559df05" class="outline-3">
+<h3 id="org559df05"><span class="section-number-3">1.3.</span> 字段规则</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 字段可以是：
@@ -358,8 +335,8 @@ message SearchRequest {
 </div>
 </div>
 
-<div id="outline-container-orge2c959f" class="outline-3">
-<h3 id="orge2c959f"><span class="section-number-3">1.4</span> 消息类型</h3>
+<div id="outline-container-orgf9c4b28" class="outline-3">
+<h3 id="orgf9c4b28"><span class="section-number-3">1.4.</span> 消息类型</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 一个 <code>.proto</code> 文件中，可以有多个 <code>message</code> 定义。
@@ -367,8 +344,8 @@ message SearchRequest {
 </div>
 </div>
 
-<div id="outline-container-org45d6785" class="outline-3">
-<h3 id="org45d6785"><span class="section-number-3">1.5</span> 注释</h3>
+<div id="outline-container-org64268c3" class="outline-3">
+<h3 id="org64268c3"><span class="section-number-3">1.5.</span> 注释</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 在 <code>.proto</code> 中，注释使用 C/C++ 风格的 <code>//</code> 和 <code>/* ... */</code> 。
@@ -376,8 +353,8 @@ message SearchRequest {
 </div>
 </div>
 
-<div id="outline-container-org54670a7" class="outline-3">
-<h3 id="org54670a7"><span class="section-number-3">1.6</span> 保留字段</h3>
+<div id="outline-container-org4c3a3c7" class="outline-3">
+<h3 id="org4c3a3c7"><span class="section-number-3">1.6.</span> 保留字段</h3>
 <div class="outline-text-3" id="text-1-6">
 <p>
 message 中的字段可能被删除或者注释，一旦未来之前的字段编号被复用。可能会导致严重的问题，比如数据损坏和一些隐藏的 bug 等。
@@ -398,8 +375,8 @@ message Foo {
 </div>
 </div>
 
-<div id="outline-container-orgc7b0fea" class="outline-2">
-<h2 id="orgc7b0fea"><span class="section-number-2">2</span> 标量类型</h2>
+<div id="outline-container-orgbe4114b" class="outline-2">
+<h2 id="orgbe4114b"><span class="section-number-2">2.</span> 标量类型</h2>
 <div class="outline-text-2" id="text-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -490,7 +467,7 @@ message Foo {
 
 <tr>
 <td class="org-left">fixed32</td>
-<td class="org-left">总是 4 字节，如果值大于 2^28 比 uint32 更高效</td>
+<td class="org-left">总是 4 字节，如果值大于 2<sup>28</sup> 比 uint32 更高效</td>
 <td class="org-left">uint32</td>
 <td class="org-left">int/long</td>
 <td class="org-left">uint32</td>
@@ -498,7 +475,7 @@ message Foo {
 
 <tr>
 <td class="org-left">fixed64</td>
-<td class="org-left">总是 8 字节，如果值大于 2^56 比 uint64 更高效</td>
+<td class="org-left">总是 8 字节，如果值大于 2<sup>56</sup> 比 uint64 更高效</td>
 <td class="org-left">uint64</td>
 <td class="org-left">int/long</td>
 <td class="org-left">uint64</td>
@@ -530,7 +507,7 @@ message Foo {
 
 <tr>
 <td class="org-left">string</td>
-<td class="org-left">字符串必须是 UTF-8 编码或者 7-bit 的 ASCII 文本，不能超过 2^32</td>
+<td class="org-left">字符串必须是 UTF-8 编码或者 7-bit 的 ASCII 文本，不能超过 2<sup>32</sup></td>
 <td class="org-left">string</td>
 <td class="org-left">str/unicode</td>
 <td class="org-left">string</td>
@@ -538,7 +515,7 @@ message Foo {
 
 <tr>
 <td class="org-left">bytes</td>
-<td class="org-left">任意长度不超过 2^32 的字节序列</td>
+<td class="org-left">任意长度不超过 2<sup>32</sup> 的字节序列</td>
 <td class="org-left">string</td>
 <td class="org-left">str</td>
 <td class="org-left">[]byte</td>
@@ -548,8 +525,8 @@ message Foo {
 </div>
 </div>
 
-<div id="outline-container-org784fdac" class="outline-2">
-<h2 id="org784fdac"><span class="section-number-2">3</span> 默认值</h2>
+<div id="outline-container-org03752bc" class="outline-2">
+<h2 id="org03752bc"><span class="section-number-2">3.</span> 默认值</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 消息解析时，如果不包含特定的字段，会用该字段的默认值代替。不同的类型，默认值不同：
@@ -574,8 +551,8 @@ repeated 字段的默认值为空（通常为对应编程语言的空列表）�
 </div>
 </div>
 
-<div id="outline-container-org63a3835" class="outline-2">
-<h2 id="org63a3835"><span class="section-number-2">4</span> 枚举</h2>
+<div id="outline-container-orgcf05646" class="outline-2">
+<h2 id="orgcf05646"><span class="section-number-2">4.</span> 枚举</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 如下定义：
@@ -587,13 +564,13 @@ message SearchRequest {
   int32 page_number = 2;
   int32 result_per_page = 3;
   enum Corpus {
-	UNIVERSAL = 0;
-	WEB = 1;
-	IMAGES = 2;
-	LOCAL = 3;
-	NEWS = 4;
-	PRODUCTS = 5;
-	VIDEO = 6;
+    UNIVERSAL = 0;
+    WEB = 1;
+    IMAGES = 2;
+    LOCAL = 3;
+    NEWS = 4;
+    PRODUCTS = 5;
+    VIDEO = 6;
   }
   Corpus corpus = 4;
 }
@@ -615,10 +592,10 @@ message SearchRequest {
 <pre class="example">
 message MyMessage1 {
   enum EnumAllowingAlias {
-	option allow_alias = true;
-	UNKNOWN = 0;
-	STARTED = 1;
-	RUNNING = 1;
+    option allow_alias = true;
+    UNKNOWN = 0;
+    STARTED = 1;
+    RUNNING = 1;
   }
 }
 </pre>
@@ -629,8 +606,8 @@ message MyMessage1 {
 </div>
 </div>
 
-<div id="outline-container-org33ef26e" class="outline-2">
-<h2 id="org33ef26e"><span class="section-number-2">5</span> 使用其它消息类型</h2>
+<div id="outline-container-orga6281b5" class="outline-2">
+<h2 id="orga6281b5"><span class="section-number-2">5.</span> 使用其它消息类型</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 你可以使用已经定义的消息类型作为另外一个消息的字段类型。如：
@@ -649,8 +626,8 @@ message Result {
 </pre>
 </div>
 
-<div id="outline-container-org85f7fd7" class="outline-3">
-<h3 id="org85f7fd7"><span class="section-number-3">5.1</span> 导入定义</h3>
+<div id="outline-container-org073868d" class="outline-3">
+<h3 id="org073868d"><span class="section-number-3">5.1.</span> 导入定义</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 如果消息定义在不同的 .proto 文件中，你在使用 <code>import</code> 关键字来导入，如：
@@ -676,8 +653,8 @@ protobuf 编译器搜索导入的文件是基于 <code>-I</code> 或者 <code>--
 </div>
 </div>
 
-<div id="outline-container-orgf33976d" class="outline-2">
-<h2 id="orgf33976d"><span class="section-number-2">6</span> 内嵌类型</h2>
+<div id="outline-container-orgf086179" class="outline-2">
+<h2 id="orgf086179"><span class="section-number-2">6.</span> 内嵌类型</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 你可以在消息类型中定义和使用消息类型，如下：
@@ -686,9 +663,9 @@ protobuf 编译器搜索导入的文件是基于 <code>-I</code> 或者 <code>--
 <pre class="example">
 message SearchResponse {
   message Result {
-	string url = 1;
-	string title = 2;
-	repeated string snippets = 3;
+    string url = 1;
+    string title = 2;
+    repeated string snippets = 3;
   }
   repeated Result results = 1;
 }
@@ -710,8 +687,8 @@ message SomeOtherMessage {
 </div>
 </div>
 
-<div id="outline-container-org03cd265" class="outline-2">
-<h2 id="org03cd265"><span class="section-number-2">7</span> 更新消息类型</h2>
+<div id="outline-container-orgd5e21cc" class="outline-2">
+<h2 id="orgd5e21cc"><span class="section-number-2">7.</span> 更新消息类型</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 如果一个已经存在的消息类型不再能满足需求，比如，添加额外的字段等。在不破坏现有的消息类型更新非常简单，但是要遵守一下规则：
@@ -737,8 +714,8 @@ Moving any fields into an existing <code>oneof</code> is not safe.</li>
 </div>
 </div>
 
-<div id="outline-container-orgf2ac2a6" class="outline-2">
-<h2 id="orgf2ac2a6"><span class="section-number-2">8</span> 未知的字段</h2>
+<div id="outline-container-orgd8bf01f" class="outline-2">
+<h2 id="orgd8bf01f"><span class="section-number-2">8.</span> 未知的字段</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 未知(Unknown)的字段表示在序列化话数据时，解析器无法识别的字段。比如说，用旧的二进制数据使用新的二进制解析时，新的字段变成旧二进制数据中的未知字段。
@@ -751,8 +728,8 @@ Moving any fields into an existing <code>oneof</code> is not safe.</li>
 </div>
 </div>
 
-<div id="outline-container-org7d3fbce" class="outline-2">
-<h2 id="org7d3fbce"><span class="section-number-2">9</span> Any</h2>
+<div id="outline-container-org851843e" class="outline-2">
+<h2 id="org851843e"><span class="section-number-2">9.</span> Any</h2>
 <div class="outline-text-2" id="text-9">
 <p>
 <code>Any</code> 消息类型可以作为嵌入类型，而无须定义。 <code>Any</code> 以 <code>bytes</code> 为单位，包含任何序列化消息，扮演着该消息类型的全局唯一标识符的 URL。
@@ -783,8 +760,8 @@ C++ 是 <code>PackForm()</code> 和 <code>UnpackTo()</code> 方法。
 </div>
 </div>
 
-<div id="outline-container-orgee73604" class="outline-2">
-<h2 id="orgee73604"><span class="section-number-2">10</span> Oneof</h2>
+<div id="outline-container-org506d019" class="outline-2">
+<h2 id="org506d019"><span class="section-number-2">10.</span> Oneof</h2>
 <div class="outline-text-2" id="text-10">
 <p>
 如果一个消息有很多的字段，但是在同一个时间内只会被设置其中的一个，你可以使用 oneof 特性来实现它，以节省内存。
@@ -796,8 +773,8 @@ Oneof 除了所有的字段共享一块内存之外的行为和其它的普通�
 </p>
 </div>
 
-<div id="outline-container-org3b68638" class="outline-3">
-<h3 id="org3b68638"><span class="section-number-3">10.1</span> 使用 Oneof</h3>
+<div id="outline-container-org5b74fda" class="outline-3">
+<h3 id="org5b74fda"><span class="section-number-3">10.1.</span> 使用 Oneof</h3>
 <div class="outline-text-3" id="text-10-1">
 <p>
 在 <code>.proto</code> 文件中使用 <code>oneof</code> 关键字来定义：
@@ -806,8 +783,8 @@ Oneof 除了所有的字段共享一块内存之外的行为和其它的普通�
 <pre class="example">
 message SampleMessage {
   oneof test_oneof {
-	string name = 4;
-	SubMessage sub_message = 9;
+    string name = 4;
+    SubMessage sub_message = 9;
   }
 }
 </pre>
@@ -823,8 +800,8 @@ message SampleMessage {
 </div>
 </div>
 
-<div id="outline-container-org60f24ac" class="outline-3">
-<h3 id="org60f24ac"><span class="section-number-3">10.2</span> Oneof 特性</h3>
+<div id="outline-container-org4daadc8" class="outline-3">
+<h3 id="org4daadc8"><span class="section-number-3">10.2.</span> Oneof 特性</h3>
 <div class="outline-text-3" id="text-10-2">
 <ul class="org-ul">
 <li>设置一个 oneof 字段会自动清空其它的。多次设置，只有最后一次生效。</li>
@@ -858,8 +835,8 @@ CHECK(msg2.has_name());
 </div>
 </div>
 
-<div id="outline-container-orgde70164" class="outline-3">
-<h3 id="orgde70164"><span class="section-number-3">10.3</span> 向后兼容问题</h3>
+<div id="outline-container-org69e1139" class="outline-3">
+<h3 id="org69e1139"><span class="section-number-3">10.3.</span> 向后兼容问题</h3>
 <div class="outline-text-3" id="text-10-3">
 <p>
 <i>这玩意一般用不到，而且我感觉使用的时候问题比带来的好处要多。</i>
@@ -868,8 +845,8 @@ CHECK(msg2.has_name());
 </div>
 </div>
 
-<div id="outline-container-orgef9cc7a" class="outline-2">
-<h2 id="orgef9cc7a"><span class="section-number-2">11</span> Maps</h2>
+<div id="outline-container-org7fd2b85" class="outline-2">
+<h2 id="org7fd2b85"><span class="section-number-2">11.</span> Maps</h2>
 <div class="outline-text-2" id="text-11">
 <p>
 如果想要在数据定义中创建关联映射，protobuf 提供了方便的快捷语法：
@@ -897,8 +874,8 @@ map&lt;key_type, value_type&gt; map_field = N;
 </ul>
 </div>
 
-<div id="outline-container-org0d692d3" class="outline-3">
-<h3 id="org0d692d3"><span class="section-number-3">11.1</span> 向后兼容</h3>
+<div id="outline-container-org67f36e6" class="outline-3">
+<h3 id="org67f36e6"><span class="section-number-3">11.1.</span> 向后兼容</h3>
 <div class="outline-text-3" id="text-11-1">
 <p>
 编码的时候 map 语法等价于下面这样，因此 protobuf 实现就算不支持 map 也可以处理你的数据：
@@ -916,8 +893,8 @@ repeated MapFieldEntry map_field = N;
 </div>
 </div>
 
-<div id="outline-container-org1350ba0" class="outline-2">
-<h2 id="org1350ba0"><span class="section-number-2">12</span> Package</h2>
+<div id="outline-container-orga67ad98" class="outline-2">
+<h2 id="orga67ad98"><span class="section-number-2">12.</span> Package</h2>
 <div class="outline-text-2" id="text-12">
 <p>
 你可以在 <code>.proto</code> 文件中添加一个可选的 <code>package</code> 指示符用来放置协议消息类型质检的命名冲突。
@@ -952,8 +929,8 @@ package 不同的语言生成的代码不同：
 </div>
 </div>
 
-<div id="outline-container-org924fc54" class="outline-2">
-<h2 id="org924fc54"><span class="section-number-2">13</span> 定义服务(Defining Services)</h2>
+<div id="outline-container-orgbe6f6db" class="outline-2">
+<h2 id="orgbe6f6db"><span class="section-number-2">13.</span> 定义服务(Defining Services)</h2>
 <div class="outline-text-2" id="text-13">
 <p>
 如果你要与 RPC 系统一起使用你的消息类型，你可以在 <code>.proto</code> 文件中定义一个 RPC 服务接口，protobuf 编译器会根据你选择的语言自动生成服务接口代码和存根。
@@ -980,8 +957,8 @@ service SearchService {
 </div>
 </div>
 
-<div id="outline-container-org629de64" class="outline-2">
-<h2 id="org629de64"><span class="section-number-2">14</span> JSON 映射</h2>
+<div id="outline-container-orge3c05e1" class="outline-2">
+<h2 id="orge3c05e1"><span class="section-number-2">14.</span> JSON 映射</h2>
 <div class="outline-text-2" id="text-14">
 <p>
 Proto3 支持 JSON 编码规范，这使得在系统之间共享数据更加容易。
@@ -993,8 +970,8 @@ Proto3 支持 JSON 编码规范，这使得在系统之间共享数据更加容�
 </div>
 </div>
 
-<div id="outline-container-orgace1103" class="outline-2">
-<h2 id="orgace1103"><span class="section-number-2">15</span> 选项(Options)</h2>
+<div id="outline-container-orga3a0a82" class="outline-2">
+<h2 id="orga3a0a82"><span class="section-number-2">15.</span> 选项(Options)</h2>
 <div class="outline-text-2" id="text-15">
 <p>
 <code>.proto</code> 文件中的各种声明可以使用许多的 <i>options</i> 来注释。Options 不会改变声明的整体定义，但可能会影响在特定上下文中处理声明的方式。
@@ -1034,7 +1011,7 @@ int32 old_field = 6 [deprecated = true];
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-19 16:53:48 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2020-05-19 16:53:48 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

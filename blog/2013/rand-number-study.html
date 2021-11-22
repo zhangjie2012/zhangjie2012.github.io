@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2021-11-22 Mon 16:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>随机数小研究</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">随机数小研究</h1>
 <p>
 不知道大家听歌是按照什么样的循环方式，我一般是随机，顺序循环很容易猜到下一首歌是什么，没意思。
@@ -261,68 +238,68 @@ for the JavaScript code in this tag.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Win 7 + Code::Blocks 10.05</span>
-<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">iostream</span><span style="color: #707183;">&gt;</span>
-<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">utility</span><span style="color: #707183;">&gt;</span>
-<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">cstdlib</span><span style="color: #707183;">&gt;</span>
-<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">algorithm</span><span style="color: #707183;">&gt;</span>
-<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">ctime</span><span style="color: #707183;">&gt;</span>
+<pre class="src src-cpp"><span style="color: #505050;">// </span><span style="color: #505050;">Win 7 + Code::Blocks 10.05</span>
+<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">iostream</span><span style="color: #000000;">&gt;</span>
+<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">utility</span><span style="color: #000000;">&gt;</span>
+<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">cstdlib</span><span style="color: #000000;">&gt;</span>
+<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">algorithm</span><span style="color: #000000;">&gt;</span>
+<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">ctime</span><span style="color: #000000;">&gt;</span>
 
-<span style="color: #6434A3;">bool</span> <span style="color: #006699;">statCompare</span><span style="color: #707183;">(</span><span style="color: #0000FF;">const</span> <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">pair</span><span style="color: #7388D6;">&lt;</span><span style="color: #6434A3;">int</span>, <span style="color: #6434A3;">int</span><span style="color: #7388D6;">&gt;</span> &amp; <span style="color: #BA36A5;">lth</span>,
-                 <span style="color: #0000FF;">const</span> <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">pair</span><span style="color: #7388D6;">&lt;</span><span style="color: #6434A3;">int</span>, <span style="color: #6434A3;">int</span><span style="color: #7388D6;">&gt;</span> &amp; <span style="color: #BA36A5;">rth</span><span style="color: #707183;">)</span>
-<span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">if</span> <span style="color: #7388D6;">(</span>lth.second &gt; rth.second<span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">true</span>;
-    <span style="color: #7388D6;">}</span>
-    <span style="color: #0000FF;">else</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #0000FF;">return</span> <span style="color: #D0372D;">false</span>;
-    <span style="color: #7388D6;">}</span>
-<span style="color: #707183;">}</span>
+<span style="color: #005a5f;">bool</span> <span style="color: #721045;">statCompare</span><span style="color: #000000;">(</span><span style="color: #5317ac;">const</span> <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">pair</span><span style="color: #a8007f;">&lt;</span><span style="color: #005a5f;">int</span>, <span style="color: #005a5f;">int</span><span style="color: #a8007f;">&gt;</span> &amp; <span style="color: #00538b;">lth</span>,
+                 <span style="color: #5317ac;">const</span> <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">pair</span><span style="color: #a8007f;">&lt;</span><span style="color: #005a5f;">int</span>, <span style="color: #005a5f;">int</span><span style="color: #a8007f;">&gt;</span> &amp; <span style="color: #00538b;">rth</span><span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">if</span> <span style="color: #a8007f;">(</span>lth.second &gt; rth.second<span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #5317ac;">return</span> <span style="color: #0000c0;">true</span>;
+    <span style="color: #a8007f;">}</span>
+    <span style="color: #5317ac;">else</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #5317ac;">return</span> <span style="color: #0000c0;">false</span>;
+    <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
 
-<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
-<span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">musicCount</span> = 10;
-    <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">playTimes</span> = 10000000;
+<span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span>
+<span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">musicCount</span> = 10;
+    <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">playTimes</span> = 10000000;
 
-    <span style="color: #7388D6;">{</span>
-        <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">pair</span><span style="color: #909183;">&lt;</span><span style="color: #6434A3;">int</span>, <span style="color: #6434A3;">int</span><span style="color: #909183;">&gt;</span> <span style="color: #BA36A5;">stat</span><span style="color: #909183;">[</span>musicCount<span style="color: #909183;">]</span>;
-        <span style="color: #0000FF;">for</span> <span style="color: #909183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span>=0; i&lt;musicCount; ++i<span style="color: #909183;">)</span> <span style="color: #909183;">{</span>
-            stat<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span>.first = i + 1;
-            stat<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span>.second = 0;
-        <span style="color: #909183;">}</span>
+    <span style="color: #a8007f;">{</span>
+        <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">pair</span><span style="color: #005f88;">&lt;</span><span style="color: #005a5f;">int</span>, <span style="color: #005a5f;">int</span><span style="color: #005f88;">&gt;</span> <span style="color: #00538b;">stat</span><span style="color: #005f88;">[</span>musicCount<span style="color: #005f88;">]</span>;
+        <span style="color: #5317ac;">for</span> <span style="color: #005f88;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span>=0; i&lt;musicCount; ++i<span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
+            stat<span style="color: #904200;">[</span>i<span style="color: #904200;">]</span>.first = i + 1;
+            stat<span style="color: #904200;">[</span>i<span style="color: #904200;">]</span>.second = 0;
+        <span style="color: #005f88;">}</span>
 
-        <span style="color: #0000FF;">for</span> <span style="color: #909183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span>=0; i&lt;playTimes; ++i<span style="color: #909183;">)</span> <span style="color: #909183;">{</span>
-            stat<span style="color: #709870;">[</span>rand<span style="color: #907373;">()</span> % musicCount<span style="color: #709870;">]</span>.second++;
-        <span style="color: #909183;">}</span>
+        <span style="color: #5317ac;">for</span> <span style="color: #005f88;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span>=0; i&lt;playTimes; ++i<span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
+            stat<span style="color: #904200;">[</span>rand<span style="color: #7f10d0;">()</span> % musicCount<span style="color: #904200;">]</span>.second++;
+        <span style="color: #005f88;">}</span>
 
-        sort<span style="color: #909183;">(</span>stat, stat+musicCount-1, statCompare<span style="color: #909183;">)</span>;
-        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"bigger differ: "</span> &lt;&lt; stat<span style="color: #909183;">[</span>0<span style="color: #909183;">]</span>.second - stat<span style="color: #909183;">[</span>musicCount-1<span style="color: #909183;">]</span>.second &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-        <span style="color: #0000FF;">for</span> <span style="color: #909183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span>=0; i&lt;musicCount; ++i<span style="color: #909183;">)</span> <span style="color: #909183;">{</span>
-            <span style="color: #D0372D;">std</span>::cout &lt;&lt; stat<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span>.first &lt;&lt; <span style="color: #008000;">": "</span> &lt;&lt; stat<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span>.second &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-        <span style="color: #909183;">}</span>
-    <span style="color: #7388D6;">}</span>
+        sort<span style="color: #005f88;">(</span>stat, stat+musicCount-1, statCompare<span style="color: #005f88;">)</span>;
+        <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"bigger differ: "</span> &lt;&lt; stat<span style="color: #005f88;">[</span>0<span style="color: #005f88;">]</span>.second - stat<span style="color: #005f88;">[</span>musicCount-1<span style="color: #005f88;">]</span>.second &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+        <span style="color: #5317ac;">for</span> <span style="color: #005f88;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span>=0; i&lt;musicCount; ++i<span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
+            <span style="color: #0000c0;">std</span>::cout &lt;&lt; stat<span style="color: #904200;">[</span>i<span style="color: #904200;">]</span>.first &lt;&lt; <span style="color: #2544bb;">": "</span> &lt;&lt; stat<span style="color: #904200;">[</span>i<span style="color: #904200;">]</span>.second &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+        <span style="color: #005f88;">}</span>
+    <span style="color: #a8007f;">}</span>
 
-    <span style="color: #7388D6;">{</span>
-        <span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">pair</span><span style="color: #909183;">&lt;</span><span style="color: #6434A3;">int</span>, <span style="color: #6434A3;">int</span><span style="color: #909183;">&gt;</span> <span style="color: #BA36A5;">stat</span><span style="color: #909183;">[</span>musicCount<span style="color: #909183;">]</span>;
-        <span style="color: #0000FF;">for</span> <span style="color: #909183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span>=0; i&lt;musicCount; ++i<span style="color: #909183;">)</span> <span style="color: #909183;">{</span>
-            stat<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span>.first = i + 1;
-            stat<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span>.second = 0;
-        <span style="color: #909183;">}</span>
+    <span style="color: #a8007f;">{</span>
+        <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">pair</span><span style="color: #005f88;">&lt;</span><span style="color: #005a5f;">int</span>, <span style="color: #005a5f;">int</span><span style="color: #005f88;">&gt;</span> <span style="color: #00538b;">stat</span><span style="color: #005f88;">[</span>musicCount<span style="color: #005f88;">]</span>;
+        <span style="color: #5317ac;">for</span> <span style="color: #005f88;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span>=0; i&lt;musicCount; ++i<span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
+            stat<span style="color: #904200;">[</span>i<span style="color: #904200;">]</span>.first = i + 1;
+            stat<span style="color: #904200;">[</span>i<span style="color: #904200;">]</span>.second = 0;
+        <span style="color: #005f88;">}</span>
 
-        <span style="color: #6434A3;">unsigned</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">seeds</span> = time<span style="color: #909183;">(</span><span style="color: #D0372D;">NULL</span><span style="color: #909183;">)</span>;
-        <span style="color: #0000FF;">for</span> <span style="color: #909183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span>=0; i&lt;playTimes; ++i<span style="color: #909183;">)</span> <span style="color: #909183;">{</span>
-            srand<span style="color: #709870;">(</span>seeds++<span style="color: #709870;">)</span>;
-            stat<span style="color: #709870;">[</span>rand<span style="color: #907373;">()</span> % musicCount<span style="color: #709870;">]</span>.second++;
-        <span style="color: #909183;">}</span>
+        <span style="color: #005a5f;">unsigned</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">seeds</span> = time<span style="color: #005f88;">(</span><span style="color: #0000c0;">NULL</span><span style="color: #005f88;">)</span>;
+        <span style="color: #5317ac;">for</span> <span style="color: #005f88;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span>=0; i&lt;playTimes; ++i<span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
+            srand<span style="color: #904200;">(</span>seeds++<span style="color: #904200;">)</span>;
+            stat<span style="color: #904200;">[</span>rand<span style="color: #7f10d0;">()</span> % musicCount<span style="color: #904200;">]</span>.second++;
+        <span style="color: #005f88;">}</span>
 
-        sort<span style="color: #909183;">(</span>stat, stat+musicCount-1, statCompare<span style="color: #909183;">)</span>;
-        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"bigger differ: "</span> &lt;&lt; stat<span style="color: #909183;">[</span>0<span style="color: #909183;">]</span>.second - stat<span style="color: #909183;">[</span>musicCount-1<span style="color: #909183;">]</span>.second &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-        <span style="color: #0000FF;">for</span> <span style="color: #909183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span>=0; i&lt;musicCount; ++i<span style="color: #909183;">)</span> <span style="color: #909183;">{</span>
-            <span style="color: #D0372D;">std</span>::cout &lt;&lt; stat<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span>.first &lt;&lt; <span style="color: #008000;">": "</span> &lt;&lt; stat<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span>.second &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-        <span style="color: #909183;">}</span>
-    <span style="color: #7388D6;">}</span>
-    <span style="color: #0000FF;">return</span> 0;
-<span style="color: #707183;">}</span>
+        sort<span style="color: #005f88;">(</span>stat, stat+musicCount-1, statCompare<span style="color: #005f88;">)</span>;
+        <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"bigger differ: "</span> &lt;&lt; stat<span style="color: #005f88;">[</span>0<span style="color: #005f88;">]</span>.second - stat<span style="color: #005f88;">[</span>musicCount-1<span style="color: #005f88;">]</span>.second &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+        <span style="color: #5317ac;">for</span> <span style="color: #005f88;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span>=0; i&lt;musicCount; ++i<span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
+            <span style="color: #0000c0;">std</span>::cout &lt;&lt; stat<span style="color: #904200;">[</span>i<span style="color: #904200;">]</span>.first &lt;&lt; <span style="color: #2544bb;">": "</span> &lt;&lt; stat<span style="color: #904200;">[</span>i<span style="color: #904200;">]</span>.second &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+        <span style="color: #005f88;">}</span>
+    <span style="color: #a8007f;">}</span>
+    <span style="color: #5317ac;">return</span> 0;
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -398,25 +375,25 @@ CB看不到C语言rand的源代码（只能看到声明，看不到定义），�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #6434A3;">void</span> <span style="color: #006699;">__cdecl</span> srand <span style="color: #707183;">(</span><span style="color: #6434A3;">unsigned</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">seed</span><span style="color: #707183;">)</span>
-<span style="color: #707183;">{</span>
-<span style="color: #808080;">    #ifdef</span> _MT
-        _getptd<span style="color: #7388D6;">()</span>-&gt;_holdrand = <span style="color: #7388D6;">(</span><span style="color: #6434A3;">unsigned</span> <span style="color: #6434A3;">long</span><span style="color: #7388D6;">)</span>seed;
-<span style="color: #808080;">    #else</span> <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">_MT */</span>
-        holdrand = <span style="color: #7388D6;">(</span><span style="color: #6434A3;">long</span><span style="color: #7388D6;">)</span>seed;
-<span style="color: #808080;">    #endif</span> <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">_MT */</span>
-<span style="color: #707183;">}</span>
+<pre class="src src-cpp"><span style="color: #005a5f;">void</span> <span style="color: #721045;">__cdecl</span> srand <span style="color: #000000;">(</span><span style="color: #005a5f;">unsigned</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">seed</span><span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
+<span style="color: #a0132f;">    #ifdef</span> _MT
+        _getptd<span style="color: #a8007f;">()</span>-&gt;_holdrand = <span style="color: #a8007f;">(</span><span style="color: #005a5f;">unsigned</span> <span style="color: #005a5f;">long</span><span style="color: #a8007f;">)</span>seed;
+<span style="color: #a0132f;">    #else</span> <span style="color: #505050;">/* </span><span style="color: #505050;">_MT</span><span style="color: #505050;"> */</span>
+        holdrand = <span style="color: #a8007f;">(</span><span style="color: #005a5f;">long</span><span style="color: #a8007f;">)</span>seed;
+<span style="color: #a0132f;">    #endif</span> <span style="color: #505050;">/* </span><span style="color: #505050;">_MT</span><span style="color: #505050;"> */</span>
+<span style="color: #000000;">}</span>
 
-<span style="color: #6434A3;">int</span> <span style="color: #006699;">__cdecl</span> rand <span style="color: #707183;">(</span><span style="color: #6434A3;">void</span><span style="color: #707183;">)</span>
-<span style="color: #707183;">{</span>
-<span style="color: #808080;">   #ifdef</span> _MT
-    <span style="color: #6434A3;">_ptiddata</span> <span style="color: #BA36A5;">ptd</span> = _getptd<span style="color: #7388D6;">()</span>;
-    <span style="color: #0000FF;">return</span><span style="color: #7388D6;">(</span> <span style="color: #909183;">(</span><span style="color: #709870;">(</span>ptd-&gt;_holdrand = ptd-&gt;_holdrand * 214013L + 2531011L<span style="color: #709870;">)</span> &gt;&gt; 16<span style="color: #909183;">)</span> &amp;
-    0x7fff <span style="color: #7388D6;">)</span>;
-<span style="color: #808080;">   #else</span> <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">_MT */</span>
-    <span style="color: #0000FF;">return</span><span style="color: #7388D6;">(</span><span style="color: #909183;">(</span><span style="color: #709870;">(</span>holdrand = holdrand * 214013L + 2531011L<span style="color: #709870;">)</span> &gt;&gt; 16<span style="color: #909183;">)</span> &amp; 0x7fff<span style="color: #7388D6;">)</span>;
-<span style="color: #808080;">   #endif</span> <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">_MT */</span>
-<span style="color: #707183;">}</span>
+<span style="color: #005a5f;">int</span> <span style="color: #721045;">__cdecl</span> rand <span style="color: #000000;">(</span><span style="color: #005a5f;">void</span><span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
+<span style="color: #a0132f;">   #ifdef</span> _MT
+    <span style="color: #005a5f;">_ptiddata</span> <span style="color: #00538b;">ptd</span> = _getptd<span style="color: #a8007f;">()</span>;
+    <span style="color: #5317ac;">return</span><span style="color: #a8007f;">(</span> <span style="color: #005f88;">(</span><span style="color: #904200;">(</span>ptd-&gt;_holdrand = ptd-&gt;_holdrand * 214013L + 2531011L<span style="color: #904200;">)</span> &gt;&gt; 16<span style="color: #005f88;">)</span> &amp;
+    0x7fff <span style="color: #a8007f;">)</span>;
+<span style="color: #a0132f;">   #else</span> <span style="color: #505050;">/* </span><span style="color: #505050;">_MT</span><span style="color: #505050;"> */</span>
+    <span style="color: #5317ac;">return</span><span style="color: #a8007f;">(</span><span style="color: #005f88;">(</span><span style="color: #904200;">(</span>holdrand = holdrand * 214013L + 2531011L<span style="color: #904200;">)</span> &gt;&gt; 16<span style="color: #005f88;">)</span> &amp; 0x7fff<span style="color: #a8007f;">)</span>;
+<span style="color: #a0132f;">   #endif</span> <span style="color: #505050;">/* </span><span style="color: #505050;">_MT</span><span style="color: #505050;"> */</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -425,58 +402,58 @@ CB看不到C语言rand的源代码（只能看到声明，看不到定义），�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #8D8D84;">/*</span>
-<span style="color: #8D8D84; font-style: italic;"> * This file is part of the libpayload project.</span>
-<span style="color: #8D8D84; font-style: italic;"> *</span>
-<span style="color: #8D8D84; font-style: italic;"> * It was originally taken from the OpenBSD project.</span>
-<span style="color: #8D8D84; font-style: italic;"> *</span>
-<span style="color: #8D8D84; font-style: italic;"> * Copyright (c) 1990 The Regents of the University of California.</span>
-<span style="color: #8D8D84; font-style: italic;"> * All rights reserved.</span>
-<span style="color: #8D8D84; font-style: italic;"> *</span>
-<span style="color: #8D8D84; font-style: italic;"> * Redistribution and use in source and binary forms, with or without</span>
-<span style="color: #8D8D84; font-style: italic;"> * modification, are permitted provided that the following conditions</span>
-<span style="color: #8D8D84; font-style: italic;"> * are met:</span>
-<span style="color: #8D8D84; font-style: italic;"> * 1. Redistributions of source code must retain the above copyright</span>
-<span style="color: #8D8D84; font-style: italic;"> *    notice, this list of conditions and the following disclaimer.</span>
-<span style="color: #8D8D84; font-style: italic;"> * 2. Redistributions in binary form must reproduce the above copyright</span>
-<span style="color: #8D8D84; font-style: italic;"> *    notice, this list of conditions and the following disclaimer in the</span>
-<span style="color: #8D8D84; font-style: italic;"> *    documentation and/or other materials provided with the distribution.</span>
-<span style="color: #8D8D84; font-style: italic;"> * 3. Neither the name of the University nor the names of its contributors</span>
-<span style="color: #8D8D84; font-style: italic;"> *    may be used to endorse or promote products derived from this software</span>
-<span style="color: #8D8D84; font-style: italic;"> *    without specific prior written permission.</span>
-<span style="color: #8D8D84; font-style: italic;"> *</span>
-<span style="color: #8D8D84; font-style: italic;"> * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND</span>
-<span style="color: #8D8D84; font-style: italic;"> * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span>
-<span style="color: #8D8D84; font-style: italic;"> * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE</span>
-<span style="color: #8D8D84; font-style: italic;"> * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE</span>
-<span style="color: #8D8D84; font-style: italic;"> * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL</span>
-<span style="color: #8D8D84; font-style: italic;"> * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS</span>
-<span style="color: #8D8D84; font-style: italic;"> * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)</span>
-<span style="color: #8D8D84; font-style: italic;"> * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT</span>
-<span style="color: #8D8D84; font-style: italic;"> * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY</span>
-<span style="color: #8D8D84; font-style: italic;"> * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF</span>
-<span style="color: #8D8D84; font-style: italic;"> * SUCH DAMAGE.</span>
-<span style="color: #8D8D84; font-style: italic;"> */</span>
+<pre class="src src-cpp"><span style="color: #505050;">/*</span>
+<span style="color: #505050;"> * This file is part of the libpayload project.</span>
+<span style="color: #505050;"> *</span>
+<span style="color: #505050;"> * It was originally taken from the OpenBSD project.</span>
+<span style="color: #505050;"> *</span>
+<span style="color: #505050;"> * Copyright (c) 1990 The Regents of the University of California.</span>
+<span style="color: #505050;"> * All rights reserved.</span>
+<span style="color: #505050;"> *</span>
+<span style="color: #505050;"> * Redistribution and use in source and binary forms, with or without</span>
+<span style="color: #505050;"> * modification, are permitted provided that the following conditions</span>
+<span style="color: #505050;"> * are met:</span>
+<span style="color: #505050;"> * 1. Redistributions of source code must retain the above copyright</span>
+<span style="color: #505050;"> *    notice, this list of conditions and the following disclaimer.</span>
+<span style="color: #505050;"> * 2. Redistributions in binary form must reproduce the above copyright</span>
+<span style="color: #505050;"> *    notice, this list of conditions and the following disclaimer in the</span>
+<span style="color: #505050;"> *    documentation and/or other materials provided with the distribution.</span>
+<span style="color: #505050;"> * 3. Neither the name of the University nor the names of its contributors</span>
+<span style="color: #505050;"> *    may be used to endorse or promote products derived from this software</span>
+<span style="color: #505050;"> *    without specific prior written permission.</span>
+<span style="color: #505050;"> *</span>
+<span style="color: #505050;"> * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND</span>
+<span style="color: #505050;"> * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span>
+<span style="color: #505050;"> * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE</span>
+<span style="color: #505050;"> * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE</span>
+<span style="color: #505050;"> * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL</span>
+<span style="color: #505050;"> * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS</span>
+<span style="color: #505050;"> * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)</span>
+<span style="color: #505050;"> * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT</span>
+<span style="color: #505050;"> * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY</span>
+<span style="color: #505050;"> * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF</span>
+<span style="color: #505050;"> * SUCH DAMAGE.</span>
+<span style="color: #505050;"> */</span>
 
-<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">libpayload.h</span><span style="color: #707183;">&gt;</span>
+<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">libpayload.h</span><span style="color: #000000;">&gt;</span>
 
-<span style="color: #0000FF;">static</span> <span style="color: #6434A3;">unsigned</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">next</span> = 1;
+<span style="color: #5317ac;">static</span> <span style="color: #005a5f;">unsigned</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">next</span> = 1;
 
-<span style="color: #6434A3;">int</span> <span style="color: #006699;">rand_r</span><span style="color: #707183;">(</span><span style="color: #6434A3;">unsigned</span> <span style="color: #6434A3;">int</span> *<span style="color: #BA36A5;">seed</span><span style="color: #707183;">)</span>
-<span style="color: #707183;">{</span>
+<span style="color: #005a5f;">int</span> <span style="color: #721045;">rand_r</span><span style="color: #000000;">(</span><span style="color: #005a5f;">unsigned</span> <span style="color: #005a5f;">int</span> *<span style="color: #00538b;">seed</span><span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
     *seed = *seed * 1103515245 + 12345;
-    <span style="color: #0000FF;">return</span> <span style="color: #7388D6;">(</span>*seed % <span style="color: #909183;">(</span><span style="color: #709870;">(</span><span style="color: #6434A3;">unsigned</span> <span style="color: #6434A3;">int</span><span style="color: #709870;">)</span>RAND_MAX + 1<span style="color: #909183;">)</span><span style="color: #7388D6;">)</span>;
-<span style="color: #707183;">}</span>
+    <span style="color: #5317ac;">return</span> <span style="color: #a8007f;">(</span>*seed % <span style="color: #005f88;">(</span><span style="color: #904200;">(</span><span style="color: #005a5f;">unsigned</span> <span style="color: #005a5f;">int</span><span style="color: #904200;">)</span>RAND_MAX + 1<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>;
+<span style="color: #000000;">}</span>
 
-<span style="color: #6434A3;">int</span> <span style="color: #006699;">rand</span><span style="color: #707183;">(</span><span style="color: #6434A3;">void</span><span style="color: #707183;">)</span>
-<span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">return</span> <span style="color: #7388D6;">(</span>rand_r<span style="color: #909183;">(</span>&amp;next<span style="color: #909183;">)</span><span style="color: #7388D6;">)</span>;
-<span style="color: #707183;">}</span>
+<span style="color: #005a5f;">int</span> <span style="color: #721045;">rand</span><span style="color: #000000;">(</span><span style="color: #005a5f;">void</span><span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">return</span> <span style="color: #a8007f;">(</span>rand_r<span style="color: #005f88;">(</span>&amp;next<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>;
+<span style="color: #000000;">}</span>
 
-<span style="color: #6434A3;">void</span> <span style="color: #006699;">srand</span><span style="color: #707183;">(</span><span style="color: #6434A3;">unsigned</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">seed</span><span style="color: #707183;">)</span>
-<span style="color: #707183;">{</span>
+<span style="color: #005a5f;">void</span> <span style="color: #721045;">srand</span><span style="color: #000000;">(</span><span style="color: #005a5f;">unsigned</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">seed</span><span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
     next = seed;
-<span style="color: #707183;">}</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -485,7 +462,7 @@ CB看不到C语言rand的源代码（只能看到声明，看不到定义），�
 </p>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2013-03-05 13:23:28 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2013-03-05 13:23:28 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

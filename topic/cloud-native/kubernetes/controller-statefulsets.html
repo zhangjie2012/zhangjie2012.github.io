@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-01-05 Tue 10:25 -->
+<!-- 2021-11-22 Mon 16:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - StatefulSet</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,9 +193,8 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -220,28 +217,32 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Kubernetes - StatefulSet</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgcf073a9">1. 应用场景</a></li>
-<li><a href="#org5f76141">2. 局限性</a></li>
-<li><a href="#org18c71c7">3. 组件</a></li>
-<li><a href="#org1b8c8db">4. Pod Selector</a></li>
-<li><a href="#org9db1fa8">5. Pod ID</a>
+<li><a href="#orgec2c1b5">1. 应用场景</a></li>
+<li><a href="#org63dc9e8">2. 局限性</a></li>
+<li><a href="#orgd037522">3. 组件</a></li>
+<li><a href="#org66ae24f">4. Pod Selector</a></li>
+<li><a href="#orgd194d14">5. Pod ID</a>
 <ul>
-<li><a href="#orgcbcdd6d">5.1. 有序索引</a></li>
-<li><a href="#orgd2dfa09">5.2. 稳定的网络 ID</a></li>
-<li><a href="#org605956c">5.3. 稳定的存储</a></li>
-<li><a href="#org1c106be">5.4. Pod Name Label</a></li>
+<li><a href="#org0c853c2">5.1. 有序索引</a></li>
+<li><a href="#org148f6e4">5.2. 稳定的网络 ID</a></li>
+<li><a href="#orgdf4f909">5.3. 稳定的存储</a></li>
+<li><a href="#orgcaa37ca">5.4. Pod Name Label</a></li>
 </ul>
 </li>
-<li><a href="#orgfc755b9">6. 部署和扩展保证</a>
+<li><a href="#org76e8f3c">6. 部署和扩展保证</a>
 <ul>
-<li><a href="#org4fae428">6.1. Pod 管理方针</a></li>
-<li><a href="#org9a9ab33">6.2. 更新策略</a></li>
+<li><a href="#orgd95843a">6.1. Pod 管理方针</a></li>
+<li><a href="#org7e55ff3">6.2. 更新策略</a></li>
 </ul>
 </li>
 </ul>
@@ -255,8 +256,8 @@ Deployment 和 ReplicaSet 是针对无状态服务部署的；与此对应，Sta
 StatefulSet 管理一组 Pod 的部署和扩展，并保证 Pod 有序和名称唯一性。
 </p>
 
-<div id="outline-container-orgcf073a9" class="outline-2">
-<h2 id="orgcf073a9"><span class="section-number-2">1</span> 应用场景</h2>
+<div id="outline-container-orgec2c1b5" class="outline-2">
+<h2 id="orgec2c1b5"><span class="section-number-2">1.</span> 应用场景</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>稳定，唯一的网络标识符</li>
@@ -272,8 +273,8 @@ StatefulSet 管理一组 Pod 的部署和扩展，并保证 Pod 有序和名称�
 </div>
 </div>
 
-<div id="outline-container-org5f76141" class="outline-2">
-<h2 id="org5f76141"><span class="section-number-2">2</span> 局限性</h2>
+<div id="outline-container-org63dc9e8" class="outline-2">
+<h2 id="org63dc9e8"><span class="section-number-2">2.</span> 局限性</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>Pod 给定的存储必须是根据要求 <code>storage class</code> 由 PersistentVolumen Provisioner 提供的，或者是管理员预先设置好的。</li>
@@ -286,62 +287,62 @@ StatefulSet 管理一组 Pod 的部署和扩展，并保证 Pod 有序和名称�
 </div>
 </div>
 
-<div id="outline-container-org18c71c7" class="outline-2">
-<h2 id="org18c71c7"><span class="section-number-2">3</span> 组件</h2>
+<div id="outline-container-orgd037522" class="outline-2">
+<h2 id="orgd037522"><span class="section-number-2">3.</span> 组件</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 下面的例子展示了 StatefulSet 组件：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml"><span style="color: #BA36A5;">apiVersion</span>: v1
-<span style="color: #BA36A5;">kind</span>: Service
-<span style="color: #BA36A5;">metadata</span>:
-  <span style="color: #BA36A5;">name</span>: nginx
-  <span style="color: #BA36A5;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app</span>: nginx
-<span style="color: #BA36A5;">spec</span>:
-  <span style="color: #BA36A5;">ports</span>:
-  - <span style="color: #BA36A5;">port</span>: 80
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">name</span>: web
-  <span style="color: #BA36A5;">clusterIP</span>: None
-  <span style="color: #BA36A5;">selector</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">app</span>: nginx
-<span style="color: #8D8D84; font-style: italic;">---</span>
-<span style="color: #BA36A5;">apiVersion</span>: apps/v1
-<span style="color: #BA36A5;">kind</span>: StatefulSet
-<span style="color: #BA36A5;">metadata</span>:
-  <span style="color: #BA36A5;">name</span>: web
-<span style="color: #BA36A5;">spec</span>:
-  <span style="color: #BA36A5;">selector</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">matchLabels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  app</span>: nginx <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">has to match .spec.template.metadata.labels</span>
-  <span style="color: #BA36A5;">serviceName</span>: <span style="color: #008000;">"nginx"</span>
-  <span style="color: #BA36A5;">replicas</span>: 3 <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">by default is 1</span>
-  <span style="color: #BA36A5;">template</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">metadata</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">app</span>: nginx <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">has to match .spec.selector.matchLabels</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">spec</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  terminationGracePeriodSeconds</span>: 10
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  containers</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  - name</span>: nginx
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">image</span>: k8s.gcr.io/nginx-slim:0.8
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">ports</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">- containerPort</span>: 80
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  name</span>: web
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">volumeMounts</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">- name</span>: www
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  mountPath</span>: /usr/share/nginx/html
-  <span style="color: #BA36A5;">volumeClaimTemplates</span>:
-  - <span style="color: #BA36A5;">metadata</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  name</span>: www
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">spec</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  accessModes</span>: [ <span style="color: #008000;">"ReadWriteOnce"</span> ]
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  storageClassName</span>: <span style="color: #008000;">"my-storage-class"</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #BA36A5;">  resources</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">requests</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #BA36A5;">  storage</span>: 1Gi
+<pre class="src src-yaml"><span style="color: #00538b;">apiVersion</span>: v1
+<span style="color: #00538b;">kind</span>: Service
+<span style="color: #00538b;">metadata</span>:
+  <span style="color: #00538b;">name</span>: nginx
+  <span style="color: #00538b;">labels</span>:
+    <span style="color: #00538b;">app</span>: nginx
+<span style="color: #00538b;">spec</span>:
+  <span style="color: #00538b;">ports</span>:
+  - <span style="color: #00538b;">port</span>: 80
+    <span style="color: #00538b;">name</span>: web
+  <span style="color: #00538b;">clusterIP</span>: None
+  <span style="color: #00538b;">selector</span>:
+    <span style="color: #00538b;">app</span>: nginx
+<span style="color: #505050;">---</span>
+<span style="color: #00538b;">apiVersion</span>: apps/v1
+<span style="color: #00538b;">kind</span>: StatefulSet
+<span style="color: #00538b;">metadata</span>:
+  <span style="color: #00538b;">name</span>: web
+<span style="color: #00538b;">spec</span>:
+  <span style="color: #00538b;">selector</span>:
+    <span style="color: #00538b;">matchLabels</span>:
+      <span style="color: #00538b;">app</span>: nginx <span style="color: #505050;"># </span><span style="color: #505050;">has to match .spec.template.metadata.labels</span>
+  <span style="color: #00538b;">serviceName</span>: <span style="color: #2544bb;">"nginx"</span>
+  <span style="color: #00538b;">replicas</span>: 3 <span style="color: #505050;"># </span><span style="color: #505050;">by default is 1</span>
+  <span style="color: #00538b;">template</span>:
+    <span style="color: #00538b;">metadata</span>:
+      <span style="color: #00538b;">labels</span>:
+        <span style="color: #00538b;">app</span>: nginx <span style="color: #505050;"># </span><span style="color: #505050;">has to match .spec.selector.matchLabels</span>
+    <span style="color: #00538b;">spec</span>:
+      <span style="color: #00538b;">terminationGracePeriodSeconds</span>: 10
+      <span style="color: #00538b;">containers</span>:
+      - <span style="color: #00538b;">name</span>: nginx
+        <span style="color: #00538b;">image</span>: k8s.gcr.io/nginx-slim:0.8
+        <span style="color: #00538b;">ports</span>:
+        - <span style="color: #00538b;">containerPort</span>: 80
+          <span style="color: #00538b;">name</span>: web
+        <span style="color: #00538b;">volumeMounts</span>:
+        - <span style="color: #00538b;">name</span>: www
+          <span style="color: #00538b;">mountPath</span>: /usr/share/nginx/html
+  <span style="color: #00538b;">volumeClaimTemplates</span>:
+  - <span style="color: #00538b;">metadata</span>:
+      <span style="color: #00538b;">name</span>: www
+    <span style="color: #00538b;">spec</span>:
+      <span style="color: #00538b;">accessModes</span>: [ <span style="color: #2544bb;">"ReadWriteOnce"</span> ]
+      <span style="color: #00538b;">storageClassName</span>: <span style="color: #2544bb;">"my-storage-class"</span>
+      <span style="color: #00538b;">resources</span>:
+        <span style="color: #00538b;">requests</span>:
+          <span style="color: #00538b;">storage</span>: 1Gi
 </pre>
 </div>
 
@@ -357,8 +358,8 @@ StatefulSet 管理一组 Pod 的部署和扩展，并保证 Pod 有序和名称�
 </div>
 </div>
 
-<div id="outline-container-org1b8c8db" class="outline-2">
-<h2 id="org1b8c8db"><span class="section-number-2">4</span> Pod Selector</h2>
+<div id="outline-container-org66ae24f" class="outline-2">
+<h2 id="org66ae24f"><span class="section-number-2">4.</span> Pod Selector</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 必须设置 <code>.spec.selector</code> 字段以匹配 <code>.spec.template.metadata.labels</code> 标签。
@@ -371,16 +372,16 @@ StatefulSet 管理一组 Pod 的部署和扩展，并保证 Pod 有序和名称�
 </div>
 </div>
 
-<div id="outline-container-org9db1fa8" class="outline-2">
-<h2 id="org9db1fa8"><span class="section-number-2">5</span> Pod ID</h2>
+<div id="outline-container-orgd194d14" class="outline-2">
+<h2 id="orgd194d14"><span class="section-number-2">5.</span> Pod ID</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 StatefulSet Pod 由唯一的身份：不变的序号，稳定的网络 ID 和稳定的存储组成。身份与 Pod 绑定，无论被（重新）调度在哪个节点上。
 </p>
 </div>
 
-<div id="outline-container-orgcbcdd6d" class="outline-3">
-<h3 id="orgcbcdd6d"><span class="section-number-3">5.1</span> 有序索引</h3>
+<div id="outline-container-org0c853c2" class="outline-3">
+<h3 id="org0c853c2"><span class="section-number-3">5.1.</span> 有序索引</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 N 个副本的 StatefulSet，Pod 的编号从 0 到 N-1。如果 StatefulSet 的名字是 <code>nginx</code> ，那么 Pod 名字为 <code>nginx-0</code> <code>nginx-1</code> 以此类推。
@@ -388,8 +389,8 @@ N 个副本的 StatefulSet，Pod 的编号从 0 到 N-1。如果 StatefulSet 的
 </div>
 </div>
 
-<div id="outline-container-orgd2dfa09" class="outline-3">
-<h3 id="orgd2dfa09"><span class="section-number-3">5.2</span> 稳定的网络 ID</h3>
+<div id="outline-container-org148f6e4" class="outline-3">
+<h3 id="org148f6e4"><span class="section-number-3">5.2.</span> 稳定的网络 ID</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 主机名的构造方法为 <code>$(statefulset name)-$(ordinal)</code> 。比如 <code>web-1, web-2, web-3</code> 。
@@ -469,8 +470,8 @@ Headless Service 控制 Pod 域，此服务管理的域才用以下形式： <co
 </div>
 </div>
 
-<div id="outline-container-org605956c" class="outline-3">
-<h3 id="org605956c"><span class="section-number-3">5.3</span> 稳定的存储</h3>
+<div id="outline-container-orgdf4f909" class="outline-3">
+<h3 id="orgdf4f909"><span class="section-number-3">5.3.</span> 稳定的存储</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 Kubernetes 为每个 VolumeClaimTemplate 创建一个 PersistentVolume。
@@ -481,8 +482,8 @@ Kubernetes 为每个 VolumeClaimTemplate 创建一个 PersistentVolume。
 </div>
 </div>
 
-<div id="outline-container-org1c106be" class="outline-3">
-<h3 id="org1c106be"><span class="section-number-3">5.4</span> Pod Name Label</h3>
+<div id="outline-container-orgcaa37ca" class="outline-3">
+<h3 id="orgcaa37ca"><span class="section-number-3">5.4.</span> Pod Name Label</h3>
 <div class="outline-text-3" id="text-5-4">
 <p>
 StatefulSet 控制器创建 Pod 时，会添加一个标签： <code>statefulset.kubernetes.io/pod-name</code> ，值是 Pod 名称。
@@ -491,8 +492,8 @@ StatefulSet 控制器创建 Pod 时，会添加一个标签： <code>statefulset
 </div>
 </div>
 
-<div id="outline-container-orgfc755b9" class="outline-2">
-<h2 id="orgfc755b9"><span class="section-number-2">6</span> 部署和扩展保证</h2>
+<div id="outline-container-org76e8f3c" class="outline-2">
+<h2 id="org76e8f3c"><span class="section-number-2">6.</span> 部署和扩展保证</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>部署时，按照 Pod 的序号依次创建，{0..N-1}</li>
@@ -506,8 +507,8 @@ StatefulSet 不应该 <code>pod.Spec.TerminationGracePeriodSeconds</code> 为 0�
 </p>
 </div>
 
-<div id="outline-container-org4fae428" class="outline-3">
-<h3 id="org4fae428"><span class="section-number-3">6.1</span> Pod 管理方针</h3>
+<div id="outline-container-orgd95843a" class="outline-3">
+<h3 id="orgd95843a"><span class="section-number-3">6.1.</span> Pod 管理方针</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 Kubernetes 1.7 及之后的版本，StatefulSet 通过 <code>.spec.podManagementPolicy</code> 字段允许你放宽顺序保证，同时又保留唯一性和身份保证。
@@ -520,8 +521,8 @@ Kubernetes 1.7 及之后的版本，StatefulSet 通过 <code>.spec.podManagement
 </div>
 </div>
 
-<div id="outline-container-org9a9ab33" class="outline-3">
-<h3 id="org9a9ab33"><span class="section-number-3">6.2</span> 更新策略</h3>
+<div id="outline-container-org7e55ff3" class="outline-3">
+<h3 id="org7e55ff3"><span class="section-number-3">6.2.</span> 更新策略</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 Kubernetes 1.7 及之后的版本，StatefulSet 的 <code>.spec.updateStrategy</code> 字段允许你配置或者禁掉自动滚动更新
@@ -546,7 +547,7 @@ Kubernetes 1.7 及之后的版本，StatefulSet 的 <code>.spec.updateStrategy</
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-08 11:48:30 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.2)</p>
+<p class="postamble">First created: 2020-04-08 11:48:30 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

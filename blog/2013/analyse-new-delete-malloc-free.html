@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2021-11-22 Mon 16:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>再谈 new/delete/malloc/free</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">再谈 new/delete/malloc/free</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -264,8 +241,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgbd247b8" class="outline-2">
-<h2 id="缘由"><span class="section-number-2">1</span> 缘由</h2>
+<div id="outline-container-缘由" class="outline-2">
+<h2 id="缘由"><span class="section-number-2">1.</span> 缘由</h2>
 <div class="outline-text-2" id="text-缘由">
 <p>
 从一开始搞 <code>C/C++</code> 的时候，一直在时不时的探究 <code>new/delete &amp;&amp; malloc/free</code> 几者之间的关系。没有一本书确切的，深入的探讨它们的具体机制。
@@ -365,52 +342,52 @@ for invoking the destructor(s) of the allocated objects.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #0000FF;">class</span> <span style="color: #6434A3;">data_stream</span>
-<span style="color: #707183;">{</span>
-<span style="color: #0000FF;">public</span>:
+<pre class="src src-cpp"><span style="color: #5317ac;">class</span> <span style="color: #005a5f;">data_stream</span>
+<span style="color: #000000;">{</span>
+<span style="color: #5317ac;">public</span>:
 
-     <span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-         c_ = <span style="color: #008000;">'a'</span>;
+     <span style="color: #721045;">data_stream</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+         c_ = <span style="color: #2544bb;">'a'</span>;
          i_ = 0;
          f_ = 0.0f;
          d_ = 0.0;
-     <span style="color: #7388D6;">}</span>
+     <span style="color: #a8007f;">}</span>
 
-     ~<span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-     <span style="color: #7388D6;">}</span>
+     ~<span style="color: #721045;">data_stream</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+     <span style="color: #a8007f;">}</span>
 
- <span style="color: #0000FF;">private</span>:
-     <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">c_</span>;
-     <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i_</span>;
-     <span style="color: #6434A3;">float</span> <span style="color: #BA36A5;">f_</span>;
-     <span style="color: #6434A3;">double</span> <span style="color: #BA36A5;">d_</span>;
- <span style="color: #707183;">}</span>;
+ <span style="color: #5317ac;">private</span>:
+     <span style="color: #005a5f;">char</span> <span style="color: #00538b;">c_</span>;
+     <span style="color: #005a5f;">int</span> <span style="color: #00538b;">i_</span>;
+     <span style="color: #005a5f;">float</span> <span style="color: #00538b;">f_</span>;
+     <span style="color: #005a5f;">double</span> <span style="color: #00538b;">d_</span>;
+ <span style="color: #000000;">}</span>;
 
- <span style="color: #0000FF;">class</span> <span style="color: #6434A3;">stream_buffer</span>
- <span style="color: #707183;">{</span>
- <span style="color: #0000FF;">public</span>:
-     <span style="color: #006699;">stream_buffer</span><span style="color: #7388D6;">(</span><span style="color: #6434A3;">char</span> * <span style="color: #BA36A5;">buffer</span><span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span>
+ <span style="color: #5317ac;">class</span> <span style="color: #005a5f;">stream_buffer</span>
+ <span style="color: #000000;">{</span>
+ <span style="color: #5317ac;">public</span>:
+     <span style="color: #721045;">stream_buffer</span><span style="color: #a8007f;">(</span><span style="color: #005a5f;">char</span> * <span style="color: #00538b;">buffer</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
          buffer_ = buffer;
-     <span style="color: #7388D6;">}</span>
+     <span style="color: #a8007f;">}</span>
 
-     ~<span style="color: #006699;">stream_buffer</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-         <span style="color: #0000FF;">if</span> <span style="color: #909183;">(</span>buffer_<span style="color: #909183;">)</span> <span style="color: #909183;">{</span>
-             <span style="color: #0000FF;">delete</span> <span style="color: #709870;">[]</span> buffer_;
-         <span style="color: #909183;">}</span>
-     <span style="color: #7388D6;">}</span>
+     ~<span style="color: #721045;">stream_buffer</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+         <span style="color: #5317ac;">if</span> <span style="color: #005f88;">(</span>buffer_<span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
+             <span style="color: #5317ac;">delete</span> <span style="color: #904200;">[]</span> buffer_;
+         <span style="color: #005f88;">}</span>
+     <span style="color: #a8007f;">}</span>
 
- <span style="color: #0000FF;">private</span>:
-     <span style="color: #6434A3;">char</span> *<span style="color: #BA36A5;">buffer_</span>;
- <span style="color: #707183;">}</span>;
+ <span style="color: #5317ac;">private</span>:
+     <span style="color: #005a5f;">char</span> *<span style="color: #00538b;">buffer_</span>;
+ <span style="color: #000000;">}</span>;
 
 
- <span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
- <span style="color: #707183;">{</span>
-     <span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">data_stream</span><span style="color: #7388D6;">()</span>;
-     <span style="color: #6434A3;">stream_buffer</span> <span style="color: #BA36A5;">sb</span><span style="color: #7388D6;">(</span><span style="color: #0000FF;">reinterpret_cast</span><span style="color: #909183;">&lt;</span><span style="color: #6434A3;">char</span>*<span style="color: #909183;">&gt;(</span>ds<span style="color: #909183;">)</span><span style="color: #7388D6;">)</span>;
+ <span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span>
+ <span style="color: #000000;">{</span>
+     <span style="color: #005a5f;">data_stream</span> *<span style="color: #00538b;">ds</span> = <span style="color: #5317ac;">new</span> <span style="color: #005a5f;">data_stream</span><span style="color: #a8007f;">()</span>;
+     <span style="color: #005a5f;">stream_buffer</span> <span style="color: #00538b;">sb</span><span style="color: #a8007f;">(</span><span style="color: #5317ac;">reinterpret_cast</span><span style="color: #005f88;">&lt;</span><span style="color: #005a5f;">char</span>*<span style="color: #005f88;">&gt;(</span>ds<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>;
 
-     <span style="color: #0000FF;">return</span> 0;
- <span style="color: #707183;">}</span>
+     <span style="color: #5317ac;">return</span> 0;
+ <span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -426,15 +403,15 @@ for invoking the destructor(s) of the allocated objects.
 </div>
 </div>
 
-<div id="outline-container-orge71f801" class="outline-2">
-<h2 id="newdeletemallocfree-基本知识"><span class="section-number-2">2</span> new/delete/malloc/free 基本知识</h2>
+<div id="outline-container-newdeletemallocfree-基本知识" class="outline-2">
+<h2 id="newdeletemallocfree-基本知识"><span class="section-number-2">2.</span> new/delete/malloc/free 基本知识</h2>
 <div class="outline-text-2" id="text-newdeletemallocfree-基本知识">
 <p>
 <b>new/delete 流程</b>
 </p>
 
 <ol class="org-ol">
-<li>operator new (size_t size)</li>
+<li>operator new (size<sub>t</sub> size)</li>
 <li>malloc(size)</li>
 <li>new operator 构造函数</li>
 <li>返回指针</li>
@@ -445,44 +422,44 @@ delete 与之相似，先调用该对象的析构函数，然后调用 free 来�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #6434A3;">void</span>* <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">new</span><span style="color: #707183;">(</span><span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">size</span><span style="color: #707183;">)</span> <span style="color: #0000FF;">throw</span><span style="color: #707183;">(</span><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">bad_alloc</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in operator new | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-    <span style="color: #6434A3;">void</span> * <span style="color: #BA36A5;">p</span> = malloc<span style="color: #7388D6;">(</span>size<span style="color: #7388D6;">)</span>;
+<pre class="src src-cpp"><span style="color: #005a5f;">void</span>* <span style="color: #5317ac;">operator</span> <span style="color: #5317ac;">new</span><span style="color: #000000;">(</span><span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">size</span><span style="color: #000000;">)</span> <span style="color: #5317ac;">throw</span><span style="color: #000000;">(</span><span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">bad_alloc</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"in operator new | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #005a5f;">void</span> * <span style="color: #00538b;">p</span> = malloc<span style="color: #a8007f;">(</span>size<span style="color: #a8007f;">)</span>;
 
-    <span style="color: #0000FF;">return</span> p;
-<span style="color: #707183;">}</span>
+    <span style="color: #5317ac;">return</span> p;
+<span style="color: #000000;">}</span>
 
-<span style="color: #6434A3;">void</span> <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">delete</span><span style="color: #707183;">(</span><span style="color: #6434A3;">void</span> *<span style="color: #BA36A5;">pointer</span><span style="color: #707183;">)</span>
-<span style="color: #707183;">{</span>
-    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"operator delete "</span> &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-    free<span style="color: #7388D6;">(</span>pointer<span style="color: #7388D6;">)</span>;
-<span style="color: #707183;">}</span>
+<span style="color: #005a5f;">void</span> <span style="color: #5317ac;">operator</span> <span style="color: #5317ac;">delete</span><span style="color: #000000;">(</span><span style="color: #005a5f;">void</span> *<span style="color: #00538b;">pointer</span><span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
+    <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"operator delete "</span> &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+    free<span style="color: #a8007f;">(</span>pointer<span style="color: #a8007f;">)</span>;
+<span style="color: #000000;">}</span>
 
-<span style="color: #0000FF;">class</span> <span style="color: #6434A3;">data_stream</span>
-<span style="color: #707183;">{</span>
-<span style="color: #0000FF;">public</span>:
-    <span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream ctor"</span> &lt;&lt;  <span style="color: #D0372D;">std</span>::endl;
-    <span style="color: #7388D6;">}</span>
+<span style="color: #5317ac;">class</span> <span style="color: #005a5f;">data_stream</span>
+<span style="color: #000000;">{</span>
+<span style="color: #5317ac;">public</span>:
+    <span style="color: #721045;">data_stream</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"in data_stream ctor"</span> &lt;&lt;  <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #a8007f;">}</span>
 
-    ~<span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream dtor "</span> &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-    <span style="color: #7388D6;">}</span>
+    ~<span style="color: #721045;">data_stream</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"in data_stream dtor "</span> &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #a8007f;">}</span>
 
-<span style="color: #0000FF;">private</span>:
-    <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">c_</span>;
-    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i_</span>;
-    <span style="color: #6434A3;">float</span> <span style="color: #BA36A5;">f_</span>;
-    <span style="color: #6434A3;">double</span> <span style="color: #BA36A5;">d_</span>;
-<span style="color: #707183;">}</span>;
+<span style="color: #5317ac;">private</span>:
+    <span style="color: #005a5f;">char</span> <span style="color: #00538b;">c_</span>;
+    <span style="color: #005a5f;">int</span> <span style="color: #00538b;">i_</span>;
+    <span style="color: #005a5f;">float</span> <span style="color: #00538b;">f_</span>;
+    <span style="color: #005a5f;">double</span> <span style="color: #00538b;">d_</span>;
+<span style="color: #000000;">}</span>;
 
-<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
-<span style="color: #707183;">{</span>
-    <span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">data_stream</span><span style="color: #7388D6;">()</span>;
-    <span style="color: #0000FF;">delete</span> ds;
+<span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span>
+<span style="color: #000000;">{</span>
+    <span style="color: #005a5f;">data_stream</span> *<span style="color: #00538b;">ds</span> = <span style="color: #5317ac;">new</span> <span style="color: #005a5f;">data_stream</span><span style="color: #a8007f;">()</span>;
+    <span style="color: #5317ac;">delete</span> ds;
 
-    <span style="color: #0000FF;">return</span> 0;
-<span style="color: #707183;">}</span>
+    <span style="color: #5317ac;">return</span> 0;
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -502,9 +479,9 @@ operator delete
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #6434A3;">void</span> *<span style="color: #BA36A5;">p</span> = malloc<span style="color: #707183;">(</span><span style="color: #0000FF;">sizeof</span><span style="color: #7388D6;">(</span>data_stream<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>;
-<span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds</span>  = <span style="color: #0000FF;">new</span><span style="color: #707183;">(</span>p<span style="color: #707183;">)</span> <span style="color: #6434A3;">data_stream</span><span style="color: #707183;">()</span>;
-<span style="color: #0000FF;">delete</span> ds;
+<pre class="src src-cpp"><span style="color: #005a5f;">void</span> *<span style="color: #00538b;">p</span> = malloc<span style="color: #000000;">(</span><span style="color: #5317ac;">sizeof</span><span style="color: #a8007f;">(</span>data_stream<span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>;
+<span style="color: #005a5f;">data_stream</span> *<span style="color: #00538b;">ds</span>  = <span style="color: #5317ac;">new</span><span style="color: #000000;">(</span>p<span style="color: #000000;">)</span> <span style="color: #005a5f;">data_stream</span><span style="color: #000000;">()</span>;
+<span style="color: #5317ac;">delete</span> ds;
 </pre>
 </div>
 
@@ -513,9 +490,9 @@ operator delete
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">buff</span><span style="color: #707183;">[</span><span style="color: #0000FF;">sizeof</span><span style="color: #7388D6;">(</span>data_stream<span style="color: #7388D6;">)</span><span style="color: #707183;">]</span>;
-<span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds</span> = <span style="color: #0000FF;">new</span><span style="color: #707183;">(</span>buff<span style="color: #707183;">)</span> <span style="color: #6434A3;">data_stream</span><span style="color: #707183;">()</span>;
-ds-&gt;~data_stream<span style="color: #707183;">()</span>;
+<pre class="src src-cpp"><span style="color: #005a5f;">char</span> <span style="color: #00538b;">buff</span><span style="color: #000000;">[</span><span style="color: #5317ac;">sizeof</span><span style="color: #a8007f;">(</span>data_stream<span style="color: #a8007f;">)</span><span style="color: #000000;">]</span>;
+<span style="color: #005a5f;">data_stream</span> *<span style="color: #00538b;">ds</span> = <span style="color: #5317ac;">new</span><span style="color: #000000;">(</span>buff<span style="color: #000000;">)</span> <span style="color: #005a5f;">data_stream</span><span style="color: #000000;">()</span>;
+ds-&gt;~data_stream<span style="color: #000000;">()</span>;
 </pre>
 </div>
 
@@ -539,52 +516,52 @@ delete[] 与之相似，先分别调用每个数组对象的析构函数，然�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #6434A3;">void</span>* <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">new</span><span style="color: #707183;">(</span><span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">size</span><span style="color: #707183;">)</span> <span style="color: #0000FF;">throw</span><span style="color: #707183;">(</span><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">bad_alloc</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in operator new | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-    <span style="color: #6434A3;">void</span> * <span style="color: #BA36A5;">p</span> = malloc<span style="color: #7388D6;">(</span>size<span style="color: #7388D6;">)</span>;
+<pre class="src src-cpp"><span style="color: #005a5f;">void</span>* <span style="color: #5317ac;">operator</span> <span style="color: #5317ac;">new</span><span style="color: #000000;">(</span><span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">size</span><span style="color: #000000;">)</span> <span style="color: #5317ac;">throw</span><span style="color: #000000;">(</span><span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">bad_alloc</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"in operator new | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #005a5f;">void</span> * <span style="color: #00538b;">p</span> = malloc<span style="color: #a8007f;">(</span>size<span style="color: #a8007f;">)</span>;
 
-    <span style="color: #0000FF;">return</span> p;
-<span style="color: #707183;">}</span>
+    <span style="color: #5317ac;">return</span> p;
+<span style="color: #000000;">}</span>
 
-<span style="color: #6434A3;">void</span>* <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">new</span><span style="color: #707183;">[](</span><span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">size</span><span style="color: #707183;">)</span> <span style="color: #0000FF;">throw</span><span style="color: #707183;">(</span><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">bad_alloc</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #ff0000;">"</span><span style="color: #008000;">in operator new[] | alloc size: &lt;&lt; size &lt;&lt; std::endl;</span>
-<span style="color: #008000;">    void * p = malloc(size);</span>
+<span style="color: #005a5f;">void</span>* <span style="color: #5317ac;">operator</span> <span style="color: #5317ac;">new</span><span style="color: #000000;">[](</span><span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">size</span><span style="color: #000000;">)</span> <span style="color: #5317ac;">throw</span><span style="color: #000000;">(</span><span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">bad_alloc</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #702f00;">"</span><span style="color: #2544bb;">in operator new[] | alloc size: &lt;&lt; size &lt;&lt; std::endl;</span>
+    <span style="color: #005a5f;">void</span> * p = malloc<span style="color: #a8007f;">(</span>size<span style="color: #a8007f;">)</span>;
 
-<span style="color: #008000;">    return p;</span>
-<span style="color: #008000;">}</span>
+    <span style="color: #5317ac;">return</span> p;
+<span style="color: #000000;">}</span>
 
-<span style="color: #008000;">void operator delete(void *pointer)</span>
-<span style="color: #008000;">{</span>
-<span style="color: #008000;">    std::cout &lt;&lt; "</span><span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">delete</span> <span style="color: #ff0000;">"</span><span style="color: #008000;"> &lt;&lt;  std::endl;</span>
-<span style="color: #008000;">    free(pointer);</span>
-<span style="color: #008000;">}</span>
+<span style="color: #005a5f;">void</span> <span style="color: #5317ac;">operator</span> <span style="color: #5317ac;">delete</span><span style="color: #000000;">(</span><span style="color: #005a5f;">void</span> *<span style="color: #00538b;">pointer</span><span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
+    <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"operator delete "</span> &lt;&lt;  <span style="color: #0000c0;">std</span>::endl;
+    free<span style="color: #a8007f;">(</span>pointer<span style="color: #a8007f;">)</span>;
+<span style="color: #000000;">}</span>
 
-<span style="color: #008000;">void operator delete[](void *pointer)</span>
-<span style="color: #008000;">{</span>
-<span style="color: #008000;">    std::cout &lt;&lt; "</span><span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">delete</span><span style="color: #7388D6;">[]</span> <span style="color: #ff0000;">"</span><span style="color: #008000;"> &lt;&lt; std::endl;</span>
-<span style="color: #008000;">    free(pointer);</span>
-<span style="color: #008000;">}</span>
+<span style="color: #005a5f;">void</span> <span style="color: #5317ac;">operator</span> <span style="color: #5317ac;">delete</span><span style="color: #000000;">[](</span><span style="color: #005a5f;">void</span> *<span style="color: #00538b;">pointer</span><span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
+    <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"operator delete[] "</span> &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+    free<span style="color: #a8007f;">(</span>pointer<span style="color: #a8007f;">)</span>;
+<span style="color: #000000;">}</span>
 
-<span style="color: #008000;">class data_stream</span>
-<span style="color: #008000;">{</span>
-<span style="color: #008000;">public:</span>
-<span style="color: #008000;">    data_stream() {</span>
-<span style="color: #008000;">        std::cout &lt;&lt; "</span>in data_stream ctor<span style="color: #ff0000;">"</span><span style="color: #008000;"> &lt;&lt;  std::endl;</span>
-<span style="color: #008000;">    }</span>
+<span style="color: #5317ac;">class</span> <span style="color: #005a5f;">data_stream</span>
+<span style="color: #000000;">{</span>
+<span style="color: #5317ac;">public</span>:
+    <span style="color: #721045;">data_stream</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"in data_stream ctor"</span> &lt;&lt;  <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #a8007f;">}</span>
 
-<span style="color: #008000;">    ~data_stream() {</span>
-<span style="color: #008000;">        std::cout  &lt;&lt; "</span>in data_stream dtor<span style="color: #ff0000;">"</span><span style="color: #008000;"> &lt;&lt; std::endl;</span>
-<span style="color: #008000;">    }</span>
-<span style="color: #008000;">};</span>
+    ~<span style="color: #721045;">data_stream</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #0000c0;">std</span>::cout  &lt;&lt; <span style="color: #2544bb;">"in data_stream dtor"</span> &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>;
 
-<span style="color: #008000;">int main()</span>
-<span style="color: #008000;">{</span>
-<span style="color: #008000;">    data_stream *ds_array = new data_stream[3];</span>
+<span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span>
+<span style="color: #000000;">{</span>
+    <span style="color: #005a5f;">data_stream</span> *<span style="color: #00538b;">ds_array</span> = <span style="color: #5317ac;">new</span> <span style="color: #005a5f;">data_stream</span><span style="color: #a8007f;">[</span>3<span style="color: #a8007f;">]</span>;
 
-<span style="color: #008000;">    delete[] ds_array;</span>
+    <span style="color: #5317ac;">delete</span><span style="color: #a8007f;">[]</span> ds_array;
 
-<span style="color: #008000;">    return 0;</span>
-<span style="color: #008000;">}</span>
+    <span style="color: #5317ac;">return</span> 0;
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -608,9 +585,9 @@ operator delete[]
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds_array</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">data_stream</span><span style="color: #707183;">[</span>3<span style="color: #707183;">]</span>;
+<pre class="src src-cpp"><span style="color: #005a5f;">data_stream</span> *<span style="color: #00538b;">ds_array</span> = <span style="color: #5317ac;">new</span> <span style="color: #005a5f;">data_stream</span><span style="color: #000000;">[</span>3<span style="color: #000000;">]</span>;
 
-<span style="color: #0000FF;">delete</span> ds_array;
+<span style="color: #5317ac;">delete</span> ds_array;
 </pre>
 </div>
 
@@ -636,8 +613,8 @@ operator delete
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #6434A3;">int</span> *<span style="color: #BA36A5;">int_array</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">[</span>3<span style="color: #707183;">]</span>;
-<span style="color: #0000FF;">delete</span> int_array;
+<pre class="src src-cpp"><span style="color: #005a5f;">int</span> *<span style="color: #00538b;">int_array</span> = <span style="color: #5317ac;">new</span> <span style="color: #005a5f;">int</span><span style="color: #000000;">[</span>3<span style="color: #000000;">]</span>;
+<span style="color: #5317ac;">delete</span> int_array;
 </pre>
 </div>
 
@@ -671,8 +648,8 @@ operator delete
 </div>
 </div>
 
-<div id="outline-container-org3095e63" class="outline-2">
-<h2 id="追踪溯源"><span class="section-number-2">3</span> 追踪溯源</h2>
+<div id="outline-container-追踪溯源" class="outline-2">
+<h2 id="追踪溯源"><span class="section-number-2">3.</span> 追踪溯源</h2>
 <div class="outline-text-2" id="text-追踪溯源">
 <p>
 抱着上面的疑问，我进行了测试和跟踪。本想把分析过程分享一下的，可是分析过程描述会很杂乱，而且很容易让大家摸不着重点，就直接分享结论了。
@@ -683,53 +660,53 @@ operator delete
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #808080;">#define</span> <span style="color: #BA36A5;">nNoMansLandSize</span> 4
+<pre class="src src-cpp"><span style="color: #a0132f;">#define</span> <span style="color: #00538b;">nNoMansLandSize</span> 4
 
-<span style="color: #0000FF;">typedef</span> <span style="color: #0000FF;">struct</span> <span style="color: #6434A3;">_CrtMemBlockHeader</span>
-<span style="color: #707183;">{</span>
-        <span style="color: #0000FF;">struct</span> <span style="color: #6434A3;">_CrtMemBlockHeader</span> * <span style="color: #BA36A5;">pBlockHeaderNext</span>;
-        <span style="color: #0000FF;">struct</span> <span style="color: #6434A3;">_CrtMemBlockHeader</span> * <span style="color: #BA36A5;">pBlockHeaderPrev</span>;
-        <span style="color: #6434A3;">char</span> *                      <span style="color: #BA36A5;">szFileName</span>;
-        <span style="color: #6434A3;">int</span>                         <span style="color: #BA36A5;">nLine</span>;
-<span style="color: #808080;">#ifdef</span> _WIN64
-        <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">These items are reversed on Win64 to eliminate gaps in the struct</span>
-<span style="color: #8D8D84; font-style: italic;">         * and ensure that sizeof(struct)%16 == 0, so 16-byte alignment is</span>
-<span style="color: #8D8D84; font-style: italic;">         * maintained in the debug heap.</span>
-<span style="color: #8D8D84; font-style: italic;">         */</span>
-        <span style="color: #6434A3;">int</span>                         <span style="color: #BA36A5;">nBlockUse</span>;
-        <span style="color: #6434A3;">size_t</span>                      <span style="color: #BA36A5;">nDataSize</span>;
-<span style="color: #808080;">#else</span>  <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">_WIN64 */</span>
-        <span style="color: #6434A3;">size_t</span>                      <span style="color: #BA36A5;">nDataSize</span>;
-        <span style="color: #6434A3;">int</span>                         <span style="color: #BA36A5;">nBlockUse</span>;
-<span style="color: #808080;">#endif</span>  <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">_WIN64 */</span>
-        <span style="color: #6434A3;">long</span>                        <span style="color: #BA36A5;">lRequest</span>;
-        <span style="color: #6434A3;">unsigned</span> <span style="color: #6434A3;">char</span>               <span style="color: #BA36A5;">gap</span><span style="color: #7388D6;">[</span>nNoMansLandSize<span style="color: #7388D6;">]</span>;
-        <span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">followed by:</span>
-<span style="color: #8D8D84; font-style: italic;">         *  unsigned char           data[nDataSize];</span>
-<span style="color: #8D8D84; font-style: italic;">         *  unsigned char           anotherGap[nNoMansLandSize];</span>
-<span style="color: #8D8D84; font-style: italic;">         */</span>
-<span style="color: #707183;">}</span> <span style="color: #6434A3;">_CrtMemBlockHeader</span>;
+<span style="color: #5317ac;">typedef</span> <span style="color: #5317ac;">struct</span> <span style="color: #005a5f;">_CrtMemBlockHeader</span>
+<span style="color: #000000;">{</span>
+        <span style="color: #5317ac;">struct</span> <span style="color: #005a5f;">_CrtMemBlockHeader</span> * <span style="color: #00538b;">pBlockHeaderNext</span>;
+        <span style="color: #5317ac;">struct</span> <span style="color: #005a5f;">_CrtMemBlockHeader</span> * <span style="color: #00538b;">pBlockHeaderPrev</span>;
+        <span style="color: #005a5f;">char</span> *                      <span style="color: #00538b;">szFileName</span>;
+        <span style="color: #005a5f;">int</span>                         <span style="color: #00538b;">nLine</span>;
+<span style="color: #a0132f;">#ifdef</span> _WIN64
+        <span style="color: #505050;">/* </span><span style="color: #505050;">These items are reversed on Win64 to eliminate gaps in the struct</span>
+<span style="color: #505050;">         * and ensure that sizeof(struct)%16 == 0, so 16-byte alignment is</span>
+<span style="color: #505050;">         * maintained in the debug heap.</span>
+<span style="color: #505050;">         */</span>
+        <span style="color: #005a5f;">int</span>                         <span style="color: #00538b;">nBlockUse</span>;
+        <span style="color: #005a5f;">size_t</span>                      <span style="color: #00538b;">nDataSize</span>;
+<span style="color: #a0132f;">#else</span>  <span style="color: #505050;">/* </span><span style="color: #505050;">_WIN64</span><span style="color: #505050;"> */</span>
+        <span style="color: #005a5f;">size_t</span>                      <span style="color: #00538b;">nDataSize</span>;
+        <span style="color: #005a5f;">int</span>                         <span style="color: #00538b;">nBlockUse</span>;
+<span style="color: #a0132f;">#endif</span>  <span style="color: #505050;">/* </span><span style="color: #505050;">_WIN64</span><span style="color: #505050;"> */</span>
+        <span style="color: #005a5f;">long</span>                        <span style="color: #00538b;">lRequest</span>;
+        <span style="color: #005a5f;">unsigned</span> <span style="color: #005a5f;">char</span>               <span style="color: #00538b;">gap</span><span style="color: #a8007f;">[</span>nNoMansLandSize<span style="color: #a8007f;">]</span>;
+        <span style="color: #505050;">/* </span><span style="color: #505050;">followed by:</span>
+<span style="color: #505050;">         *  unsigned char           data[nDataSize];</span>
+<span style="color: #505050;">         *  unsigned char           anotherGap[nNoMansLandSize];</span>
+<span style="color: #505050;">         */</span>
+<span style="color: #000000;">}</span> <span style="color: #005a5f;">_CrtMemBlockHeader</span>;
 
 -----------------
 
 Type of block:
 
-<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_FREE_BLOCK</span>      0
-<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_NORMAL_BLOCK</span>    1
-<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_CRT_BLOCK</span>       2
-<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_IGNORE_BLOCK</span>    3
-<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_CLIENT_BLOCK</span>    4
-<span style="color: #808080;">#define</span> <span style="color: #BA36A5;">_MAX_BLOCKS</span>      5
+<span style="color: #a0132f;">#define</span> <span style="color: #00538b;">_FREE_BLOCK</span>      0
+<span style="color: #a0132f;">#define</span> <span style="color: #00538b;">_NORMAL_BLOCK</span>    1
+<span style="color: #a0132f;">#define</span> <span style="color: #00538b;">_CRT_BLOCK</span>       2
+<span style="color: #a0132f;">#define</span> <span style="color: #00538b;">_IGNORE_BLOCK</span>    3
+<span style="color: #a0132f;">#define</span> <span style="color: #00538b;">_CLIENT_BLOCK</span>    4
+<span style="color: #a0132f;">#define</span> <span style="color: #00538b;">_MAX_BLOCKS</span>      5
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org05c4a84" class="outline-3">
-<h3 id="内置类型"><span class="section-number-3">3.1</span> 内置类型</h3>
+<div id="outline-container-内置类型" class="outline-3">
+<h3 id="内置类型"><span class="section-number-3">3.1.</span> 内置类型</h3>
 <div class="outline-text-3" id="text-内置类型">
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #6434A3;">int</span> *<span style="color: #BA36A5;">int_array</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">int</span><span style="color: #707183;">[</span>16<span style="color: #707183;">]</span>;
-<span style="color: #0000FF;">delete</span> <span style="color: #707183;">[]</span> int_array;
+<pre class="src src-cpp"><span style="color: #005a5f;">int</span> *<span style="color: #00538b;">int_array</span> = <span style="color: #5317ac;">new</span> <span style="color: #005a5f;">int</span><span style="color: #000000;">[</span>16<span style="color: #000000;">]</span>;
+<span style="color: #5317ac;">delete</span> <span style="color: #000000;">[]</span> int_array;
 </pre>
 </div>
 
@@ -760,28 +737,28 @@ Type of block:
 </div>
 </div>
 
-<div id="outline-container-org910345b" class="outline-3">
-<h3 id="单个类对象"><span class="section-number-3">3.2</span> 单个类对象</h3>
+<div id="outline-container-单个类对象" class="outline-3">
+<h3 id="单个类对象"><span class="section-number-3">3.2.</span> 单个类对象</h3>
 <div class="outline-text-3" id="text-单个类对象">
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #0000FF;">class</span> <span style="color: #6434A3;">data_stream</span>
-<span style="color: #707183;">{</span>
-<span style="color: #0000FF;">public</span>:
-    <span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream ctor"</span> &lt;&lt;  <span style="color: #D0372D;">std</span>::endl;
-    <span style="color: #7388D6;">}</span>
+<pre class="src src-cpp"><span style="color: #5317ac;">class</span> <span style="color: #005a5f;">data_stream</span>
+<span style="color: #000000;">{</span>
+<span style="color: #5317ac;">public</span>:
+    <span style="color: #721045;">data_stream</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"in data_stream ctor"</span> &lt;&lt;  <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #a8007f;">}</span>
 
-    ~<span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream dtor"</span> &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-    <span style="color: #7388D6;">}</span>
-<span style="color: #0000FF;">private</span>:
-    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span>;
-    <span style="color: #6434A3;">float</span> <span style="color: #BA36A5;">f</span>;
-    <span style="color: #6434A3;">double</span> <span style="color: #BA36A5;">d</span>;
-<span style="color: #707183;">}</span>;
+    ~<span style="color: #721045;">data_stream</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"in data_stream dtor"</span> &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #a8007f;">}</span>
+<span style="color: #5317ac;">private</span>:
+    <span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span>;
+    <span style="color: #005a5f;">float</span> <span style="color: #00538b;">f</span>;
+    <span style="color: #005a5f;">double</span> <span style="color: #00538b;">d</span>;
+<span style="color: #000000;">}</span>;
 
-<span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds_array</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">data_stream</span><span style="color: #707183;">()</span>;
-<span style="color: #0000FF;">delete</span> ds_array;
+<span style="color: #005a5f;">data_stream</span> *<span style="color: #00538b;">ds_array</span> = <span style="color: #5317ac;">new</span> <span style="color: #005a5f;">data_stream</span><span style="color: #000000;">()</span>;
+<span style="color: #5317ac;">delete</span> ds_array;
 </pre>
 </div>
 
@@ -797,33 +774,33 @@ Type of block:
 </div>
 </div>
 
-<div id="outline-container-org6542e7f" class="outline-3">
-<h3 id="类对象数组"><span class="section-number-3">3.3</span> 类对象数组</h3>
+<div id="outline-container-类对象数组" class="outline-3">
+<h3 id="类对象数组"><span class="section-number-3">3.3.</span> 类对象数组</h3>
 <div class="outline-text-3" id="text-类对象数组">
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #6434A3;">void</span>* <span style="color: #0000FF;">operator</span> <span style="color: #0000FF;">new</span><span style="color: #707183;">[](</span><span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">size</span><span style="color: #707183;">)</span> <span style="color: #0000FF;">throw</span><span style="color: #707183;">(</span><span style="color: #D0372D;">std</span>::<span style="color: #6434A3;">bad_alloc</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span>
-    <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in operator new[] | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-    <span style="color: #6434A3;">void</span> * <span style="color: #BA36A5;">p</span> = malloc<span style="color: #7388D6;">(</span>size<span style="color: #7388D6;">)</span>;
+<pre class="src src-cpp"><span style="color: #005a5f;">void</span>* <span style="color: #5317ac;">operator</span> <span style="color: #5317ac;">new</span><span style="color: #000000;">[](</span><span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">size</span><span style="color: #000000;">)</span> <span style="color: #5317ac;">throw</span><span style="color: #000000;">(</span><span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">bad_alloc</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"in operator new[] | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #005a5f;">void</span> * <span style="color: #00538b;">p</span> = malloc<span style="color: #a8007f;">(</span>size<span style="color: #a8007f;">)</span>;
 
-    <span style="color: #0000FF;">return</span> p;
-<span style="color: #707183;">}</span>
+    <span style="color: #5317ac;">return</span> p;
+<span style="color: #000000;">}</span>
 
-<span style="color: #0000FF;">class</span> <span style="color: #6434A3;">data_stream</span>
-<span style="color: #707183;">{</span>
-<span style="color: #0000FF;">public</span>:
-    <span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream ctor"</span> &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-    <span style="color: #7388D6;">}</span>
+<span style="color: #5317ac;">class</span> <span style="color: #005a5f;">data_stream</span>
+<span style="color: #000000;">{</span>
+<span style="color: #5317ac;">public</span>:
+    <span style="color: #721045;">data_stream</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"in data_stream ctor"</span> &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #a8007f;">}</span>
 
-    ~<span style="color: #006699;">data_stream</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #D0372D;">std</span>::cout &lt;&lt; <span style="color: #008000;">"in data_stream dtor"</span> &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-    <span style="color: #7388D6;">}</span>
-<span style="color: #0000FF;">private</span>:
-    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span>;
-<span style="color: #707183;">}</span>;
+    ~<span style="color: #721045;">data_stream</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #0000c0;">std</span>::cout &lt;&lt; <span style="color: #2544bb;">"in data_stream dtor"</span> &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #a8007f;">}</span>
+<span style="color: #5317ac;">private</span>:
+    <span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span>;
+<span style="color: #000000;">}</span>;
 
-<span style="color: #6434A3;">data_stream</span> *<span style="color: #BA36A5;">ds_array</span> = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">data_stream</span><span style="color: #707183;">[</span>4<span style="color: #707183;">]</span>;
-<span style="color: #0000FF;">delete</span> <span style="color: #707183;">[]</span>ds_array;
+<span style="color: #005a5f;">data_stream</span> *<span style="color: #00538b;">ds_array</span> = <span style="color: #5317ac;">new</span> <span style="color: #005a5f;">data_stream</span><span style="color: #000000;">[</span>4<span style="color: #000000;">]</span>;
+<span style="color: #5317ac;">delete</span> <span style="color: #000000;">[]</span>ds_array;
 </pre>
 </div>
 
@@ -832,7 +809,7 @@ Type of block:
 </p>
 
 <p>
-第一步：=operator new[](size_t size)=
+第一步：=operator new[](size<sub>t</sub> size)=
 </p>
 
 <p>
@@ -884,8 +861,8 @@ Type of block:
 </div>
 </div>
 
-<div id="outline-container-orga7188b6" class="outline-2">
-<h2 id="总结"><span class="section-number-2">4</span> 总结</h2>
+<div id="outline-container-总结" class="outline-2">
+<h2 id="总结"><span class="section-number-2">4.</span> 总结</h2>
 <div class="outline-text-2" id="text-总结">
 <ol class="org-ol">
 <li>对于内置类型，=new[]-&gt;= 怎么对应都不会有问题， <code>free</code> 只需要一个首地址，通过指针偏移可以获取到下一个内存块和上一个内存的地址，
@@ -913,7 +890,7 @@ btw:
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2013-07-28 00:00:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2013-07-28 00:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

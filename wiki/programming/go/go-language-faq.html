@@ -3,14 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-10-22 Thu 15:17 -->
+<!-- 2021-11-22 Mon 16:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 语言 FAQ</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,9 +193,8 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
@@ -220,30 +217,35 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Go 语言 FAQ</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org232017c">1. map</a>
+<li><a href="#orgdd82832">1. map</a>
 <ul>
-<li><a href="#org1d2c4ec">1.1. Key</a></li>
-<li><a href="#orgccd6e8b">1.2. 值还是引用？</a></li>
-<li><a href="#orgbdd5c7e">1.3. 迭代</a></li>
-<li><a href="#org3276147">1.4. map 中删除元素是否安全？</a></li>
+<li><a href="#orgf838bb6">1.1. Key</a></li>
+<li><a href="#orgfc75892">1.2. 值还是引用？</a></li>
+<li><a href="#org9c20e0f">1.3. 迭代</a></li>
+<li><a href="#orgc2ef57b">1.4. map 中删除元素是否安全？</a></li>
 </ul>
 </li>
+<li><a href="#org2a8cb26">2. json.marshal</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org232017c" class="outline-2">
-<h2 id="org232017c"><span class="section-number-2">1</span> map</h2>
+<div id="outline-container-orgdd82832" class="outline-2">
+<h2 id="orgdd82832"><span class="section-number-2">1.</span> map</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org1d2c4ec" class="outline-3">
-<h3 id="org1d2c4ec"><span class="section-number-3">1.1</span> Key</h3>
+<div id="outline-container-orgf838bb6" class="outline-3">
+<h3 id="orgf838bb6"><span class="section-number-3">1.1.</span> Key</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 map 中的 key 必须是可以判定相等的类型。不建议把浮点数作为 key，最坏的情况下 NaN 和任何浮点数都不同。
@@ -251,8 +253,8 @@ map 中的 key 必须是可以判定相等的类型。不建议把浮点数作�
 </div>
 </div>
 
-<div id="outline-container-orgccd6e8b" class="outline-3">
-<h3 id="orgccd6e8b"><span class="section-number-3">1.2</span> 值还是引用？</h3>
+<div id="outline-container-orgfc75892" class="outline-3">
+<h3 id="orgfc75892"><span class="section-number-3">1.2.</span> 值还是引用？</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 map 是个引用类型（hash 表）。因此使用 map 必须初始化（否则值默认为 nil）。
@@ -260,8 +262,8 @@ map 是个引用类型（hash 表）。因此使用 map 必须初始化（否则
 </div>
 </div>
 
-<div id="outline-container-orgbdd5c7e" class="outline-3">
-<h3 id="orgbdd5c7e"><span class="section-number-3">1.3</span> 迭代</h3>
+<div id="outline-container-org9c20e0f" class="outline-3">
+<h3 id="org9c20e0f"><span class="section-number-3">1.3.</span> 迭代</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 map 迭代顺序是不确定的。
@@ -269,19 +271,19 @@ map 迭代顺序是不确定的。
 </div>
 </div>
 
-<div id="outline-container-org3276147" class="outline-3">
-<h3 id="org3276147"><span class="section-number-3">1.4</span> map 中删除元素是否安全？</h3>
+<div id="outline-container-orgc2ef57b" class="outline-3">
+<h3 id="orgc2ef57b"><span class="section-number-3">1.4.</span> map 中删除元素是否安全？</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 安全<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #0000FF;">for</span> <span style="color: #BA36A5;">key</span> := <span style="color: #0000FF;">range</span> m <span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">if</span> key.<span style="color: #006699;">expired</span><span style="color: #7388D6;">()</span> <span style="color: #7388D6;">{</span>
-        <span style="color: #006FE0;">delete</span><span style="color: #909183;">(</span>m, key<span style="color: #909183;">)</span>
-    <span style="color: #7388D6;">}</span>
-<span style="color: #707183;">}</span>
+<pre class="src src-go"><span style="color: #5317ac;">for</span> <span style="color: #00538b;">key</span> := <span style="color: #5317ac;">range</span> m <span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">if</span> key.<span style="color: #721045;">expired</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #8f0075;">delete</span><span style="color: #005f88;">(</span>m, key<span style="color: #005f88;">)</span>
+    <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -292,6 +294,22 @@ map 迭代顺序是不确定的。
 <li>只有 <code>map=nil</code> 才会释放空间</li>
 </ol>
 </div>
+</div>
+</div>
+
+
+<div id="outline-container-org2a8cb26" class="outline-2">
+<h2 id="org2a8cb26"><span class="section-number-2">2.</span> json.marshal</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<code>[]byte</code> json marshal 会被自动做个 base64 编码，<a href="https://pkg.go.dev/encoding/json#Marshal">https://pkg.go.dev/encoding/json#Marshal</a>
+</p>
+
+<blockquote>
+<p>
+Array and slice values encode as JSON arrays, <b>except that []byte encodes as a base64-encoded string</b>, and a nil slice encodes as the null JSON value.
+</p>
+</blockquote>
 </div>
 </div>
 <div id="footnotes">
@@ -310,7 +328,7 @@ map 迭代顺序是不确定的。
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-10-06 16:21:47 <br />Last updated: 2020-10-21 Wed 17:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
+<p class="postamble">First created: 2020-10-06 16:21:47 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>
