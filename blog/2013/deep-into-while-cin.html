@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2021-11-22 Mon 16:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C++ 深入探究 while(cin)</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,62 +193,41 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">C++ 深入探究 while(cin)</h1>
 <p>
 今天看到这个帖子："<a href="http://www.cppleyuan.com/viewthread.php?tid=10415">C++中字符串的结束字符是什么？</a>"，代码是：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgdfe47c3">
 while(cin &gt;&gt; str)
     ivec.push_back(str);
 </pre>
@@ -273,7 +250,7 @@ while(cin &gt;&gt; str)
 看他回复另外一个朋友的源码是：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgb07d1a7">
 #include &lt;iostream&gt;
 #include &lt;vector&gt;
 #include &lt;string&gt;
@@ -318,7 +295,7 @@ cin 是一个全局变量，变量类型是 istream。我开始想着把 cin &gt
 找 <code>istream &gt;&gt;</code> 的声明：
 </p>
 
-<pre class="example">
+<pre class="example" id="org92671f2">
 basic_istream&lt;_CharT, _Traits&gt;&amp; operator&gt;&gt;(short&amp; __n)
 {
     // _GLIBCXX_RESOLVE_LIB_DEFECTS
@@ -340,7 +317,7 @@ basic_istream&lt;_CharT, _Traits&gt;&amp; operator&gt;&gt;(short&amp; __n)
 想必有很多重载，拿一个就够分析了。假如有如下代码:
 </p>
 
-<pre class="example">
+<pre class="example" id="org4a49369">
 short s;
 
 cin &gt;&gt; s;
@@ -354,7 +331,7 @@ cin &gt;&gt; s;
 找 <code>_M_extract</code> 实现：
 </p>
 
-<pre class="example">
+<pre class="example" id="org97e230e">
 basic_istream&lt;_CharT, _Traits&gt;&amp; _M_extract(_ValueT &amp; __v)
 {
     sentry __cerb(*this, false);
@@ -392,7 +369,7 @@ basic_istream&lt;_CharT, _Traits&gt;&amp; _M_extract(_ValueT &amp; __v)
 找到它的源码：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgb34aaa8">
 bool fail() const
 {
     return (this-&gt;rdstate() &amp; (badbit | failbit)) != 0;
@@ -403,7 +380,7 @@ bool fail() const
 继续找 rdstate 的源码：
 </p>
 
-<pre class="example">
+<pre class="example" id="org7434141">
 iostate rdstate() const
 {
     return _M_streambuf_state;
@@ -412,7 +389,7 @@ iostate rdstate() const
 
 <p>
 badbit，failbit， <code>_M_streambuf_state</code> 是什么含义对我们来说，完全不重要。需要找到的是能影响 operator &gt;&gt; 返回值 (return this;) 的操作，
-也就是在什么情况下会改 this 的值。我回头看了一下几个函数（_M_setstate、setstate），都是一些简单的赋值操作并没有影响 <code>*this</code> 的值。
+也就是在什么情况下会改 this 的值。我回头看了一下几个函数（<sub>M</sub><sub>setstate</sub>、setstate），都是一些简单的赋值操作并没有影响 <code>*this</code> 的值。
 也就是我们分析了半天都白费了？
 </p>
 
@@ -420,7 +397,7 @@ badbit，failbit， <code>_M_streambuf_state</code> 是什么含义对我们来�
 就在我迷茫之时看到了这么一行代码：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgb586e47">
 /**
  *  @brief  The quick-and-easy status check.
  *
@@ -436,7 +413,7 @@ operator void*() const
 现在的问题在于，什么情况下会调用这个函数？在执行 <code>while (cin &gt;&gt; str)</code> 时进行了 <code>(void*)</code> 这个转换吗，要验证很简单，看下面这个例子：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgf5537ab">
 #include &lt;iostream&gt;
 
 class my_istream
@@ -466,7 +443,7 @@ int main ()
 假如将 <code>operator void * () const</code> 去掉编译器会提示如下错误：
 </p>
 
-<pre class="example">
+<pre class="example" id="org954f318">
 E:\TEMP_FILE\test_volatile\main.cpp||In function 'int main()':|
 
 E:\TEMP_FILE\test_volatile\main.cpp|18|error: could not convert 'mi_ref' to 'bool'|
@@ -478,7 +455,7 @@ E:\TEMP_FILE\test_volatile\main.cpp|18|error: could not convert 'mi_ref' to 'boo
 Ok，总结：
 </p>
 
-<pre class="example">
+<pre class="example" id="org6efd370">
 while(cin &gt;&gt; str)
     ivec.push_back(str);
 </pre>
@@ -526,7 +503,7 @@ set.（可以看出和我的理解是一致的）
 </ol>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2013-01-18 15:21:35 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2013-01-18 15:21:35 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

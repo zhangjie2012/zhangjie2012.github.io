@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:11 -->
+<!-- 2021-11-22 Mon 16:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title><code>sprintf_s</code> 和 <code>swprintf_s</code> 在 Release 和 Debug 不同模式表现不同</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,67 +193,46 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title"><code>sprintf_s</code> 和 <code>swprintf_s</code> 在 Release 和 Debug 不同模式表现不同</h1>
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #6434A3;">int</span> <span style="color: #006699;">sprintf_s</span><span style="color: #707183;">(</span> <span style="color: #6434A3;">char</span> /buffer, <span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">sizeOfBuffer</span>, <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">char</span> /format <span style="color: #7388D6;">[</span>, argument<span style="color: #7388D6;">]</span> ... <span style="color: #707183;">)</span>;
-<span style="color: #6434A3;">int</span> <span style="color: #006699;">swprintf_s</span><span style="color: #707183;">(</span> <span style="color: #6434A3;">wchar_t</span> /buffer, <span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">sizeOfBuffer</span>, <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">wchar_t</span> /format <span style="color: #7388D6;">[</span>, argument<span style="color: #7388D6;">]</span>... <span style="color: #707183;">)</span>;
+<pre class="src src-cpp"><span style="color: #005a5f;">int</span> <span style="color: #721045;">sprintf_s</span><span style="color: #000000;">(</span> <span style="color: #005a5f;">char</span> /buffer, <span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">sizeOfBuffer</span>, <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">char</span> /format <span style="color: #a8007f;">[</span>, argument<span style="color: #a8007f;">]</span> ... <span style="color: #000000;">)</span>;
+<span style="color: #005a5f;">int</span> <span style="color: #721045;">swprintf_s</span><span style="color: #000000;">(</span> <span style="color: #005a5f;">wchar_t</span> /buffer, <span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">sizeOfBuffer</span>, <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">wchar_t</span> /format <span style="color: #a8007f;">[</span>, argument<span style="color: #a8007f;">]</span>... <span style="color: #000000;">)</span>;
 </pre>
 </div>
 
 <p>
 msdn 对第二个参数的解释仅仅是"Maximum number of characters to store."
 即，可存储的最大字符个数。按照常规(至少我)的理解是这样去理解这个参数的: 当输入的字符个数大于 sizeOfBuffer 时，会进行截断等限制，
-用以保证不会让 buffer 溢出；当输入的个数小于或者等于 sizeOfBuffer 时，正常赋值即可，sprintf 和 sprintf_s 的区别仅在于加了一个 sizeOfBuffer 的判断。
+用以保证不会让 buffer 溢出；当输入的个数小于或者等于 sizeOfBuffer 时，正常赋值即可，sprintf 和 sprintf<sub>s</sub> 的区别仅在于加了一个 sizeOfBuffer 的判断。
 </p>
 
 <p>
@@ -264,8 +241,8 @@ msdn 的解释是：
 
 <blockquote>
 <p>
-The other main difference between sprintf_s and sprintf is that
-sprintf_s takes a length parameter specifying the size of the output
+The other main difference between sprintf<sub>s</sub> and sprintf is that
+sprintf<sub>s</sub> takes a length parameter specifying the size of the output
 buffer in characters. If the buffer is too small for the text being
 printed then the buffer is set to an empty string and the invalid
 parameter handler is invoked.
@@ -281,26 +258,26 @@ Debug 模式：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">iostream</span><span style="color: #707183;">&gt;</span>
-<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">cstdio</span><span style="color: #707183;">&gt;</span>
+<pre class="src src-cpp"><span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">iostream</span><span style="color: #000000;">&gt;</span>
+<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">cstdio</span><span style="color: #000000;">&gt;</span>
 
-<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
-<span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">buf_size</span> = 32;
+<span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span>
+<span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">buf_size</span> = 32;
 
-    <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">buf1</span><span style="color: #7388D6;">[</span>buf_size<span style="color: #7388D6;">]</span>;
-    memset<span style="color: #7388D6;">(</span>buf1, 0, buf_size<span style="color: #7388D6;">)</span>;
-    <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">buf2</span><span style="color: #7388D6;">[</span>buf_size<span style="color: #7388D6;">]</span>;
-    memset<span style="color: #7388D6;">(</span>buf2, 1, buf_size<span style="color: #7388D6;">)</span>;
-    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">breakpoint1</span>
-    sprintf_s<span style="color: #7388D6;">(</span>buf2, buf_size*2, <span style="color: #008000;">"%s"</span>, <span style="color: #008000;">"hello, world!"</span><span style="color: #7388D6;">)</span>;
-    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">breakpoint2</span>
-<span style="color: #707183;">}</span>
+    <span style="color: #005a5f;">char</span> <span style="color: #00538b;">buf1</span><span style="color: #a8007f;">[</span>buf_size<span style="color: #a8007f;">]</span>;
+    memset<span style="color: #a8007f;">(</span>buf1, 0, buf_size<span style="color: #a8007f;">)</span>;
+    <span style="color: #005a5f;">char</span> <span style="color: #00538b;">buf2</span><span style="color: #a8007f;">[</span>buf_size<span style="color: #a8007f;">]</span>;
+    memset<span style="color: #a8007f;">(</span>buf2, 1, buf_size<span style="color: #a8007f;">)</span>;
+    <span style="color: #505050;">// </span><span style="color: #505050;">breakpoint1</span>
+    sprintf_s<span style="color: #a8007f;">(</span>buf2, buf_size*2, <span style="color: #2544bb;">"%s"</span>, <span style="color: #2544bb;">"hello, world!"</span><span style="color: #a8007f;">)</span>;
+    <span style="color: #505050;">// </span><span style="color: #505050;">breakpoint2</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
 <p>
-在 sprintf_s 上下插入一个端点，如上代码注释，breakpoint1 时内存块：
+在 sprintf<sub>s</sub> 上下插入一个端点，如上代码注释，breakpoint1 时内存块：
 </p>
 
 <pre class="example">
@@ -333,7 +310,7 @@ breakpoint2 时内存块：
 </pre>
 
 <p>
-可以看出由于 sizeOfBuffer 传入值大于 buf_size，导致了越界，覆盖了高地址的内存块（修改了 buf1 的值）。
+可以看出由于 sizeOfBuffer 传入值大于 buf<sub>size</sub>，导致了越界，覆盖了高地址的内存块（修改了 buf1 的值）。
 </p>
 
 <p>
@@ -341,22 +318,22 @@ Release 验证代码：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">iostream</span><span style="color: #707183;">&gt;</span>
-<span style="color: #808080;">#include</span> <span style="color: #707183;">&lt;</span><span style="color: #008000;">cstdio</span><span style="color: #707183;">&gt;</span>
+<pre class="src src-cpp"><span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">iostream</span><span style="color: #000000;">&gt;</span>
+<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">cstdio</span><span style="color: #000000;">&gt;</span>
 
-<span style="color: #6434A3;">int</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span>
-<span style="color: #707183;">{</span>
-    <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">buf_size</span> = 32;
+<span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span>
+<span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">buf_size</span> = 32;
 
-    <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">buf1</span><span style="color: #7388D6;">[</span>buf_size<span style="color: #7388D6;">]</span>;
-    memset<span style="color: #7388D6;">(</span>buf1, 0, buf_size<span style="color: #7388D6;">)</span>;
-    <span style="color: #D0372D;">std</span>::cout &lt;&lt; buf1 &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-    <span style="color: #6434A3;">char</span> <span style="color: #BA36A5;">buf2</span><span style="color: #7388D6;">[</span>buf_size<span style="color: #7388D6;">]</span>;
-    memset<span style="color: #7388D6;">(</span>buf2, 1, buf_size<span style="color: #7388D6;">)</span>;
+    <span style="color: #005a5f;">char</span> <span style="color: #00538b;">buf1</span><span style="color: #a8007f;">[</span>buf_size<span style="color: #a8007f;">]</span>;
+    memset<span style="color: #a8007f;">(</span>buf1, 0, buf_size<span style="color: #a8007f;">)</span>;
+    <span style="color: #0000c0;">std</span>::cout &lt;&lt; buf1 &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+    <span style="color: #005a5f;">char</span> <span style="color: #00538b;">buf2</span><span style="color: #a8007f;">[</span>buf_size<span style="color: #a8007f;">]</span>;
+    memset<span style="color: #a8007f;">(</span>buf2, 1, buf_size<span style="color: #a8007f;">)</span>;
 
-    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">ret_size</span> = sprintf_s<span style="color: #7388D6;">(</span>buf2, buf_size*4, <span style="color: #008000;">"%s"</span>, <span style="color: #008000;">"hello, world!"</span><span style="color: #7388D6;">)</span>;
-    <span style="color: #D0372D;">std</span>::cout &lt;&lt; ret_size &lt;&lt; <span style="color: #D0372D;">std</span>::endl;
-<span style="color: #707183;">}</span>
+    <span style="color: #005a5f;">int</span> <span style="color: #00538b;">ret_size</span> = sprintf_s<span style="color: #a8007f;">(</span>buf2, buf_size*4, <span style="color: #2544bb;">"%s"</span>, <span style="color: #2544bb;">"hello, world!"</span><span style="color: #a8007f;">)</span>;
+    <span style="color: #0000c0;">std</span>::cout &lt;&lt; ret_size &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -376,7 +353,7 @@ Release 验证代码：
 </pre>
 
 <p>
-尽管我刻意的修改了几次 sprintf_s 的 sizeOfBuffer 传入值，但是它始终没有越界。
+尽管我刻意的修改了几次 sprintf<sub>s</sub> 的 sizeOfBuffer 传入值，但是它始终没有越界。
 </p>
 
 <p>
@@ -384,7 +361,7 @@ Release 验证代码：
 </p>
 
 <ul class="org-ul">
-<li>在 Debug 模式下 sprintf_s 是这样干的，它做的第一件事情是给 buffer 的空间长度扩展为 sizeOfBuffer，
+<li>在 Debug 模式下 sprintf<sub>s</sub> 是这样干的，它做的第一件事情是给 buffer 的空间长度扩展为 sizeOfBuffer，
 不论实际上是否需要 sizeOfBuffer 长度的空间，也不考虑 buffer 自身的内存大小，然后进行后面的赋值操作。
 这样带来的一个问题就是假如 sizeOfBuffer 的实际值大于 buffer 自身的内存大小，就会覆盖掉不属于自己内存块，进而引发 bug。</li>
 <li>在 Release 模式下，按照我们所想的那样执行（从表象看：范围检查，不会进行内存扩充操作）。</li>
@@ -399,22 +376,22 @@ Release 验证代码：
 <hr />
 
 <p>
-<a href="http://msdn.microsoft.com/en-us/library/ce3zzk1kv=vs.80">sprintf_s, swprintf_s MSDN的解释</a>
+<a href="http://msdn.microsoft.com/en-us/library/ce3zzk1kv=vs.80">sprintf<sub>s</sub>, swprintf<sub>s</sub> MSDN的解释</a>
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #6434A3;">int</span> <span style="color: #006699;">sprintf_s</span><span style="color: #707183;">(</span>
-   <span style="color: #6434A3;">char</span> *<span style="color: #BA36A5;">buffer</span>,
-   <span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">sizeOfBuffer</span>,
-   <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">char</span> *<span style="color: #BA36A5;">format</span> <span style="color: #7388D6;">[</span>,
-      argument<span style="color: #7388D6;">]</span> ...
-<span style="color: #707183;">)</span>;
-<span style="color: #6434A3;">int</span> <span style="color: #006699;">swprintf_s</span><span style="color: #707183;">(</span>
-   <span style="color: #6434A3;">wchar_t</span> *<span style="color: #BA36A5;">buffer</span>,
-   <span style="color: #6434A3;">size_t</span> <span style="color: #BA36A5;">sizeOfBuffer</span>,
-   <span style="color: #0000FF;">const</span> <span style="color: #6434A3;">wchar_t</span> *<span style="color: #BA36A5;">format</span> <span style="color: #7388D6;">[</span>,
-      argument<span style="color: #7388D6;">]</span>...
-<span style="color: #707183;">)</span>;
+<pre class="src src-cpp"><span style="color: #005a5f;">int</span> <span style="color: #721045;">sprintf_s</span><span style="color: #000000;">(</span>
+   <span style="color: #005a5f;">char</span> *<span style="color: #00538b;">buffer</span>,
+   <span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">sizeOfBuffer</span>,
+   <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">char</span> *<span style="color: #00538b;">format</span> <span style="color: #a8007f;">[</span>,
+      argument<span style="color: #a8007f;">]</span> ...
+<span style="color: #000000;">)</span>;
+<span style="color: #005a5f;">int</span> <span style="color: #721045;">swprintf_s</span><span style="color: #000000;">(</span>
+   <span style="color: #005a5f;">wchar_t</span> *<span style="color: #00538b;">buffer</span>,
+   <span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">sizeOfBuffer</span>,
+   <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">wchar_t</span> *<span style="color: #00538b;">format</span> <span style="color: #a8007f;">[</span>,
+      argument<span style="color: #a8007f;">]</span>...
+<span style="color: #000000;">)</span>;
 </pre>
 </div>
 
@@ -435,9 +412,9 @@ Return Value
 
 <p>
 The number of characters written, or &#x2013;1 if an error occurred. If buffer
-or format is a null pointer, sprintf_s and swprintf_s return -1 and set
-errno to EINVAL. sprintf_s returns the number of bytes stored in buffer,
-not counting the terminating null character. swprintf_s returns the
+or format is a null pointer, sprintf<sub>s</sub> and swprintf<sub>s</sub> return -1 and set
+errno to EINVAL. sprintf<sub>s</sub> returns the number of bytes stored in buffer,
+not counting the terminating null character. swprintf<sub>s</sub> returns the
 number of wide characters stored in buffer, not counting the terminating
 null wide character.
 </p>
@@ -447,27 +424,27 @@ Remarks
 </p>
 
 <p>
-The sprintf_s function formats and stores a series of characters and
+The sprintf<sub>s</sub> function formats and stores a series of characters and
 values in buffer. Each argument (if any) is converted and output
 according to the corresponding format specification in format. The
 format consists of ordinary characters and has the same form and
 function as the format argument for printf. A null character is appended
 after the last character written. If copying occurs between strings that
 overlap, the behavior is undefined. One main difference between
-sprintf_s and sprintf is that sprintf_s checks the format string for
+sprintf<sub>s</sub> and sprintf is that sprintf<sub>s</sub> checks the format string for
 valid formatting characters, whereas sprintf only checks if the format
 string or buffer are NULL pointers. If either check fails, the invalid
 parameter handler is invoked, as described in Parameter Validation. If
 execution is allowed to continue, the function returns -1 and sets errno
-to EINVAL. The other main difference between sprintf_s and sprintf is
-that sprintf_s takes a length parameter specifying the size of the
+to EINVAL. The other main difference between sprintf<sub>s</sub> and sprintf is
+that sprintf<sub>s</sub> takes a length parameter specifying the size of the
 output buffer in characters. If the buffer is too small for the text
 being printed then the buffer is set to an empty string and the invalid
-parameter handler is invoked. Unlike snprintf, sprintf_s guarantees that
+parameter handler is invoked. Unlike snprintf, sprintf<sub>s</sub> guarantees that
 the buffer will be null-terminated (unless the buffer size is zero).
-swprintf_s is a wide-character version of sprintf_s; the pointer
-arguments to swprintf_s are wide-character strings. Detection of
-encoding errors in swprintf_s may differ from that in sprintf_s. The
+swprintf<sub>s</sub> is a wide-character version of sprintf<sub>s</sub>; the pointer
+arguments to swprintf<sub>s</sub> are wide-character strings. Detection of
+encoding errors in swprintf<sub>s</sub> may differ from that in sprintf<sub>s</sub>. The
 versions of these functions with the _l suffix are identical except that
 they use the locale parameter passed in instead of the current thread
 locale.
@@ -478,7 +455,7 @@ PS: 如果有不同的理解，或者找到了源码，欢迎追加。
 </p>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2013-03-24 08:33:08 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2013-03-24 08:33:08 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

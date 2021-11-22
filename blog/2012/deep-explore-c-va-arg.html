@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>深度探索C语言函数可变长参数</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,52 +193,27 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -266,7 +239,11 @@ for the JavaScript code in this tag.
         src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">深度探索C语言函数可变长参数</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -294,13 +271,13 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org3dde749" class="outline-2">
-<h2 id="一基础部分"><span class="section-number-2">1</span> 一、基础部分</h2>
+<div id="outline-container-一基础部分" class="outline-2">
+<h2 id="一基础部分"><span class="section-number-2">1.</span> 一、基础部分</h2>
 <div class="outline-text-2" id="text-一基础部分">
 </div>
 
-<div id="outline-container-orga9ffce0" class="outline-3">
-<h3 id="什么是可变长参数"><span class="section-number-3">1.1</span> 1.1 什么是可变长参数</h3>
+<div id="outline-container-什么是可变长参数" class="outline-3">
+<h3 id="什么是可变长参数"><span class="section-number-3">1.1.</span> 1.1 什么是可变长参数</h3>
 <div class="outline-text-3" id="text-什么是可变长参数">
 <p>
 可变长参数：顾名思义，就是函数的参数长度（数量）是可变的。比如 C 语言的
@@ -308,7 +285,7 @@ printf 系列的（格式化输入输出等）函数，都是参数可变的。�
 函数的声明：
 </p>
 
-<pre class="example">
+<pre class="example" id="org8671841">
 int printf ( const char * format, ... );
 </pre>
 
@@ -319,14 +296,14 @@ int printf ( const char * format, ... );
 </div>
 </div>
 
-<div id="outline-container-org699d39b" class="outline-2">
-<h2 id="如何实现"><span class="section-number-2">2</span> 1.2 如何实现</h2>
+<div id="outline-container-如何实现" class="outline-2">
+<h2 id="如何实现"><span class="section-number-2">2.</span> 1.2 如何实现</h2>
 <div class="outline-text-2" id="text-如何实现">
 <p>
-C语言可变参数通过三个宏（=va_start、va_end、va_arg=）和一个类型（=va_list=）实现的，
+C语言可变参数通过三个宏（=va<sub>start</sub>、va<sub>end</sub>、va<sub>arg</sub>=）和一个类型（=va<sub>list</sub>=）实现的，
 </p>
 
-<pre class="example">
+<pre class="example" id="org00aaa83">
 void va_start ( va_list ap, paramN );
 </pre>
 
@@ -343,7 +320,7 @@ void va_start ( va_list ap, paramN );
 功能：初始化可变参数列表（把函数在 paramN 之后的参数地址放到 ap 中）。
 </p>
 
-<pre class="example">
+<pre class="example" id="org4a95181">
 void va_end ( va_list ap );
 </pre>
 
@@ -351,7 +328,7 @@ void va_end ( va_list ap );
 功能：关闭初始化列表（将 ap 置空）。
 </p>
 
-<pre class="example">
+<pre class="example" id="org3022d90">
 type va_arg ( va_list ap, type );
 </pre>
 
@@ -360,20 +337,20 @@ type va_arg ( va_list ap, type );
 </p>
 
 <ul class="org-ul">
-<li>va_list ：存储参数的类型信息。</li>
+<li>va<sub>list</sub> ：存储参数的类型信息。</li>
 </ul>
 
 <p>
 好了，综合上面3个宏和一个类型可以猜出如何实现C语言可变长参数函数：用
-va_start 获取参数列表（的地址）存储到 ap 中，用 va_arg
-逐个获取值，最后用 va_arg 将 ap 置空。
+va<sub>start</sub> 获取参数列表（的地址）存储到 ap 中，用 va<sub>arg</sub>
+逐个获取值，最后用 va<sub>arg</sub> 将 ap 置空。
 </p>
 </div>
 
-<div id="outline-container-orgb4338e4" class="outline-3">
-<h3 id="举例"><span class="section-number-3">2.1</span> 1.3 举例</h3>
+<div id="outline-container-举例" class="outline-3">
+<h3 id="举例"><span class="section-number-3">2.1.</span> 1.3 举例</h3>
 <div class="outline-text-3" id="text-举例">
-<pre class="example">
+<pre class="example" id="org91d8164">
 /* 作者：独酌逸醉
  * 时间：2012.08.18
  * 功能：用C语言实现变长参数小例：求和
@@ -416,12 +393,12 @@ int main ()
 </div>
 </div>
 
-<div id="outline-container-org620467e" class="outline-3">
-<h3 id="使用注意事项"><span class="section-number-3">2.2</span> 1.4 使用注意事项</h3>
+<div id="outline-container-使用注意事项" class="outline-3">
+<h3 id="使用注意事项"><span class="section-number-3">2.2.</span> 1.4 使用注意事项</h3>
 <div class="outline-text-3" id="text-使用注意事项">
 <ul class="org-ul">
 <li>宏定义在 stdarg.h 中，所以使用时，不要忘了添加头文件。</li>
-<li>设定一个参数结束标志（cplusplus 上说，va_arg
+<li>设定一个参数结束标志（cplusplus 上说，va<sub>arg</sub>
 并不能确定哪个参数是最后一个参数）。</li>
 <li>类型的匹配</li>
 <li>期待您的补充&#x2026;&#x2026;</li>
@@ -430,8 +407,8 @@ int main ()
 </div>
 </div>
 
-<div id="outline-container-orgeb8e584" class="outline-2">
-<h2 id="二深入原理"><span class="section-number-2">3</span> 二、深入原理</h2>
+<div id="outline-container-二深入原理" class="outline-2">
+<h2 id="二深入原理"><span class="section-number-2">3.</span> 二、深入原理</h2>
 <div class="outline-text-2" id="text-二深入原理">
 <p>
 "源码面前，一览无遗"！
@@ -441,7 +418,7 @@ int main ()
 以下源码，来自=“..\Microsoft Visual Studio 10.0\VC\include”=
 </p>
 
-<pre class="example">
+<pre class="example" id="org83a275f">
 // stdarg.h
 #define va_start _crt_va_start
 #define va_arg _crt_va_arg
@@ -459,7 +436,7 @@ typedef char *  va_list;
 除了 <code>_INTSIZEOF</code> 之外，其他都很好理解，举个例子吧：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgeac6342">
 /* 作者：独酌逸醉
  * 时间：2012.08.18
  * 功能：测试 _INTSIZEOF 宏
@@ -485,7 +462,7 @@ int main ()
 输出结果：
 </p>
 
-<pre class="example">
+<pre class="example" id="org66559b9">
 _INTSIZEOF(i) = 4
 _INTSIZEOF(f) = 4
 _INTSIZEOF("Hello,world") = 12
@@ -508,19 +485,19 @@ sizeof("Hello,world") = 12
 </div>
 </div>
 
-<div id="outline-container-orgaad3338" class="outline-2">
-<h2 id="三知识扩展"><span class="section-number-2">4</span> 三、知识扩展</h2>
+<div id="outline-container-三知识扩展" class="outline-2">
+<h2 id="三知识扩展"><span class="section-number-2">4.</span> 三、知识扩展</h2>
 <div class="outline-text-2" id="text-三知识扩展">
 <p>
 可能大家也猜到了，我扩展要扩展什么了？！^_^
 </p>
 </div>
 
-<div id="outline-container-org4951d93" class="outline-3">
-<h3 id="简单介绍两种函数调用约定"><span class="section-number-3">4.1</span> 简单介绍两种函数调用约定</h3>
+<div id="outline-container-简单介绍两种函数调用约定" class="outline-3">
+<h3 id="简单介绍两种函数调用约定"><span class="section-number-3">4.1.</span> 简单介绍两种函数调用约定</h3>
 <div class="outline-text-3" id="text-简单介绍两种函数调用约定">
 <p>
-<b><b>__stdcall （C++默认）</b></b>
+<b><b>_<sub>stdcall</sub> （C++默认）</b></b>
 </p>
 
 <ul class="org-ul">
@@ -530,7 +507,7 @@ sizeof("Hello,world") = 12
 </ul>
 
 <p>
-<b><b>__cdecl （C语言默认）</b></b>
+<b><b>_<sub>cdecl</sub> （C语言默认）</b></b>
 </p>
 
 <ul class="org-ul">
@@ -539,7 +516,7 @@ sizeof("Hello,world") = 12
 </ul>
 
 <p>
-那么，变参函数的调用方式为（也只能是）：__cdecl 。
+那么，变参函数的调用方式为（也只能是）：_<sub>cdecl</sub> 。
 </p>
 
 <p>
@@ -549,8 +526,8 @@ sizeof("Hello,world") = 12
 </div>
 </div>
 
-<div id="outline-container-org3ce78be" class="outline-2">
-<h2 id="参考资料"><span class="section-number-2">5</span> 参考资料</h2>
+<div id="outline-container-参考资料" class="outline-2">
+<h2 id="参考资料"><span class="section-number-2">5.</span> 参考资料</h2>
 <div class="outline-text-2" id="text-参考资料">
 <ul class="org-ul">
 <li><a href="http://www.cplusplus.com/reference/clibrary/cstdarg/va_start/">http://www.cplusplus.com/reference/clibrary/cstdarg/va_start/</a></li>
@@ -566,7 +543,7 @@ sizeof("Hello,world") = 12
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-08-18 06:56:40 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2012-08-18 06:56:40 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

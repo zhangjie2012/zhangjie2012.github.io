@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GNU Autotools</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">GNU Autotools</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -306,19 +283,19 @@ for the JavaScript code in this tag.
 Part II</a>。*
 </p>
 
-<div id="outline-container-org9364552" class="outline-2">
-<h2 id="hello-world"><span class="section-number-2">1</span> Hello World</h2>
+<div id="outline-container-hello-world" class="outline-2">
+<h2 id="hello-world"><span class="section-number-2">1.</span> Hello World</h2>
 <div class="outline-text-2" id="text-hello-world">
 </div>
 
-<div id="outline-container-org44fe2f7" class="outline-3">
-<h3 id="创建文件"><span class="section-number-3">1.1</span> 创建文件</h3>
+<div id="outline-container-创建文件" class="outline-3">
+<h3 id="创建文件"><span class="section-number-3">1.1.</span> 创建文件</h3>
 <div class="outline-text-3" id="text-创建文件">
 <p>
 <i>src/main.c</i>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgdb719b2">
 #include &lt;config.h&gt;
 #include &lt;stdio.h&gt;
 
@@ -334,7 +311,7 @@ int main(void)
 <i>configure.ac</i>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgf537fbb">
 AC_INIT([amhello], [1.0], [bug-report@address])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_PROG_CC
@@ -347,7 +324,7 @@ AC_OUTPUT
 <i>Makefile.am</i>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgff4ec88">
 SUBDIRS = src
 </pre>
 
@@ -355,7 +332,7 @@ SUBDIRS = src
 <i>src/Makefile.am</i>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgd22effb">
 bin_PROGRAMS = hello
 hello_SOURCES = main.c
 </pre>
@@ -364,7 +341,7 @@ hello_SOURCES = main.c
 此时的文件结构为(<code>ls -R</code>):
 </p>
 
-<pre class="example">
+<pre class="example" id="orgac70edd">
 .:
 Makefile.am  configure.ac  src
 
@@ -374,10 +351,10 @@ Makefile.am  main.c
 </div>
 </div>
 
-<div id="outline-container-org6aedcba" class="outline-3">
-<h3 id="autoreconf-install"><span class="section-number-3">1.2</span> autoreconf &#x2013;install</h3>
+<div id="outline-container-autoreconf-install" class="outline-3">
+<h3 id="autoreconf-install"><span class="section-number-3">1.2.</span> autoreconf &#x2013;install</h3>
 <div class="outline-text-3" id="text-autoreconf-install">
-<pre class="example">
+<pre class="example" id="orgd1afb6a">
 $: autoreconf --install
 configure.ac:2: installing `./install-sh'
 configure.ac:2: installing `./missing'
@@ -388,7 +365,7 @@ src/Makefile.am: installing `./depcomp'
 此时的文件结构为(<code>ls -R</code>):
 </p>
 
-<pre class="example">
+<pre class="example" id="org2705431">
 .:
 Makefile.am  aclocal.m4      config.h.in  configure.ac  install-sh  src
 Makefile.in  autom4te.cache  configure    depcomp       missing
@@ -410,10 +387,10 @@ configuration templates.</li>
 </div>
 </div>
 
-<div id="outline-container-org676fb82" class="outline-3">
-<h3 id="configure"><span class="section-number-3">1.3</span> <code>./configure</code></h3>
+<div id="outline-container-configure" class="outline-3">
+<h3 id="configure"><span class="section-number-3">1.3.</span> <code>./configure</code></h3>
 <div class="outline-text-3" id="text-configure">
-<pre class="example">
+<pre class="example" id="org7cda906">
 checking for a BSD-compatible install... /usr/bin/install -c
 checking whether build environment is sane... yes
 checking for a thread-safe mkdir -p... /bin/mkdir -p
@@ -430,10 +407,10 @@ config.status: executing depfiles commands
 </div>
 </div>
 
-<div id="outline-container-orgb92f067" class="outline-3">
-<h3 id="make"><span class="section-number-3">1.4</span> <code>make</code></h3>
+<div id="outline-container-make" class="outline-3">
+<h3 id="make"><span class="section-number-3">1.4.</span> <code>make</code></h3>
 <div class="outline-text-3" id="text-make">
-<pre class="example">
+<pre class="example" id="orgc13f83c">
 /usr/bin/make  all-recursive
 make[1]: Entering directory `/home/zhangjie/TempFile/src'
 Making all in src
@@ -449,10 +426,10 @@ make[1]: Leaving directory `/home/zhangjie/TempFile/src'
 </div>
 </div>
 
-<div id="outline-container-org8ed00c7" class="outline-3">
-<h3 id="编译链接成功运行程序-srchello"><span class="section-number-3">1.5</span> 编译、链接成功，运行程序: <code>src/hello</code></h3>
+<div id="outline-container-编译链接成功运行程序-srchello" class="outline-3">
+<h3 id="编译链接成功运行程序-srchello"><span class="section-number-3">1.5.</span> 编译、链接成功，运行程序: <code>src/hello</code></h3>
 <div class="outline-text-3" id="text-编译链接成功运行程序-srchello">
-<pre class="example">
+<pre class="example" id="org7230e9d">
 $: src/hello
 Hello World!
 This is amhello 1.0.
@@ -460,10 +437,10 @@ This is amhello 1.0.
 </div>
 </div>
 
-<div id="outline-container-org141dbb8" class="outline-3">
-<h3 id="源码打包-make-distcheck"><span class="section-number-3">1.6</span> 源码打包: <code>make distcheck</code></h3>
+<div id="outline-container-源码打包-make-distcheck" class="outline-3">
+<h3 id="源码打包-make-distcheck"><span class="section-number-3">1.6.</span> 源码打包: <code>make distcheck</code></h3>
 <div class="outline-text-3" id="text-源码打包-make-distcheck">
-<pre class="example">
+<pre class="example" id="org08e743b">
 $: make distcheck
 ...
 =============================================
@@ -474,10 +451,10 @@ amhello-1.0.tar.gz
 </div>
 </div>
 
-<div id="outline-container-org9499ad3" class="outline-3">
-<h3 id="解包查看文件内容"><span class="section-number-3">1.7</span> 解包，查看文件内容</h3>
+<div id="outline-container-解包查看文件内容" class="outline-3">
+<h3 id="解包查看文件内容"><span class="section-number-3">1.7.</span> 解包，查看文件内容</h3>
 <div class="outline-text-3" id="text-解包查看文件内容">
-<pre class="example">
+<pre class="example" id="org08c7d52">
 $ tar ztf amhello-1.0.tar.gz
 amhello-1.0/
 amhello-1.0/Makefile.am
@@ -498,13 +475,13 @@ amhello-1.0/install-sh
 </div>
 </div>
 
-<div id="outline-container-org05c72b6" class="outline-2">
-<h2 id="autotools-核心介绍"><span class="section-number-2">2</span> Autotools 核心介绍</h2>
+<div id="outline-container-autotools-核心介绍" class="outline-2">
+<h2 id="autotools-核心介绍"><span class="section-number-2">2.</span> Autotools 核心介绍</h2>
 <div class="outline-text-2" id="text-autotools-核心介绍">
 </div>
 
-<div id="outline-container-org8e81ad0" class="outline-3">
-<h3 id="gnu-autoconf"><span class="section-number-3">2.1</span> GNU AutoConf</h3>
+<div id="outline-container-gnu-autoconf" class="outline-3">
+<h3 id="gnu-autoconf"><span class="section-number-3">2.1.</span> GNU AutoConf</h3>
 <div class="outline-text-3" id="text-gnu-autoconf">
 <ul class="org-ul">
 <li><code>autoconf</code> : Create <i>configure</i> from <i>configure.ac</i> .</li>
@@ -521,8 +498,8 @@ than just <i>configure</i> files.</li>
 </div>
 </div>
 
-<div id="outline-container-org7b5ff35" class="outline-3">
-<h3 id="gnu-automake"><span class="section-number-3">2.2</span> GNU AutoMake</h3>
+<div id="outline-container-gnu-automake" class="outline-3">
+<h3 id="gnu-automake"><span class="section-number-3">2.2.</span> GNU AutoMake</h3>
 <div class="outline-text-3" id="text-gnu-automake">
 <ul class="org-ul">
 <li><code>automake</code> : Create <i>Makefile.in/s from /Makefile.am/s and
@@ -533,11 +510,11 @@ gather denitions in <code>aclocal.m4</code>.</li>
 </div>
 </div>
 
-<div id="outline-container-org0347531" class="outline-3">
-<h3 id="autoreconf"><span class="section-number-3">2.3</span> autoreconf</h3>
+<div id="outline-container-autoreconf" class="outline-3">
+<h3 id="autoreconf"><span class="section-number-3">2.3.</span> autoreconf</h3>
 <div class="outline-text-3" id="text-autoreconf">
 
-<div class="figure">
+<div id="org06463ba" class="figure">
 <p><img src="file:///img/wiki/autoreconf.jpg" alt="autoreconf.jpg" />
 </p>
 <p><span class="figure-number">Figure 1: </span>autoreconf</p>
@@ -557,15 +534,15 @@ gather denitions in <code>aclocal.m4</code>.</li>
 </div>
 </div>
 
-<div id="outline-container-orge570472" class="outline-2">
-<h2 id="hello-world-讲解"><span class="section-number-2">3</span> Hello World 讲解</h2>
+<div id="outline-container-hello-world-讲解" class="outline-2">
+<h2 id="hello-world-讲解"><span class="section-number-2">3.</span> Hello World 讲解</h2>
 <div class="outline-text-2" id="text-hello-world-讲解">
 </div>
 
-<div id="outline-container-orgb081dd5" class="outline-3">
-<h3 id="configure.ac"><span class="section-number-3">3.1</span> configure.ac</h3>
+<div id="outline-container-configure.ac" class="outline-3">
+<h3 id="configure.ac"><span class="section-number-3">3.1.</span> configure.ac</h3>
 <div class="outline-text-3" id="text-configure.ac">
-<pre class="example">
+<pre class="example" id="orge72047f">
 AC_INIT([amhello], [1.0], [bug-report@address])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_PROG_CC
@@ -588,10 +565,10 @@ files.</li>
 </div>
 </div>
 
-<div id="outline-container-orgedb60fe" class="outline-3">
-<h3 id="makefile.am"><span class="section-number-3">3.2</span> Makefile.am</h3>
+<div id="outline-container-makefile.am" class="outline-3">
+<h3 id="makefile.am"><span class="section-number-3">3.2.</span> Makefile.am</h3>
 <div class="outline-text-3" id="text-makefile.am">
-<pre class="example">
+<pre class="example" id="org91c8a3d">
 SUBDIRS = src
 </pre>
 
@@ -603,10 +580,10 @@ SUBDIRS = src
 </div>
 </div>
 
-<div id="outline-container-org020394f" class="outline-3">
-<h3 id="srcmakefile.am"><span class="section-number-3">3.3</span> src/Makefile.am</h3>
+<div id="outline-container-srcmakefile.am" class="outline-3">
+<h3 id="srcmakefile.am"><span class="section-number-3">3.3.</span> src/Makefile.am</h3>
 <div class="outline-text-3" id="text-srcmakefile.am">
-<pre class="example">
+<pre class="example" id="orgb00259d">
 bin_PROGRAMS = hello
 hello_SOURCES = main.c
 </pre>
@@ -623,7 +600,7 @@ hello_SOURCES = main.c
 </p>
 
 
-<div class="figure">
+<div id="org903e974" class="figure">
 <p><img src="file:///img/wiki/sys_hierarchy.jpg" alt="sys_hierarchy.jpg" />
 </p>
 </div>
@@ -631,13 +608,13 @@ hello_SOURCES = main.c
 </div>
 </div>
 
-<div id="outline-container-org24693ad" class="outline-2">
-<h2 id="使用-autoconf"><span class="section-number-2">4</span> 使用 Autoconf</h2>
+<div id="outline-container-使用-autoconf" class="outline-2">
+<h2 id="使用-autoconf"><span class="section-number-2">4.</span> 使用 Autoconf</h2>
 <div class="outline-text-2" id="text-使用-autoconf">
 </div>
 
-<div id="outline-container-org9603fb6" class="outline-3">
-<h3 id="从-configure.ac-到-configure-和-config.h.in"><span class="section-number-3">4.1</span> 从 configure.ac 到 configure 和 config.h.in</h3>
+<div id="outline-container-从-configure.ac-到-configure-和-config.h.in" class="outline-3">
+<h3 id="从-configure.ac-到-configure-和-config.h.in"><span class="section-number-3">4.1.</span> 从 configure.ac 到 configure 和 config.h.in</h3>
 <div class="outline-text-3" id="text-从-configure.ac-到-configure-和-config.h.in">
 <ul class="org-ul">
 <li>"autoconf is a macro processor.</li>
@@ -655,14 +632,14 @@ infrastructure on top of that, plus the pool of macros.</li>
 </div>
 </div>
 
-<div id="outline-container-orgac3908f" class="outline-3">
-<h3 id="探索-m4"><span class="section-number-3">4.2</span> 探索 M4</h3>
+<div id="outline-container-探索-m4" class="outline-3">
+<h3 id="探索-m4"><span class="section-number-3">4.2.</span> 探索 M4</h3>
 <div class="outline-text-3" id="text-探索-m4">
 <p>
 <i>exmple.m4:</i>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgbebcb79">
 m4_define(NAME1, Harry)
 m4_define(NAME2, Sally)
 m4_define(MET, $1 met $2)
@@ -673,7 +650,7 @@ MET(NAME1, NAME2)
 output:
 </p>
 
-<pre class="example">
+<pre class="example" id="org23ab69e">
 $: m4 -P example.m4
 # 空白
 # 空白
@@ -693,8 +670,8 @@ M4
 </div>
 </div>
 
-<div id="outline-container-orga2fb701" class="outline-3">
-<h3 id="m4-基础上的-autoconf"><span class="section-number-3">4.3</span> M4 基础上的 Autoconf</h3>
+<div id="outline-container-m4-基础上的-autoconf" class="outline-3">
+<h3 id="m4-基础上的-autoconf"><span class="section-number-3">4.3.</span> M4 基础上的 Autoconf</h3>
 <div class="outline-text-3" id="text-m4-基础上的-autoconf">
 <ul class="org-ul">
 <li>在许多机器上， Auto = M4，和一些预定义的宏。</li>
@@ -705,7 +682,7 @@ M4
 也因此在 Shell 中做比较使用 <code>test</code> ，而不是 <code>[</code> 。
 </p>
 
-<pre class="example">
+<pre class="example" id="org6a4d60b">
 if test "$x" = "$y"; then ...
 </pre></li>
 
@@ -713,7 +690,7 @@ if test "$x" = "$y"; then ...
 使用 <code>AC_DEFUN</code> 定义宏。
 </p>
 
-<pre class="example">
+<pre class="example" id="org3301d89">
 AC_DEFUN([NAME1], [Harry, Jr.])
 AC_DEFUN([NAME2], [Sally])
 AC_DEFUN([MET], [$1 met $2])
@@ -723,10 +700,10 @@ MET([NAME1], [NAME2])
 </div>
 </div>
 
-<div id="outline-container-org61ea787" class="outline-3">
-<h3 id="一个-configure.ac-的结构"><span class="section-number-3">4.4</span> 一个 configure.ac 的结构</h3>
+<div id="outline-container-一个-configure.ac-的结构" class="outline-3">
+<h3 id="一个-configure.ac-的结构"><span class="section-number-3">4.4.</span> 一个 configure.ac 的结构</h3>
 <div class="outline-text-3" id="text-一个-configure.ac-的结构">
-<pre class="example">
+<pre class="example" id="orgd295160">
 # Prelude
 AC_INIT([PACKAGE], [VERSION], [BUG-REPORT-ADDRESS])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
@@ -759,13 +736,13 @@ AC_OUTPUT
 </div>
 </div>
 
-<div id="outline-container-org744987c" class="outline-2">
-<h2 id="使用-automake"><span class="section-number-2">5</span> 使用 Automake</h2>
+<div id="outline-container-使用-automake" class="outline-2">
+<h2 id="使用-automake"><span class="section-number-2">5.</span> 使用 Automake</h2>
 <div class="outline-text-2" id="text-使用-automake">
 </div>
 
-<div id="outline-container-orgbcd3ec2" class="outline-3">
-<h3 id="automake-规则"><span class="section-number-3">5.1</span> Automake 规则</h3>
+<div id="outline-container-automake-规则" class="outline-3">
+<h3 id="automake-规则"><span class="section-number-3">5.1.</span> Automake 规则</h3>
 <div class="outline-text-3" id="text-automake-规则">
 <ul class="org-ul">
 <li>Automake helps creating <b>portable</b> and <b>*GNU-standard compliant</b>
@@ -797,8 +774,8 @@ will preserve them in the output.</li>
 </div>
 </div>
 
-<div id="outline-container-org088f6ac" class="outline-3">
-<h3 id="在-configure.ac-中声明-automake"><span class="section-number-3">5.2</span> 在 <i>configure.ac</i> 中声明 Automake</h3>
+<div id="outline-container-在-configure.ac-中声明-automake" class="outline-3">
+<h3 id="在-configure.ac-中声明-automake"><span class="section-number-3">5.2.</span> 在 <i>configure.ac</i> 中声明 Automake</h3>
 <div class="outline-text-3" id="text-在-configure.ac-中声明-automake">
 <p>
 语法: <code>AM_INIT_AUTOMAKE([OPTIONS...])])</code> . eg:
@@ -831,10 +808,10 @@ eg: <code>AC_CONFIG_FILES([Makefile sub/Makefile])</code> 会生成 <i>Makefile.
 </div>
 </div>
 
-<div id="outline-container-orgb727e7b" class="outline-3">
-<h3 id="声明源文件"><span class="section-number-3">5.3</span> 声明源文件</h3>
+<div id="outline-container-声明源文件" class="outline-3">
+<h3 id="声明源文件"><span class="section-number-3">5.3.</span> 声明源文件</h3>
 <div class="outline-text-3" id="text-声明源文件">
-<pre class="example">
+<pre class="example" id="orga1c6bbc">
 bin_PROGRAMS = foo run-me
 foo_SOURCES = foo.c foo.h print.c print.h
 run_me_SOURCES = run.c run.h print.c
@@ -842,7 +819,7 @@ run_me_SOURCES = run.c run.h print.c
 
 <ul class="org-ul">
 <li>These programs will be installed in $(bindir).</li>
-<li>The sources of each <i>program</i> go into /program/_SOURCES.</li>
+<li>The sources of each <i>program</i> go into /program/<sub>SOURCES</sub>.</li>
 <li>Non-alphanumeric characters are mapped to '_'.</li>
 <li>Automake automatically computes the list of objects to build and link
 from these files.</li>
@@ -855,10 +832,10 @@ about).</li>
 </div>
 </div>
 
-<div id="outline-container-orgc0d463c" class="outline-3">
-<h3 id="静态库"><span class="section-number-3">5.4</span> (静态)库</h3>
+<div id="outline-container-静态库" class="outline-3">
+<h3 id="静态库"><span class="section-number-3">5.4.</span> (静态)库</h3>
 <div class="outline-text-3" id="text-静态库">
-<pre class="example">
+<pre class="example" id="org1baaad4">
 lib_LIBRARIES = libfoo.a libbar.a
 libfoo_a_SOURCES = foo.c privfoo.h
 libbar_a_SOURCES = bar.c privbar.h
@@ -874,8 +851,8 @@ include_HEADERS = foo.h bar.h
 </div>
 </div>
 
-<div id="outline-container-org0ed80a4" class="outline-3">
-<h3 id="目录结构"><span class="section-number-3">5.5</span> 目录结构</h3>
+<div id="outline-container-目录结构" class="outline-3">
+<h3 id="目录结构"><span class="section-number-3">5.5.</span> 目录结构</h3>
 <div class="outline-text-3" id="text-目录结构">
 <ul class="org-ul">
 <li>在每个目录下都要有一个 <i>Makefile</i> (也就是 <i>Makefile.am</i>)。</li>
@@ -884,7 +861,7 @@ include_HEADERS = foo.h bar.h
 所有的 <i>Makefile</i> 都要在 <i>configure.ac</i> 中声明.
 </p>
 
-<pre class="example">
+<pre class="example" id="org013b34b">
 AC_CONFIG_FILES([Makefile lib/Makefile src/Makefile src/dira/Makefile src/dirb/Makefile])
 </pre></li>
 
@@ -895,7 +872,7 @@ AC_CONFIG_FILES([Makefile lib/Makefile src/Makefile src/dira/Makefile src/dirb/M
 using the /SUBDIRS</i> variable.
 </p>
 
-<pre class="example">
+<pre class="example" id="org430e65c">
 file: Makefile.am
 SUBDIRS = lib src
 </pre></li>
@@ -907,8 +884,8 @@ SUBDIRS = lib src
 </div>
 </div>
 
-<div id="outline-container-org0e2f698" class="outline-3">
-<h3 id="srcdir-and-vpath-builds"><span class="section-number-3">5.6</span> $(srcdir) and VPATH Builds</h3>
+<div id="outline-container-srcdir-and-vpath-builds" class="outline-3">
+<h3 id="srcdir-and-vpath-builds"><span class="section-number-3">5.6.</span> $(srcdir) and VPATH Builds</h3>
 <div class="outline-text-3" id="text-srcdir-and-vpath-builds">
 <ul class="org-ul">
 <li>Remember VPATH builds: a source file is not necessary in the current
@@ -931,14 +908,14 @@ would fetch headers from the build tree.)</li>
 </div>
 </div>
 
-<div id="outline-container-org98281f5" class="outline-3">
-<h3 id="convenience-libraries"><span class="section-number-3">5.7</span> Convenience Libraries</h3>
+<div id="outline-container-convenience-libraries" class="outline-3">
+<h3 id="convenience-libraries"><span class="section-number-3">5.7.</span> Convenience Libraries</h3>
 <div class="outline-text-3" id="text-convenience-libraries">
 <p>
 <i>lib/Makefile.am</i>:
 </p>
 
-<pre class="example">
+<pre class="example" id="orgc3d5559">
 noinst_LIBRARIES = libcompat.a
 libcompat_a_SOURCES = xalloc.c xalloc.h
 </pre>
@@ -947,7 +924,7 @@ libcompat_a_SOURCES = xalloc.c xalloc.h
 <i>src/Makefile.am</i>:
 </p>
 
-<pre class="example">
+<pre class="example" id="orga9366c5">
 bin_PROGRAMS = foo run-me
 foo_SOURCES = foo.c foo.h print.c print.h
 run_me_SOURCES = run.c run.h print.c
@@ -958,14 +935,14 @@ run_me_CPPFLAGS = -I$(srcdir)/../lib
 <ul class="org-ul">
 <li>This is a convenience library, used only when building the package.</li>
 <li><i>LDADD</i> is added when linking all programs.</li>
-<li><i>AM_CPPFLAGS</i> contains additional preprocessor flags.</li>
+<li><i>AM<sub>CPPFLAGS</sub></i> contains additional preprocessor flags.</li>
 <li>You can use per-target variables: they apply to a single program</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org242e816" class="outline-3">
-<h3 id="per-target-flags"><span class="section-number-3">5.8</span> Per-Target Flags</h3>
+<div id="outline-container-per-target-flags" class="outline-3">
+<h3 id="per-target-flags"><span class="section-number-3">5.8.</span> Per-Target Flags</h3>
 <div class="outline-text-3" id="text-per-target-flags">
 <p>
 Assuming foo is a program or library:
@@ -994,7 +971,7 @@ Use plain file names to refer to libraries inside your package (keep
 <i>src/Makefile.am</i>:
 </p>
 
-<pre class="example">
+<pre class="example" id="orgd247da4">
 bin_PROGRAMS = foo run-me
 foo_SOURCES = foo.c foo.h print.c print.h
 run_me_SOURCES = run.c run.h print.c
@@ -1004,8 +981,8 @@ run_me_LDADD = ../lib/libcompat.a $(EFENCELIB)
 </div>
 </div>
 
-<div id="outline-container-org9aa3eca" class="outline-3">
-<h3 id="what-gets-distributed"><span class="section-number-3">5.9</span> What Gets Distributed</h3>
+<div id="outline-container-what-gets-distributed" class="outline-3">
+<h3 id="what-gets-distributed"><span class="section-number-3">5.9.</span> What Gets Distributed</h3>
 <div class="outline-text-3" id="text-what-gets-distributed">
 <p>
 <code>make dist</code> and <code>make distcheck</code> create a tarball containing:
@@ -1019,13 +996,13 @@ run_me_LDADD = ../lib/libcompat.a $(EFENCELIB)
 <li>&#x2026;</li>
 <li>Common les such as <i>ChangeLog</i>, <i>NEWS</i>, etc.</li>
 <li>See <code>automake --help</code> for a list of those files.</li>
-<li>Extra les or directories listed into <i>EXTRA_DIST</i>.</li>
+<li>Extra les or directories listed into <i>EXTRA<sub>DIST</sub></i>.</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd100870" class="outline-3">
-<h3 id="扩展的-automake-规则"><span class="section-number-3">5.10</span> 扩展的 Automake 规则</h3>
+<div id="outline-container-扩展的-automake-规则" class="outline-3">
+<h3 id="扩展的-automake-规则"><span class="section-number-3">5.10.</span> 扩展的 Automake 规则</h3>
 <div class="outline-text-3" id="text-扩展的-automake-规则">
 <p>
 略。
@@ -1035,7 +1012,7 @@ run_me_LDADD = ../lib/libcompat.a $(EFENCELIB)
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2014-08-09 00:00:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2014-08-09 00:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

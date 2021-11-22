@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux 目录结构及其含义</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Linux 目录结构及其含义</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -317,8 +294,8 @@ for the JavaScript code in this tag.
 操作系统制作者以及想要维护系统的用户，都能够遵循 FHS 标准。
 </p>
 
-<div id="outline-container-org9a86280" class="outline-2">
-<h2 id="根目录的意义与内容"><span class="section-number-2">1</span> 根目录(/)的意义与内容</h2>
+<div id="outline-container-根目录的意义与内容" class="outline-2">
+<h2 id="根目录的意义与内容"><span class="section-number-2">1.</span> 根目录(/)的意义与内容</h2>
 <div class="outline-text-2" id="text-根目录的意义与内容">
 <p>
 根目录是整个 Linux 系统最重要的一个目录，所有的目录都是由根目录衍生出来的，根目录也与开机、还原、系统修复等操作有关。
@@ -330,14 +307,14 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </p>
 
 
-<div class="figure">
+<div id="org57b5e31" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/0.png" alt="0.png" />
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc8c4b16" class="outline-3">
-<h3 id="bin-目录"><span class="section-number-3">1.1</span> /bin 目录</h3>
+<div id="outline-container-bin-目录" class="outline-3">
+<h3 id="bin-目录"><span class="section-number-3">1.1.</span> /bin 目录</h3>
 <div class="outline-text-3" id="text-bin-目录">
 <p>
 放置内容: 系统的可执行文件目录，Linux 系统中有很多放置可执行文件的目录。
@@ -346,7 +323,7 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </p>
 
 
-<div class="figure">
+<div id="org6eb8249" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/11.png" alt="11.png" />
 </p>
 </div>
@@ -357,15 +334,15 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </div>
 </div>
 
-<div id="outline-container-orga3c0f30" class="outline-3">
-<h3 id="boot-目录"><span class="section-number-3">1.2</span> /boot 目录</h3>
+<div id="outline-container-boot-目录" class="outline-3">
+<h3 id="boot-目录"><span class="section-number-3">1.2.</span> /boot 目录</h3>
 <div class="outline-text-3" id="text-boot-目录">
 <p>
 放置内容: 这个目录下放置开机会使用到的文件，包括 Linux 内核文件以及开机菜单与开机所配置文件等。
 </p>
 
 
-<div class="figure">
+<div id="org1434713" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/2.png" alt="2.png" />
 </p>
 </div>
@@ -375,7 +352,7 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </p>
 
 
-<div class="figure">
+<div id="org16cd889" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/3.png" alt="3.png" />
 </p>
 </div>
@@ -386,14 +363,14 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </div>
 </div>
 
-<div id="outline-container-org694126b" class="outline-3">
-<h3 id="cdrom-目录是一个空目录具体含义未知"><span class="section-number-3">1.3</span> /cdrom 目录是一个空目录，具体含义未知</h3>
+<div id="outline-container-cdrom-目录是一个空目录具体含义未知" class="outline-3">
+<h3 id="cdrom-目录是一个空目录具体含义未知"><span class="section-number-3">1.3.</span> /cdrom 目录是一个空目录，具体含义未知</h3>
 <div class="outline-text-3" id="text-cdrom-目录是一个空目录具体含义未知">
 </div>
 </div>
 
-<div id="outline-container-org6fc67e6" class="outline-3">
-<h3 id="dev-目录"><span class="section-number-3">1.4</span> /dev 目录</h3>
+<div id="outline-container-dev-目录" class="outline-3">
+<h3 id="dev-目录"><span class="section-number-3">1.4.</span> /dev 目录</h3>
 <div class="outline-text-3" id="text-dev-目录">
 <p>
 放置内容: 在 Linux 系统上，任何设备与接口都是以文件的形式存在于这个目录中。访问这些文件，就相当于访问某个设备。
@@ -401,7 +378,7 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </p>
 
 
-<div class="figure">
+<div id="org33fddbd" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/4.png" alt="4.png" />
 </p>
 </div>
@@ -412,8 +389,8 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </div>
 </div>
 
-<div id="outline-container-org78c7cb1" class="outline-3">
-<h3 id="etc-目录"><span class="section-number-3">1.5</span> /etc 目录</h3>
+<div id="outline-container-etc-目录" class="outline-3">
+<h3 id="etc-目录"><span class="section-number-3">1.5.</span> /etc 目录</h3>
 <div class="outline-text-3" id="text-etc-目录">
 <p>
 放置内容: 系统的主要配置文件几乎都放置在这个目录下。一般来说，这个目录下的各个文件属性是可以让一般用户查阅的，
@@ -421,7 +398,7 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </p>
 
 
-<div class="figure">
+<div id="orge292f9a" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/5.png" alt="5.png" />
 </p>
 </div>
@@ -439,8 +416,8 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </div>
 </div>
 
-<div id="outline-container-orga193b4a" class="outline-3">
-<h3 id="home-目录"><span class="section-number-3">1.6</span> /home 目录</h3>
+<div id="outline-container-home-目录" class="outline-3">
+<h3 id="home-目录"><span class="section-number-3">1.6.</span> /home 目录</h3>
 <div class="outline-text-3" id="text-home-目录">
 <p>
 放置内容: 系统默认的用户主文件夹。每创建一个一般用户帐号，默认的用户主文件夹都会规范到这里来。
@@ -448,15 +425,15 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </div>
 </div>
 
-<div id="outline-container-org863c704" class="outline-3">
-<h3 id="lib-目录"><span class="section-number-3">1.7</span> /lib 目录</h3>
+<div id="outline-container-lib-目录" class="outline-3">
+<h3 id="lib-目录"><span class="section-number-3">1.7.</span> /lib 目录</h3>
 <div class="outline-text-3" id="text-lib-目录">
 <p>
 放置内容: 放置开机时会用到的函数库，以及在 /bin 或 /sbin 下面的命令会调用的函数。 查看目录内容:
 </p>
 
 
-<div class="figure">
+<div id="orgce3b82c" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/6.png" alt="6.png" />
 </p>
 </div>
@@ -467,8 +444,8 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </div>
 </div>
 
-<div id="outline-container-org787cf02" class="outline-3">
-<h3 id="media-目录"><span class="section-number-3">1.8</span> /media 目录</h3>
+<div id="outline-container-media-目录" class="outline-3">
+<h3 id="media-目录"><span class="section-number-3">1.8.</span> /media 目录</h3>
 <div class="outline-text-3" id="text-media-目录">
 <p>
 放置内容: 放置可删除的设备。包括软盘、光盘、DVD 等设备都在暂时挂载于此。
@@ -476,8 +453,8 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </div>
 </div>
 
-<div id="outline-container-orgdb325bb" class="outline-3">
-<h3 id="mnt-目录"><span class="section-number-3">1.9</span> /mnt 目录</h3>
+<div id="outline-container-mnt-目录" class="outline-3">
+<h3 id="mnt-目录"><span class="section-number-3">1.9.</span> /mnt 目录</h3>
 <div class="outline-text-3" id="text-mnt-目录">
 <p>
 放置内容: 挂载某些额外的设备
@@ -485,8 +462,8 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </div>
 </div>
 
-<div id="outline-container-org82a2a57" class="outline-3">
-<h3 id="opt-目录"><span class="section-number-3">1.10</span> /opt 目录</h3>
+<div id="outline-container-opt-目录" class="outline-3">
+<h3 id="opt-目录"><span class="section-number-3">1.10.</span> /opt 目录</h3>
 <div class="outline-text-3" id="text-opt-目录">
 <p>
 放置内容: 第三方软件放置的目录。如果你想自行安装额外的软件(非原本的 distribution 提供的)，那么也能够将你的软件安装到这里来。
@@ -498,8 +475,8 @@ FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且�
 </div>
 </div>
 
-<div id="outline-container-orgceacacb" class="outline-3">
-<h3 id="root-目录"><span class="section-number-3">1.11</span> /root 目录</h3>
+<div id="outline-container-root-目录" class="outline-3">
+<h3 id="root-目录"><span class="section-number-3">1.11.</span> /root 目录</h3>
 <div class="outline-text-3" id="text-root-目录">
 <p>
 放置内容: 系统管理员(root)的主文件夹。之所以放在这里，是因为如果进入单用户维护模式而仅挂载根目录时，该文件能够拥有
@@ -508,8 +485,8 @@ root 的主文件夹，所以希望 root 的主文件夹与根目录放置在同
 </div>
 </div>
 
-<div id="outline-container-org981c21f" class="outline-3">
-<h3 id="sbin-目录"><span class="section-number-3">1.12</span> /sbin 目录</h3>
+<div id="outline-container-sbin-目录" class="outline-3">
+<h3 id="sbin-目录"><span class="section-number-3">1.12.</span> /sbin 目录</h3>
 <div class="outline-text-3" id="text-sbin-目录">
 <p>
 放置内容: 开机过程中所需要的，里面包括开机、修复、还原系统所需要的命令。
@@ -521,15 +498,15 @@ root 的主文件夹，所以希望 root 的主文件夹与根目录放置在同
 </p>
 
 
-<div class="figure">
+<div id="orga861e66" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/7.png" alt="7.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org73fd4a5" class="outline-3">
-<h3 id="srv-目录"><span class="section-number-3">1.13</span> /srv 目录</h3>
+<div id="outline-container-srv-目录" class="outline-3">
+<h3 id="srv-目录"><span class="section-number-3">1.13.</span> /srv 目录</h3>
 <div class="outline-text-3" id="text-srv-目录">
 <p>
 放置内容: "service" 的缩写，是一些网络服务启动后，这些服务所需要取用的数据目录。常见的服务例如 WWW，FTP 等。
@@ -537,8 +514,8 @@ root 的主文件夹，所以希望 root 的主文件夹与根目录放置在同
 </div>
 </div>
 
-<div id="outline-container-org7a44f8e" class="outline-3">
-<h3 id="tmp-目录"><span class="section-number-3">1.14</span> /tmp 目录</h3>
+<div id="outline-container-tmp-目录" class="outline-3">
+<h3 id="tmp-目录"><span class="section-number-3">1.14.</span> /tmp 目录</h3>
 <div class="outline-text-3" id="text-tmp-目录">
 <p>
 放置内容: 一般用户或者是正在执行的程序暂时放置文件的地方。这个目录任何人都可以访问，所以需要定期清理一下。
@@ -546,15 +523,15 @@ root 的主文件夹，所以希望 root 的主文件夹与根目录放置在同
 </p>
 
 
-<div class="figure">
+<div id="orgdf70197" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/8.png" alt="8.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orga40e228" class="outline-3">
-<h3 id="lostfound-目录"><span class="section-number-3">1.15</span> /lost+found 目录</h3>
+<div id="outline-container-lostfound-目录" class="outline-3">
+<h3 id="lostfound-目录"><span class="section-number-3">1.15.</span> /lost+found 目录</h3>
 <div class="outline-text-3" id="text-lostfound-目录">
 <p>
 放置内容: 放置 <code>ext2/ext3</code> 文件系统格式才会产生的一个目录，目的在于当文件系统发生错误时，将一些丢失的片段放置到这个目录下。
@@ -567,8 +544,8 @@ root 的主文件夹，所以希望 root 的主文件夹与根目录放置在同
 </div>
 </div>
 
-<div id="outline-container-org107eae6" class="outline-3">
-<h3 id="proc-目录"><span class="section-number-3">1.16</span> /proc 目录</h3>
+<div id="outline-container-proc-目录" class="outline-3">
+<h3 id="proc-目录"><span class="section-number-3">1.16.</span> /proc 目录</h3>
 <div class="outline-text-3" id="text-proc-目录">
 <p>
 放置内容: 这个目录本身是一个虚拟文件系统(virtual filesystem)。它放置的数据都是在内存中，例如系统内核、进程、外部设备的状态及网络状态等。
@@ -576,7 +553,7 @@ root 的主文件夹，所以希望 root 的主文件夹与根目录放置在同
 </p>
 
 
-<div class="figure">
+<div id="org439cfbf" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/8.png" alt="8.png" />
 </p>
 </div>
@@ -587,8 +564,8 @@ root 的主文件夹，所以希望 root 的主文件夹与根目录放置在同
 </div>
 </div>
 
-<div id="outline-container-orgab6f002" class="outline-3">
-<h3 id="sys-目录"><span class="section-number-3">1.17</span> /sys 目录</h3>
+<div id="outline-container-sys-目录" class="outline-3">
+<h3 id="sys-目录"><span class="section-number-3">1.17.</span> /sys 目录</h3>
 <div class="outline-text-3" id="text-sys-目录">
 <p>
 放置内容: 虚拟文件系统，主要记录与内核相关的信息，包括目前已加载的内核模块与内核检测到的硬件设备信息，同样不占硬盘容量。
@@ -596,7 +573,7 @@ root 的主文件夹，所以希望 root 的主文件夹与根目录放置在同
 </p>
 
 
-<div class="figure">
+<div id="org2bf97e7" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/10.png" alt="10.png" />
 </p>
 </div>
@@ -604,8 +581,8 @@ root 的主文件夹，所以希望 root 的主文件夹与根目录放置在同
 </div>
 </div>
 
-<div id="outline-container-org2d25f2e" class="outline-2">
-<h2 id="usr-的意义与内容"><span class="section-number-2">2</span> /usr 的意义与内容</h2>
+<div id="outline-container-usr-的意义与内容" class="outline-2">
+<h2 id="usr-的意义与内容"><span class="section-number-2">2.</span> /usr 的意义与内容</h2>
 <div class="outline-text-2" id="text-usr-的意义与内容">
 <p>
 usr: UNIX Software Resource. "Unix 操作系统软件资源" 所放置的目录，不是用户数据。
@@ -620,29 +597,29 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </p>
 
 
-<div class="figure">
+<div id="org7b81c11" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/111.png" alt="111.png" />
 </p>
 </div>
 </div>
 
-<div id="outline-container-org5e80dd8" class="outline-3">
-<h3 id="usrbin-目录"><span class="section-number-3">2.1</span> /usr/bin 目录</h3>
+<div id="outline-container-usrbin-目录" class="outline-3">
+<h3 id="usrbin-目录"><span class="section-number-3">2.1.</span> /usr/bin 目录</h3>
 <div class="outline-text-3" id="text-usrbin-目录">
 <p>
 放置内容: 绝大部分的用户可使用命令都放在这里。和 <code>/bin</code> 的不同之处在于是否与开机过程有关。
 </p>
 
 
-<div class="figure">
+<div id="org1e3b1e6" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/12.png" alt="12.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgd12bec1" class="outline-3">
-<h3 id="usrinclude-目录"><span class="section-number-3">2.2</span> /usr/include 目录</h3>
+<div id="outline-container-usrinclude-目录" class="outline-3">
+<h3 id="usrinclude-目录"><span class="section-number-3">2.2.</span> /usr/include 目录</h3>
 <div class="outline-text-3" id="text-usrinclude-目录">
 <p>
 放置内容: C/C++ 等程序设计语言(header)与包含文件(include) 放置处，当我们以 tarball 方式安装某些数据时，会使用到里头的许多包含文件。
@@ -653,7 +630,7 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </p>
 
 
-<div class="figure">
+<div id="org8b2f5be" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/13.png" alt="13.png" />
 </p>
 </div>
@@ -664,8 +641,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-org5ed1ce2" class="outline-3">
-<h3 id="usrlocal-目录"><span class="section-number-3">2.3</span> /usr/local 目录</h3>
+<div id="outline-container-usrlocal-目录" class="outline-3">
+<h3 id="usrlocal-目录"><span class="section-number-3">2.3.</span> /usr/local 目录</h3>
 <div class="outline-text-3" id="text-usrlocal-目录">
 <p>
 放置内容: 系统管理员在本机自行安装自己下载的软件，建议安装到此目录，这样方便管理。 <code>/local</code> 中也包括 bin, etc, include, lib 等子目录
@@ -673,8 +650,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-org391e5ea" class="outline-3">
-<h3 id="usrsbin-目录"><span class="section-number-3">2.4</span> /usr/sbin 目录</h3>
+<div id="outline-container-usrsbin-目录" class="outline-3">
+<h3 id="usrsbin-目录"><span class="section-number-3">2.4.</span> /usr/sbin 目录</h3>
 <div class="outline-text-3" id="text-usrsbin-目录">
 <p>
 放置内容: 非系统正常运行所需要的系统命令。最常见的就是某些网络服务器软件的服务命令(daemon)。
@@ -682,8 +659,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-orge4a377f" class="outline-3">
-<h3 id="usrshare-目录"><span class="section-number-3">2.5</span> /usr/share 目录</h3>
+<div id="outline-container-usrshare-目录" class="outline-3">
+<h3 id="usrshare-目录"><span class="section-number-3">2.5.</span> /usr/share 目录</h3>
 <div class="outline-text-3" id="text-usrshare-目录">
 <p>
 放置内容: 共享文件，在这个目录下放置的数据几乎是不分硬件架构均可读的数据。
@@ -700,8 +677,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-orga835cce" class="outline-3">
-<h3 id="usrsrc-目录"><span class="section-number-3">2.6</span> /usr/src 目录</h3>
+<div id="outline-container-usrsrc-目录" class="outline-3">
+<h3 id="usrsrc-目录"><span class="section-number-3">2.6.</span> /usr/src 目录</h3>
 <div class="outline-text-3" id="text-usrsrc-目录">
 <p>
 放置内容: src for source ，一般源码放置到这里。内核源码一般放置到 <code>/usr/src/linux/</code> 目录下。
@@ -712,7 +689,7 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </p>
 
 
-<div class="figure">
+<div id="org218fb31" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/14.png" alt="14.png" />
 </p>
 </div>
@@ -724,8 +701,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-org3b7d425" class="outline-2">
-<h2 id="var-的意义和内容"><span class="section-number-2">3</span> /var 的意义和内容</h2>
+<div id="outline-container-var-的意义和内容" class="outline-2">
+<h2 id="var-的意义和内容"><span class="section-number-2">3.</span> /var 的意义和内容</h2>
 <div class="outline-text-2" id="text-var-的意义和内容">
 <p>
 如果 /usr 是安装时会占用较大硬盘容量的目录，那么 /var 就是在系统后才会渐渐占用硬盘容量的目录。
@@ -737,14 +714,14 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </p>
 
 
-<div class="figure">
+<div id="org1eaffe7" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/15.png" alt="15.png" />
 </p>
 </div>
 </div>
 
-<div id="outline-container-org3d823fa" class="outline-3">
-<h3 id="varcache-目录"><span class="section-number-3">3.1</span> /var/cache 目录</h3>
+<div id="outline-container-varcache-目录" class="outline-3">
+<h3 id="varcache-目录"><span class="section-number-3">3.1.</span> /var/cache 目录</h3>
 <div class="outline-text-3" id="text-varcache-目录">
 <p>
 放置内容: 应用程序本身运行过程中会产生的一些暂存文件。
@@ -752,8 +729,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-org3613f1f" class="outline-3">
-<h3 id="varlocal-目录"><span class="section-number-3">3.2</span> /var/local 目录</h3>
+<div id="outline-container-varlocal-目录" class="outline-3">
+<h3 id="varlocal-目录"><span class="section-number-3">3.2.</span> /var/local 目录</h3>
 <div class="outline-text-3" id="text-varlocal-目录">
 <p>
 放置内容: 程序本身执行过程中，需要使用的数据库文件放置的目录。
@@ -761,8 +738,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-org9a492a0" class="outline-3">
-<h3 id="varlock-目录"><span class="section-number-3">3.3</span> /var/lock 目录</h3>
+<div id="outline-container-varlock-目录" class="outline-3">
+<h3 id="varlock-目录"><span class="section-number-3">3.3.</span> /var/lock 目录</h3>
 <div class="outline-text-3" id="text-varlock-目录">
 <p>
 放置内容: 某些设备或者是文件资源一次只能被一个应用程序所使用，如果同时有两个程序使用该设备时，就可能产生一些错误的状况，
@@ -771,8 +748,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-org14e8c61" class="outline-3">
-<h3 id="varlog-目录"><span class="section-number-3">3.4</span> /var/log 目录</h3>
+<div id="outline-container-varlog-目录" class="outline-3">
+<h3 id="varlog-目录"><span class="section-number-3">3.4.</span> /var/log 目录</h3>
 <div class="outline-text-3" id="text-varlog-目录">
 <p>
 放置内容: 登录文件。
@@ -780,8 +757,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-org9a70559" class="outline-3">
-<h3 id="varmail-目录"><span class="section-number-3">3.5</span> /var/mail 目录</h3>
+<div id="outline-container-varmail-目录" class="outline-3">
+<h3 id="varmail-目录"><span class="section-number-3">3.5.</span> /var/mail 目录</h3>
 <div class="outline-text-3" id="text-varmail-目录">
 <p>
 放置内容: 个人电子邮件信箱的目录，不过这个目录也被放置到 <code>/var/spool/mail/</code> 目录中。通常这两个文件的互为链接文件
@@ -789,8 +766,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-org9c8451d" class="outline-3">
-<h3 id="varrun-目录"><span class="section-number-3">3.6</span> /var/run 目录</h3>
+<div id="outline-container-varrun-目录" class="outline-3">
+<h3 id="varrun-目录"><span class="section-number-3">3.6.</span> /var/run 目录</h3>
 <div class="outline-text-3" id="text-varrun-目录">
 <p>
 放置内容: 某些程序或者服务启动后，会将他们的 PID 放置在这个目录下。
@@ -798,8 +775,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-org8f0334a" class="outline-3">
-<h3 id="varspool-目录"><span class="section-number-3">3.7</span> /var/spool 目录</h3>
+<div id="outline-container-varspool-目录" class="outline-3">
+<h3 id="varspool-目录"><span class="section-number-3">3.7.</span> /var/spool 目录</h3>
 <div class="outline-text-3" id="text-varspool-目录">
 <p>
 放置内容: 一些队列数据，这些数据使用后一般会被删除。
@@ -808,8 +785,8 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 
-<div id="outline-container-orgd69112f" class="outline-2">
-<h2 id="selinux-的意义和内容"><span class="section-number-2">4</span> /selinux 的意义和内容</h2>
+<div id="outline-container-selinux-的意义和内容" class="outline-2">
+<h2 id="selinux-的意义和内容"><span class="section-number-2">4.</span> /selinux 的意义和内容</h2>
 <div class="outline-text-2" id="text-selinux-的意义和内容">
 <p>
 同样放置内存中的信息，不占用任何硬盘容量。 <code>/selinux</code> 是 Secure Enhance Linux 的执行目录，而 SELinux 是 Linux
@@ -823,7 +800,7 @@ FHS 建议所有的软件开发者应该将他们的数据合理的放置到这�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-02-03 15:34:19 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2012-02-03 15:34:19 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

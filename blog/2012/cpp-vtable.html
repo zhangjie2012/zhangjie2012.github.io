@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C++虚函数及虚函数表解析</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">C++虚函数及虚函数表解析</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -288,8 +265,8 @@ for the JavaScript code in this tag.
 <li>整理成文，帮助自己记忆；不求帮到他人，只求不会误导。</li>
 </ul>
 
-<div id="outline-container-orgca4c51d" class="outline-2">
-<h2 id="一背景知识一些基本概念"><span class="section-number-2">1</span> 背景知识（一些基本概念）</h2>
+<div id="outline-container-一背景知识一些基本概念" class="outline-2">
+<h2 id="一背景知识一些基本概念"><span class="section-number-2">1.</span> 背景知识（一些基本概念）</h2>
 <div class="outline-text-2" id="text-一背景知识一些基本概念">
 <p>
 虚函数（Virtual Function）：在基类中声明为 virtual 并在一个或多个派生类中被重新定义的成员函数。
@@ -308,7 +285,7 @@ C++ "虚函数"的存在是为了实现面向对象中的"多态"，即父类类
 实例：
 </p>
 
-<pre class="example">
+<pre class="example" id="org3e4003e">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -406,7 +383,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgcd8a2c8">
 This is  base_class's normal_func()
 This is  base_class's virtual_fuc()
 This is  base_class's normal_func()
@@ -416,16 +393,16 @@ This is  drived_class2's virtual_fuc()
 </pre>
 
 <p>
-假如将 base_class 类中的 <code>virtual_fuc()</code> 写成下面这样（纯虚函数，虚基类）：
+假如将 base<sub>class</sub> 类中的 <code>virtual_fuc()</code> 写成下面这样（纯虚函数，虚基类）：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgf1dc4e5">
 // 无实现体
 virtual int virtual_fuc() = 0;
 </pre>
 
 <p>
-那么 virtual_fuc() 是一个纯虚函数，base_class 就是一个虚基类：不能实例化（即不能用它来定义对象），只能声明指针或者引用。
+那么 virtual<sub>fuc</sub>() 是一个纯虚函数，base<sub>class</sub> 就是一个虚基类：不能实例化（即不能用它来定义对象），只能声明指针或者引用。
 读者可以自行测试，这里不再给出实例。
 </p>
 
@@ -445,10 +422,10 @@ virtual int virtual_fuc() = 0;
 </div>
 </div>
 
-<div id="outline-container-org530d4c7" class="outline-2">
-<h2 id="二无继承时的虚函数表"><span class="section-number-2">2</span> 无继承时的虚函数表</h2>
+<div id="outline-container-二无继承时的虚函数表" class="outline-2">
+<h2 id="二无继承时的虚函数表"><span class="section-number-2">2.</span> 无继承时的虚函数表</h2>
 <div class="outline-text-2" id="text-二无继承时的虚函数表">
-<pre class="example">
+<pre class="example" id="org857e4c3">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -496,7 +473,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgab4b47e">
 base_class 的虚函数表首地址为：0x22ff0c
 base_class 的 第一个函数首地址：0x472c98
 base_class 的 第二个函数首地址：0x472c9c
@@ -533,26 +510,26 @@ This is base_class's v_func3()
 </p>
 
 
-<div class="figure">
+<div id="orgbcb1c64" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/vt_analysis1.jpg" alt="vt_analysis1.jpg" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgaca7f21" class="outline-2">
-<h2 id="三单一继承下的虚函数表"><span class="section-number-2">3</span> 单一继承下的虚函数表</h2>
+<div id="outline-container-三单一继承下的虚函数表" class="outline-2">
+<h2 id="三单一继承下的虚函数表"><span class="section-number-2">3.</span> 单一继承下的虚函数表</h2>
 <div class="outline-text-2" id="text-三单一继承下的虚函数表">
 </div>
 
-<div id="outline-container-org4bccb9b" class="outline-3">
-<h3 id="子类没有重写父类的虚函数"><span class="section-number-3">3.1</span> 子类没有重写父类的虚函数</h3>
+<div id="outline-container-子类没有重写父类的虚函数" class="outline-3">
+<h3 id="子类没有重写父类的虚函数"><span class="section-number-3">3.1.</span> 子类没有重写父类的虚函数</h3>
 <div class="outline-text-3" id="text-子类没有重写父类的虚函数">
 <p>
-（<a href="http://coolshell.cn/">陈皓</a>文章中用了"覆盖"一词，我觉得太合理，但是我又找不到更合理的词语，所以就用一个句子代替了。^{-}）
+（<a href="http://coolshell.cn/">陈皓</a>文章中用了"覆盖"一词，我觉得太合理，但是我又找不到更合理的词语，所以就用一个句子代替了。<sup>-</sup>）
 </p>
 
-<pre class="example">
+<pre class="example" id="org8d55d0b">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -611,7 +588,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example">
+<pre class="example" id="org82b64cd">
 dev_class 的虚函数表首地址为：0x22ff0c
 dev_class 的 第一个函数首地址：0x472d10
 dev_class 的 第二个函数首地址：0x472d14
@@ -631,7 +608,7 @@ This is dev_class's v_func5()
 </p>
 
 
-<div class="figure">
+<div id="org50fbd29" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/vt_analysis2.jpg" alt="vt_analysis2.jpg" />
 </p>
 </div>
@@ -642,10 +619,10 @@ This is dev_class's v_func5()
 </div>
 </div>
 
-<div id="outline-container-org74baac2" class="outline-3">
-<h3 id="子类有重写父类的虚函数"><span class="section-number-3">3.2</span> 子类有重写父类的虚函数</h3>
+<div id="outline-container-子类有重写父类的虚函数" class="outline-3">
+<h3 id="子类有重写父类的虚函数"><span class="section-number-3">3.2.</span> 子类有重写父类的虚函数</h3>
 <div class="outline-text-3" id="text-子类有重写父类的虚函数">
-<pre class="example">
+<pre class="example" id="org076d449">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -712,7 +689,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example">
+<pre class="example" id="org44b3c2a">
 dev_class 的虚函数表首地址为：0x22ff0c
 dev_class 的 第一个函数首地址：0x472d50
 dev_class 的 第二个函数首地址：0x472d54
@@ -732,13 +709,13 @@ This is dev_class's v_func5()
 </p>
 
 
-<div class="figure">
+<div id="org93040e4" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/vt_analysis3.jpg" alt="vt_analysis3.jpg" />
 </p>
 </div>
 
 <p>
-可以看出：当派生类中 dev_class 中重写了父类 base_class 的前两个虚函数（v_func1，v_func2）之后，使用派生类的虚函数指针代替了父类的虚函数。
+可以看出：当派生类中 dev<sub>class</sub> 中重写了父类 base<sub>class</sub> 的前两个虚函数（v<sub>func1</sub>，v<sub>func2</sub>）之后，使用派生类的虚函数指针代替了父类的虚函数。
 未重写的父类虚函数位置没有发生变化。
 </p>
 
@@ -746,7 +723,7 @@ This is dev_class's v_func5()
 不知道看到这里，你心里有没有一个小问题？至少我是有的。看下面的代码：
 </p>
 
-<pre class="example">
+<pre class="example" id="org0e20be2">
 virtual void v_func1()
 {
     base_class::v_func1();
@@ -755,11 +732,11 @@ virtual void v_func1()
 </pre>
 
 <p>
-既然派生类的虚函数表中用 dev_class::v_func1 指针代替了 <code>base_class::v_func1</code> ，假如我显示的调用
+既然派生类的虚函数表中用 dev<sub>class</sub>::v<sub>func1</sub> 指针代替了 <code>base_class::v_func1</code> ，假如我显示的调用
 </p>
 
 <p>
-base_class::v_func1，会不会有错呢？答案是没错的，可以正确的调用！不是覆盖了吗？dev_class 已经不知道 base_class::v_func1 的指针了，怎么调用的呢？
+base<sub>class</sub>::v<sub>func1</sub>，会不会有错呢？答案是没错的，可以正确的调用！不是覆盖了吗？dev<sub>class</sub> 已经不知道 base<sub>class</sub>::v<sub>func1</sub> 的指针了，怎么调用的呢？
 </p>
 
 <p>
@@ -774,15 +751,15 @@ base_class::v_func1，会不会有错呢？答案是没错的，可以正确的�
 </div>
 </div>
 
-<div id="outline-container-orgca53b81" class="outline-2">
-<h2 id="四多重继承下的虚函数表"><span class="section-number-2">4</span> 多重继承下的虚函数表</h2>
+<div id="outline-container-四多重继承下的虚函数表" class="outline-2">
+<h2 id="四多重继承下的虚函数表"><span class="section-number-2">4.</span> 多重继承下的虚函数表</h2>
 <div class="outline-text-2" id="text-四多重继承下的虚函数表">
 </div>
 
-<div id="outline-container-orga09192d" class="outline-3">
-<h3 id="子类没有重写父类的虚函数-1"><span class="section-number-3">4.1</span> 子类没有重写父类的虚函数</h3>
+<div id="outline-container-子类没有重写父类的虚函数-1" class="outline-3">
+<h3 id="子类没有重写父类的虚函数-1"><span class="section-number-3">4.1.</span> 子类没有重写父类的虚函数</h3>
 <div class="outline-text-3" id="text-子类没有重写父类的虚函数-1">
-<pre class="example">
+<pre class="example" id="org79620d9">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -842,7 +819,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example">
+<pre class="example" id="org74ac435">
 dc 的虚函数表 bc1_vt 地址：0x22ff08
 dc 的虚函数表 bc1_vt 第一个虚函数地址：0x472d38
 dc 的虚函数表 bc1_vt 第二个虚函数地址：0x472d3c
@@ -860,7 +837,7 @@ This is bc2_func1's v_func1()
 </p>
 
 
-<div class="figure">
+<div id="org060f36f" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/vt_analysis4.jpg" alt="vt_analysis4.jpg" />
 </p>
 </div>
@@ -878,10 +855,10 @@ This is bc2_func1's v_func1()
 </div>
 </div>
 
-<div id="outline-container-orgb66bb4c" class="outline-3">
-<h3 id="子类重写了父类的虚函数"><span class="section-number-3">4.2</span> 子类重写了父类的虚函数</h3>
+<div id="outline-container-子类重写了父类的虚函数" class="outline-3">
+<h3 id="子类重写了父类的虚函数"><span class="section-number-3">4.2.</span> 子类重写了父类的虚函数</h3>
 <div class="outline-text-3" id="text-子类重写了父类的虚函数">
-<pre class="example">
+<pre class="example" id="org4cfad45">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -966,7 +943,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example">
+<pre class="example" id="org9c211e8">
 dc 的虚函数表 bc1_vt 地址：0x22ff08
 dc 的虚函数表 bc1_vt 第一个虚函数地址：0x472e28
 dc 的虚函数表 bc1_vt 第二个虚函数地址：0x472e2c
@@ -990,7 +967,7 @@ This is base_class2's bc2_func2()
 </p>
 
 
-<div class="figure">
+<div id="org4c5a7b9" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/vt_analysis5.jpg" alt="vt_analysis5.jpg" />
 </p>
 </div>
@@ -1064,7 +1041,7 @@ This is base_class2's bc2_func2()
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-07-11 07:02:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2012-07-11 07:02:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

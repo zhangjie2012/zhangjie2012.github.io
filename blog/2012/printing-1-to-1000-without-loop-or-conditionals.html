@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>[译] C++ 如何不使用循环和判断语句实现“打印从1到100之间的数字</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">[译] C++ 如何不使用循环和判断语句实现“打印从1到100之间的数字</h1>
 <p>
 声明：
@@ -278,7 +255,7 @@ for the JavaScript code in this tag.
 <b>方法一</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="orga8de10d">
 #include &lt;iostream&gt;
 
 template&lt;int N&gt;
@@ -317,7 +294,7 @@ g++ 的递归深度是 500. 我用 Code::blocks 10.05 和 visual studio 2010
 <b>方法二</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="org03c395f">
 #include&lt;stdio.h&gt;
 
 int b = 1;
@@ -343,7 +320,7 @@ int main()
 OpenMP 版（非命令行方式）：
 </p>
 
-<pre class="example">
+<pre class="example" id="org00db1d6">
 #include &lt;iostream&gt;
 #include &lt;omp.h&gt;
 
@@ -371,7 +348,7 @@ int main(int argc, char** argv)
 下面是一个命令行方式的版本：
 </p>
 
-<pre class="example">
+<pre class="example" id="org7843143">
 #include &lt;stdio.h&gt;
 #include &lt;omp.h&gt;
 
@@ -394,7 +371,7 @@ int main(int argc, char *argv[])
 <b>方法四</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="org621fde6">
 #include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 
@@ -439,7 +416,7 @@ comp 的次数。假设qsort选取第一个元素为轴，那么比较次数应�
 <b>方法六：</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="orge08e0cb">
 #include &lt;iostream&gt;
 #include &lt;stdexcept&gt;
 #include &lt;cstdio&gt;
@@ -473,7 +450,7 @@ int main(int arg)
 <b>方法七</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgf71c174">
 #include &lt;iostream&gt;
 
 static int n = 1;
@@ -497,7 +474,7 @@ int main(int argc, char* argv[])
 <b>方法八</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgb6640ac">
 #include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 
@@ -528,7 +505,7 @@ a[1] = x 。当 v/(e+1) = 0 时，调用 printf 打印数字。当 v/(e+1) = 1
 *方法九*：
 </p>
 
-<pre class="example">
+<pre class="example" id="org85e3e58">
 #include &lt;iostream&gt;
 
 using namespace std;
@@ -562,7 +539,7 @@ int main()
 <b>方法十</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="orga4abcdf">
 #include &lt;stdio.h&gt;
 #define sign(x) (( x &gt;&gt; 31 ) | ( (unsigned int)( -x ) &gt;&gt; 31 ))
 
@@ -597,7 +574,7 @@ int main()
 <b>方法十一</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="org15326f3">
 #include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 
@@ -623,7 +600,7 @@ int main(int argc, char *argv[])
 <b>方法十二</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgdb09a1a">
 //C++：
 #include &lt;iostream&gt;
 using namespace std;
@@ -660,7 +637,7 @@ int main(int i)
 一个更简单的版本：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgfa704c7">
 #include &lt;stdio.h&gt;
 #define p10(x) x x x x x x x x x x
 int main(int i)
@@ -674,7 +651,7 @@ int main(int i)
 <b>方法十三</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="org84f532a">
 #include &lt;process.h&gt;
 int main()
 {
@@ -690,7 +667,7 @@ int main()
 <b>方法十四</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="org86716dc">
 #include &lt;stdio.h&gt;
 
 int i=1;
@@ -715,7 +692,7 @@ int main(){
 <b>方法十五</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="orge8694f0">
 #include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;string.h&gt;
@@ -755,7 +732,7 @@ int main(int argc, char *argv[])
 <b>方法十六</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="orga0ebc5c">
 #include &lt;stdio.h&gt;
 
 int printN(int n) {
@@ -777,7 +754,7 @@ int main() {
 <b>方法十七</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="org764f19b">
 #include&lt;stdio.h&gt;
 
 /* prints number  i */
@@ -838,7 +815,7 @@ int main() {
 <b>方法十八</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="org6542fe9">
 printf("1 10 11 100 101 110 111 1000\n");
 </pre>
 
@@ -850,7 +827,7 @@ printf("1 10 11 100 101 110 111 1000\n");
 <b>方法十九:</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgce4b7c4">
 #include &lt;stdio.h&gt;
 #define Out(i)       printf("%d\n", i++);
 #define REP(N)       N N N N N N N N N N
@@ -871,7 +848,7 @@ Studio 2010 ，如果没有备注说明的话，代表两个环境都可通过�
 </p>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-08-11 09:33:30 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2012-08-11 09:33:30 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>
