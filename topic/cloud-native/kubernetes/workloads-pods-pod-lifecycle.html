@@ -3,12 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 16:25 -->
+<!-- 2021-11-22 Mon 17:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - 工作负载：Pod 生命周期</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,46 +220,42 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">Kubernetes - 工作负载：Pod 生命周期</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbfe12d6">1. Pod 一生</a></li>
-<li><a href="#org0abdfc5">2. Pod 阶段（phase）</a></li>
-<li><a href="#org7919950">3. 容器状态</a>
+<li><a href="#orgee1fd4a">1. Pod 一生</a></li>
+<li><a href="#orgdb97c01">2. Pod 阶段（phase）</a></li>
+<li><a href="#orgaea96d2">3. 容器状态</a>
 <ul>
-<li><a href="#org79a9933">3.1. Waiting</a></li>
-<li><a href="#org81a2025">3.2. Running</a></li>
-<li><a href="#org93bd14e">3.3. Terminated</a></li>
+<li><a href="#orgd3b2003">3.1. Waiting</a></li>
+<li><a href="#orge8a3e50">3.2. Running</a></li>
+<li><a href="#orgdf6ba1c">3.3. Terminated</a></li>
 </ul>
 </li>
-<li><a href="#org4682357">4. 容器重启策略</a></li>
-<li><a href="#orge684e5d">5. Pod conditions</a>
+<li><a href="#org7fcf141">4. 容器重启策略</a></li>
+<li><a href="#orgbe6669d">5. Pod conditions</a>
 <ul>
-<li><a href="#org6298391">5.1. Pod readiness（就绪）</a></li>
-<li><a href="#orgacd85b2">5.2. Status for Pod readiness</a></li>
+<li><a href="#org20b3e80">5.1. Pod readiness（就绪）</a></li>
+<li><a href="#org975f333">5.2. Status for Pod readiness</a></li>
 </ul>
 </li>
-<li><a href="#org6065c97">6. 容器探针</a>
+<li><a href="#org2397c77">6. 容器探针</a>
 <ul>
-<li><a href="#org2164c97">6.1. 什么时候你应该使用 liveness 探针？</a></li>
-<li><a href="#org6f82300">6.2. 什么时候你应该使用 readiness 探针？</a></li>
-<li><a href="#org48ba231">6.3. 什么时候你应该使用 startup 探针？</a></li>
+<li><a href="#org0966970">6.1. 什么时候你应该使用 liveness 探针？</a></li>
+<li><a href="#org46c8289">6.2. 什么时候你应该使用 readiness 探针？</a></li>
+<li><a href="#org45b3821">6.3. 什么时候你应该使用 startup 探针？</a></li>
 </ul>
 </li>
-<li><a href="#orgf693564">7. Pod 的终止</a>
+<li><a href="#org5a9cb9a">7. Pod 的终止</a>
 <ul>
-<li><a href="#org10b1fae">7.1. 强制终止Pod</a></li>
-<li><a href="#org13311a9">7.2. 垃圾回收失败的 Pods</a></li>
+<li><a href="#orgd5ed0f9">7.1. 强制终止Pod</a></li>
+<li><a href="#org390378f">7.2. 垃圾回收失败的 Pods</a></li>
 </ul>
 </li>
-<li><a href="#orgd59a56a">8. 下一步</a></li>
+<li><a href="#org1a113f2">8. 下一步</a></li>
 </ul>
 </div>
 </div>
@@ -283,8 +282,8 @@ information into the condition data for a Pod, if that is useful to your applica
 Pods 一生中只会被 <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/">调度</a> 一次。一旦 Pod 分配给某个节点，Pod 会一直在该节点上运行直到停止或者 <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination">被终止</a>。
 </p>
 
-<div id="outline-container-orgbfe12d6" class="outline-2">
-<h2 id="orgbfe12d6"><span class="section-number-2">1.</span> Pod 一生</h2>
+<div id="outline-container-orgee1fd4a" class="outline-2">
+<h2 id="orgee1fd4a"><span class="section-number-2">1.</span> Pod 一生</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 跟应用程序容器一样，Pods 被认为是一个相对短暂的（而不是永久的）实体。Pods 创建时，会给分配一个唯一 ID（<a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids">UID</a>），然后被调度到节点上会一直运行到终止
@@ -306,7 +305,7 @@ Pods 没有自愈功能。如果 Pod 被调度到一个节点，然后失败了�
 </p>
 
 
-<div id="org9306007" class="figure">
+<div id="org761a65a" class="figure">
 <p><a href="https://d33wubrfki0l68.cloudfront.net/aecab1f649bc640ebef1f05581bfcc91a48038c4/728d6/images/docs/pod.svg"><object type="image/svg+xml" data="https://d33wubrfki0l68.cloudfront.net/aecab1f649bc640ebef1f05581bfcc91a48038c4/728d6/images/docs/pod.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object></a>
 </p>
@@ -315,8 +314,8 @@ Sorry, your browser does not support SVG.</object></a>
 </div>
 </div>
 
-<div id="outline-container-org0abdfc5" class="outline-2">
-<h2 id="org0abdfc5"><span class="section-number-2">2.</span> Pod 阶段（phase）</h2>
+<div id="outline-container-orgdb97c01" class="outline-2">
+<h2 id="orgdb97c01"><span class="section-number-2">2.</span> Pod 阶段（phase）</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Pod 的 <code>status</code> 字段是一个 <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#podstatus-v1-core">PodStatus</a> 对象，它包含一个 <code>phase</code> 字段。
@@ -385,8 +384,8 @@ Pod 被给予优雅终止的时间限制，默认是 30s。你可以使用 <code
 </div>
 </div>
 
-<div id="outline-container-org7919950" class="outline-2">
-<h2 id="org7919950"><span class="section-number-2">3.</span> 容器状态</h2>
+<div id="outline-container-orgaea96d2" class="outline-2">
+<h2 id="orgaea96d2"><span class="section-number-2">3.</span> 容器状态</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 除了 Pod 的总 phase，Kubernetes 还会跟踪 Pod 每个容器的状态。你可以使用 <a href="https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/">容器生命周期 hooks</a> 来触发时间，以在容器生命周期中的某些时间点运行。
@@ -401,8 +400,8 @@ Pod 被给予优雅终止的时间限制，默认是 30s。你可以使用 <code
 </p>
 </div>
 
-<div id="outline-container-org79a9933" class="outline-3">
-<h3 id="org79a9933"><span class="section-number-3">3.1.</span> Waiting</h3>
+<div id="outline-container-orgd3b2003" class="outline-3">
+<h3 id="orgd3b2003"><span class="section-number-3">3.1.</span> Waiting</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 如果容器即不是 <code>Running</code> 也不是 <code>Terminated</code> 状态，那它就是 <code>Waiting</code> 。处于 <code>Waiting</code> 状态的容器仍在执行它所需的操作，以完成启动：
@@ -412,8 +411,8 @@ Pod 被给予优雅终止的时间限制，默认是 30s。你可以使用 <code
 </div>
 </div>
 
-<div id="outline-container-org81a2025" class="outline-3">
-<h3 id="org81a2025"><span class="section-number-3">3.2.</span> Running</h3>
+<div id="outline-container-orge8a3e50" class="outline-3">
+<h3 id="orge8a3e50"><span class="section-number-3">3.2.</span> Running</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 <code>Running</code> 状态标识容器正在健康的运行。如果有 <code>postStart</code> hook 配置了，它也已经执行并且完成。当你使用 <code>kubectl</code> 查询 <code>Running</code> 状态的容器，
@@ -422,8 +421,8 @@ Pod 被给予优雅终止的时间限制，默认是 30s。你可以使用 <code
 </div>
 </div>
 
-<div id="outline-container-org93bd14e" class="outline-3">
-<h3 id="org93bd14e"><span class="section-number-3">3.3.</span> Terminated</h3>
+<div id="outline-container-orgdf6ba1c" class="outline-3">
+<h3 id="orgdf6ba1c"><span class="section-number-3">3.3.</span> Terminated</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 处于 <code>Terminated</code> 状态的容器开始执行，然后运行完成或者由于某种原因而失败。当你使用 <code>kubectl</code> 查询 <code>Terminated</code> 状态的容器，你会看到原因，
@@ -433,8 +432,8 @@ Pod 被给予优雅终止的时间限制，默认是 30s。你可以使用 <code
 </div>
 </div>
 
-<div id="outline-container-org4682357" class="outline-2">
-<h2 id="org4682357"><span class="section-number-2">4.</span> 容器重启策略</h2>
+<div id="outline-container-org7fcf141" class="outline-2">
+<h2 id="org7fcf141"><span class="section-number-2">4.</span> 容器重启策略</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Pod 的 <code>spec</code> 包含 <code>restartPolicy</code> 字段，其值可能是 <code>Always</code>, <code>OnFailure</code> 和 <code>Never</code> 。默认是 <code>Always</code> 。
@@ -448,8 +447,8 @@ kubelet 会重置该容器退避（back-off）计数器。
 </div>
 </div>
 
-<div id="outline-container-orge684e5d" class="outline-2">
-<h2 id="orge684e5d"><span class="section-number-2">5.</span> Pod conditions</h2>
+<div id="outline-container-orgbe6669d" class="outline-2">
+<h2 id="orgbe6669d"><span class="section-number-2">5.</span> Pod conditions</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 A Pod has a PodStatus, which has an array of PodConditions through which the Pod has or has not passed:
@@ -506,8 +505,8 @@ A Pod has a PodStatus, which has an array of PodConditions through which the Pod
 </div>
 
 
-<div id="outline-container-org6298391" class="outline-3">
-<h3 id="org6298391"><span class="section-number-3">5.1.</span> Pod readiness（就绪）</h3>
+<div id="outline-container-org20b3e80" class="outline-3">
+<h3 id="org20b3e80"><span class="section-number-3">5.1.</span> Pod readiness（就绪）</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 <b>FEATURE STATE: Kubernetes v1.14 [stable]</b>
@@ -552,8 +551,8 @@ condition 的状态会默认设置为 <code>"False"</code> 。
 </div>
 </div>
 
-<div id="outline-container-orgacd85b2" class="outline-3">
-<h3 id="orgacd85b2"><span class="section-number-3">5.2.</span> Status for Pod readiness</h3>
+<div id="outline-container-org975f333" class="outline-3">
+<h3 id="org975f333"><span class="section-number-3">5.2.</span> Status for Pod readiness</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 <code>kubectl patch</code> 命令不支持修补对象状态。要设置这些 <code>status.condition</code> ，应用程序和操作人员应该是用 <code>PATCH</code> 操作。你可以使用 <a href="https://kubernetes.io/docs/reference/using-api/client-libraries/">Kubernetes 客户端库</a>
@@ -576,8 +575,8 @@ condition 的状态会默认设置为 <code>"False"</code> 。
 </div>
 </div>
 
-<div id="outline-container-org6065c97" class="outline-2">
-<h2 id="org6065c97"><span class="section-number-2">6.</span> 容器探针</h2>
+<div id="outline-container-org2397c77" class="outline-2">
+<h2 id="org2397c77"><span class="section-number-2">6.</span> 容器探针</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#probe-v1-core">探针（Probe）</a> 是 kubelet 对容器定时执行的诊断。为了执行诊断，kubelet 调用容器上实现的处理器（handler）程序。一共有三类的处理器：
@@ -617,8 +616,8 @@ kubelet 可以对正在运行的容器执行三种探测，并做出反应：
 </p>
 </div>
 
-<div id="outline-container-org2164c97" class="outline-3">
-<h3 id="org2164c97"><span class="section-number-3">6.1.</span> 什么时候你应该使用 liveness 探针？</h3>
+<div id="outline-container-org0966970" class="outline-3">
+<h3 id="org0966970"><span class="section-number-3">6.1.</span> 什么时候你应该使用 liveness 探针？</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 <b>FEATURE STATE: Kubernetes v1.0 [stable]</b>
@@ -634,8 +633,8 @@ kubelet 可以对正在运行的容器执行三种探测，并做出反应：
 </div>
 </div>
 
-<div id="outline-container-org6f82300" class="outline-3">
-<h3 id="org6f82300"><span class="section-number-3">6.2.</span> 什么时候你应该使用 readiness 探针？</h3>
+<div id="outline-container-org46c8289" class="outline-3">
+<h3 id="org46c8289"><span class="section-number-3">6.2.</span> 什么时候你应该使用 readiness 探针？</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 <b>FEATURE STATE: Kubernetes v1.0 [stable]</b>
@@ -661,8 +660,8 @@ an endpoint specific to readiness that is different from the liveness probe.
 </div>
 </div>
 
-<div id="outline-container-org48ba231" class="outline-3">
-<h3 id="org48ba231"><span class="section-number-3">6.3.</span> 什么时候你应该使用 startup 探针？</h3>
+<div id="outline-container-org45b3821" class="outline-3">
+<h3 id="org45b3821"><span class="section-number-3">6.3.</span> 什么时候你应该使用 startup 探针？</h3>
 <div class="outline-text-3" id="text-6-3">
 <p>
 <b>FEATURE STATE: Kubernetes v1.20 [stable]</b>
@@ -682,8 +681,8 @@ an endpoint specific to readiness that is different from the liveness probe.
 </div>
 </div>
 
-<div id="outline-container-orgf693564" class="outline-2">
-<h2 id="orgf693564"><span class="section-number-2">7.</span> Pod 的终止</h2>
+<div id="outline-container-org5a9cb9a" class="outline-2">
+<h2 id="org5a9cb9a"><span class="section-number-2">7.</span> Pod 的终止</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 因为 Pod 表达的是集群中节点中进程的运行，在不再需要这些进程时能够优雅终止非常重要（而不是直接被 <code>KILL</code> 信号突然终止，而没有机会清理）。
@@ -736,8 +735,8 @@ kubelet 触发容器运行时向每个容器内的 1 号进程发送 TERM 信号
 </ol>
 </div>
 
-<div id="outline-container-org10b1fae" class="outline-3">
-<h3 id="org10b1fae"><span class="section-number-3">7.1.</span> 强制终止Pod</h3>
+<div id="outline-container-orgd5ed0f9" class="outline-3">
+<h3 id="orgd5ed0f9"><span class="section-number-3">7.1.</span> 强制终止Pod</h3>
 <div class="outline-text-3" id="text-7-1">
 <blockquote>
 <p>
@@ -770,8 +769,8 @@ kubelet 触发容器运行时向每个容器内的 1 号进程发送 TERM 信号
 </div>
 </div>
 
-<div id="outline-container-org13311a9" class="outline-3">
-<h3 id="org13311a9"><span class="section-number-3">7.2.</span> 垃圾回收失败的 Pods</h3>
+<div id="outline-container-org390378f" class="outline-3">
+<h3 id="org390378f"><span class="section-number-3">7.2.</span> 垃圾回收失败的 Pods</h3>
 <div class="outline-text-3" id="text-7-2">
 <p>
 对于失败的 Pods，API 对象将保留在集群的 API 中，直到人工或者控制器进程明确将其删除为止。
@@ -785,8 +784,8 @@ kubelet 触发容器运行时向每个容器内的 1 号进程发送 TERM 信号
 </div>
 </div>
 
-<div id="outline-container-orgd59a56a" class="outline-2">
-<h2 id="orgd59a56a"><span class="section-number-2">8.</span> 下一步</h2>
+<div id="outline-container-org1a113f2" class="outline-2">
+<h2 id="org1a113f2"><span class="section-number-2">8.</span> 下一步</h2>
 <div class="outline-text-2" id="text-8">
 <ul class="org-ul">
 <li>动手实践：<a href="https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/">attaching handlers to Container lifecycle events</a></li>

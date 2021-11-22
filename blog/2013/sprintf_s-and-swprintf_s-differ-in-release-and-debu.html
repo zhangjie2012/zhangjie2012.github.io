@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 16:26 -->
+<!-- 2021-11-22 Mon 17:42 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title><code>sprintf_s</code> 和 <code>swprintf_s</code> 在 Release 和 Debug 不同模式表现不同</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,11 +220,7 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title"><code>sprintf_s</code> 和 <code>swprintf_s</code> 在 Release 和 Debug 不同模式表现不同</h1>
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #005a5f;">int</span> <span style="color: #721045;">sprintf_s</span><span style="color: #000000;">(</span> <span style="color: #005a5f;">char</span> /buffer, <span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">sizeOfBuffer</span>, <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">char</span> /format <span style="color: #a8007f;">[</span>, argument<span style="color: #a8007f;">]</span> ... <span style="color: #000000;">)</span>;
@@ -232,7 +231,7 @@
 <p>
 msdn 对第二个参数的解释仅仅是"Maximum number of characters to store."
 即，可存储的最大字符个数。按照常规(至少我)的理解是这样去理解这个参数的: 当输入的字符个数大于 sizeOfBuffer 时，会进行截断等限制，
-用以保证不会让 buffer 溢出；当输入的个数小于或者等于 sizeOfBuffer 时，正常赋值即可，sprintf 和 sprintf<sub>s</sub> 的区别仅在于加了一个 sizeOfBuffer 的判断。
+用以保证不会让 buffer 溢出；当输入的个数小于或者等于 sizeOfBuffer 时，正常赋值即可，sprintf 和 sprintf_s 的区别仅在于加了一个 sizeOfBuffer 的判断。
 </p>
 
 <p>
@@ -241,8 +240,8 @@ msdn 的解释是：
 
 <blockquote>
 <p>
-The other main difference between sprintf<sub>s</sub> and sprintf is that
-sprintf<sub>s</sub> takes a length parameter specifying the size of the output
+The other main difference between sprintf_s and sprintf is that
+sprintf_s takes a length parameter specifying the size of the output
 buffer in characters. If the buffer is too small for the text being
 printed then the buffer is set to an empty string and the invalid
 parameter handler is invoked.
@@ -277,7 +276,7 @@ Debug 模式：
 </div>
 
 <p>
-在 sprintf<sub>s</sub> 上下插入一个端点，如上代码注释，breakpoint1 时内存块：
+在 sprintf_s 上下插入一个端点，如上代码注释，breakpoint1 时内存块：
 </p>
 
 <pre class="example">
@@ -310,7 +309,7 @@ breakpoint2 时内存块：
 </pre>
 
 <p>
-可以看出由于 sizeOfBuffer 传入值大于 buf<sub>size</sub>，导致了越界，覆盖了高地址的内存块（修改了 buf1 的值）。
+可以看出由于 sizeOfBuffer 传入值大于 buf_size，导致了越界，覆盖了高地址的内存块（修改了 buf1 的值）。
 </p>
 
 <p>
@@ -353,7 +352,7 @@ Release 验证代码：
 </pre>
 
 <p>
-尽管我刻意的修改了几次 sprintf<sub>s</sub> 的 sizeOfBuffer 传入值，但是它始终没有越界。
+尽管我刻意的修改了几次 sprintf_s 的 sizeOfBuffer 传入值，但是它始终没有越界。
 </p>
 
 <p>
@@ -361,7 +360,7 @@ Release 验证代码：
 </p>
 
 <ul class="org-ul">
-<li>在 Debug 模式下 sprintf<sub>s</sub> 是这样干的，它做的第一件事情是给 buffer 的空间长度扩展为 sizeOfBuffer，
+<li>在 Debug 模式下 sprintf_s 是这样干的，它做的第一件事情是给 buffer 的空间长度扩展为 sizeOfBuffer，
 不论实际上是否需要 sizeOfBuffer 长度的空间，也不考虑 buffer 自身的内存大小，然后进行后面的赋值操作。
 这样带来的一个问题就是假如 sizeOfBuffer 的实际值大于 buffer 自身的内存大小，就会覆盖掉不属于自己内存块，进而引发 bug。</li>
 <li>在 Release 模式下，按照我们所想的那样执行（从表象看：范围检查，不会进行内存扩充操作）。</li>
@@ -376,7 +375,7 @@ Release 验证代码：
 <hr />
 
 <p>
-<a href="http://msdn.microsoft.com/en-us/library/ce3zzk1kv=vs.80">sprintf<sub>s</sub>, swprintf<sub>s</sub> MSDN的解释</a>
+<a href="http://msdn.microsoft.com/en-us/library/ce3zzk1kv=vs.80">sprintf_s, swprintf_s MSDN的解释</a>
 </p>
 
 <div class="org-src-container">
@@ -412,9 +411,9 @@ Return Value
 
 <p>
 The number of characters written, or &#x2013;1 if an error occurred. If buffer
-or format is a null pointer, sprintf<sub>s</sub> and swprintf<sub>s</sub> return -1 and set
-errno to EINVAL. sprintf<sub>s</sub> returns the number of bytes stored in buffer,
-not counting the terminating null character. swprintf<sub>s</sub> returns the
+or format is a null pointer, sprintf_s and swprintf_s return -1 and set
+errno to EINVAL. sprintf_s returns the number of bytes stored in buffer,
+not counting the terminating null character. swprintf_s returns the
 number of wide characters stored in buffer, not counting the terminating
 null wide character.
 </p>
@@ -424,27 +423,27 @@ Remarks
 </p>
 
 <p>
-The sprintf<sub>s</sub> function formats and stores a series of characters and
+The sprintf_s function formats and stores a series of characters and
 values in buffer. Each argument (if any) is converted and output
 according to the corresponding format specification in format. The
 format consists of ordinary characters and has the same form and
 function as the format argument for printf. A null character is appended
 after the last character written. If copying occurs between strings that
 overlap, the behavior is undefined. One main difference between
-sprintf<sub>s</sub> and sprintf is that sprintf<sub>s</sub> checks the format string for
+sprintf_s and sprintf is that sprintf_s checks the format string for
 valid formatting characters, whereas sprintf only checks if the format
 string or buffer are NULL pointers. If either check fails, the invalid
 parameter handler is invoked, as described in Parameter Validation. If
 execution is allowed to continue, the function returns -1 and sets errno
-to EINVAL. The other main difference between sprintf<sub>s</sub> and sprintf is
-that sprintf<sub>s</sub> takes a length parameter specifying the size of the
+to EINVAL. The other main difference between sprintf_s and sprintf is
+that sprintf_s takes a length parameter specifying the size of the
 output buffer in characters. If the buffer is too small for the text
 being printed then the buffer is set to an empty string and the invalid
-parameter handler is invoked. Unlike snprintf, sprintf<sub>s</sub> guarantees that
+parameter handler is invoked. Unlike snprintf, sprintf_s guarantees that
 the buffer will be null-terminated (unless the buffer size is zero).
-swprintf<sub>s</sub> is a wide-character version of sprintf<sub>s</sub>; the pointer
-arguments to swprintf<sub>s</sub> are wide-character strings. Detection of
-encoding errors in swprintf<sub>s</sub> may differ from that in sprintf<sub>s</sub>. The
+swprintf_s is a wide-character version of sprintf_s; the pointer
+arguments to swprintf_s are wide-character strings. Detection of
+encoding errors in swprintf_s may differ from that in sprintf_s. The
 versions of these functions with the _l suffix are identical except that
 they use the locale parameter passed in instead of the current thread
 locale.
@@ -455,7 +454,7 @@ PS: 如果有不同的理解，或者找到了源码，欢迎追加。
 </p>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2013-03-24 08:33:08 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2013-03-24 08:33:08 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

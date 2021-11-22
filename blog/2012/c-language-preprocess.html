@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 16:27 -->
+<!-- 2021-11-22 Mon 17:43 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C语言预处理过程</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,11 +220,7 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">C语言预处理过程</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -269,7 +268,7 @@
 预处理指令是以#号开头的代码行。#号必须是该行除了任何空白字符外的第一个字符。#后是指令关键字，在关键字和#号之间允许存在任意个数的空白字符。整行语句构成了一条预处理指令，该指令将在编译器进行编译之前对源代码做某些转换。下面是部分预处理指令：
 </p>
 
-<pre class="example" id="org7586c16">
+<pre class="example" id="org47146c7">
 指令   用途
 #      空指令，无任何效果
 #include 包含一个源代码文件
@@ -296,7 +295,7 @@ C 编译器至少支持八重嵌套包含。
 预处理过程不检查在转换单元中是否已经包含了某个文件并阻止对它的多次包含。这样就可以在多次包含同一个头文件时，通过给定编译时的条件来达到不同的效果。例如：
 </p>
 
-<pre class="example" id="orgda9e6b8">
+<pre class="example" id="orgcbcb45c">
 #define AAA
 #include t.c
 #undef AAA
@@ -307,7 +306,7 @@ C 编译器至少支持八重嵌套包含。
 为了避免那些只能包含一次的头文件被多次包含，可以在头文件中用编译时条件来进行控制。例如：
 </p>
 
-<pre class="example" id="orge5859dc">
+<pre class="example" id="org0207b01">
 /*my.h*/
 #ifndef MY_H
 #define MY_H
@@ -319,7 +318,7 @@ C 编译器至少支持八重嵌套包含。
 在程序中包含头文件有两种格式：
 </p>
 
-<pre class="example" id="org3cb8b61">
+<pre class="example" id="org07f8e5e">
 #include &lt;my.h&gt;
 #include "my.h"[/c]
 </pre>
@@ -349,21 +348,21 @@ C 编译器至少支持八重嵌套包含。
 =#define=预处理指令是用来定义宏的。该指令最简单的格式是：首先声明一个标识符，然后给出这个标识符代表的代码。在后面的源代码中，就用这些代码来替代该标识符。这种宏把程序中要用到的一些全局值提取出来，赋给一些记忆标识符。
 </p>
 
-<pre class="example" id="orgd55e860">
+<pre class="example" id="org6926760">
 #define MAX_NUM 10
 int array[MAX_NUM];
 for(i=0;i&lt;MAX_NUM;i++)  /*……*/
 </pre>
 
 <p>
-这个例子中，对于阅读该程序的人来说，符号MAX<sub>NUM就有特定的含义</sub>，它代表的值给出了数组所能容纳的最大元素数目。程序中可以多次使用这个值。作为一种约定，习惯上总是全部用大写字母来定义宏，这样易于把程序红的宏标识符和一般变量标识符区别开来。如果想要改变数组的大小，只需要更改宏定义并重新编译程序即可。
+这个例子中，对于阅读该程序的人来说，符号MAX_NUM就有特定的含义，它代表的值给出了数组所能容纳的最大元素数目。程序中可以多次使用这个值。作为一种约定，习惯上总是全部用大写字母来定义宏，这样易于把程序红的宏标识符和一般变量标识符区别开来。如果想要改变数组的大小，只需要更改宏定义并重新编译程序即可。
 </p>
 
 <p>
 宏表示的值可以是一个常量表达式，其中允许包括前面已经定义的宏标识符。例如：
 </p>
 
-<pre class="example" id="org21c2af7">
+<pre class="example" id="orga0dd4a8">
 #define ONE 1
 #define TWO 2
 #define THREE (ONE+TWO)
@@ -414,7 +413,7 @@ for(i=0;i&lt;MAX_NUM;i++)  /*……*/
 可以时任何数字表达式甚至函数调用来代替参数x。这里再次提醒大家注意括号的使用。宏展开后完全包含在一对括号中，而且参数也包含在括号中，这样就保证了宏和参数的完整性。看一个用法：
 </p>
 
-<pre class="example" id="orgf0d686d">
+<pre class="example" id="orgf680e5b">
 int num=8+2;
 volume=Cube(num);
 </pre>
@@ -439,7 +438,7 @@ volume=Cube(num);
 如果Cube是一个函数，上面的写法是可以理解的。但是，因为Cube是一个宏，所以会产生副作用。这里的擦书不是简单的表达式，它们将产生意想不到的结果。它们展开后是这样的：
 </p>
 
-<pre class="example" id="orgd730f7c">
+<pre class="example" id="org6380e34">
 volume=(num++)*(num++)*(num++);
 </pre>
 
@@ -451,7 +450,7 @@ volume=(num++)*(num++)*(num++);
 那么怎样安全的使用Cube宏呢？必须把可能产生副作用的操作移到宏调用的外面进行：
 </p>
 
-<pre class="example" id="orge96f604">
+<pre class="example" id="org793052d">
 int num=8+2;
 volume=Cube(num);
 num++;
@@ -466,7 +465,7 @@ num++;
 出现在宏定义中的#运算符把跟在其后的参数转换成一个字符串。有时把这种用法的#称为字符串化运算符。例如：
 </p>
 
-<pre class="example" id="org9282551">
+<pre class="example" id="orge7b0bd0">
 #include &lt;stdio.h&gt;
 
 #define PASTE(n) #n
@@ -490,7 +489,7 @@ int main()
 =##=运算符用于把参数连接到一起。预处理程序把出现在##两侧的参数合并成一个符号。看下面的例子：
 </p>
 
-<pre class="example" id="org31f8192">
+<pre class="example" id="org41e8e67">
 #include &lt;stdio.h&gt;
 
 #define SYM_COM(a, b, c) a##b##c
@@ -546,7 +545,7 @@ int main()
 =#endif=用于终止#if预处理指令。
 </p>
 
-<pre class="example" id="org27312c1">
+<pre class="example" id="orgd074771">
 #include &lt;stdio.h&gt;
 #define DEBUG 0
 
@@ -569,7 +568,7 @@ int main()
 <div id="outline-container-ifdef和ifndef" class="outline-3">
 <h3 id="ifdef和ifndef"><span class="section-number-3">3.3.</span> 3.#ifdef和#ifndef</h3>
 <div class="outline-text-3" id="text-ifdef和ifndef">
-<pre class="example" id="org30f2bb1">
+<pre class="example" id="org5f81ef4">
 #include &lt;stdio.h&gt;
 #define DEBUG
 
@@ -588,7 +587,7 @@ int main()
 输出结果是：
 </p>
 
-<pre class="example" id="org0d7e6fe">
+<pre class="example" id="orge620652">
 Debugging
 
 Running
@@ -616,7 +615,7 @@ Running
 =#elif=预处理指令综合了#else和#if指令的作用。
 </p>
 
-<pre class="example" id="org9d9d9c7">
+<pre class="example" id="org69af6b4">
 #include &lt;stdio.h&gt;
 #define TWO
 
@@ -657,7 +656,7 @@ int main()
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-11-30 00:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2012-11-30 00:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

@@ -3,12 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 16:25 -->
+<!-- 2021-11-22 Mon 17:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux 网络 I/O</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,29 +220,25 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">Linux 网络 I/O</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6ae9066">1. 基本概念</a></li>
-<li><a href="#org4318a82">2. epoll 或者 kqueue 的原理是什么？</a></li>
-<li><a href="#org5048e34">3. 一文看懂 IO 多路复用，Linux IO模式及 select、poll、epoll详解</a></li>
-<li><a href="#orgd931f7c">4. 一些补充</a></li>
+<li><a href="#org8cf01a6">1. 基本概念</a></li>
+<li><a href="#org3c0bfa7">2. epoll 或者 kqueue 的原理是什么？</a></li>
+<li><a href="#org6ba6d34">3. 一文看懂 IO 多路复用，Linux IO模式及 select、poll、epoll详解</a></li>
+<li><a href="#org52cf7aa">4. 一些补充</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6ae9066" class="outline-2">
-<h2 id="org6ae9066"><span class="section-number-2">1.</span> 基本概念</h2>
+<div id="outline-container-org8cf01a6" class="outline-2">
+<h2 id="org8cf01a6"><span class="section-number-2">1.</span> 基本概念</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-在 32 位 Linux 系统下，虚拟存储器最大的寻址是 2<sup>32</sup>，即 4G。操作系统会留 1G 给内核，另外 3G 给用户进程。所以通常存在内核态和用户态。
+在 32 位 Linux 系统下，虚拟存储器最大的寻址是 2^32，即 4G。操作系统会留 1G 给内核，另外 3G 给用户进程。所以通常存在内核态和用户态。
 </p>
 
 <p>
@@ -269,8 +268,8 @@
 </div>
 </div>
 
-<div id="outline-container-org4318a82" class="outline-2">
-<h2 id="org4318a82"><span class="section-number-2">2.</span> <a href="https://www.zhihu.com/question/20122137">epoll 或者 kqueue 的原理是什么？</a></h2>
+<div id="outline-container-org3c0bfa7" class="outline-2">
+<h2 id="org3c0bfa7"><span class="section-number-2">2.</span> <a href="https://www.zhihu.com/question/20122137">epoll 或者 kqueue 的原理是什么？</a></h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>阻塞 I/O 的缺点是：一个线程只能处理一个流的 I/O 事件，如果想要同时处理多个流，那么就需要多个线程（或者进程），效率太低。</li>
@@ -288,15 +287,15 @@
 </div>
 </div>
 
-<div id="outline-container-org5048e34" class="outline-2">
-<h2 id="org5048e34"><span class="section-number-2">3.</span> <a href="https://ruby-china.org/topics/39644">一文看懂 IO 多路复用</a>，<a href="https://segmentfault.com/a/1190000003063859">Linux IO模式及 select、poll、epoll详解</a></h2>
+<div id="outline-container-org6ba6d34" class="outline-2">
+<h2 id="org6ba6d34"><span class="section-number-2">3.</span> <a href="https://ruby-china.org/topics/39644">一文看懂 IO 多路复用</a>，<a href="https://segmentfault.com/a/1190000003063859">Linux IO模式及 select、poll、epoll详解</a></h2>
 <div class="outline-text-2" id="text-3">
 <p>
 什么是 IO 多路复用？单线程或单进程同时监测若干个文件描述符是否可以执行 IO 操作的能力。
 </p>
 
 <p>
-epoll 的事件通知机制（epoll<sub>wait</sub>）分为：LT 和 ET。
+epoll 的事件通知机制（epoll_wait）分为：LT 和 ET。
 </p>
 
 <ul class="org-ul">
@@ -310,8 +309,8 @@ LT 是默认值，LT 不易遗漏事件，不易产生 bug，ET 容易导致遗�
 </div>
 </div>
 
-<div id="outline-container-orgd931f7c" class="outline-2">
-<h2 id="orgd931f7c"><span class="section-number-2">4.</span> 一些补充</h2>
+<div id="outline-container-org52cf7aa" class="outline-2">
+<h2 id="org52cf7aa"><span class="section-number-2">4.</span> 一些补充</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 I/O 多路复用方案：

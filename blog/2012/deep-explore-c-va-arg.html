@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 16:27 -->
+<!-- 2021-11-22 Mon 17:43 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>深度探索C语言函数可变长参数</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -239,11 +242,7 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">深度探索C语言函数可变长参数</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -285,7 +284,7 @@ printf 系列的（格式化输入输出等）函数，都是参数可变的。�
 函数的声明：
 </p>
 
-<pre class="example" id="org8671841">
+<pre class="example" id="org5864244">
 int printf ( const char * format, ... );
 </pre>
 
@@ -300,10 +299,10 @@ int printf ( const char * format, ... );
 <h2 id="如何实现"><span class="section-number-2">2.</span> 1.2 如何实现</h2>
 <div class="outline-text-2" id="text-如何实现">
 <p>
-C语言可变参数通过三个宏（=va<sub>start</sub>、va<sub>end</sub>、va<sub>arg</sub>=）和一个类型（=va<sub>list</sub>=）实现的，
+C语言可变参数通过三个宏（=va_start、va_end、va_arg=）和一个类型（=va_list=）实现的，
 </p>
 
-<pre class="example" id="org00aaa83">
+<pre class="example" id="org16d20ad">
 void va_start ( va_list ap, paramN );
 </pre>
 
@@ -320,7 +319,7 @@ void va_start ( va_list ap, paramN );
 功能：初始化可变参数列表（把函数在 paramN 之后的参数地址放到 ap 中）。
 </p>
 
-<pre class="example" id="org4a95181">
+<pre class="example" id="org5fd0156">
 void va_end ( va_list ap );
 </pre>
 
@@ -328,7 +327,7 @@ void va_end ( va_list ap );
 功能：关闭初始化列表（将 ap 置空）。
 </p>
 
-<pre class="example" id="org3022d90">
+<pre class="example" id="org1b9daad">
 type va_arg ( va_list ap, type );
 </pre>
 
@@ -337,20 +336,20 @@ type va_arg ( va_list ap, type );
 </p>
 
 <ul class="org-ul">
-<li>va<sub>list</sub> ：存储参数的类型信息。</li>
+<li>va_list ：存储参数的类型信息。</li>
 </ul>
 
 <p>
 好了，综合上面3个宏和一个类型可以猜出如何实现C语言可变长参数函数：用
-va<sub>start</sub> 获取参数列表（的地址）存储到 ap 中，用 va<sub>arg</sub>
-逐个获取值，最后用 va<sub>arg</sub> 将 ap 置空。
+va_start 获取参数列表（的地址）存储到 ap 中，用 va_arg
+逐个获取值，最后用 va_arg 将 ap 置空。
 </p>
 </div>
 
 <div id="outline-container-举例" class="outline-3">
 <h3 id="举例"><span class="section-number-3">2.1.</span> 1.3 举例</h3>
 <div class="outline-text-3" id="text-举例">
-<pre class="example" id="org91d8164">
+<pre class="example" id="org649e26b">
 /* 作者：独酌逸醉
  * 时间：2012.08.18
  * 功能：用C语言实现变长参数小例：求和
@@ -398,7 +397,7 @@ int main ()
 <div class="outline-text-3" id="text-使用注意事项">
 <ul class="org-ul">
 <li>宏定义在 stdarg.h 中，所以使用时，不要忘了添加头文件。</li>
-<li>设定一个参数结束标志（cplusplus 上说，va<sub>arg</sub>
+<li>设定一个参数结束标志（cplusplus 上说，va_arg
 并不能确定哪个参数是最后一个参数）。</li>
 <li>类型的匹配</li>
 <li>期待您的补充&#x2026;&#x2026;</li>
@@ -418,7 +417,7 @@ int main ()
 以下源码，来自=“..\Microsoft Visual Studio 10.0\VC\include”=
 </p>
 
-<pre class="example" id="org83a275f">
+<pre class="example" id="orgdbb44c0">
 // stdarg.h
 #define va_start _crt_va_start
 #define va_arg _crt_va_arg
@@ -436,7 +435,7 @@ typedef char *  va_list;
 除了 <code>_INTSIZEOF</code> 之外，其他都很好理解，举个例子吧：
 </p>
 
-<pre class="example" id="orgeac6342">
+<pre class="example" id="orga173a24">
 /* 作者：独酌逸醉
  * 时间：2012.08.18
  * 功能：测试 _INTSIZEOF 宏
@@ -462,7 +461,7 @@ int main ()
 输出结果：
 </p>
 
-<pre class="example" id="org66559b9">
+<pre class="example" id="org815cbbc">
 _INTSIZEOF(i) = 4
 _INTSIZEOF(f) = 4
 _INTSIZEOF("Hello,world") = 12
@@ -497,7 +496,7 @@ sizeof("Hello,world") = 12
 <h3 id="简单介绍两种函数调用约定"><span class="section-number-3">4.1.</span> 简单介绍两种函数调用约定</h3>
 <div class="outline-text-3" id="text-简单介绍两种函数调用约定">
 <p>
-<b><b>_<sub>stdcall</sub> （C++默认）</b></b>
+<b><b>__stdcall （C++默认）</b></b>
 </p>
 
 <ul class="org-ul">
@@ -507,7 +506,7 @@ sizeof("Hello,world") = 12
 </ul>
 
 <p>
-<b><b>_<sub>cdecl</sub> （C语言默认）</b></b>
+<b><b>__cdecl （C语言默认）</b></b>
 </p>
 
 <ul class="org-ul">
@@ -516,7 +515,7 @@ sizeof("Hello,world") = 12
 </ul>
 
 <p>
-那么，变参函数的调用方式为（也只能是）：_<sub>cdecl</sub> 。
+那么，变参函数的调用方式为（也只能是）：__cdecl 。
 </p>
 
 <p>
@@ -543,7 +542,7 @@ sizeof("Hello,world") = 12
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-08-18 06:56:40 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2012-08-18 06:56:40 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

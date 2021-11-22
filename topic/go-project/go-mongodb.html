@@ -3,12 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 16:26 -->
+<!-- 2021-11-22 Mon 17:42 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go MongoDB</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,22 +220,18 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">Go MongoDB</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgba2914b">1. 连接报错</a></li>
-<li><a href="#org17e75cd">2. interface{} decode to bson.M</a></li>
-<li><a href="#orgcffba74">3. 分页、排序</a></li>
-<li><a href="#org8218661">4. 只取 Document 中的一部分</a></li>
-<li><a href="#org76c10fb">5. 存储时间时区问题</a></li>
-<li><a href="#org6f97513">6. mongo-go-driver 构建索引报错：</a></li>
+<li><a href="#orgead2668">1. 连接报错</a></li>
+<li><a href="#orgab95058">2. interface{} decode to bson.M</a></li>
+<li><a href="#orgc74df6a">3. 分页、排序</a></li>
+<li><a href="#orgda05adb">4. 只取 Document 中的一部分</a></li>
+<li><a href="#orga4e7807">5. 存储时间时区问题</a></li>
+<li><a href="#orge0a7987">6. mongo-go-driver 构建索引报错：</a></li>
 </ul>
 </div>
 </div>
@@ -240,8 +239,8 @@
 建议使用 <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a>，目前已经 v1.5.1。mgo.v2 我也用过一段时间，但是目前已经不在维护了。
 </p>
 
-<div id="outline-container-orgba2914b" class="outline-2">
-<h2 id="orgba2914b"><span class="section-number-2">1.</span> 连接报错</h2>
+<div id="outline-container-orgead2668" class="outline-2">
+<h2 id="orgead2668"><span class="section-number-2">1.</span> 连接报错</h2>
 <div class="outline-text-2" id="text-1">
 <pre class="example">
 connection() error occured during connection handshake: auth error: sasl conversation error: unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.
@@ -259,8 +258,8 @@ MongoDB 的权限比较复杂，我也折腾不明白。不过报这个错，肯
 </div>
 </div>
 
-<div id="outline-container-org17e75cd" class="outline-2">
-<h2 id="org17e75cd"><span class="section-number-2">2.</span> interface{} decode to bson.M</h2>
+<div id="outline-container-orgab95058" class="outline-2">
+<h2 id="orgab95058"><span class="section-number-2">2.</span> interface{} decode to bson.M</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 业务场景是这样的：在插入 MongoDB 时，会插入一个前端给的 JSON，而后端对 JSON 的具体格式并不确定，希望怎么插入就怎么输出。
@@ -314,8 +313,8 @@ MongoDB 的权限比较复杂，我也折腾不明白。不过报这个错，肯
 </div>
 </div>
 
-<div id="outline-container-orgcffba74" class="outline-2">
-<h2 id="orgcffba74"><span class="section-number-2">3.</span> 分页、排序</h2>
+<div id="outline-container-orgc74df6a" class="outline-2">
+<h2 id="orgc74df6a"><span class="section-number-2">3.</span> 分页、排序</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 MongoDB 在查询时的选项都是有 <code>FindOptions</code> 控制的。分页通过 <code>FindOptions</code> 的 <code>Skip</code> 和 <code>Limit</code> 来实现：
@@ -336,8 +335,8 @@ options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.M{"create_timestamp": 
 </div>
 </div>
 
-<div id="outline-container-org8218661" class="outline-2">
-<h2 id="org8218661"><span class="section-number-2">4.</span> 只取 Document 中的一部分</h2>
+<div id="outline-container-orgda05adb" class="outline-2">
+<h2 id="orgda05adb"><span class="section-number-2">4.</span> 只取 Document 中的一部分</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 很多时候，把 Document 中的所有的字段全部取出来性能是很低下的，而且真实的业务场景也是需要其中的部分字段。
@@ -353,8 +352,8 @@ options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.M{"create_timestamp": 
 </div>
 </div>
 
-<div id="outline-container-org76c10fb" class="outline-2">
-<h2 id="org76c10fb"><span class="section-number-2">5.</span> 存储时间时区问题</h2>
+<div id="outline-container-orga4e7807" class="outline-2">
+<h2 id="orga4e7807"><span class="section-number-2">5.</span> 存储时间时区问题</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 MongoDB 在存储的时候本地时间会自动转换成 <a href="https://time.is/zh/UTC">UTC</a> 时间。在 Mongo cli 查询需要 <code>ISODate</code> 加上本地时区做转换。
@@ -368,8 +367,8 @@ MongoDB 在存储的时候本地时间会自动转换成 <a href="https://time.i
 </div>
 </div>
 
-<div id="outline-container-org6f97513" class="outline-2">
-<h2 id="org6f97513"><span class="section-number-2">6.</span> <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a> 构建索引报错：</h2>
+<div id="outline-container-orge0a7987" class="outline-2">
+<h2 id="orge0a7987"><span class="section-number-2">6.</span> <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a> 构建索引报错：</h2>
 <div class="outline-text-2" id="text-6">
 <blockquote>
 <p>

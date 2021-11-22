@@ -3,12 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 16:25 -->
+<!-- 2021-11-22 Mon 17:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Perf</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,30 +220,26 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">Perf</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org068f059">1. 什么是 Perf</a></li>
-<li><a href="#orgc196b32">2. Perf 的功能</a>
+<li><a href="#org5331d7a">1. 什么是 Perf</a></li>
+<li><a href="#orgc870302">2. Perf 的功能</a>
 <ul>
-<li><a href="#orge74f2b1">2.1. Perf list</a></li>
-<li><a href="#org2e962f9">2.2. Perf stat</a></li>
-<li><a href="#orgac820b9">2.3. Perf top</a></li>
-<li><a href="#org0de0fde">2.4. Perf timechart</a></li>
-<li><a href="#org7f295dd">2.5. Perf script</a></li>
-<li><a href="#org265d060">2.6. Perf kmem</a></li>
-<li><a href="#orgaf9db3b">2.7. 内核 tracepoint</a></li>
+<li><a href="#orgded9bbe">2.1. Perf list</a></li>
+<li><a href="#org467da20">2.2. Perf stat</a></li>
+<li><a href="#orgb724b47">2.3. Perf top</a></li>
+<li><a href="#org42c3615">2.4. Perf timechart</a></li>
+<li><a href="#org1c819a7">2.5. Perf script</a></li>
+<li><a href="#orgd65e0e2">2.6. Perf kmem</a></li>
+<li><a href="#orgfe652e8">2.7. 内核 tracepoint</a></li>
 </ul>
 </li>
-<li><a href="#orgc44a131">3. 一些术语</a></li>
-<li><a href="#orge125e9d">4. 参考(扩展)资料</a></li>
+<li><a href="#orgd2dd9f1">3. 一些术语</a></li>
+<li><a href="#org3271a1d">4. 参考(扩展)资料</a></li>
 </ul>
 </div>
 </div>
@@ -248,13 +247,13 @@
 本文档大部分内容均为摘抄，仅供技术学习, 勿传播。
 </p>
 
-<div id="outline-container-org068f059" class="outline-2">
-<h2 id="org068f059"><span class="section-number-2">1.</span> 什么是 Perf</h2>
+<div id="outline-container-org5331d7a" class="outline-2">
+<h2 id="org5331d7a"><span class="section-number-2">1.</span> 什么是 Perf</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Perf is a profiler tool for Linux 2.6+ based systems that abstracts away CPU
 hardware differences in Linux performance measurements and presents a simple
-commandline interface. Perf is based on the perf<sub>events</sub> interface exported by
+commandline interface. Perf is based on the perf_events interface exported by
 recent versions of the Linux kernel.
 </p>
 
@@ -295,8 +294,8 @@ See 'perf help COMMAND' for more information on a specific command.
 </div>
 </div>
 
-<div id="outline-container-orgc196b32" class="outline-2">
-<h2 id="orgc196b32"><span class="section-number-2">2.</span> Perf 的功能</h2>
+<div id="outline-container-orgc870302" class="outline-2">
+<h2 id="orgc870302"><span class="section-number-2">2.</span> Perf 的功能</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>评估程序对硬件资源的使用情况: 各级 Cache 访问次数、各级 Cache 丢失次数、流水线停顿周期、前端总线访问次数 &#x2026;</li>
@@ -305,8 +304,8 @@ See 'perf help COMMAND' for more information on a specific command.
 </ul>
 </div>
 
-<div id="outline-container-orge74f2b1" class="outline-3">
-<h3 id="orge74f2b1"><span class="section-number-3">2.1.</span> Perf list</h3>
+<div id="outline-container-orgded9bbe" class="outline-3">
+<h3 id="orgded9bbe"><span class="section-number-3">2.1.</span> Perf list</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 功能: 查看当前软硬件环境、支持的性能事件。
@@ -347,8 +346,8 @@ These include:
 </div>
 </div>
 
-<div id="outline-container-org2e962f9" class="outline-3">
-<h3 id="org2e962f9"><span class="section-number-3">2.2.</span> Perf stat</h3>
+<div id="outline-container-org467da20" class="outline-3">
+<h3 id="org467da20"><span class="section-number-3">2.2.</span> Perf stat</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 功能: 分析程序的整体性能.
@@ -368,8 +367,8 @@ These include:
 </div>
 </div>
 
-<div id="outline-container-orgac820b9" class="outline-3">
-<h3 id="orgac820b9"><span class="section-number-3">2.3.</span> Perf top</h3>
+<div id="outline-container-orgb724b47" class="outline-3">
+<h3 id="orgb724b47"><span class="section-number-3">2.3.</span> Perf top</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 功能: 实时显示系统/进程的性能统计信息。
@@ -425,7 +424,7 @@ top 界面解释:
 </p>
 
 <p>
-perf record -g -p 31655  # 记录一段时间的 zone<sub>server</sub> 性能事件
+perf record -g -p 31655  # 记录一段时间的 zone_server 性能事件
 perf report           # 得到分析结果
 perf report -n        # 显示对应时间的调用次数
 perf report -v        # 显示每个符号的地址
@@ -437,8 +436,8 @@ perf report -g fractal,5% #
 </div>
 
 
-<div id="outline-container-org0de0fde" class="outline-3">
-<h3 id="org0de0fde"><span class="section-number-3">2.4.</span> Perf timechart</h3>
+<div id="outline-container-org42c3615" class="outline-3">
+<h3 id="org42c3615"><span class="section-number-3">2.4.</span> Perf timechart</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 功能: 将系统的运行状态以 SVG 图的形式输出。
@@ -459,8 +458,8 @@ perf timechart record -p 31655
 </div>
 </div>
 
-<div id="outline-container-org7f295dd" class="outline-3">
-<h3 id="org7f295dd"><span class="section-number-3">2.5.</span> Perf script</h3>
+<div id="outline-container-org1c819a7" class="outline-3">
+<h3 id="org1c819a7"><span class="section-number-3">2.5.</span> Perf script</h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 功能: 查看 perf 数据文件 (perf.data)
@@ -478,8 +477,8 @@ perf timechart record -p 31655
 </div>
 </div>
 
-<div id="outline-container-org265d060" class="outline-3">
-<h3 id="org265d060"><span class="section-number-3">2.6.</span> Perf kmem</h3>
+<div id="outline-container-orgd65e0e2" class="outline-3">
+<h3 id="orgd65e0e2"><span class="section-number-3">2.6.</span> Perf kmem</h3>
 <div class="outline-text-3" id="text-2-6">
 <p>
 功能: 针对内存子系统的分析工具。也可以用 <code>perf record -e kmem:* -p 630</code> 来统计内存分配、释放。
@@ -487,8 +486,8 @@ perf timechart record -p 31655
 </div>
 </div>
 
-<div id="outline-container-orgaf9db3b" class="outline-3">
-<h3 id="orgaf9db3b"><span class="section-number-3">2.7.</span> 内核 tracepoint</h3>
+<div id="outline-container-orgfe652e8" class="outline-3">
+<h3 id="orgfe652e8"><span class="section-number-3">2.7.</span> 内核 tracepoint</h3>
 <div class="outline-text-3" id="text-2-7">
 <p>
 暂无.
@@ -497,8 +496,8 @@ perf timechart record -p 31655
 </div>
 </div>
 
-<div id="outline-container-orgc44a131" class="outline-2">
-<h2 id="orgc44a131"><span class="section-number-2">3.</span> 一些术语</h2>
+<div id="outline-container-orgd2dd9f1" class="outline-2">
+<h2 id="orgd2dd9f1"><span class="section-number-2">3.</span> 一些术语</h2>
 <div class="outline-text-2" id="text-3">
 <dl class="org-dl">
 <dt>PMU</dt><dd>Performance Monitoring Unit，性能检测单元。</dd>
@@ -512,8 +511,8 @@ perf timechart record -p 31655
 </div>
 </div>
 
-<div id="outline-container-orge125e9d" class="outline-2">
-<h2 id="orge125e9d"><span class="section-number-2">4.</span> 参考(扩展)资料</h2>
+<div id="outline-container-org3271a1d" class="outline-2">
+<h2 id="org3271a1d"><span class="section-number-2">4.</span> 参考(扩展)资料</h2>
 <div class="outline-text-2" id="text-4">
 <ul class="org-ul">
 <li><a href="http://kernel.taobao.org/images/5/52/Perf%E5%9C%A8Linux%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8_v3.pdf">Perf 在 Linux 程序性能评估中的应用(by淘宝承刚)</a></li>

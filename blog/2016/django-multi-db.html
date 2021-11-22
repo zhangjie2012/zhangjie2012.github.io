@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 16:28 -->
+<!-- 2021-11-22 Mon 17:44 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Django 实现分库</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,11 +220,7 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">Django 实现分库</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -282,7 +281,7 @@ BTW，在此之前我的日志系统是我自己脱离 Django 直接封装了一
 首先创建一个 <code>logstat</code> 的项目，然后一个创建 <code>report</code> 的 app。
 </p>
 
-<pre class="example" id="orge52f343">
+<pre class="example" id="orgee09684">
 &gt;&gt;&gt; django-admin startproject logstat
 &gt;&gt;&gt; cd logstat
 &gt;&gt;&gt; django-startapp report
@@ -297,7 +296,7 @@ BTW，在此之前我的日志系统是我自己脱离 Django 直接封装了一
 配置 <code>setting</code> 中配置 <code>default</code> DATABASES：
 </p>
 
-<pre class="example" id="org8da8341">
+<pre class="example" id="org3995629">
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -315,7 +314,7 @@ DATABASES = {
 接下来配置分库日志的数据库，为了 demo 写起来方便，改成 2 个库：
 </p>
 
-<pre class="example" id="org6297c7c">
+<pre class="example" id="org5952b75">
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -352,7 +351,7 @@ DATABASES = {
 <div id="outline-container-创建数据库" class="outline-2">
 <h2 id="创建数据库"><span class="section-number-2">3.</span> 创建数据库</h2>
 <div class="outline-text-2" id="text-创建数据库">
-<pre class="example" id="org6bd7e5d">
+<pre class="example" id="org5a14262">
 create database logstat charset='utf8';
 grant all on logstat.* to 'logstat_user'@localhost identified by 'logstat_password';
 create database logsharding0 charset='utf8';
@@ -370,7 +369,7 @@ grant all on logsharding1.* to 'logstat_user'@localhost identified by 'logstat_p
 在 <code>logstat/report/models.py</code> 中添加我们要存储的日志格式：
 </p>
 
-<pre class="example" id="org99072a5">
+<pre class="example" id="org77a3333">
 class Log(models.Model):
     serverid = models.IntegerField('服务器ID')
     logid = models.IntegerField('日志类型')
@@ -386,7 +385,7 @@ class Log(models.Model):
 同步数据库：
 </p>
 
-<pre class="example" id="org917fd22">
+<pre class="example" id="orgb12a219">
 ./manage.py migrate
 ./manage.py migrate --database=logsharding0
 ./manage.py migrate --database=logsharding1
@@ -411,7 +410,7 @@ class Log(models.Model):
 在 <code>logstat/report</code> 中创建 <code>log_router.py</code> 文件，添加路由规则：
 </p>
 
-<pre class="example" id="org622d89a">
+<pre class="example" id="org4eb7180">
 class LogRouter(object):
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         if app_label == 'report':
@@ -427,7 +426,7 @@ class LogRouter(object):
 在 <code>setting.py</code> 中添加数据库路由器，使之生效：
 </p>
 
-<pre class="example" id="org4027957">
+<pre class="example" id="org9f37106">
 DATABASE_ROUTERS = ['report.log_router.LogRouter',]
 </pre>
 
@@ -435,7 +434,7 @@ DATABASE_ROUTERS = ['report.log_router.LogRouter',]
 同步数据库：
 </p>
 
-<pre class="example" id="orgfabc3f0">
+<pre class="example" id="org906a1e1">
 ./manage.py migrate
 ./manage.py migrate --database=logsharding0
 ./manage.py migrate --database=logsharding1
@@ -452,7 +451,7 @@ DATABASE_ROUTERS = ['report.log_router.LogRouter',]
 在 <code>logstat</code> 下创建 <code>default_router.py</code> 添加路由规则，使得其余的 App 自动只选择 <code>default</code> ：
 </p>
 
-<pre class="example" id="org157c7ea">
+<pre class="example" id="org9e24390">
 class DefaultRouter(object):
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         if app_label == 'admin' \
@@ -469,7 +468,7 @@ class DefaultRouter(object):
 同样添加到 <code>DATABASE_ROUTERS</code> 中，
 </p>
 
-<pre class="example" id="org41e154e">
+<pre class="example" id="org7dc1456">
 DATABASE_ROUTERS = [
     'logstat.default_router.DefaultRouter',
     'report.log_router.LogRouter',
@@ -494,7 +493,7 @@ Django 在<a href="file:///model/advanced-multiple-databases.html">多数据库�
 从那个库中查询的数据，无论是修改、保存还是删除，都只操作同一个库。像：
 </p>
 
-<pre class="example" id="org8814d86">
+<pre class="example" id="org5714b8b">
 &gt;&gt;&gt; user_obj.save(using='new_users')
 &gt;&gt;&gt; user_obj.delete(using='legacy_users')
 </pre>
@@ -513,7 +512,7 @@ Django 在<a href="file:///model/advanced-multiple-databases.html">多数据库�
 日志存储的需求是：基于 <code>serverid</code> 的 hash 值选择一个存储库中的模型，封装一个函数即可:
 </p>
 
-<pre class="example" id="orgc7742e8">
+<pre class="example" id="orgd47710f">
 def db_slice(serverid):
     slice_list = (
         'logsharding0',
@@ -526,7 +525,7 @@ def db_slice(serverid):
 使用实例：
 </p>
 
-<pre class="example" id="org39a83bb">
+<pre class="example" id="org76bd3d8">
 # 创建对象
 Log.objects.using(db_slice(1)).create(
     serverid=1,
@@ -565,7 +564,7 @@ Log.objects.using(db_slice(1)).all()
 我的建议是，既然没有一个完美的方案，就应该尽量的保证逻辑简单、清晰，不要过分的依赖框架，少使用 hack 技巧。像上面那种
 </p>
 
-<pre class="example" id="org14c9cbc">
+<pre class="example" id="org617b279">
 &gt;&gt;&gt; user_obj.save(using='new_users')
 &gt;&gt;&gt; user_obj.delete(using='legacy_users')
 </pre>
@@ -577,7 +576,7 @@ Log.objects.using(db_slice(1)).all()
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2016-12-25 00:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2016-12-25 00:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

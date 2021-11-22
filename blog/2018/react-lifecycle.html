@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 16:28 -->
+<!-- 2021-11-22 Mon 17:44 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>React 组件生命周期</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,44 +220,40 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">React 组件生命周期</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5505bcf">1. 初始化</a></li>
-<li><a href="#orgce1c448">2. 装载</a>
+<li><a href="#org368f004">1. 初始化</a></li>
+<li><a href="#orgd6e14a0">2. 装载</a>
 <ul>
-<li><a href="#org377e0c3">2.1. getDerivedStateFromProps</a></li>
-<li><a href="#org9fb177b">2.2. render</a></li>
-<li><a href="#org9700bec">2.3. componentDidMount</a></li>
+<li><a href="#orgf130556">2.1. getDerivedStateFromProps</a></li>
+<li><a href="#orgf55875c">2.2. render</a></li>
+<li><a href="#org96d3369">2.3. componentDidMount</a></li>
 </ul>
 </li>
-<li><a href="#org3e8fdef">3. 更新</a>
+<li><a href="#orgd5c16e8">3. 更新</a>
 <ul>
-<li><a href="#org5f559bb">3.1. shouldComponentUpdate</a></li>
-<li><a href="#orgdc8e033">3.2. getSnapshotBeforeUpdate</a></li>
-<li><a href="#org2a9519b">3.3. componentDidUpdate</a></li>
+<li><a href="#orgebec7e7">3.1. shouldComponentUpdate</a></li>
+<li><a href="#orgd5456f7">3.2. getSnapshotBeforeUpdate</a></li>
+<li><a href="#org8fd1f27">3.3. componentDidUpdate</a></li>
 </ul>
 </li>
-<li><a href="#org0cb6546">4. 卸载</a></li>
-<li><a href="#orga97bf85">5. React hook</a>
+<li><a href="#org0bd0130">4. 卸载</a></li>
+<li><a href="#org02221d7">5. React hook</a>
 <ul>
-<li><a href="#org0e7c74e">5.1. State Hook</a></li>
-<li><a href="#org002320a">5.2. Effect Hook</a></li>
-<li><a href="#orgcd3951b">5.3. Hook 使用规则</a></li>
+<li><a href="#orgf47b45f">5.1. State Hook</a></li>
+<li><a href="#org05cf00a">5.2. Effect Hook</a></li>
+<li><a href="#orgdd17f92">5.3. Hook 使用规则</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="org44eba7e" class="figure">
+<div id="orgafa2198" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/react-lifecycle.png" alt="react-lifecycle.png" />
 </p>
 </div>
@@ -296,8 +295,8 @@ Github 的 <a href="https://github.com/wojtekmaj/react-lifecycle-methods-diagram
 </ol></li>
 </ul>
 
-<div id="outline-container-org5505bcf" class="outline-2">
-<h2 id="org5505bcf"><span class="section-number-2">1.</span> 初始化</h2>
+<div id="outline-container-org368f004" class="outline-2">
+<h2 id="org368f004"><span class="section-number-2">1.</span> 初始化</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 使用 <code>constructor(props)</code> 构造函数初始化，如果是通过继承 <code>React.Component</code> 子类来创建 React 组件的话，首先应该调用 <code>super(props)</code> 初始化父类。
@@ -319,12 +318,12 @@ ES6 提供了箭头函数可自动绑定 this，所以一般不需要在构造�
 </div>
 </div>
 
-<div id="outline-container-orgce1c448" class="outline-2">
-<h2 id="orgce1c448"><span class="section-number-2">2.</span> 装载</h2>
+<div id="outline-container-orgd6e14a0" class="outline-2">
+<h2 id="orgd6e14a0"><span class="section-number-2">2.</span> 装载</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org377e0c3" class="outline-3">
-<h3 id="org377e0c3"><span class="section-number-3">2.1.</span> getDerivedStateFromProps</h3>
+<div id="outline-container-orgf130556" class="outline-3">
+<h3 id="orgf130556"><span class="section-number-3">2.1.</span> getDerivedStateFromProps</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 <code>static getDerivedStateFromProps(nextProps, prevState)</code> ，static 的函数意味着没有 <code>this</code> 可以访问。那怎么使用 <code>setState</code> 函数来改变状态呢？
@@ -341,8 +340,8 @@ ES6 提供了箭头函数可自动绑定 this，所以一般不需要在构造�
 </div>
 </div>
 
-<div id="outline-container-org9fb177b" class="outline-3">
-<h3 id="org9fb177b"><span class="section-number-3">2.2.</span> render</h3>
+<div id="outline-container-orgf55875c" class="outline-3">
+<h3 id="orgf55875c"><span class="section-number-3">2.2.</span> render</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 React 组件的核心方法，也是必须要实现的一个方法，用于根据状态 state 和属性 props 渲染 React 组件。
@@ -351,8 +350,8 @@ React 组件的核心方法，也是必须要实现的一个方法，用于根�
 </div>
 </div>
 
-<div id="outline-container-org9700bec" class="outline-3">
-<h3 id="org9700bec"><span class="section-number-3">2.3.</span> componentDidMount</h3>
+<div id="outline-container-org96d3369" class="outline-3">
+<h3 id="org96d3369"><span class="section-number-3">2.3.</span> componentDidMount</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 <code>componentDidMount()</code> 首次渲染结束后调用的方法，只会被调用一次。异步的 API 调用应该放到这个函数中，而不是 <code>componentWillMount()</code> 中。
@@ -365,16 +364,16 @@ React 组件的核心方法，也是必须要实现的一个方法，用于根�
 </div>
 </div>
 
-<div id="outline-container-org3e8fdef" class="outline-2">
-<h2 id="org3e8fdef"><span class="section-number-2">3.</span> 更新</h2>
+<div id="outline-container-orgd5c16e8" class="outline-2">
+<h2 id="orgd5c16e8"><span class="section-number-2">3.</span> 更新</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 数据（state 或者 props）发生了变化，会触发重新渲染。
 </p>
 </div>
 
-<div id="outline-container-org5f559bb" class="outline-3">
-<h3 id="org5f559bb"><span class="section-number-3">3.1.</span> shouldComponentUpdate</h3>
+<div id="outline-container-orgebec7e7" class="outline-3">
+<h3 id="orgebec7e7"><span class="section-number-3">3.1.</span> shouldComponentUpdate</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 <code>shouldComponentUpdate(nextProps, nextState)</code> 用来告诉 React 组件的 state，props 发生变更之后是否引起组件的重新渲染， <code>shouldComponentUpdate</code> 在 props 和 state 被接受之后，渲染之前被调用。
@@ -383,8 +382,8 @@ React 组件的核心方法，也是必须要实现的一个方法，用于根�
 </div>
 </div>
 
-<div id="outline-container-orgdc8e033" class="outline-3">
-<h3 id="orgdc8e033"><span class="section-number-3">3.2.</span> getSnapshotBeforeUpdate</h3>
+<div id="outline-container-orgd5456f7" class="outline-3">
+<h3 id="orgd5456f7"><span class="section-number-3">3.2.</span> getSnapshotBeforeUpdate</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 <code>getSnapshotBeforeUpdate(prevProps, prevState)</code>: 在最近一次渲染输出被提交之前调用，它使你的组件在可能更改之前从 DOM 中捕获一些信息（比如滚动位置）。
@@ -393,15 +392,15 @@ React 组件的核心方法，也是必须要实现的一个方法，用于根�
 </div>
 </div>
 
-<div id="outline-container-org2a9519b" class="outline-3">
-<h3 id="org2a9519b"><span class="section-number-3">3.3.</span> componentDidUpdate</h3>
+<div id="outline-container-org8fd1f27" class="outline-3">
+<h3 id="org8fd1f27"><span class="section-number-3">3.3.</span> componentDidUpdate</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 <code>componentDidUpdate(prevProps, prevState, snapshot)</code> 在更新发生后立刻调用，首次初始渲染之后不会触发。你可以在 <code>componentDidUpdate()</code> 中直接调用 <code>setState</code> ，
 但是注意一定要做条件判断（不然就死循环了）。类似这样:
 </p>
 
-<pre class="example" id="orgd735dca">
+<pre class="example" id="orga14aa2c">
 componentDidUpdate(prevProps) {
   // Typical usage (don't forget to compare props):
   if (this.props.userID !== prevProps.userID) {
@@ -417,8 +416,8 @@ componentDidUpdate(prevProps) {
 </div>
 </div>
 
-<div id="outline-container-org0cb6546" class="outline-2">
-<h2 id="org0cb6546"><span class="section-number-2">4.</span> 卸载</h2>
+<div id="outline-container-org0bd0130" class="outline-2">
+<h2 id="org0bd0130"><span class="section-number-2">4.</span> 卸载</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 在组件卸载和销毁时，会调用 <code>componentWillUnmount()</code> 函数。可以在这个函数中做一些清理工作（定时器、取消网络请求等）。
@@ -444,7 +443,7 @@ componentDidUpdate(prevProps) {
 <code>getDerivedStateFromProps</code> 是一个 <code>static</code> 函数，也就意味着不属于任何一个实例，只属于类本身，那么如何在它里面使用  <code>this.setState</code> 呢？
 答案是你不需要这么做。这个函数直接返回新的 state ，如果没有变更返回 null 即可。
 </p>
-<pre class="example" id="org0b55930">
+<pre class="example" id="org30ae4f5">
 static getDerivedStateFromProps(nextProps, prevState) {
   if (prevState !== nextProps) {
 	return {
@@ -497,8 +496,8 @@ static getDerivedStateFromProps(nextProps, prevState) {
 </div>
 </div>
 
-<div id="outline-container-orga97bf85" class="outline-2">
-<h2 id="orga97bf85"><span class="section-number-2">5.</span> React hook</h2>
+<div id="outline-container-org02221d7" class="outline-2">
+<h2 id="org02221d7"><span class="section-number-2">5.</span> React hook</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 <b>2020-11-16 更新</b>
@@ -514,8 +513,8 @@ React v16.8 版本之后新增了 Hook。 我的理解是：hook 使得函数组
 </p>
 </div>
 
-<div id="outline-container-org0e7c74e" class="outline-3">
-<h3 id="org0e7c74e"><span class="section-number-3">5.1.</span> State Hook</h3>
+<div id="outline-container-orgf47b45f" class="outline-3">
+<h3 id="orgf47b45f"><span class="section-number-3">5.1.</span> State Hook</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 <code>useState</code> 声明并初始化一个变量，返回一个可修改变量值的 hook。
@@ -544,8 +543,8 @@ React v16.8 版本之后新增了 Hook。 我的理解是：hook 使得函数组
 </div>
 </div>
 
-<div id="outline-container-org002320a" class="outline-3">
-<h3 id="org002320a"><span class="section-number-3">5.2.</span> Effect Hook</h3>
+<div id="outline-container-org05cf00a" class="outline-3">
+<h3 id="org05cf00a"><span class="section-number-3">5.2.</span> Effect Hook</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 <code>useEffect</code> 可以认为是 <code>componentDidMount</code>, <code>componentDidUpdate</code>, <code>componentWillUnmount</code> 三个生命周期函数的组合。
@@ -595,8 +594,8 @@ callback，该 callback 函数在组件卸载时自动执行。
 </div>
 </div>
 
-<div id="outline-container-orgcd3951b" class="outline-3">
-<h3 id="orgcd3951b"><span class="section-number-3">5.3.</span> Hook 使用规则</h3>
+<div id="outline-container-orgdd17f92" class="outline-3">
+<h3 id="orgdd17f92"><span class="section-number-3">5.3.</span> Hook 使用规则</h3>
 <div class="outline-text-3" id="text-5-3">
 <ul class="org-ul">
 <li>只能在函数最顶层使用 Hook，不要在循环中，条件或者嵌套函数中调用 Hook。</li>
@@ -607,7 +606,7 @@ callback，该 callback 函数在组件卸载时自动执行。
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-09-14 18:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2018-09-14 18:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

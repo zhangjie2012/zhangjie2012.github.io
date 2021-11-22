@@ -3,12 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 16:25 -->
+<!-- 2021-11-22 Mon 17:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>nginx</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,35 +220,31 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">nginx</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2b1a44f">1. Basic Auth</a></li>
-<li><a href="#org8949d98">2. FAQ</a>
+<li><a href="#org1d62de2">1. Basic Auth</a></li>
+<li><a href="#org775a706">2. FAQ</a>
 <ul>
-<li><a href="#org31498c6">2.1. http header 包含下划线会被忽略？</a></li>
+<li><a href="#orgbd8a6aa">2.1. http header 包含下划线会被忽略？</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2b1a44f" class="outline-2">
-<h2 id="org2b1a44f"><span class="section-number-2">1.</span> Basic Auth</h2>
+<div id="outline-container-org1d62de2" class="outline-2">
+<h2 id="org1d62de2"><span class="section-number-2">1.</span> Basic Auth</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-一些服务没有认证模块，比如 <a href="https://prometheus.io/">Prometheus</a>，NGINX 的 <a href="http://nginx.org/en/docs/http/ngx_http_auth_basic_module.html">ngx<sub>http</sub><sub>auth</sub><sub>basic</sub><sub>module</sub></a> ，
+一些服务没有认证模块，比如 <a href="https://prometheus.io/">Prometheus</a>，NGINX 的 <a href="http://nginx.org/en/docs/http/ngx_http_auth_basic_module.html">ngx_http_auth_basic_module</a> ，
 使用「HTTP Basic Authentication」协议做简单的账户名和密码认证。配置如下：
 </p>
 
-<pre class="example" id="orgeb40feb">
+<pre class="example" id="org5cfb6c6">
 location / {
 	auth_basic           "closed site";
 	auth_basic_user_file conf/htpasswd;
@@ -264,7 +263,7 @@ location / {
 htpasswd 是 HTTPD 工具集的一部分，所以要先安装：
 </p>
 
-<pre class="example" id="orgccbc5cf">
+<pre class="example" id="orgdab76f4">
 yum install -y httpd-tools
 </pre>
 
@@ -272,7 +271,7 @@ yum install -y httpd-tools
 生成认证凭据，
 </p>
 
-<pre class="example" id="orgd3018ec">
+<pre class="example" id="org5aceafc">
 htpasswd -c /etc/nginx/.htpasswd admin
 </pre>
 
@@ -280,7 +279,7 @@ htpasswd -c /etc/nginx/.htpasswd admin
 <code>/etc/nginx/.htpasswd</code> 是凭据文件位置， <code>admin</code> 是用户名，执行时会提示输入密码，文件内容类似这样：
 </p>
 
-<pre class="example" id="org1d866cb">
+<pre class="example" id="org59eef57">
 # /etc/nginx/.htpasswd
 admin:$apr1$z2.a8U.c$DGsdj6MGmnfnQOwF3mWaE0
 </pre>
@@ -291,12 +290,12 @@ admin:$apr1$z2.a8U.c$DGsdj6MGmnfnQOwF3mWaE0
 </div>
 </div>
 
-<div id="outline-container-org8949d98" class="outline-2">
-<h2 id="org8949d98"><span class="section-number-2">2.</span> FAQ</h2>
+<div id="outline-container-org775a706" class="outline-2">
+<h2 id="org775a706"><span class="section-number-2">2.</span> FAQ</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org31498c6" class="outline-3">
-<h3 id="org31498c6"><span class="section-number-3">2.1.</span> http header 包含下划线会被忽略？</h3>
+<div id="outline-container-orgbd8a6aa" class="outline-3">
+<h3 id="orgbd8a6aa"><span class="section-number-3">2.1.</span> http header 包含下划线会被忽略？</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 有效的 http Header 命名规范是英文字母，数字和中划线，可能包含下划线。下划线被 <code>underscores_in_headers</code> 控制，默认是关闭的状态。<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>

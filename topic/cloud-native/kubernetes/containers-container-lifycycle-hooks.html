@@ -3,12 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 16:25 -->
+<!-- 2021-11-22 Mon 17:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 容器 - 容器的生命周期 hooks</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,23 +220,19 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">Kubernetes 容器 - 容器的生命周期 hooks</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge2cce93">1. 概览</a></li>
-<li><a href="#orge8f7b84">2. 容器 hooks</a>
+<li><a href="#orga9de384">1. 概览</a></li>
+<li><a href="#org5530224">2. 容器 hooks</a>
 <ul>
-<li><a href="#org44aaf29">2.1. Hook 处理器的实现</a></li>
-<li><a href="#org12cd790">2.2. Hook 处理器执行</a></li>
-<li><a href="#org136314f">2.3. Hook 交付保证</a></li>
-<li><a href="#orgb3d789d">2.4. 调试 Hook 处理器</a></li>
+<li><a href="#org2ae6cf1">2.1. Hook 处理器的实现</a></li>
+<li><a href="#org0317c5a">2.2. Hook 处理器执行</a></li>
+<li><a href="#org0403fff">2.3. Hook 交付保证</a></li>
+<li><a href="#orge99c6d4">2.4. 调试 Hook 处理器</a></li>
 </ul>
 </li>
 </ul>
@@ -243,8 +242,8 @@
 本页面描述 kubelet 管理的容器可以使用容器的生命周期 hook 框架来运行事件在其管理生命周期中触发的代码。
 </p>
 
-<div id="outline-container-orge2cce93" class="outline-2">
-<h2 id="orge2cce93"><span class="section-number-2">1.</span> 概览</h2>
+<div id="outline-container-orga9de384" class="outline-2">
+<h2 id="orga9de384"><span class="section-number-2">1.</span> 概览</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 类似许多编程语言框架有生命周期 hooks，比如 Angular，Kubernetes 提供了容器的生命周期 hook。
@@ -253,8 +252,8 @@ hooks 使容器能够了解其管理生命周期中的事件和执行相应的�
 </div>
 </div>
 
-<div id="outline-container-orge8f7b84" class="outline-2">
-<h2 id="orge8f7b84"><span class="section-number-2">2.</span> 容器 hooks</h2>
+<div id="outline-container-org5530224" class="outline-2">
+<h2 id="org5530224"><span class="section-number-2">2.</span> 容器 hooks</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 有两个暴露给容器的 hooks：
@@ -283,8 +282,8 @@ hooks 使容器能够了解其管理生命周期中的事件和执行相应的�
 </p>
 </div>
 
-<div id="outline-container-org44aaf29" class="outline-3">
-<h3 id="org44aaf29"><span class="section-number-3">2.1.</span> Hook 处理器的实现</h3>
+<div id="outline-container-org2ae6cf1" class="outline-3">
+<h3 id="org2ae6cf1"><span class="section-number-3">2.1.</span> Hook 处理器的实现</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 实现和注册一个 hook 的处理器，容器才可以使用 hook。有两种类型的 hook 处理器：
@@ -297,8 +296,8 @@ hooks 使容器能够了解其管理生命周期中的事件和执行相应的�
 </div>
 </div>
 
-<div id="outline-container-org12cd790" class="outline-3">
-<h3 id="org12cd790"><span class="section-number-3">2.2.</span> Hook 处理器执行</h3>
+<div id="outline-container-org0317c5a" class="outline-3">
+<h3 id="org0317c5a"><span class="section-number-3">2.2.</span> Hook 处理器执行</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 当容器生命周期管理 hook 被调用时，Kubernetes 管理系统根据 hook 行为执行处理器， <code>httpGet</code> 和 <code>tcpSocket</code> 是通过 kubelet 进程执行的，
@@ -328,8 +327,8 @@ Pod 的 phase 会被设置为 <code>Terminating</code> 然后一直保持这个�
 </div>
 </div>
 
-<div id="outline-container-org136314f" class="outline-3">
-<h3 id="org136314f"><span class="section-number-3">2.3.</span> Hook 交付保证</h3>
+<div id="outline-container-org0403fff" class="outline-3">
+<h3 id="org0403fff"><span class="section-number-3">2.3.</span> Hook 交付保证</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Hook 会保证至少执行一次，这意味着给定任何事件 (<code>PostStart</code> 或者 <code>PreStop</code>)，hook 可能被多次调用。hook 的执行程序需要能够适配这种可能情况。
@@ -342,8 +341,8 @@ Hook 会保证至少执行一次，这意味着给定任何事件 (<code>PostSta
 </div>
 </div>
 
-<div id="outline-container-orgb3d789d" class="outline-3">
-<h3 id="orgb3d789d"><span class="section-number-3">2.4.</span> 调试 Hook 处理器</h3>
+<div id="outline-container-orge99c6d4" class="outline-3">
+<h3 id="orge99c6d4"><span class="section-number-3">2.4.</span> 调试 Hook 处理器</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 Hook 处理程序的日志没有在 Pod 事件中公开。如果处理程序因为某种原因失败，它将广播一个事件。对于 <code>PostStart</code> 是 <code>FailedPostStartHook</code> 事件，

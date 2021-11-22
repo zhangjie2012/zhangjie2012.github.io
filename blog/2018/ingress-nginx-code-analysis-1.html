@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 16:28 -->
+<!-- 2021-11-22 Mon 17:44 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ingress-nginx 工作原理（上）：服务初始化</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,17 +220,13 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">ingress-nginx 工作原理（上）：服务初始化</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org191ea58">1. 服务初始化</a></li>
+<li><a href="#org8142791">1. 服务初始化</a></li>
 </ul>
 </div>
 </div>
@@ -247,7 +246,7 @@
 </p>
 
 
-<div id="orgee7827b" class="figure">
+<div id="orga150d44" class="figure">
 <p><object type="image/svg+xml" data="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/nginx-ingress/ingress-nginx-1-1.svg" class="org-svg">
 Sorry, your browser does not support SVG.</object>
 </p>
@@ -264,14 +263,14 @@ Sorry, your browser does not support SVG.</object>
 
 <hr />
 
-<div id="outline-container-org191ea58" class="outline-2">
-<h2 id="org191ea58"><span class="section-number-2">1.</span> 服务初始化</h2>
+<div id="outline-container-org8142791" class="outline-2">
+<h2 id="org8142791"><span class="section-number-2">1.</span> 服务初始化</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 服务初始化，可以拆分成 K8s 客户端创建、NGINXController、对外 HTTP 服务、启动服务几块。
 </p>
 
-<pre class="example" id="org4733c15">
+<pre class="example" id="orgd49f252">
 // cmd/nginx/main.go
 func main() {
     // (1)
@@ -323,7 +322,7 @@ func main() {
 因为<a href="https://github.com/kubernetes/ingress-nginx/issues/1968">在一些环境中第一次可能连不上 API Server</a>，所以这里有重试策略。
 </p>
 
-<pre class="example" id="org83f4b71">
+<pre class="example" id="orgb085e96">
 // cmd/nginx/main.go
 func createApiserverClient(apiserverHost string, kubeConfig string) (*kubernetes.Clientset, error) {
     var v *discovery.Info
@@ -368,7 +367,7 @@ func createApiserverClient(apiserverHost string, kubeConfig string) (*kubernetes
 4、创建 NGINXController，根据名字就知道了，NGINXController 是 ingress-controller 的 controller。
 </p>
 
-<pre class="example" id="org73e2431">
+<pre class="example" id="org05a75a7">
 // internal/ingress/controller/nginx.go
 func NewNGINXController(config *Configuration, fs file.Filesystem) *NGINXController {
     // 环境变量查看 NGINX_BINARY，如果未设置则使用 nginxBinary = "/usr/sbin/nginx"
@@ -483,7 +482,7 @@ Error loading new template : %v
 是同一个（指针）。创建 Store 做了很多事情，需要注意（代码比较长，我进行了精简，只看思路）：
 </p>
 
-<pre class="example" id="org9c55743">
+<pre class="example" id="org881e054">
 // ingress/controller/store/store.go
 // 参数省略了
 func New() Storer {
@@ -593,7 +592,7 @@ func New() Storer {
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

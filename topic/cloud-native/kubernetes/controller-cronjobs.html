@@ -3,12 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 16:26 -->
+<!-- 2021-11-22 Mon 17:42 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - CronJob</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,22 +220,18 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">Kubernetes - CronJob</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6cd96bd">1. CronJob</a>
+<li><a href="#org8f8687e">1. CronJob</a>
 <ul>
-<li><a href="#org1c0f327">1.1. 举例</a></li>
+<li><a href="#org2810ba1">1.1. 举例</a></li>
 </ul>
 </li>
-<li><a href="#org3d42b82">2. CronJob 局限性</a></li>
+<li><a href="#org0de44e5">2. CronJob 局限性</a></li>
 </ul>
 </div>
 </div>
@@ -245,23 +244,23 @@
 Job 名称不可超过 63 个字符。
 </p>
 
-<div id="outline-container-org6cd96bd" class="outline-2">
-<h2 id="org6cd96bd"><span class="section-number-2">1.</span> CronJob</h2>
+<div id="outline-container-org8f8687e" class="outline-2">
+<h2 id="org8f8687e"><span class="section-number-2">1.</span> CronJob</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 CronJob 对于周期性的重复任务非常有用，类似备份和发送邮件。也可以用来安排特定的任务在指定时间执行，比如在集群空闲的时候调度 Job。
 </p>
 </div>
 
-<div id="outline-container-org1c0f327" class="outline-3">
-<h3 id="org1c0f327"><span class="section-number-3">1.1.</span> 举例</h3>
+<div id="outline-container-org2810ba1" class="outline-3">
+<h3 id="org2810ba1"><span class="section-number-3">1.1.</span> 举例</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 下面的例子周期性的在每分钟打印当前时间和 hello 消息：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml" id="org97a9fa9"><span style="color: #00538b;">apiVersion</span>: batch/v1beta1
+<pre class="src src-yaml" id="orgc00b52b"><span style="color: #00538b;">apiVersion</span>: batch/v1beta1
 <span style="color: #00538b;">kind</span>: CronJob
 <span style="color: #00538b;">metadata</span>:
   <span style="color: #00538b;">name</span>: hello
@@ -285,8 +284,8 @@ CronJob 对于周期性的重复任务非常有用，类似备份和发送邮件
 </div>
 </div>
 
-<div id="outline-container-org3d42b82" class="outline-2">
-<h2 id="org3d42b82"><span class="section-number-2">2.</span> CronJob 局限性</h2>
+<div id="outline-container-org0de44e5" class="outline-2">
+<h2 id="org0de44e5"><span class="section-number-2">2.</span> CronJob 局限性</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 cron job 在隔一段时间应该会创建一个 job。我们说“应该”是因为在有些情况下可能会创建两个 job，或者可能不会被创建。

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 16:28 -->
+<!-- 2021-11-22 Mon 17:44 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Effective Go 精简版</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,11 +220,7 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">Effective Go 精简版</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -479,12 +478,12 @@ Go 有两种内置的内存分配原语：=new= 和 =make=。
 
 <ul class="org-ul">
 <li><code>new</code>
-跟其它编程语言不同的地方在于它申请的内存不会被<sub>初始化</sub>_，它只是全部设置为<sub>零值</sub>_（译者：文档有点歧义，实际上
+跟其它编程语言不同的地方在于它申请的内存不会被_初始化_，它只是全部设置为_零值_（译者：文档有点歧义，实际上
 Go 的 new
 是会初始化内存的，只不过初始化成了对应类型的零值，这里表达的应该是类似
 C++ 中的 new 会自动调用构造函数）。返回的是 T*</li>
 <li><code>make(T, args)</code> 和 <code>new(T)</code> 有不同的设计目标，make 只用来创建
-slices、maps 和 channels，并且返回的是<sub>初始化</sub><sub>的</sub>（非零值）的类型
+slices、maps 和 channels，并且返回的是_初始化_的（非零值）的类型
 T（而不是*T），原因是这三种类型在后台实现时必须进行初始化。比如：切片实际包含三个字段：指向数据的指针、长度和容量，在初始化这些数据之前
 slice 是 =nil=。对于 slices、maps 和 channels，make
 会初始化其内部结构数据。</li>
@@ -539,7 +538,7 @@ value 类型为 bool 来实现，不存在时值为
 false）；当需要程序上判断一个值是否存在时，可以通过访问时返回的第二个值来判断，如下：
 </p>
 
-<pre class="example" id="orgc8be20a">
+<pre class="example" id="org69ebe66">
 func offset(tz string) int {
     if seconds, ok := timeZone[tz]; ok {
         return seconds
@@ -621,7 +620,7 @@ Go
 内嵌的接口和结构体可以接口/结构体名称直接访问，如果想要直接访问时字段名为类型名。比如：
 </p>
 
-<pre class="example" id="org74e15e2">
+<pre class="example" id="orgb6e589f">
 type Job struct {
     Command string
     *log.Logger
@@ -698,7 +697,7 @@ string
 在程序快挂的时候输出），一般用来表示处理逻辑上不可能发生的事情，比如无限循环竟然退出了：
 </p>
 
-<pre class="example" id="orge701d6f">
+<pre class="example" id="org337b7cd">
 // A toy implementation of cube root using Newton's method.
 func CubeRoot(x float64) float64 {
     z := x/3   // Arbitrary initial value
@@ -741,7 +740,7 @@ goroutines。
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-08-03 14:11:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2018-08-03 14:11:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

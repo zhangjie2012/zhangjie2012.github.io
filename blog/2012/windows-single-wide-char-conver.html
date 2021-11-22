@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 16:27 -->
+<!-- 2021-11-22 Mon 17:43 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>windows | C/C++ | 宽字符与多字符之间的转换</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,11 +220,7 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">windows | C/C++ | 宽字符与多字符之间的转换</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -242,7 +241,7 @@
 <div id="outline-container-单字符-宽字符" class="outline-2">
 <h2 id="单字符-宽字符"><span class="section-number-2">1.</span> 1.单字符-&gt;宽字符</h2>
 <div class="outline-text-2" id="text-单字符-宽字符">
-<pre class="example" id="org5f82333">
+<pre class="example" id="orgc475077">
 int MultiByteToWideChar(
   __in   UINT CodePage,   // 标识了与多字节关联的一个代码页值
   __in   DWORD dwFlags,   // 允许我们进行额外的控制，它会影响带变音符号（比如重音）的字符。但是一般情况下不适用，赋为 0 即可。
@@ -263,10 +262,10 @@ int MultiByteToWideChar(
 <li>调用 MultiByteToWideChar，为 pWideCharStr 参数传入
 NULL，为cchWideChar 参数传入 0，为 cbMultiByte 参数传入 -1 。</li>
 <li>分配一块足以容纳转换后的 Unicode 字符串的内容。它的大小是上一个
-MultiByteToWideChar 调用的返回值乘以 sizeof(wchar<sub>t</sub>) 。</li>
+MultiByteToWideChar 调用的返回值乘以 sizeof(wchar_t) 。</li>
 <li>再次调用MultiByteToWideChar，这一次将缓冲区地址作为 pWideCharStr
 参数的值传入，将第一次 MultiByteToWideChar 调用的返回值乘以
-sizeof(wchar<sub>t</sub>) 后得到大小作为 cchWideChar 参数的值传入。</li>
+sizeof(wchar_t) 后得到大小作为 cchWideChar 参数的值传入。</li>
 <li>使用转换后的字符串</li>
 <li>释放 Unicode 字符串占用的内存块。</li>
 </ol>
@@ -276,7 +275,7 @@ sizeof(wchar<sub>t</sub>) 后得到大小作为 cchWideChar 参数的值传入�
 <div id="outline-container-宽字符-单字符" class="outline-2">
 <h2 id="宽字符-单字符"><span class="section-number-2">2.</span> 2.宽字符-&gt;单字符</h2>
 <div class="outline-text-2" id="text-宽字符-单字符">
-<pre class="example" id="org1ebe9f8">
+<pre class="example" id="org5ac09f6">
 int WideCharToMultiByte(
   __in   UINT CodePage,           // 标志了要与新转换的字符串关联的代码页
   __in   DWORD dwFlags,           // 制定额外的转换控制，一般不需要进行这种程度的控制，而为 dwFlag 传入 0
@@ -301,7 +300,7 @@ int WideCharToMultiByte(
 函数代码：
 </p>
 
-<pre class="example" id="org98c94c9">
+<pre class="example" id="org9f386d0">
 /* 作者：&lt;a href="http://www.perfect-is-shit.com"&gt;独酌逸醉&lt;/a&gt;
  * 时间: 2012.04.11
  *
@@ -357,7 +356,7 @@ wchar_t * singlestring_to_wide(const char * pastring)
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-04-11 09:13:36 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2012-04-11 09:13:36 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

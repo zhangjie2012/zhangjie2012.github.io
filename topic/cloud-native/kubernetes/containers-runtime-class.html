@@ -3,12 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 16:25 -->
+<!-- 2021-11-22 Mon 17:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 容器 - 运行时类</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,37 +220,33 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">Kubernetes 容器 - 运行时类</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org46cc6ea">1. 动机</a></li>
-<li><a href="#orgc401177">2. 设置（Setup）</a>
+<li><a href="#orgb41fcc2">1. 动机</a></li>
+<li><a href="#org3458720">2. 设置（Setup）</a>
 <ul>
-<li><a href="#orgf253be8">2.1. 1. 节点上配置 CRI 实现</a></li>
-<li><a href="#orga72769e">2.2. 2. 创建对应的 RuntimeClass 资源</a></li>
+<li><a href="#org3421fd8">2.1. 1. 节点上配置 CRI 实现</a></li>
+<li><a href="#org2b6d08b">2.2. 2. 创建对应的 RuntimeClass 资源</a></li>
 </ul>
 </li>
-<li><a href="#orgf61163d">3. 使用（Usage）</a>
+<li><a href="#org938879e">3. 使用（Usage）</a>
 <ul>
-<li><a href="#orgade3aa2">3.1. CRI 配置</a>
+<li><a href="#orgb04dd79">3.1. CRI 配置</a>
 <ul>
-<li><a href="#orge1b4294">3.1.1. dockershim</a></li>
-<li><a href="#org8ddfd41">3.1.2. containerd</a></li>
-<li><a href="#org986162d">3.1.3. CRI-O</a></li>
+<li><a href="#org8df828e">3.1.1. dockershim</a></li>
+<li><a href="#org32ebf16">3.1.2. containerd</a></li>
+<li><a href="#org9476bb7">3.1.3. CRI-O</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgca83822">4. 调度（Scheduling）</a>
+<li><a href="#org3186f0d">4. 调度（Scheduling）</a>
 <ul>
-<li><a href="#org499fd4e">4.1. Pod Overhead</a></li>
+<li><a href="#org275d668">4.1. Pod Overhead</a></li>
 </ul>
 </li>
 </ul>
@@ -269,8 +268,8 @@
 RuntimeClass 是用于选择容器运行时配置的功能。容器的运行时配置用于运行 Pod 的容器。
 </p>
 
-<div id="outline-container-org46cc6ea" class="outline-2">
-<h2 id="org46cc6ea"><span class="section-number-2">1.</span> 动机</h2>
+<div id="outline-container-orgb41fcc2" class="outline-2">
+<h2 id="orgb41fcc2"><span class="section-number-2">1.</span> 动机</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 你可以在不同的 Pod 之间设置不同的 RuntimeClass，以实现安全和性能之间的平衡。比如，如果你的部分工作负载需要高级别的信息安全保障，你可能选择性的调度
@@ -283,8 +282,8 @@ RuntimeClass 是用于选择容器运行时配置的功能。容器的运行时�
 </div>
 </div>
 
-<div id="outline-container-orgc401177" class="outline-2">
-<h2 id="orgc401177"><span class="section-number-2">2.</span> 设置（Setup）</h2>
+<div id="outline-container-org3458720" class="outline-2">
+<h2 id="org3458720"><span class="section-number-2">2.</span> 设置（Setup）</h2>
 <div class="outline-text-2" id="text-2">
 <ol class="org-ol">
 <li>在节点上配置 CRI 实现（运行时依赖）；</li>
@@ -292,8 +291,8 @@ RuntimeClass 是用于选择容器运行时配置的功能。容器的运行时�
 </ol>
 </div>
 
-<div id="outline-container-orgf253be8" class="outline-3">
-<h3 id="orgf253be8"><span class="section-number-3">2.1.</span> 1. 节点上配置 CRI 实现</h3>
+<div id="outline-container-org3421fd8" class="outline-3">
+<h3 id="org3421fd8"><span class="section-number-3">2.1.</span> 1. 节点上配置 CRI 实现</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 RuntimeClass 可用的配置取决于运行时接口（CRI）的实现。有关如何配置的信息，请查看 CRI 实现的相应文档（<a href="https://kubernetes.io/docs/concepts/containers/runtime-class/#cri-configuration">如下</a>）。
@@ -312,8 +311,8 @@ RuntimeClass 可用的配置取决于运行时接口（CRI）的实现。有关�
 </div>
 </div>
 
-<div id="outline-container-orga72769e" class="outline-3">
-<h3 id="orga72769e"><span class="section-number-3">2.2.</span> 2. 创建对应的 RuntimeClass 资源</h3>
+<div id="outline-container-org2b6d08b" class="outline-3">
+<h3 id="org2b6d08b"><span class="section-number-3">2.2.</span> 2. 创建对应的 RuntimeClass 资源</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 在步骤 1 中配置设置应该有一个关联的 <code>handler</code> 名称，作为配置标识。每个 handler，创建一个对应的 RuntimeClass 对象。
@@ -340,8 +339,8 @@ RuntimeClass 对象必须是一个有效的 <a href="https://kubernetes.io/docs/
 </div>
 </div>
 
-<div id="outline-container-orgf61163d" class="outline-2">
-<h2 id="orgf61163d"><span class="section-number-2">3.</span> 使用（Usage）</h2>
+<div id="outline-container-org938879e" class="outline-2">
+<h2 id="org938879e"><span class="section-number-2">3.</span> 使用（Usage）</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 一旦 RuntimeClasses 配置到集群上，用起来就非常简单了。在 Pod spec 中指定 <code>runtimeClassName</code> 即可。比如：
@@ -368,16 +367,16 @@ RuntimeClass 对象必须是一个有效的 <a href="https://kubernetes.io/docs/
 </p>
 </div>
 
-<div id="outline-container-orgade3aa2" class="outline-3">
-<h3 id="orgade3aa2"><span class="section-number-3">3.1.</span> CRI 配置</h3>
+<div id="outline-container-orgb04dd79" class="outline-3">
+<h3 id="orgb04dd79"><span class="section-number-3">3.1.</span> CRI 配置</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 有关设置 CRI 运行时的更多信息，查看 <a href="https://kubernetes.io/docs/setup/production-environment/container-runtimes/">CRI 安装</a>。
 </p>
 </div>
 
-<div id="outline-container-orge1b4294" class="outline-4">
-<h4 id="orge1b4294"><span class="section-number-4">3.1.1.</span> dockershim</h4>
+<div id="outline-container-org8df828e" class="outline-4">
+<h4 id="org8df828e"><span class="section-number-4">3.1.1.</span> dockershim</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <p>
 带有 dockershim 的 RuntimeClasses 必须将运行时处理程序设置为 <code>docker</code> 。Dockershim 不支持自定义 runtime 处理器的配置。
@@ -385,8 +384,8 @@ RuntimeClass 对象必须是一个有效的 <a href="https://kubernetes.io/docs/
 </div>
 </div>
 
-<div id="outline-container-org8ddfd41" class="outline-4">
-<h4 id="org8ddfd41"><span class="section-number-4">3.1.2.</span> containerd</h4>
+<div id="outline-container-org32ebf16" class="outline-4">
+<h4 id="org32ebf16"><span class="section-number-4">3.1.2.</span> containerd</h4>
 <div class="outline-text-4" id="text-3-1-2">
 <p>
 通过 containerd 配置的 Runtime 处理器在 <code>/etc/containerd/config.toml</code> 中。有效的处理器在 runtime 小结配置：
@@ -403,8 +402,8 @@ RuntimeClass 对象必须是一个有效的 <a href="https://kubernetes.io/docs/
 </div>
 </div>
 
-<div id="outline-container-org986162d" class="outline-4">
-<h4 id="org986162d"><span class="section-number-4">3.1.3.</span> CRI-O</h4>
+<div id="outline-container-org9476bb7" class="outline-4">
+<h4 id="org9476bb7"><span class="section-number-4">3.1.3.</span> CRI-O</h4>
 <div class="outline-text-4" id="text-3-1-3">
 <p>
 CRI-O 的 Runtime 处理器在 <code>/etc/crio/crio.conf</code> 中配置。配置在 <a href="https://github.com/cri-o/cri-o/blob/master/docs/crio.conf.5.md#crioruntime-table">crio.runtime.table</a> 中：
@@ -424,8 +423,8 @@ runtime_path = "${PATH_TO_BINARY}"
 </div>
 </div>
 
-<div id="outline-container-orgca83822" class="outline-2">
-<h2 id="orgca83822"><span class="section-number-2">4.</span> 调度（Scheduling）</h2>
+<div id="outline-container-org3186f0d" class="outline-2">
+<h2 id="org3186f0d"><span class="section-number-2">4.</span> 调度（Scheduling）</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 *FEATURE STATE: <code>Kubernetes v1.16 [beta]</code> *
@@ -451,8 +450,8 @@ RuntimeClass 的 nodeSelector 会跟 Pod 的 nodeSelector 合并，有效的获�
 </p>
 </div>
 
-<div id="outline-container-org499fd4e" class="outline-3">
-<h3 id="org499fd4e"><span class="section-number-3">4.1.</span> Pod Overhead</h3>
+<div id="outline-container-org275d668" class="outline-3">
+<h3 id="org275d668"><span class="section-number-3">4.1.</span> Pod Overhead</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 *FEATURE STATE: <code>Kubernetes v1.18 [beta]</code> *

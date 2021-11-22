@@ -3,12 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 16:26 -->
+<!-- 2021-11-22 Mon 17:42 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>使用 Go 构建 Web 服务技术栈</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,40 +220,36 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">使用 Go 构建 Web 服务技术栈</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbf7e432">1. 框架选择</a>
+<li><a href="#org98ae1c2">1. 框架选择</a>
 <ul>
-<li><a href="#org2f4f649">1.1. 原生</a></li>
-<li><a href="#org5c8df7b">1.2. gin</a></li>
-<li><a href="#org55a2801">1.3. 结论</a></li>
+<li><a href="#org069cf29">1.1. 原生</a></li>
+<li><a href="#orga9e8149">1.2. gin</a></li>
+<li><a href="#org20494a9">1.3. 结论</a></li>
 </ul>
 </li>
-<li><a href="#orge54a1ff">2. 最佳实践</a>
+<li><a href="#org9e94cdf">2. 最佳实践</a>
 <ul>
-<li><a href="#orgae7452b">2.1. 日志</a></li>
-<li><a href="#orgeb7cca7">2.2. 监控：使用 prometheus<sub>client</sub> 暴露 API metrics</a></li>
+<li><a href="#org0c6c689">2.1. 日志</a></li>
+<li><a href="#org3224377">2.2. 监控：使用 prometheus_client 暴露 API metrics</a></li>
 </ul>
 </li>
-<li><a href="#orgee85472">3. 常用库选型</a>
+<li><a href="#orge6b6bcd">3. 常用库选型</a>
 <ul>
-<li><a href="#org472cca2">3.1. MongoDB</a></li>
+<li><a href="#orge13e0eb">3.1. MongoDB</a></li>
 </ul>
 </li>
-<li><a href="#org04c3310">4. 打包</a></li>
-<li><a href="#org78811f2">5. 部署</a>
+<li><a href="#orgee44ad2">4. 打包</a></li>
+<li><a href="#orge797b1e">5. 部署</a>
 <ul>
-<li><a href="#orgcd93d41">5.1. 直接部署到主机上</a></li>
-<li><a href="#orga6ce786">5.2. 部署到容器环境下</a></li>
-<li><a href="#orgc6a4f42">5.3. 版本号</a></li>
+<li><a href="#org710f813">5.1. 直接部署到主机上</a></li>
+<li><a href="#orgecc046b">5.2. 部署到容器环境下</a></li>
+<li><a href="#orga118a39">5.3. 版本号</a></li>
 </ul>
 </li>
 </ul>
@@ -260,12 +259,12 @@
 <i>本文将梳理使用 Go 构建一个 Web server 的方方面面，随时更新.</i>
 </p>
 
-<div id="outline-container-orgbf7e432" class="outline-2">
-<h2 id="orgbf7e432"><span class="section-number-2">1.</span> 框架选择</h2>
+<div id="outline-container-org98ae1c2" class="outline-2">
+<h2 id="org98ae1c2"><span class="section-number-2">1.</span> 框架选择</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org2f4f649" class="outline-3">
-<h3 id="org2f4f649"><span class="section-number-3">1.1.</span> 原生</h3>
+<div id="outline-container-org069cf29" class="outline-3">
+<h3 id="org069cf29"><span class="section-number-3">1.1.</span> 原生</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Go 的 <code>net/http</code> 库比较丰富，借助 <a href="https://github.com/gorilla/mux">mux</a> 即可自己完成一个 server 基本需求。
@@ -292,8 +291,8 @@ router.<span style="color: #721045;">HandleFunc</span><span style="color: #00000
 </div>
 </div>
 
-<div id="outline-container-org5c8df7b" class="outline-3">
-<h3 id="org5c8df7b"><span class="section-number-3">1.2.</span> gin</h3>
+<div id="outline-container-orga9e8149" class="outline-3">
+<h3 id="orga9e8149"><span class="section-number-3">1.2.</span> gin</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 <a href="https://github.com/gin-gonic/gin">gin</a> 是一个 Go 的 Web 框架，当然很多的其它框架。
@@ -351,8 +350,8 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </div>
 </div>
 
-<div id="outline-container-org55a2801" class="outline-3">
-<h3 id="org55a2801"><span class="section-number-3">1.3.</span> 结论</h3>
+<div id="outline-container-org20494a9" class="outline-3">
+<h3 id="org20494a9"><span class="section-number-3">1.3.</span> 结论</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 使用原生的库还是框架，我的思路是：
@@ -373,12 +372,12 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </div>
 
 
-<div id="outline-container-orge54a1ff" class="outline-2">
-<h2 id="orge54a1ff"><span class="section-number-2">2.</span> 最佳实践</h2>
+<div id="outline-container-org9e94cdf" class="outline-2">
+<h2 id="org9e94cdf"><span class="section-number-2">2.</span> 最佳实践</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgae7452b" class="outline-3">
-<h3 id="orgae7452b"><span class="section-number-3">2.1.</span> 日志</h3>
+<div id="outline-container-org0c6c689" class="outline-3">
+<h3 id="org0c6c689"><span class="section-number-3">2.1.</span> 日志</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 根据云原生倡导，日志统一打印到标准输出。 日志收集和查看是基建需要做的事情，程序应与此解耦。
@@ -386,8 +385,8 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </div>
 </div>
 
-<div id="outline-container-orgeb7cca7" class="outline-3">
-<h3 id="orgeb7cca7"><span class="section-number-3">2.2.</span> 监控：使用 prometheus<sub>client</sub> 暴露 API metrics</h3>
+<div id="outline-container-org3224377" class="outline-3">
+<h3 id="org3224377"><span class="section-number-3">2.2.</span> 监控：使用 prometheus_client 暴露 API metrics</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 对接 promethues 之后可以很方便的监控 API 调用情况，调用耗时、状态码等等。因为 Prometheus 是 pull 的模式，所以服务很好解耦，
@@ -395,7 +394,7 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </p>
 
 <p>
-<a href="https://github.com/prometheus/client_golang">prometheus/client<sub>golang</sub></a> 是 Go 的客户端。对于 gin，你可以写一个中间件来完成 API 耗时统计：
+<a href="https://github.com/prometheus/client_golang">prometheus/client_golang</a> 是 Go 的客户端。对于 gin，你可以写一个中间件来完成 API 耗时统计：
 </p>
 
 <div class="org-src-container">
@@ -454,8 +453,8 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </div>
 
 
-<div id="outline-container-orgee85472" class="outline-2">
-<h2 id="orgee85472"><span class="section-number-2">3.</span> 常用库选型</h2>
+<div id="outline-container-orge6b6bcd" class="outline-2">
+<h2 id="orge6b6bcd"><span class="section-number-2">3.</span> 常用库选型</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 <a href="packages.html">Go 包选择与对比</a> 中有一些列举，说到的这里就不赘述了。
@@ -464,8 +463,8 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 
 
 
-<div id="outline-container-org472cca2" class="outline-3">
-<h3 id="org472cca2"><span class="section-number-3">3.1.</span> MongoDB</h3>
+<div id="outline-container-orge13e0eb" class="outline-3">
+<h3 id="orge13e0eb"><span class="section-number-3">3.1.</span> MongoDB</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 建议使用官方提供的库：<a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a>，开发已经一两年了，正式版本发布有六七个月了。
@@ -476,8 +475,8 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </div>
 </div>
 
-<div id="outline-container-org04c3310" class="outline-2">
-<h2 id="org04c3310"><span class="section-number-2">4.</span> 打包</h2>
+<div id="outline-container-orgee44ad2" class="outline-2">
+<h2 id="orgee44ad2"><span class="section-number-2">4.</span> 打包</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Go 支持跨平台编译，参考 <a href="build-env.html">构建环境</a> 中的说明。
@@ -524,12 +523,12 @@ go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;"
 </div>
 </div>
 
-<div id="outline-container-org78811f2" class="outline-2">
-<h2 id="org78811f2"><span class="section-number-2">5.</span> 部署</h2>
+<div id="outline-container-orge797b1e" class="outline-2">
+<h2 id="orge797b1e"><span class="section-number-2">5.</span> 部署</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-orgcd93d41" class="outline-3">
-<h3 id="orgcd93d41"><span class="section-number-3">5.1.</span> 直接部署到主机上</h3>
+<div id="outline-container-org710f813" class="outline-3">
+<h3 id="org710f813"><span class="section-number-3">5.1.</span> 直接部署到主机上</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 构建对应平台的二进制包，Ubuntu 15.04 之后，以及 CentOS7 之后都使用 <a href="https://wiki.archlinux.org/index.php/Systemd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">systemd</a> 作为默认的系统和服务管理器了。
@@ -544,7 +543,7 @@ go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;"
 比如：
 </p>
 
-<pre class="example" id="orgd27abac">
+<pre class="example" id="org64a6b2b">
 [Unit]
 Description=Command Scheduler
 After=auditd.service systemd-user-sessions.service time-sync.target
@@ -565,13 +564,13 @@ WantedBy=multi-user.target
 
 <p>
 使用 systemd 工具集，可以轻松的查看服务状态、查看日志、设置重启策略，开机启动等。具体可以看我之前梳理的文档：
-<a href="file:///Users/luannhua/site/org/wiki/devops/systemd.html">systemd</a>、<a href="file:///Users/luannhua/site/org/wiki/devops/journalctl.html">journalctl</a>。
+<a href="wiki/devops/systemd.html">systemd</a>、<a href="wiki/devops/journalctl.html">journalctl</a>。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orga6ce786" class="outline-3">
-<h3 id="orga6ce786"><span class="section-number-3">5.2.</span> 部署到容器环境下</h3>
+<div id="outline-container-orgecc046b" class="outline-3">
+<h3 id="orgecc046b"><span class="section-number-3">5.2.</span> 部署到容器环境下</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 在有容器运行时的情况下，建议使用容器部署。
@@ -579,8 +578,8 @@ WantedBy=multi-user.target
 </div>
 </div>
 
-<div id="outline-container-orgc6a4f42" class="outline-3">
-<h3 id="orgc6a4f42"><span class="section-number-3">5.3.</span> 版本号</h3>
+<div id="outline-container-orga118a39" class="outline-3">
+<h3 id="orga118a39"><span class="section-number-3">5.3.</span> 版本号</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 如果使用 Docker 部署时，版本号通常放到 docker tag 中。如果使用二进制文件直接部署的话，把版本号放在二进制名称上是一种办法，

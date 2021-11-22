@@ -3,12 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 16:25 -->
+<!-- 2021-11-22 Mon 17:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Valgrind</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
+<meta name="description" content="Keep It Simple, Stupid"
+ />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -193,6 +195,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -217,43 +220,39 @@
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href=""> UP </a>
- |
- <a accesskey="H" href="index.html"> HOME </a>
-</div><div id="content">
+<div id="content">
 <h1 class="title">Valgrind</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgf1e734c">1. 什么是 Valgrind ?</a></li>
-<li><a href="#org66579eb">2. Valgrind 的使用(参数)</a>
+<li><a href="#orgaa1bb39">1. 什么是 Valgrind ?</a></li>
+<li><a href="#orgd77ea76">2. Valgrind 的使用(参数)</a>
 <ul>
-<li><a href="#orgf7b1453">2.1. Valgrind 命令格式</a></li>
-<li><a href="#org418923b">2.2. 控制输出</a></li>
-<li><a href="#org5a28b84">2.3. 参数选项(Core Command-line Options)</a>
+<li><a href="#org265c938">2.1. Valgrind 命令格式</a></li>
+<li><a href="#orgb0d127c">2.2. 控制输出</a></li>
+<li><a href="#orgee71a37">2.3. 参数选项(Core Command-line Options)</a>
 <ul>
-<li><a href="#org530a584">2.3.1. 2.3.1 Tool-selection Option</a></li>
-<li><a href="#org5beb468">2.3.2. 2.3.2 Basic Options</a></li>
-<li><a href="#orgfdc73aa">2.3.3. 2.3.3 Error-related Options</a></li>
-<li><a href="#org8a1518e">2.3.4. 2.3.4 malloc-related Option</a></li>
-<li><a href="#org07c594f">2.3.5. 2.3.5 Uncommon Options</a></li>
-<li><a href="#orgbca87c0">2.3.6. 2.3.6 Debugging Options</a></li>
-<li><a href="#orgb20c6f7">2.3.7. 2.3.7 设置默认的配置选项</a></li>
+<li><a href="#org09158bc">2.3.1. 2.3.1 Tool-selection Option</a></li>
+<li><a href="#org78e7bcf">2.3.2. 2.3.2 Basic Options</a></li>
+<li><a href="#orgeaec7ed">2.3.3. 2.3.3 Error-related Options</a></li>
+<li><a href="#org8b46f11">2.3.4. 2.3.4 malloc-related Option</a></li>
+<li><a href="#orgef3cc79">2.3.5. 2.3.5 Uncommon Options</a></li>
+<li><a href="#org75f4de2">2.3.6. 2.3.6 Debugging Options</a></li>
+<li><a href="#orgb5a1aff">2.3.7. 2.3.7 设置默认的配置选项</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org70aa8a5">3. 功能简介</a>
+<li><a href="#org8748f27">3. 功能简介</a>
 <ul>
-<li><a href="#orgb076fc6">3.1. Memcheck: 内存使用检测</a></li>
+<li><a href="#orgc230440">3.1. Memcheck: 内存使用检测</a></li>
 </ul>
 </li>
-<li><a href="#org60849ea">4. 扩展知识</a>
+<li><a href="#org618e22c">4. 扩展知识</a>
 <ul>
-<li><a href="#orgc19c3d7">4.1. Visual Leak Detector</a></li>
-<li><a href="#org70f7ac4">4.2. Nvwa</a></li>
+<li><a href="#orgc910a00">4.1. Visual Leak Detector</a></li>
+<li><a href="#org6f1f711">4.2. Nvwa</a></li>
 </ul>
 </li>
 </ul>
@@ -263,8 +262,8 @@
 本文档大部分内容均为摘抄，仅供技术学习, 误传播。主要介绍 Linux 下内存泄露检测工具: 内容基本来自 <a href="http://valgrind.org/docs/manual/manual.html">Valgrind 手册</a>。
 </p>
 
-<div id="outline-container-orgf1e734c" class="outline-2">
-<h2 id="orgf1e734c"><span class="section-number-2">1.</span> 什么是 Valgrind ?</h2>
+<div id="outline-container-orgaa1bb39" class="outline-2">
+<h2 id="orgaa1bb39"><span class="section-number-2">1.</span> 什么是 Valgrind ?</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 [Valgrind](<a href="http://valgrind.org/">http://valgrind.org/</a>) is an <b>instrumentation framework</b> for building dynamic analysis tools.
@@ -288,8 +287,8 @@
 </div>
 </div>
 
-<div id="outline-container-org66579eb" class="outline-2">
-<h2 id="org66579eb"><span class="section-number-2">2.</span> Valgrind 的使用(参数)</h2>
+<div id="outline-container-orgd77ea76" class="outline-2">
+<h2 id="orgd77ea76"><span class="section-number-2">2.</span> Valgrind 的使用(参数)</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 生成可执行文件的编译选项建议:
@@ -308,8 +307,8 @@
 </ol>
 </div>
 
-<div id="outline-container-orgf7b1453" class="outline-3">
-<h3 id="orgf7b1453"><span class="section-number-3">2.1.</span> Valgrind 命令格式</h3>
+<div id="outline-container-org265c938" class="outline-3">
+<h3 id="org265c938"><span class="section-number-3">2.1.</span> Valgrind 命令格式</h3>
 <div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
 <pre class="src src-shell">valgrind <span style="color: #000000;">[</span>valgrind-options<span style="color: #000000;">]</span> your-prog <span style="color: #000000;">[</span>your-prog-options<span style="color: #000000;">]</span>
@@ -322,8 +321,8 @@
 </div>
 </div>
 
-<div id="outline-container-org418923b" class="outline-3">
-<h3 id="org418923b"><span class="section-number-3">2.2.</span> 控制输出</h3>
+<div id="outline-container-orgb0d127c" class="outline-3">
+<h3 id="orgb0d127c"><span class="section-number-3">2.2.</span> 控制输出</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 默认情况，Valgrind 工具之输出一些基本的信息，可以在运行的时候加上 <code>-v</code> 选项来使得输出更丰富的信息。
@@ -341,16 +340,16 @@
 </div>
 </div>
 
-<div id="outline-container-org5a28b84" class="outline-3">
-<h3 id="org5a28b84"><span class="section-number-3">2.3.</span> 参数选项(Core Command-line Options)</h3>
+<div id="outline-container-orgee71a37" class="outline-3">
+<h3 id="orgee71a37"><span class="section-number-3">2.3.</span> 参数选项(Core Command-line Options)</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 <b>选项的解释基本上只点一下功能，详细的使用方法看 man 手册。</b>
 </p>
 </div>
 
-<div id="outline-container-org530a584" class="outline-4">
-<h4 id="org530a584"><span class="section-number-4">2.3.1.</span> 2.3.1 Tool-selection Option</h4>
+<div id="outline-container-org09158bc" class="outline-4">
+<h4 id="org09158bc"><span class="section-number-4">2.3.1.</span> 2.3.1 Tool-selection Option</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <ul class="org-ul">
 <li><code>--tool=&lt;toolname&gt; [default: memcheck]</code> : 使用 <code>toolname</code> 工具，比如 MemCheck, Cachegrind.</li>
@@ -358,8 +357,8 @@
 </div>
 </div>
 
-<div id="outline-container-org5beb468" class="outline-4">
-<h4 id="org5beb468"><span class="section-number-4">2.3.2.</span> 2.3.2 Basic Options</h4>
+<div id="outline-container-org78e7bcf" class="outline-4">
+<h4 id="org78e7bcf"><span class="section-number-4">2.3.2.</span> 2.3.2 Basic Options</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <ul class="org-ul">
 <li><code>-h, --help</code></li>
@@ -381,8 +380,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgfdc73aa" class="outline-4">
-<h4 id="orgfdc73aa"><span class="section-number-4">2.3.3.</span> 2.3.3 Error-related Options</h4>
+<div id="outline-container-orgeaec7ed" class="outline-4">
+<h4 id="orgeaec7ed"><span class="section-number-4">2.3.3.</span> 2.3.3 Error-related Options</h4>
 <div class="outline-text-4" id="text-2-3-3">
 <p>
 选项用于工具错误上报，比如 MemCheck, 但不是 Cachegrind.
@@ -413,8 +412,8 @@
 </div>
 </div>
 
-<div id="outline-container-org8a1518e" class="outline-4">
-<h4 id="org8a1518e"><span class="section-number-4">2.3.4.</span> 2.3.4 malloc-related Option</h4>
+<div id="outline-container-org8b46f11" class="outline-4">
+<h4 id="org8b46f11"><span class="section-number-4">2.3.4.</span> 2.3.4 malloc-related Option</h4>
 <div class="outline-text-4" id="text-2-3-4">
 <p>
 使用 Valgrind 时其实用的是自己的实现的 ~malloc~(比如, Memcheck, Massif, Helgrind, DRD)，可以使用下面的参数：
@@ -427,8 +426,8 @@
 </div>
 </div>
 
-<div id="outline-container-org07c594f" class="outline-4">
-<h4 id="org07c594f"><span class="section-number-4">2.3.5.</span> 2.3.5 Uncommon Options</h4>
+<div id="outline-container-orgef3cc79" class="outline-4">
+<h4 id="orgef3cc79"><span class="section-number-4">2.3.5.</span> 2.3.5 Uncommon Options</h4>
 <div class="outline-text-4" id="text-2-3-5">
 <p>
 不常用的选项。
@@ -436,8 +435,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgbca87c0" class="outline-4">
-<h4 id="orgbca87c0"><span class="section-number-4">2.3.6.</span> 2.3.6 Debugging Options</h4>
+<div id="outline-container-org75f4de2" class="outline-4">
+<h4 id="org75f4de2"><span class="section-number-4">2.3.6.</span> 2.3.6 Debugging Options</h4>
 <div class="outline-text-4" id="text-2-3-6">
 <p>
 通过 <code>--help-debug</code> 来查看。
@@ -445,8 +444,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgb20c6f7" class="outline-4">
-<h4 id="orgb20c6f7"><span class="section-number-4">2.3.7.</span> 2.3.7 设置默认的配置选项</h4>
+<div id="outline-container-orgb5a1aff" class="outline-4">
+<h4 id="orgb5a1aff"><span class="section-number-4">2.3.7.</span> 2.3.7 设置默认的配置选项</h4>
 <div class="outline-text-4" id="text-2-3-7">
 <p>
 Vagrind 是从下面3个地方读取的配置：
@@ -462,12 +461,12 @@ Vagrind 是从下面3个地方读取的配置：
 </div>
 </div>
 
-<div id="outline-container-org70aa8a5" class="outline-2">
-<h2 id="org70aa8a5"><span class="section-number-2">3.</span> 功能简介</h2>
+<div id="outline-container-org8748f27" class="outline-2">
+<h2 id="org8748f27"><span class="section-number-2">3.</span> 功能简介</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgb076fc6" class="outline-3">
-<h3 id="orgb076fc6"><span class="section-number-3">3.1.</span> Memcheck: 内存使用检测</h3>
+<div id="outline-container-orgc230440" class="outline-3">
+<h3 id="orgc230440"><span class="section-number-3">3.1.</span> Memcheck: 内存使用检测</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 格式: <code>valgrind --leak-check=yes myprog arg1 arg2</code>
@@ -501,16 +500,16 @@ Vagrind 是从下面3个地方读取的配置：
 </div>
 </div>
 
-<div id="outline-container-org60849ea" class="outline-2">
-<h2 id="org60849ea"><span class="section-number-2">4.</span> 扩展知识</h2>
+<div id="outline-container-org618e22c" class="outline-2">
+<h2 id="org618e22c"><span class="section-number-2">4.</span> 扩展知识</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 以前在 Windows 下开发用过两款内存泄露检测工具，都是开源的，这里简单介绍一下，感兴趣可以自己研究研究。
 </p>
 </div>
 
-<div id="outline-container-orgc19c3d7" class="outline-3">
-<h3 id="orgc19c3d7"><span class="section-number-3">4.1.</span> Visual Leak Detector</h3>
+<div id="outline-container-orgc910a00" class="outline-3">
+<h3 id="orgc910a00"><span class="section-number-3">4.1.</span> Visual Leak Detector</h3>
 <div class="outline-text-3" id="text-4-1">
 <ul class="org-ul">
 <li>主页: <a href="https://vld.codeplex.com/">https://vld.codeplex.com/</a></li>
@@ -520,8 +519,8 @@ Vagrind 是从下面3个地方读取的配置：
 </div>
 </div>
 
-<div id="outline-container-org70f7ac4" class="outline-3">
-<h3 id="org70f7ac4"><span class="section-number-3">4.2.</span> Nvwa</h3>
+<div id="outline-container-org6f1f711" class="outline-3">
+<h3 id="org6f1f711"><span class="section-number-3">4.2.</span> Nvwa</h3>
 <div class="outline-text-3" id="text-4-2">
 <ul class="org-ul">
 <li>下载: <a href="http://sourceforge.net/projects/nvwa/">http://sourceforge.net/projects/nvwa/</a></li>
