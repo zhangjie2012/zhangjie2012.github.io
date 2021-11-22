@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-10-21 Thu 17:03 -->
+<!-- 2021-11-22 Mon 16:28 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>理解 Go 的 Array 和 slice</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -195,7 +193,6 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
@@ -220,16 +217,20 @@
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">理解 Go 的 Array 和 slice</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgee045b6">1. Array</a></li>
-<li><a href="#org8c36f9d">2. Slice</a></li>
-<li><a href="#orgc76ec49">3. 总结</a></li>
-<li><a href="#org60c4991">4. 更新记录</a></li>
+<li><a href="#org6e8a4fb">1. Array</a></li>
+<li><a href="#orgc8e33d4">2. Slice</a></li>
+<li><a href="#orgd10cf1b">3. 总结</a></li>
+<li><a href="#org4ae6814">4. 更新记录</a></li>
 </ul>
 </div>
 </div>
@@ -237,7 +238,7 @@
 今早 <a href="https://blog.opskumu.com/">磊磊</a> 在 Twitter 上看到一条消息，大致意思是问下面代码的执行结果是什么：
 </p>
 
-<pre class="example" id="org9711700">
+<pre class="example" id="orgdcc357f">
 package main
 
 import "fmt"
@@ -269,8 +270,8 @@ func main() {
 本以为像 Go这样一个比较「先进」的语言，自然会规避这种深浅拷贝的问题，但实际上并没有，所以对这道题有点迷糊。于是就花时间研究了一下 Go 中的 Array 和 Slice。
 </p>
 
-<div id="outline-container-orgee045b6" class="outline-2">
-<h2 id="orgee045b6"><span class="section-number-2">1.</span> Array</h2>
+<div id="outline-container-org6e8a4fb" class="outline-2">
+<h2 id="org6e8a4fb"><span class="section-number-2">1.</span> Array</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Go 中的 Array 是通过 <code>[n]int</code> 这种样式来声明的，一如数据结构学到的那样，Array 必须是固定长度的。Go 的 Array（我一直拿 C 的 Array 类比）可以理解成一个像 int 一样的内置类型，是一块连续的内存结构，比较好理解。
@@ -278,8 +279,8 @@ Go 中的 Array 是通过 <code>[n]int</code> 这种样式来声明的，一如�
 </div>
 </div>
 
-<div id="outline-container-org8c36f9d" class="outline-2">
-<h2 id="org8c36f9d"><span class="section-number-2">2.</span> Slice</h2>
+<div id="outline-container-orgc8e33d4" class="outline-2">
+<h2 id="orgc8e33d4"><span class="section-number-2">2.</span> Slice</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 实际编码过程中， Array 逐渐满足不了需求，比如一个解析 HTTP 请求的 body 体或者从文件读入内容，不好提前知道内容的长度，所以大部分时候都需要变长的 Array 。
@@ -310,7 +311,7 @@ C++ 中的 vector 也是类似的实现，只不过它提供了拷贝构造函�
 再回到刚才之前的问题上，当把 s 传递给 four 的时候是一次浅拷贝，为了没有命名歧义，four 中的传入的 s 先叫成 sc。传参类似于做了 <code>sc = s</code> 的操作：
 </p>
 
-<pre class="example" id="org92f68f1">
+<pre class="example" id="org53c7140">
 sc.buffer = s.buffer
 sc.len = s.len
 sc.cap = s.cap
@@ -332,7 +333,7 @@ len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改
 再看一段代码：
 </p>
 
-<pre class="example" id="org328f1b9">
+<pre class="example" id="org20edbb0">
 package main
 
 import "fmt"
@@ -363,7 +364,7 @@ func main() {
 两种办法可以验证这个想法，第一种是把内存的的数据打印出来：
 </p>
 
-<pre class="example" id="org15e1546">
+<pre class="example" id="orgad41027">
 package main
 
 import (
@@ -405,7 +406,7 @@ func main() {
 但是，Go 的 slice 的 slice，真有个使用上的陷阱。比如对一个 slice 做 slice 操作：
 </p>
 
-<pre class="example" id="org67ba73c">
+<pre class="example" id="org5792ae7">
 s = []{1, 2, 3, 4, 5, 6}
 t := s[1:3]
 </pre>
@@ -423,7 +424,7 @@ Go <a href="https://blog.golang.org/go-slices-usage-and-internals">有篇官方�
 如果原有的 slice 很大，slice 之后的很小，因为小的 slice 一直占用内存，导致大的 buffer 一直无法释放，举个例子：
 </p>
 
-<pre class="example" id="org2ba2a43">
+<pre class="example" id="orgeecbf38">
 var digitRegexp = regexp.MustCompile("[0-9]+")
 
 func FindDigits(filename string) []byte {
@@ -436,7 +437,7 @@ func FindDigits(filename string) []byte {
 这会导致 <code>FindDigits</code> 返回的 <code>[]byte</code> 一直占用整个文件内容相同大小的 buffer，直到 <code>[]byte</code> 的变量释放。为了解决这个问题，在返回时新建一个所需实际大小的 buffer，然后拷贝过去，再返回。类似这样：
 </p>
 
-<pre class="example" id="orgcaf472a">
+<pre class="example" id="org3442c9e">
 func CopyDigits(filename string) []byte {
     b, _ := ioutil.ReadFile(filename)
     b = digitRegexp.Find(b)
@@ -452,8 +453,8 @@ func CopyDigits(filename string) []byte {
 </div>
 </div>
 
-<div id="outline-container-orgc76ec49" class="outline-2">
-<h2 id="orgc76ec49"><span class="section-number-2">3.</span> 总结</h2>
+<div id="outline-container-orgd10cf1b" class="outline-2">
+<h2 id="orgd10cf1b"><span class="section-number-2">3.</span> 总结</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 本文从一个问题入手讨论了 Go 的 Array 和 Slice 的区别、Slice 的设计以及浅拷贝可能会带来的「陷阱」。Go 官方博客有两篇博客 <a href="https://blog.golang.org/go-slices-usage-and-internals">Go Slices: usage and internals</a> 和 <a href="https://blog.golang.org/slices">Arrays, slices (and strings): The mechanics of 'append'</a> 也对相关的实现和特性做了介绍，推荐阅读。
@@ -461,8 +462,8 @@ func CopyDigits(filename string) []byte {
 </div>
 </div>
 
-<div id="outline-container-org60c4991" class="outline-2">
-<h2 id="org60c4991"><span class="section-number-2">4.</span> 更新记录</h2>
+<div id="outline-container-org4ae6814" class="outline-2">
+<h2 id="org4ae6814"><span class="section-number-2">4.</span> 更新记录</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 <b>2018-07-24 16:55:03 更新：</b>
@@ -493,7 +494,7 @@ func CopyDigits(filename string) []byte {
 今天遇到个问题，默认初始化的 slices 被 json 序列化之后，值竟然是 <code>nil</code> 而不是 <code>[]</code> ，但是正常输出是却为 <code>[]</code> 。
 </p>
 
-<pre class="example" id="orgc8fa8d4">
+<pre class="example" id="orgce13fa0">
 package main
 
 import (
@@ -518,7 +519,7 @@ func main() {
 输出结果为：
 </p>
 
-<pre class="example" id="orgc31ee7a">
+<pre class="example" id="org394f78d">
 {[]}
 {"xxx":null}
 </pre>
@@ -559,7 +560,7 @@ Go Slice 更蛋疼的一个地方是， 在执行 <code>append</code> 的时候�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2021-10-21 Thu 17:00 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

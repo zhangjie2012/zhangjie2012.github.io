@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C++ setf 方法</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">C++ setf 方法</h1>
 <p>
 一直以来，我对 C++
@@ -261,10 +238,10 @@ ftell fseek &#x2026; 面对C++的 fstream
 </p>
 
 <p>
-<b>std::ios_base::setf</b>
+<b>std::ios<sub>base</sub>::setf</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="org61c2619">
 fmtflags setf ( fmtflags fmtfl );
 fmtflags setf ( fmtflags fmtfl, fmtflags mask );
 </pre>
@@ -288,7 +265,7 @@ fmtfl ，即 flags (fmtfl | flags())。</li>
 
 <p>
 流的格式标记影响数据在输入输出函数中的显示方式。
-<a href="http://www.cplusplus.com/reference/iostream/ios_base/fmtflags/">ios_base::fmtflags</a>
+<a href="http://www.cplusplus.com/reference/iostream/ios_base/fmtflags/">ios<sub>base</sub>::fmtflags</a>
 列出了这个函数的可能参数值。
 </p>
 
@@ -311,7 +288,7 @@ showpoint, showpos, shipws, unitbuf 和 uppercase，可以直接使用
 <b>参数</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="org10b83b2">
 fmtfl
     设置格式化标签。如果使用第二个方法的话，仅仅用 fmtfl 和 mask 设置流格式标志中；设置在 mask 中的 fmtfl 标志。
 mask
@@ -330,7 +307,7 @@ mask
 <b>使用示例：</b>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgeb7ff69">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -374,7 +351,7 @@ int main()
 flag，定义为一些很容易区分的二进制数据，比如：
 </p>
 
-<pre class="example">
+<pre class="example" id="org5b3f499">
 #define NORTH 0x00000001 -&gt; 00000000 00000000 00000000 00000001
 #define SOUTH 0x00000002 -&gt; 00000000 00000000 00000000 00000010
 #define EAST  0x00000004 -&gt; 00000000 00000000 00000000 00000100
@@ -398,7 +375,7 @@ flag，定义为一些很容易区分的二进制数据，比如：
 </p>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-10-07 14:46:16 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2012-10-07 14:46:16 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

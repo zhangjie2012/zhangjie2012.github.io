@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>微信第三方平台开发：授权流程</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,66 +193,45 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">微信第三方平台开发：授权流程</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgdc9792e">1. <code>component_access_token</code> 获取与更新</a></li>
-<li><a href="#org283692a">2. <code>pre_auth_code</code> 获取</a></li>
-<li><a href="#orgdf1c54f">3. 引导用户进入授权页</a></li>
-<li><a href="#org76bc7e6">4. 获取接口调用凭据和账号基本信息</a></li>
-<li><a href="#orgf52db8b">5. 定时刷新授权公众号接口调用令牌</a></li>
+<li><a href="#org51d5234">1. <code>component_access_token</code> 获取与更新</a></li>
+<li><a href="#orgb696faf">2. <code>pre_auth_code</code> 获取</a></li>
+<li><a href="#org8b36829">3. 引导用户进入授权页</a></li>
+<li><a href="#org634c36c">4. 获取接口调用凭据和账号基本信息</a></li>
+<li><a href="#org28fb275">5. 定时刷新授权公众号接口调用令牌</a></li>
 </ul>
 </div>
 </div>
@@ -317,8 +294,8 @@ a, b, d 都是独立的，相互之间不会有通信，关联都是通过 c 来
 所以我们的第一个问题来了。
 </p>
 
-<div id="outline-container-orgdc9792e" class="outline-2">
-<h2 id="orgdc9792e"><span class="section-number-2">1</span> <code>component_access_token</code> 获取与更新</h2>
+<div id="outline-container-org51d5234" class="outline-2">
+<h2 id="org51d5234"><span class="section-number-2">1.</span> <code>component_access_token</code> 获取与更新</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 在开发者第三方平台创建审核通过之后，a 会每隔 10 分钟向第三方的消息接收地址推送一次 <code>component_verify_ticket=，
@@ -335,12 +312,12 @@ c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-xml">&lt;<span style="color: #000088; background-color: #DEDEDE;">xml</span>&gt;
-  &lt;<span style="color: #000088; background-color: #DEDEDE;">AppId</span>&gt; &lt;/<span style="color: #000088; background-color: #DEDEDE;">AppId</span>&gt;
-  &lt;<span style="color: #000088; background-color: #DEDEDE;">CreateTime</span>&gt;1413192605 &lt;/<span style="color: #000088; background-color: #DEDEDE;">CreateTime</span>&gt;
-  &lt;<span style="color: #000088; background-color: #DEDEDE;">InfoType</span>&gt; &lt;/<span style="color: #000088; background-color: #DEDEDE;">InfoType</span>&gt;
-  &lt;<span style="color: #000088; background-color: #DEDEDE;">ComponentVerifyTicket</span>&gt; &lt;/<span style="color: #000088; background-color: #DEDEDE;">ComponentVerifyTicket</span>&gt;
-&lt;/<span style="color: #000088; background-color: #DEDEDE;">xml</span>&gt;
+<pre class="src src-xml"><span style="color: #282828;">&lt;</span><span style="color: #721045;">xml</span><span style="color: #282828;">&gt;</span>
+  <span style="color: #282828;">&lt;</span><span style="color: #721045;">AppId</span><span style="color: #282828;">&gt;</span> <span style="color: #282828;">&lt;</span><span style="color: #282828;">/</span><span style="color: #721045;">AppId</span><span style="color: #282828;">&gt;</span>
+  <span style="color: #282828;">&lt;</span><span style="color: #721045;">CreateTime</span><span style="color: #282828;">&gt;</span>1413192605 <span style="color: #282828;">&lt;</span><span style="color: #282828;">/</span><span style="color: #721045;">CreateTime</span><span style="color: #282828;">&gt;</span>
+  <span style="color: #282828;">&lt;</span><span style="color: #721045;">InfoType</span><span style="color: #282828;">&gt;</span> <span style="color: #282828;">&lt;</span><span style="color: #282828;">/</span><span style="color: #721045;">InfoType</span><span style="color: #282828;">&gt;</span>
+  <span style="color: #282828;">&lt;</span><span style="color: #721045;">ComponentVerifyTicket</span><span style="color: #282828;">&gt;</span> <span style="color: #282828;">&lt;</span><span style="color: #282828;">/</span><span style="color: #721045;">ComponentVerifyTicket</span><span style="color: #282828;">&gt;</span>
+<span style="color: #282828;">&lt;</span><span style="color: #282828;">/</span><span style="color: #721045;">xml</span><span style="color: #282828;">&gt;</span>
 </pre>
 </div>
 
@@ -368,8 +345,8 @@ c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供�
 </div>
 </div>
 
-<div id="outline-container-org283692a" class="outline-2">
-<h2 id="org283692a"><span class="section-number-2">2</span> <code>pre_auth_code</code> 获取</h2>
+<div id="outline-container-orgb696faf" class="outline-2">
+<h2 id="orgb696faf"><span class="section-number-2">2.</span> <code>pre_auth_code</code> 获取</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 预授权码与令牌不同，虽然它也有有效期（30分钟），但是只有在需要授权时才需要，所以我们同步获取即可，不需要定时更新。
@@ -385,15 +362,15 @@ c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供�
 </div>
 </div>
 
-<div id="outline-container-orgdf1c54f" class="outline-2">
-<h2 id="orgdf1c54f"><span class="section-number-2">3</span> 引导用户进入授权页</h2>
+<div id="outline-container-org8b36829" class="outline-2">
+<h2 id="org8b36829"><span class="section-number-2">3.</span> 引导用户进入授权页</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 要注意，授权页本身是由微信自身（a）提供的，不是我们自己（c）提供的。c 提供的仅仅是一个「引导」。实操的时候两步即可：
 </p>
 
 <ol class="org-ol">
-<li>授权页链接（=auth_url=）为：=<a href="https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=xxxx&amp;pre_auth_code=xxxxx&amp;redirect_uri=xxxx&amp;auth_type=xxx=%EF%BC%8C%E8%BF%99%E7%A7%8D%E6%A0%B7%E5%BC%8F">https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=xxxx&amp;pre_auth_code=xxxxx&amp;redirect_uri=xxxx&amp;auth_type=xxx=%EF%BC%8C%E8%BF%99%E7%A7%8D%E6%A0%B7%E5%BC%8F</a>。</li>
+<li>授权页链接（=auth<sub>url</sub>=）为：=<a href="https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=xxxx&amp;pre_auth_code=xxxxx&amp;redirect_uri=xxxx&amp;auth_type=xxx=%EF%BC%8C%E8%BF%99%E7%A7%8D%E6%A0%B7%E5%BC%8F">https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=xxxx&amp;pre_auth_code=xxxxx&amp;redirect_uri=xxxx&amp;auth_type=xxx=%EF%BC%8C%E8%BF%99%E7%A7%8D%E6%A0%B7%E5%BC%8F</a>。</li>
 <li>在我们自己的服务器 c 中提供一个页面，页面中提供一个跳转连接，跳转到 <code>auth_url</code> 。用户点击链接之后将跳转到微信提供的授权页，然后管理员扫码授权。</li>
 </ol>
 
@@ -407,8 +384,8 @@ c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供�
 </div>
 </div>
 
-<div id="outline-container-org76bc7e6" class="outline-2">
-<h2 id="org76bc7e6"><span class="section-number-2">4</span> 获取接口调用凭据和账号基本信息</h2>
+<div id="outline-container-org634c36c" class="outline-2">
+<h2 id="org634c36c"><span class="section-number-2">4.</span> 获取接口调用凭据和账号基本信息</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 有了 <code>auth_code</code> 之后：
@@ -424,13 +401,13 @@ c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供�
 </p>
 
 <p>
-有个地方要注意的是：=pre_auth_code= 有过期时间，并且一个 <code>pre_auth_code</code> 只能对接一个 b，所以授权成功之后记得清除掉 <code>pre_auth_code</code> 缓存，以便下次重新获取。
+有个地方要注意的是：=pre<sub>auth</sub><sub>code</sub>= 有过期时间，并且一个 <code>pre_auth_code</code> 只能对接一个 b，所以授权成功之后记得清除掉 <code>pre_auth_code</code> 缓存，以便下次重新获取。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgf52db8b" class="outline-2">
-<h2 id="orgf52db8b"><span class="section-number-2">5</span> 定时刷新授权公众号接口调用令牌</h2>
+<div id="outline-container-org28fb275" class="outline-2">
+<h2 id="org28fb275"><span class="section-number-2">5.</span> 定时刷新授权公众号接口调用令牌</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 <code>auth_access_token</code> 是有有效期的，所以和 <code>component_access_token</code> 一样，需要定时更新。
@@ -449,7 +426,7 @@ c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2017-12-26 00:00:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2017-12-26 00:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

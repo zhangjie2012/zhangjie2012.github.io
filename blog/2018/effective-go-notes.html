@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:28 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Effective Go 精简版</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Effective Go 精简版</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -334,8 +311,8 @@ Effective C++ 没有一定的 C++
 
 <hr />
 
-<div id="outline-container-org80e084b" class="outline-2">
-<h2 id="引言"><span class="section-number-2">1</span> 引言</h2>
+<div id="outline-container-引言" class="outline-2">
+<h2 id="引言"><span class="section-number-2">1.</span> 引言</h2>
 <div class="outline-text-2" id="text-引言">
 <p>
 Go
@@ -347,8 +324,8 @@ Go，才能写出更好的 Go 程序。
 </div>
 </div>
 
-<div id="outline-container-org33ec28e" class="outline-2">
-<h2 id="格式化"><span class="section-number-2">2</span> 格式化</h2>
+<div id="outline-container-格式化" class="outline-2">
+<h2 id="格式化"><span class="section-number-2">2.</span> 格式化</h2>
 <div class="outline-text-2" id="text-格式化">
 <p>
 Go 提供了 gofmt
@@ -357,8 +334,8 @@ Go 提供了 gofmt
 </div>
 </div>
 
-<div id="outline-container-org7fef010" class="outline-2">
-<h2 id="注释"><span class="section-number-2">3</span> 注释</h2>
+<div id="outline-container-注释" class="outline-2">
+<h2 id="注释"><span class="section-number-2">3.</span> 注释</h2>
 <div class="outline-text-2" id="text-注释">
 <p>
 Go 语言支持 C 风格的注释 <code>/**/</code> 和 <code>//</code> ，块注释一般用于给包做注释。
@@ -379,13 +356,13 @@ Go 语言支持 C 风格的注释 <code>/**/</code> 和 <code>//</code> ，块�
 </div>
 </div>
 
-<div id="outline-container-org55ab18c" class="outline-2">
-<h2 id="命名"><span class="section-number-2">4</span> 命名</h2>
+<div id="outline-container-命名" class="outline-2">
+<h2 id="命名"><span class="section-number-2">4.</span> 命名</h2>
 <div class="outline-text-2" id="text-命名">
 </div>
 
-<div id="outline-container-org33540a7" class="outline-3">
-<h3 id="包命名"><span class="section-number-3">4.1</span> 包命名</h3>
+<div id="outline-container-包命名" class="outline-3">
+<h3 id="包命名"><span class="section-number-3">4.1.</span> 包命名</h3>
 <div class="outline-text-3" id="text-包命名">
 <p>
 包的名字应该简洁明了，易于理解：
@@ -399,8 +376,8 @@ Go 语言支持 C 风格的注释 <code>/**/</code> 和 <code>//</code> ，块�
 </div>
 </div>
 
-<div id="outline-container-org8e7c968" class="outline-3">
-<h3 id="gettersetter-命名"><span class="section-number-3">4.2</span> Getter、Setter 命名</h3>
+<div id="outline-container-gettersetter-命名" class="outline-3">
+<h3 id="gettersetter-命名"><span class="section-number-3">4.2.</span> Getter、Setter 命名</h3>
 <div class="outline-text-3" id="text-gettersetter-命名">
 <p>
 Go 不在语言层面提供 getter 和 setter 的支持，你可以自己做封装。通常
@@ -410,8 +387,8 @@ getter 直接用变量名命名（首字母大写），而不是 =GetXxx=，sett
 </div>
 </div>
 
-<div id="outline-container-orgdc60e8c" class="outline-3">
-<h3 id="接口命名"><span class="section-number-3">4.3</span> 接口命名</h3>
+<div id="outline-container-接口命名" class="outline-3">
+<h3 id="接口命名"><span class="section-number-3">4.3.</span> 接口命名</h3>
 <div class="outline-text-3" id="text-接口命名">
 <p>
 如果只有一个方法的接口，应该在该方法的名称加上 -er 后缀来命名，比如
@@ -420,8 +397,8 @@ Reader、Writer。
 </div>
 </div>
 
-<div id="outline-container-orgbab45df" class="outline-3">
-<h3 id="驼峰命名"><span class="section-number-3">4.4</span> 驼峰命名</h3>
+<div id="outline-container-驼峰命名" class="outline-3">
+<h3 id="驼峰命名"><span class="section-number-3">4.4.</span> 驼峰命名</h3>
 <div class="outline-text-3" id="text-驼峰命名">
 <p>
 Go 使用驼峰的方式来命名，MinxedCaps 或者 mixedCaps。
@@ -430,8 +407,8 @@ Go 使用驼峰的方式来命名，MinxedCaps 或者 mixedCaps。
 </div>
 </div>
 
-<div id="outline-container-orgb1cce79" class="outline-2">
-<h2 id="分号"><span class="section-number-2">5</span> 分号</h2>
+<div id="outline-container-分号" class="outline-2">
+<h2 id="分号"><span class="section-number-2">5.</span> 分号</h2>
 <div class="outline-text-2" id="text-分号">
 <p>
 Go 语言和 C 一样，已分号作为语句的结尾，但与 C
@@ -443,8 +420,8 @@ Go 语言和 C 一样，已分号作为语句的结尾，但与 C
 </div>
 </div>
 
-<div id="outline-container-orgc7cdcce" class="outline-2">
-<h2 id="控制结构"><span class="section-number-2">6</span> 控制结构</h2>
+<div id="outline-container-控制结构" class="outline-2">
+<h2 id="控制结构"><span class="section-number-2">6.</span> 控制结构</h2>
 <div class="outline-text-2" id="text-控制结构">
 <ul class="org-ul">
 <li>Go 没有 while 循环，只有通用的 for 循环（可以满足 while 的需求）</li>
@@ -455,8 +432,8 @@ Go 语言和 C 一样，已分号作为语句的结尾，但与 C
 </ul>
 </div>
 
-<div id="outline-container-orgdc99f92" class="outline-3">
-<h3 id="switch"><span class="section-number-3">6.1</span> Switch</h3>
+<div id="outline-container-switch" class="outline-3">
+<h3 id="switch"><span class="section-number-3">6.1.</span> Switch</h3>
 <div class="outline-text-3" id="text-switch">
 <p>
 Go 中的 switch 比 C 更通用（而且解决 C 的很多潜在问题）：
@@ -476,8 +453,8 @@ case 条件是否满足）</li>
 </div>
 </div>
 
-<div id="outline-container-orgca42301" class="outline-2">
-<h2 id="函数"><span class="section-number-2">7</span> 函数</h2>
+<div id="outline-container-函数" class="outline-2">
+<h2 id="函数"><span class="section-number-2">7.</span> 函数</h2>
 <div class="outline-text-2" id="text-函数">
 <ul class="org-ul">
 <li>Go 支持多值返回，通常第二个值表示错误码</li>
@@ -493,8 +470,8 @@ return 空即可</li>
 </div>
 </div>
 
-<div id="outline-container-orgfcdff32" class="outline-2">
-<h2 id="数据"><span class="section-number-2">8</span> 数据</h2>
+<div id="outline-container-数据" class="outline-2">
+<h2 id="数据"><span class="section-number-2">8.</span> 数据</h2>
 <div class="outline-text-2" id="text-数据">
 <p>
 Go 有两种内置的内存分配原语：=new= 和 =make=。
@@ -502,12 +479,12 @@ Go 有两种内置的内存分配原语：=new= 和 =make=。
 
 <ul class="org-ul">
 <li><code>new</code>
-跟其它编程语言不同的地方在于它申请的内存不会被_初始化_，它只是全部设置为_零值_（译者：文档有点歧义，实际上
+跟其它编程语言不同的地方在于它申请的内存不会被<sub>初始化</sub>_，它只是全部设置为<sub>零值</sub>_（译者：文档有点歧义，实际上
 Go 的 new
 是会初始化内存的，只不过初始化成了对应类型的零值，这里表达的应该是类似
 C++ 中的 new 会自动调用构造函数）。返回的是 T*</li>
 <li><code>make(T, args)</code> 和 <code>new(T)</code> 有不同的设计目标，make 只用来创建
-slices、maps 和 channels，并且返回的是_初始化_的（非零值）的类型
+slices、maps 和 channels，并且返回的是<sub>初始化</sub><sub>的</sub>（非零值）的类型
 T（而不是*T），原因是这三种类型在后台实现时必须进行初始化。比如：切片实际包含三个字段：指向数据的指针、长度和容量，在初始化这些数据之前
 slice 是 =nil=。对于 slices、maps 和 channels，make
 会初始化其内部结构数据。</li>
@@ -519,8 +496,8 @@ slice 是 =nil=。对于 slices、maps 和 channels，make
 </p>
 </div>
 
-<div id="outline-container-org1c7f066" class="outline-3">
-<h3 id="数组"><span class="section-number-3">8.1</span> 数组</h3>
+<div id="outline-container-数组" class="outline-3">
+<h3 id="数组"><span class="section-number-3">8.1.</span> 数组</h3>
 <div class="outline-text-3" id="text-数组">
 <p>
 Go 的数组与 C 不同点：
@@ -540,8 +517,8 @@ slice 来代替 array。
 </div>
 </div>
 
-<div id="outline-container-org16ada60" class="outline-3">
-<h3 id="切片"><span class="section-number-3">8.2</span> 切片</h3>
+<div id="outline-container-切片" class="outline-3">
+<h3 id="切片"><span class="section-number-3">8.2.</span> 切片</h3>
 <div class="outline-text-3" id="text-切片">
 <p>
 请查看我之前写的 <a href="understand-go-array-and-slice.html">理解 Go 的
@@ -550,8 +527,8 @@ Array 和 slice</a>。
 </div>
 </div>
 
-<div id="outline-container-org90425de" class="outline-3">
-<h3 id="映射map"><span class="section-number-3">8.3</span> 映射（Map）</h3>
+<div id="outline-container-映射map" class="outline-3">
+<h3 id="映射map"><span class="section-number-3">8.3.</span> 映射（Map）</h3>
 <div class="outline-text-3" id="text-映射map">
 <ul class="org-ul">
 <li>将 map 传递给函数，在函数内部修改 map 会修改调用方的 map</li>
@@ -562,7 +539,7 @@ value 类型为 bool 来实现，不存在时值为
 false）；当需要程序上判断一个值是否存在时，可以通过访问时返回的第二个值来判断，如下：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgc8be20a">
 func offset(tz string) int {
     if seconds, ok := timeZone[tz]; ok {
         return seconds
@@ -578,8 +555,8 @@ func offset(tz string) int {
 </div>
 </div>
 
-<div id="outline-container-orga57b3a2" class="outline-3">
-<h3 id="初始化"><span class="section-number-3">8.4</span> 初始化</h3>
+<div id="outline-container-初始化" class="outline-3">
+<h3 id="初始化"><span class="section-number-3">8.4.</span> 初始化</h3>
 <div class="outline-text-3" id="text-初始化">
 <ul class="org-ul">
 <li>常量：在 Go
@@ -594,13 +571,13 @@ func offset(tz string) int {
 </div>
 </div>
 
-<div id="outline-container-orgaf7bc5f" class="outline-2">
-<h2 id="方法"><span class="section-number-2">9</span> 方法</h2>
+<div id="outline-container-方法" class="outline-2">
+<h2 id="方法"><span class="section-number-2">9.</span> 方法</h2>
 <div class="outline-text-2" id="text-方法">
 </div>
 
-<div id="outline-container-org3842a26" class="outline-3">
-<h3 id="指针-vs-值"><span class="section-number-3">9.1</span> 指针 vs 值</h3>
+<div id="outline-container-指针-vs-值" class="outline-3">
+<h3 id="指针-vs-值"><span class="section-number-3">9.1.</span> 指针 vs 值</h3>
 <div class="outline-text-3" id="text-指针-vs-值">
 <p>
 对于指针和值接收器调用原则为：值接收器关联的函数可以被指针和值调用，而指针方法只能被指针调用。语言为了避免这种错误，就添加了一个例外，当值是有地址的时候，出现值调用指针方法的时候，语言会自动插入地址运算。（换句话说，都可以相互调用，只不过区别在于是否修改调用方的值）
@@ -609,8 +586,8 @@ func offset(tz string) int {
 </div>
 </div>
 
-<div id="outline-container-org991a873" class="outline-2">
-<h2 id="接口"><span class="section-number-2">10</span> 接口</h2>
+<div id="outline-container-接口" class="outline-2">
+<h2 id="接口"><span class="section-number-2">10.</span> 接口</h2>
 <div class="outline-text-2" id="text-接口">
 <ul class="org-ul">
 <li>Go
@@ -620,8 +597,8 @@ func offset(tz string) int {
 </div>
 </div>
 
-<div id="outline-container-orgbfcc0b6" class="outline-2">
-<h2 id="空白标识符"><span class="section-number-2">11</span> 空白标识符</h2>
+<div id="outline-container-空白标识符" class="outline-2">
+<h2 id="空白标识符"><span class="section-number-2">11.</span> 空白标识符</h2>
 <div class="outline-text-2" id="text-空白标识符">
 <ul class="org-ul">
 <li>空白标识符可被赋予或声明为任何类型的任何值，而其值会被无害地丢弃，类似
@@ -632,8 +609,8 @@ Unix 中的 <code>/dev/null</code> 文件，只写不读</li>
 </div>
 </div>
 
-<div id="outline-container-org19f888d" class="outline-2">
-<h2 id="内嵌"><span class="section-number-2">12</span> 内嵌</h2>
+<div id="outline-container-内嵌" class="outline-2">
+<h2 id="内嵌"><span class="section-number-2">12.</span> 内嵌</h2>
 <div class="outline-text-2" id="text-内嵌">
 <p>
 Go
@@ -644,7 +621,7 @@ Go
 内嵌的接口和结构体可以接口/结构体名称直接访问，如果想要直接访问时字段名为类型名。比如：
 </p>
 
-<pre class="example">
+<pre class="example" id="org74e15e2">
 type Job struct {
     Command string
     *log.Logger
@@ -671,13 +648,13 @@ type Job struct {
 </div>
 </div>
 
-<div id="outline-container-org3fc913a" class="outline-2">
-<h2 id="并发"><span class="section-number-2">13</span> 并发</h2>
+<div id="outline-container-并发" class="outline-2">
+<h2 id="并发"><span class="section-number-2">13.</span> 并发</h2>
 <div class="outline-text-2" id="text-并发">
 </div>
 
-<div id="outline-container-orge1d5104" class="outline-3">
-<h3 id="goroutines"><span class="section-number-3">13.1</span> Goroutines</h3>
+<div id="outline-container-goroutines" class="outline-3">
+<h3 id="goroutines"><span class="section-number-3">13.1.</span> Goroutines</h3>
 <div class="outline-text-3" id="text-goroutines">
 <ul class="org-ul">
 <li>goroutines
@@ -688,8 +665,8 @@ I/O），就会在其它线程上运行（隐藏了线程创建和管理的复�
 </div>
 </div>
 
-<div id="outline-container-org0bf6203" class="outline-3">
-<h3 id="管道channels"><span class="section-number-3">13.2</span> 管道（Channels）</h3>
+<div id="outline-container-管道channels" class="outline-3">
+<h3 id="管道channels"><span class="section-number-3">13.2.</span> 管道（Channels）</h3>
 <div class="outline-text-3" id="text-管道channels">
 <p>
 管道和 maps 类似，使用 <code>make</code>
@@ -700,13 +677,13 @@ I/O），就会在其它线程上运行（隐藏了线程创建和管理的复�
 </div>
 </div>
 
-<div id="outline-container-org04b9f04" class="outline-2">
-<h2 id="错误"><span class="section-number-2">14</span> 错误</h2>
+<div id="outline-container-错误" class="outline-2">
+<h2 id="错误"><span class="section-number-2">14.</span> 错误</h2>
 <div class="outline-text-2" id="text-错误">
 </div>
 
-<div id="outline-container-org152d99f" class="outline-3">
-<h3 id="panic"><span class="section-number-3">14.1</span> Panic</h3>
+<div id="outline-container-panic" class="outline-3">
+<h3 id="panic"><span class="section-number-3">14.1.</span> Panic</h3>
 <div class="outline-text-3" id="text-panic">
 <p>
 通常情况下，出错的时候应该向调用者返回一个 =error=，比如 Read
@@ -721,7 +698,7 @@ string
 在程序快挂的时候输出），一般用来表示处理逻辑上不可能发生的事情，比如无限循环竟然退出了：
 </p>
 
-<pre class="example">
+<pre class="example" id="orge701d6f">
 // A toy implementation of cube root using Newton's method.
 func CubeRoot(x float64) float64 {
     z := x/3   // Arbitrary initial value
@@ -744,8 +721,8 @@ func CubeRoot(x float64) float64 {
 </div>
 </div>
 
-<div id="outline-container-org814a49c" class="outline-3">
-<h3 id="recover"><span class="section-number-3">14.2</span> Recover</h3>
+<div id="outline-container-recover" class="outline-3">
+<h3 id="recover"><span class="section-number-3">14.2.</span> Recover</h3>
 <div class="outline-text-3" id="text-recover">
 <p>
 当 <code>panic</code>
@@ -764,7 +741,7 @@ goroutines。
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-08-03 14:11:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2018-08-03 14:11:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:28 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>CDF 累积分布函数</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">CDF 累积分布函数</h1>
 <p>
 给定同一个维度的一堆数值，比如说 API
@@ -268,64 +245,64 @@ CDF，即累积分布函数，反映随机变量的概率分布，专业的定�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/usr/bin/env python3</span>
+<pre class="src src-python"><span style="color: #505050;">#</span><span style="color: #505050;">!/usr/bin/env python3</span>
 
-<span style="color: #0000FF;">import</span> matplotlib.pyplot <span style="color: #0000FF;">as</span> plt
+<span style="color: #5317ac;">import</span> matplotlib.pyplot <span style="color: #5317ac;">as</span> plt
 
-<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">&#26679;&#26412;</span>
-<span style="color: #BA36A5;">data</span> = <span style="color: #707183;">[</span>
-        1, 2, 3, 1, 5, 6, 7, 8, 9, 10, <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">10</span>
-        2, 2, 5, 4, 1, 1, 7, 8, 9, 1,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">20</span>
-        2, 2, 1, 2, 1, 1, 7, 1, 8, 15, <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">30</span>
-        4, 2, 1, 2, 1, 2, 4, 1, 8, 2,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">40</span>
-        8, 1, 2, 2, 1, 2, 4, 1, 9, 3,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">50</span>
-        7, 1, 1, 1, 1, 2, 4, 1, 7, 5,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">60</span>
-        10, 2, 3, 1, 5, 2, 1, 1, 9, 8, <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">70</span>
-        9, 1, 3, 1, 5, 6, 7, 1, 4, 7,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">80</span>
-        1, 2, 2, 2, 3, 6, 1, 1, 4, 1,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">90</span>
-        1, 1, 1, 2, 3, 6, 7, 1, 9, 3,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">100</span>
-        5, 1, 2, 2, 1, 4, 2, 8, 3, 2,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">110</span>
-        4, 1, 1, 2, 2, 4, 7, 8, 2, 8,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">120</span>
-        3, 2, 1, 2, 3, 4, 7, 3, 1, 20, <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">130</span>
-        2, 2, 1, 3, 1, 6, 2, 3, 1, 4,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">140</span>
-        1, 2, 1, 3, 2, 6, 2, 3, 1, 3,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">150</span>
-        2, 1, 1, 4, 3, 6, 2, 3, 1, 2,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">160</span>
-        3, 1, 1, 3, 1, 1, 1, 8, 2, 1,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">170</span>
-        4, 1, 1, 1, 1, 1, 1, 1, 2, 1,  <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">180</span>
-        4, 2, 3, 1, 10, 1, 1, 1, 2, 3, <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">190</span>
-        4, 2, 3, 1, 10, 1, 1, 1, 2, 5, <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">200</span>
-<span style="color: #707183;">]</span>
+<span style="color: #505050;"># </span><span style="color: #505050;">&#26679;&#26412;</span>
+<span style="color: #00538b;">data</span> = <span style="color: #000000;">[</span>
+    1, 2, 3, 1, 5, 6, 7, 8, 9, 10, <span style="color: #505050;"># </span><span style="color: #505050;">10</span>
+    2, 2, 5, 4, 1, 1, 7, 8, 9, 1,  <span style="color: #505050;"># </span><span style="color: #505050;">20</span>
+    2, 2, 1, 2, 1, 1, 7, 1, 8, 15, <span style="color: #505050;"># </span><span style="color: #505050;">30</span>
+    4, 2, 1, 2, 1, 2, 4, 1, 8, 2,  <span style="color: #505050;"># </span><span style="color: #505050;">40</span>
+    8, 1, 2, 2, 1, 2, 4, 1, 9, 3,  <span style="color: #505050;"># </span><span style="color: #505050;">50</span>
+    7, 1, 1, 1, 1, 2, 4, 1, 7, 5,  <span style="color: #505050;"># </span><span style="color: #505050;">60</span>
+    10, 2, 3, 1, 5, 2, 1, 1, 9, 8, <span style="color: #505050;"># </span><span style="color: #505050;">70</span>
+    9, 1, 3, 1, 5, 6, 7, 1, 4, 7,  <span style="color: #505050;"># </span><span style="color: #505050;">80</span>
+    1, 2, 2, 2, 3, 6, 1, 1, 4, 1,  <span style="color: #505050;"># </span><span style="color: #505050;">90</span>
+    1, 1, 1, 2, 3, 6, 7, 1, 9, 3,  <span style="color: #505050;"># </span><span style="color: #505050;">100</span>
+    5, 1, 2, 2, 1, 4, 2, 8, 3, 2,  <span style="color: #505050;"># </span><span style="color: #505050;">110</span>
+    4, 1, 1, 2, 2, 4, 7, 8, 2, 8,  <span style="color: #505050;"># </span><span style="color: #505050;">120</span>
+    3, 2, 1, 2, 3, 4, 7, 3, 1, 20, <span style="color: #505050;"># </span><span style="color: #505050;">130</span>
+    2, 2, 1, 3, 1, 6, 2, 3, 1, 4,  <span style="color: #505050;"># </span><span style="color: #505050;">140</span>
+    1, 2, 1, 3, 2, 6, 2, 3, 1, 3,  <span style="color: #505050;"># </span><span style="color: #505050;">150</span>
+    2, 1, 1, 4, 3, 6, 2, 3, 1, 2,  <span style="color: #505050;"># </span><span style="color: #505050;">160</span>
+    3, 1, 1, 3, 1, 1, 1, 8, 2, 1,  <span style="color: #505050;"># </span><span style="color: #505050;">170</span>
+    4, 1, 1, 1, 1, 1, 1, 1, 2, 1,  <span style="color: #505050;"># </span><span style="color: #505050;">180</span>
+    4, 2, 3, 1, 10, 1, 1, 1, 2, 3, <span style="color: #505050;"># </span><span style="color: #505050;">190</span>
+    4, 2, 3, 1, 10, 1, 1, 1, 2, 5, <span style="color: #505050;"># </span><span style="color: #505050;">200</span>
+<span style="color: #000000;">]</span>
 
-<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">&#20174;&#23567;&#21040;&#22823;&#25490;&#24207;</span>
-data.sort<span style="color: #707183;">()</span>
-<span style="color: #0000FF;">print</span><span style="color: #707183;">(</span>data<span style="color: #707183;">)</span>
+<span style="color: #505050;"># </span><span style="color: #505050;">&#20174;&#23567;&#21040;&#22823;&#25490;&#24207;</span>
+data.sort<span style="color: #000000;">()</span>
+<span style="color: #5317ac;">print</span><span style="color: #000000;">(</span>data<span style="color: #000000;">)</span>
 
-<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">&#35745;&#31639;&#21344;&#27604;</span>
-<span style="color: #BA36A5;">sample</span> = <span style="color: #707183;">[</span>x <span style="color: #0000FF;">for</span> x <span style="color: #0000FF;">in</span> <span style="color: #006FE0;">range</span><span style="color: #7388D6;">(</span>data<span style="color: #909183;">[</span>0<span style="color: #909183;">]</span>, data<span style="color: #909183;">[</span>-1<span style="color: #909183;">]</span>+1<span style="color: #7388D6;">)</span><span style="color: #707183;">]</span>
-<span style="color: #BA36A5;">it</span> = 0
-<span style="color: #BA36A5;">x</span>, <span style="color: #BA36A5;">y</span> = <span style="color: #707183;">[]</span>, <span style="color: #707183;">[]</span>
-<span style="color: #0000FF;">for</span> idx <span style="color: #0000FF;">in</span> <span style="color: #006FE0;">range</span><span style="color: #707183;">(</span><span style="color: #006FE0;">len</span><span style="color: #7388D6;">(</span>sample<span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>:
-        <span style="color: #0000FF;">while</span> it &lt; <span style="color: #006FE0;">len</span><span style="color: #707183;">(</span>data<span style="color: #707183;">)</span>:
-                <span style="color: #0000FF;">if</span> data<span style="color: #707183;">[</span>it<span style="color: #707183;">]</span> &gt; sample<span style="color: #707183;">[</span>idx<span style="color: #707183;">]</span>:
-                        <span style="color: #0000FF;">break</span>
-                <span style="color: #BA36A5;">it</span> += 1
-        x.append<span style="color: #707183;">(</span>sample<span style="color: #7388D6;">[</span>idx<span style="color: #7388D6;">]</span><span style="color: #707183;">)</span>
-        y.append<span style="color: #707183;">(</span>it/<span style="color: #006FE0;">len</span><span style="color: #7388D6;">(</span>data<span style="color: #7388D6;">)</span>*100<span style="color: #707183;">)</span>
+<span style="color: #505050;"># </span><span style="color: #505050;">&#35745;&#31639;&#21344;&#27604;</span>
+<span style="color: #00538b;">sample</span> = <span style="color: #000000;">[</span>x <span style="color: #5317ac;">for</span> x <span style="color: #5317ac;">in</span> <span style="color: #8f0075;">range</span><span style="color: #a8007f;">(</span>data<span style="color: #005f88;">[</span>0<span style="color: #005f88;">]</span>, data<span style="color: #005f88;">[</span>-1<span style="color: #005f88;">]</span>+1<span style="color: #a8007f;">)</span><span style="color: #000000;">]</span>
+<span style="color: #00538b;">it</span> = 0
+<span style="color: #00538b;">x</span>, <span style="color: #00538b;">y</span> = <span style="color: #000000;">[]</span>, <span style="color: #000000;">[]</span>
+<span style="color: #5317ac;">for</span> idx <span style="color: #5317ac;">in</span> <span style="color: #8f0075;">range</span><span style="color: #000000;">(</span><span style="color: #8f0075;">len</span><span style="color: #a8007f;">(</span>sample<span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>:
+    <span style="color: #5317ac;">while</span> it &lt; <span style="color: #8f0075;">len</span><span style="color: #000000;">(</span>data<span style="color: #000000;">)</span>:
+        <span style="color: #5317ac;">if</span> data<span style="color: #000000;">[</span>it<span style="color: #000000;">]</span> &gt; sample<span style="color: #000000;">[</span>idx<span style="color: #000000;">]</span>:
+            <span style="color: #5317ac;">break</span>
+        <span style="color: #00538b;">it</span> += 1
+    x.append<span style="color: #000000;">(</span>sample<span style="color: #a8007f;">[</span>idx<span style="color: #a8007f;">]</span><span style="color: #000000;">)</span>
+    y.append<span style="color: #000000;">(</span>it/<span style="color: #8f0075;">len</span><span style="color: #a8007f;">(</span>data<span style="color: #a8007f;">)</span>*100<span style="color: #000000;">)</span>
 
-<span style="color: #0000FF;">print</span><span style="color: #707183;">(</span>x, y<span style="color: #707183;">)</span>
+<span style="color: #5317ac;">print</span><span style="color: #000000;">(</span>x, y<span style="color: #000000;">)</span>
 
-<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">&#30011;&#22270;</span>
-<span style="color: #BA36A5;">fig</span>, <span style="color: #BA36A5;">ax</span> = plt.subplots<span style="color: #707183;">()</span>
-ax.plot<span style="color: #707183;">(</span>x, y<span style="color: #707183;">)</span>
-ax.fill_between<span style="color: #707183;">(</span>x, y<span style="color: #707183;">)</span>
-ax.<span style="color: #006FE0;">set</span><span style="color: #707183;">(</span>xlabel=<span style="color: #008000;">'count'</span>, ylabel=<span style="color: #008000;">'percent(%)'</span>,
-           title=<span style="color: #008000;">'pre shopping CDF'</span><span style="color: #707183;">)</span>
+<span style="color: #505050;"># </span><span style="color: #505050;">&#30011;&#22270;</span>
+<span style="color: #00538b;">fig</span>, <span style="color: #00538b;">ax</span> = plt.subplots<span style="color: #000000;">()</span>
+ax.plot<span style="color: #000000;">(</span>x, y<span style="color: #000000;">)</span>
+ax.fill_between<span style="color: #000000;">(</span>x, y<span style="color: #000000;">)</span>
+ax.<span style="color: #8f0075;">set</span><span style="color: #000000;">(</span>xlabel=<span style="color: #2544bb;">'count'</span>, ylabel=<span style="color: #2544bb;">'percent(%)'</span>,
+       title=<span style="color: #2544bb;">'pre shopping CDF'</span><span style="color: #000000;">)</span>
 
-plt.xlim<span style="color: #707183;">(</span>x<span style="color: #7388D6;">[</span>0<span style="color: #7388D6;">]</span>, x<span style="color: #7388D6;">[</span>-1<span style="color: #7388D6;">]</span><span style="color: #707183;">)</span>
-plt.xticks<span style="color: #707183;">(</span>x<span style="color: #707183;">)</span>
-plt.ylim<span style="color: #707183;">(</span>0, 100<span style="color: #707183;">)</span>
-plt.grid<span style="color: #707183;">()</span>
-plt.show<span style="color: #707183;">()</span>
+plt.xlim<span style="color: #000000;">(</span>x<span style="color: #a8007f;">[</span>0<span style="color: #a8007f;">]</span>, x<span style="color: #a8007f;">[</span>-1<span style="color: #a8007f;">]</span><span style="color: #000000;">)</span>
+plt.xticks<span style="color: #000000;">(</span>x<span style="color: #000000;">)</span>
+plt.ylim<span style="color: #000000;">(</span>0, 100<span style="color: #000000;">)</span>
+plt.grid<span style="color: #000000;">()</span>
+plt.show<span style="color: #000000;">()</span>
 </pre>
 </div>
 
@@ -334,7 +311,7 @@ plt.show<span style="color: #707183;">()</span>
 </p>
 
 
-<div class="figure">
+<div id="org3268b51" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/cdf.png" alt="cdf.png" />
 </p>
 </div>
@@ -361,7 +338,7 @@ CDF 表示的概率分布，比如上面的两个标注：
 </p>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-10-19 16:10:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2018-10-19 16:10:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

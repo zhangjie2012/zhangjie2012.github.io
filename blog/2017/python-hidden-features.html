@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Python隐藏（使用）技巧</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Python隐藏（使用）技巧</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -274,14 +251,14 @@ for the JavaScript code in this tag.
 features of Python</a>
 </p>
 
-<div id="outline-container-org9916bec" class="outline-2">
-<h2 id="function-argument-unpacking"><span class="section-number-2">1</span> Function argument unpacking</h2>
+<div id="outline-container-function-argument-unpacking" class="outline-2">
+<h2 id="function-argument-unpacking"><span class="section-number-2">1.</span> Function argument unpacking</h2>
 <div class="outline-text-2" id="text-function-argument-unpacking">
 <p>
 你可以通过 <code>*</code> 和 <code>**</code> 将列表或者字典解包作为函数参数，比如：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgfcf1a3d">
 def draw_point(x, y):
     print(x, y)
 
@@ -294,10 +271,10 @@ draw_point(**point_bar)
 </div>
 </div>
 
-<div id="outline-container-org0120850" class="outline-2">
-<h2 id="串联比较运算chaining-comparison-operators"><span class="section-number-2">2</span> 串联比较运算（Chaining comparison operators）</h2>
+<div id="outline-container-串联比较运算chaining-comparison-operators" class="outline-2">
+<h2 id="串联比较运算chaining-comparison-operators"><span class="section-number-2">2.</span> 串联比较运算（Chaining comparison operators）</h2>
 <div class="outline-text-2" id="text-串联比较运算chaining-comparison-operators">
-<pre class="example">
+<pre class="example" id="org42777e0">
 &gt;&gt;&gt; x = 5
 &gt;&gt;&gt; 1 &lt; x &lt; 10
 True
@@ -313,15 +290,15 @@ True
 </div>
 </div>
 
-<div id="outline-container-org7059154" class="outline-2">
-<h2 id="装饰器decorators"><span class="section-number-2">3</span> 装饰器（Decorators）</h2>
+<div id="outline-container-装饰器decorators" class="outline-2">
+<h2 id="装饰器decorators"><span class="section-number-2">3.</span> 装饰器（Decorators）</h2>
 <div class="outline-text-2" id="text-装饰器decorators">
 <p>
 装饰器是在 Python
 函数或方法的基础上包装了一层，你可以添加功能，修改参数或者返回值等等。已我们统计函数执行时间的装饰器为例：
 </p>
 
-<pre class="example">
+<pre class="example" id="orga116f38">
 def fprofiler(output=True):
     """函数执行时间监视器
     output: 是否输出信息，线上业务中如果全部打开会产生很多日志，所以需要一个开关
@@ -355,7 +332,7 @@ def fprofiler(output=True):
 使用：
 </p>
 
-<pre class="example">
+<pre class="example" id="orge964cf4">
 # config.py
 PROFILER = True
 # views
@@ -366,10 +343,10 @@ def do_something(request):
 </div>
 </div>
 
-<div id="outline-container-org0b291ed" class="outline-2">
-<h2 id="小心使用可变参数作为默认参数"><span class="section-number-2">4</span> 小心使用可变参数作为默认参数</h2>
+<div id="outline-container-小心使用可变参数作为默认参数" class="outline-2">
+<h2 id="小心使用可变参数作为默认参数"><span class="section-number-2">4.</span> 小心使用可变参数作为默认参数</h2>
 <div class="outline-text-2" id="text-小心使用可变参数作为默认参数">
-<pre class="example">
+<pre class="example" id="org89a9eb1">
 def foo(x=[]):
     x.append(1)
     print(x)
@@ -388,7 +365,7 @@ foo()
 正确的做法应该是：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgdba237b">
 def foo(x=None):
     x = x or []
     x.append(1)
@@ -430,8 +407,8 @@ knowledge of how function objects work.
 </div>
 </div>
 
-<div id="outline-container-orgd39a65c" class="outline-2">
-<h2 id="字典的-get-函数"><span class="section-number-2">5</span> 字典的 <code>get()</code> 函数</h2>
+<div id="outline-container-字典的-get-函数" class="outline-2">
+<h2 id="字典的-get-函数"><span class="section-number-2">5.</span> 字典的 <code>get()</code> 函数</h2>
 <div class="outline-text-2" id="text-字典的-get-函数">
 <p>
 当 <code>key</code> 不存在时，你可以设置一个默认值：=s.get(key, 0)=。
@@ -439,10 +416,10 @@ knowledge of how function objects work.
 </div>
 </div>
 
-<div id="outline-container-org6863f0e" class="outline-2">
-<h2 id="doctest文档和单元测试同时进行"><span class="section-number-2">6</span> Doctest：文档和单元测试同时进行</h2>
+<div id="outline-container-doctest文档和单元测试同时进行" class="outline-2">
+<h2 id="doctest文档和单元测试同时进行"><span class="section-number-2">6.</span> Doctest：文档和单元测试同时进行</h2>
 <div class="outline-text-2" id="text-doctest文档和单元测试同时进行">
-<pre class="example">
+<pre class="example" id="orgfe66bf7">
 def factorial(n):
     """Return the factorial of n, an exact integer &gt;= 0.
 
@@ -504,10 +481,10 @@ Got:
 </div>
 </div>
 
-<div id="outline-container-orgaf38fee" class="outline-2">
-<h2 id="省略号语法"><span class="section-number-2">7</span> 省略号语法</h2>
+<div id="outline-container-省略号语法" class="outline-2">
+<h2 id="省略号语法"><span class="section-number-2">7.</span> 省略号语法</h2>
 <div class="outline-text-2" id="text-省略号语法">
-<pre class="example">
+<pre class="example" id="orgc544316">
 def print_sth(item):
     if item is Ellipsis:
         print('all data')
@@ -525,10 +502,10 @@ all data
 </div>
 </div>
 
-<div id="outline-container-org0356c72" class="outline-2">
-<h2 id="enumerate"><span class="section-number-2">8</span> enumerate</h2>
+<div id="outline-container-enumerate" class="outline-2">
+<h2 id="enumerate"><span class="section-number-2">8.</span> enumerate</h2>
 <div class="outline-text-2" id="text-enumerate">
-<pre class="example">
+<pre class="example" id="orgf53e01f">
 a = [5, 4, 3, 2, 1]
 for index, item in enumerate(a):
     print(index, item)
@@ -540,10 +517,10 @@ for index, item in enumerate(a):
 </div>
 </div>
 
-<div id="outline-container-orga183293" class="outline-2">
-<h2 id="forelse-语法"><span class="section-number-2">9</span> for&#x2026;else 语法</h2>
+<div id="outline-container-forelse-语法" class="outline-2">
+<h2 id="forelse-语法"><span class="section-number-2">9.</span> for&#x2026;else 语法</h2>
 <div class="outline-text-2" id="text-forelse-语法">
-<pre class="example">
+<pre class="example" id="org4663f56">
 foo = (1, 2, 3)
 for i in foo:
     if i == 0:
@@ -556,7 +533,7 @@ else:
 <code>else</code> 会在 <code>for</code> 循环结束之后再执行。上面的代码相当于：
 </p>
 
-<pre class="example">
+<pre class="example" id="org9a94176">
 found = False
 foo = (1, 2, 3)
 for i in foo:
@@ -569,8 +546,8 @@ if not found:
 </div>
 </div>
 
-<div id="outline-container-org986b53d" class="outline-2">
-<h2 id="import-this"><span class="section-number-2">10</span> <code>import this</code></h2>
+<div id="outline-container-import-this" class="outline-2">
+<h2 id="import-this"><span class="section-number-2">10.</span> <code>import this</code></h2>
 <div class="outline-text-2" id="text-import-this">
 <p>
 你懂的。
@@ -578,19 +555,19 @@ if not found:
 </div>
 </div>
 
-<div id="outline-container-org827a5e9" class="outline-2">
-<h2 id="位置交换赋值in-place-value-swapping"><span class="section-number-2">11</span> 位置交换赋值（in-place value swapping）</h2>
+<div id="outline-container-位置交换赋值in-place-value-swapping" class="outline-2">
+<h2 id="位置交换赋值in-place-value-swapping"><span class="section-number-2">11.</span> 位置交换赋值（in-place value swapping）</h2>
 <div class="outline-text-2" id="text-位置交换赋值in-place-value-swapping">
-<pre class="example">
+<pre class="example" id="org842bafe">
 a, b = b, a
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org54a2d14" class="outline-2">
-<h2 id="按照步长获取切片列表"><span class="section-number-2">12</span> 按照步长获取切片列表</h2>
+<div id="outline-container-按照步长获取切片列表" class="outline-2">
+<h2 id="按照步长获取切片列表"><span class="section-number-2">12.</span> 按照步长获取切片列表</h2>
 <div class="outline-text-2" id="text-按照步长获取切片列表">
-<pre class="example">
+<pre class="example" id="orgd88453b">
 &gt;&gt;&gt; a = [1, 2, 3, 4, 5]
 &gt;&gt;&gt; a[::2]
 [1, 3, 5]
@@ -601,14 +578,14 @@ a, b = b, a
 </div>
 </div>
 
-<div id="outline-container-org6c8fa62" class="outline-2">
-<h2 id="命名格式化"><span class="section-number-2">13</span> 命名格式化</h2>
+<div id="outline-container-命名格式化" class="outline-2">
+<h2 id="命名格式化"><span class="section-number-2">13.</span> 命名格式化</h2>
 <div class="outline-text-2" id="text-命名格式化">
 <p>
 <code>%</code> 传入字典。
 </p>
 
-<pre class="example">
+<pre class="example" id="orgc05b9cd">
 &gt;&gt;&gt; print "The %(foo)s is %(bar)i." % {'foo': 'answer', 'bar':42}
 The answer is 42.
 </pre>
@@ -617,7 +594,7 @@ The answer is 42.
 新的格式化风格：
 </p>
 
-<pre class="example">
+<pre class="example" id="org69be174">
 &gt;&gt;&gt; print("The {foo} is {bar}".format(foo='answer', bar=42))
 The answer is 42
 </pre>
@@ -626,7 +603,7 @@ The answer is 42
 那也就可以这么用：
 </p>
 
-<pre class="example">
+<pre class="example" id="org9f8e05b">
 a = {
     'foo': 'answer',
     'bar': 42
@@ -637,18 +614,18 @@ print('{foo} - {bar}'.format(**a))
 </div>
 </div>
 
-<div id="outline-container-org1439287" class="outline-2">
-<h2 id="单行嵌套-for-循环生成列表"><span class="section-number-2">14</span> 单行嵌套 for 循环，生成列表</h2>
+<div id="outline-container-单行嵌套-for-循环生成列表" class="outline-2">
+<h2 id="单行嵌套-for-循环生成列表"><span class="section-number-2">14.</span> 单行嵌套 for 循环，生成列表</h2>
 <div class="outline-text-2" id="text-单行嵌套-for-循环生成列表">
-<pre class="example">
+<pre class="example" id="org745fc0b">
 [(i,j) for i in range(3) for j in range(i) ]
 ((i,j) for i in range(4) for j in range(i) )
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org82053b4" class="outline-2">
-<h2 id="try.except.else.finally-语法"><span class="section-number-2">15</span> try.except.else.finally 语法</h2>
+<div id="outline-container-try.except.else.finally-语法" class="outline-2">
+<h2 id="try.except.else.finally-语法"><span class="section-number-2">15.</span> try.except.else.finally 语法</h2>
 <div class="outline-text-2" id="text-try.except.else.finally-语法">
 <ul class="org-ul">
 <li>=except=：异常捕捉</li>
@@ -658,8 +635,8 @@ print('{foo} - {bar}'.format(**a))
 </div>
 </div>
 
-<div id="outline-container-orgcdc3fb5" class="outline-2">
-<h2 id="上下文管理器和-with-语法"><span class="section-number-2">16</span> 上下文管理器和 <code>with</code> 语法</h2>
+<div id="outline-container-上下文管理器和-with-语法" class="outline-2">
+<h2 id="上下文管理器和-with-语法"><span class="section-number-2">16.</span> 上下文管理器和 <code>with</code> 语法</h2>
 <div class="outline-text-2" id="text-上下文管理器和-with-语法">
 <p>
 上下文管理器（context
@@ -667,7 +644,7 @@ manager）是一个扮演者管理一系列语句运行时上下文的对象，�
 <code>with</code> 是上下文管理器的广泛案例。
 </p>
 
-<pre class="example">
+<pre class="example" id="orge2c255d">
 with open('foo.txt', 'w') as f:
     f.write('hello!')
 </pre>
@@ -681,7 +658,7 @@ with open('foo.txt', 'w') as f:
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2017-09-30 00:00:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2017-09-30 00:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

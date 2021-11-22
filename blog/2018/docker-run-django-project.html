@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>使用 Docker 运行 Django 项目</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">使用 Docker 运行 Django 项目</h1>
 <p>
 以前运行 Django 项目的方式是在虚拟机上运行（uwsgi+Django），如果要运行多个不同版本的 Django 项目就蛋疼了，当然也可以使用 virtualenv 虚拟环境工具，但是我觉得用起来比较麻烦，尤其是需要自动化的时候。
@@ -260,7 +237,7 @@ Docker 除了众所周知的一些特性之外，最基本的特性就是环境�
 
 <div class="org-src-container">
 <pre class="src src-shell">pip3 install django
-django-admin --version <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">2.1.1</span>
+django-admin --version <span style="color: #505050;"># </span><span style="color: #505050;">2.1.1</span>
 django startproject demo
 </pre>
 </div>
@@ -281,14 +258,14 @@ django startproject demo
 
 <div class="org-src-container">
 <pre class="src src-shell">docker pull mysql:5.7
-docker images <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">6a834f03bd02</span>
-docker run --name dj-mysql -d -e <span style="color: #BA36A5;">MYSQL_ROOT_PASSWORD</span>=my-secret -p 127.0.0.1:3306:3306 6a834f03bd02
+docker images <span style="color: #505050;"># </span><span style="color: #505050;">6a834f03bd02</span>
+docker run --name dj-mysql -d -e <span style="color: #00538b;">MYSQL_ROOT_PASSWORD</span>=my-secret -p 127.0.0.1:3306:3306 6a834f03bd02
 docker ps -a
-<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS                                 NAMES</span>
-<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">390ac3e7d3ab        6a834f03bd02        "docker-entrypoint.s&#8230;"   About a minute ago   Up About a minute  127.0.0.1:3306-&gt; 3306/tcp, 33060/tcp   dj-mysql</span>
+<span style="color: #505050;"># </span><span style="color: #505050;">CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS                                 NAMES</span>
+<span style="color: #505050;"># </span><span style="color: #505050;">390ac3e7d3ab        6a834f03bd02        "docker-entrypoint.s&#8230;"   About a minute ago   Up About a minute  127.0.0.1:3306-&gt; 3306/tcp, 33060/tcp   dj-mysql</span>
 docker exec -it 390ac3e7d3ab mysql -uroot -pmy-secret
-mysql&gt; create database demo <span style="color: #BA36A5;">charset</span>=<span style="color: #008000;">"utf8mb4"</span>;   <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">&#21019;&#24314;&#25968;&#25454;&#24211;</span>
-Query OK, 1 row affected <span style="color: #707183;">(</span>0.30 sec<span style="color: #707183;">)</span>
+mysql&gt; create database demo <span style="color: #00538b;">charset</span>=<span style="color: #2544bb;">"utf8mb4"</span>;   <span style="color: #505050;"># </span><span style="color: #505050;">&#21019;&#24314;&#25968;&#25454;&#24211;</span>
+Query OK, 1 row affected <span style="color: #000000;">(</span>0.30 sec<span style="color: #000000;">)</span>
 mysql&gt; ^DBy
 </pre>
 </div>
@@ -298,20 +275,20 @@ mysql&gt; ^DBy
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #BA36A5;">DATABASES</span> = <span style="color: #707183;">{</span>
-        <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">'default': {</span>
-        <span style="color: #8D8D84;">#     </span><span style="color: #8D8D84; font-style: italic;">'ENGINE': 'django.db.backends.sqlite3',</span>
-        <span style="color: #8D8D84;">#     </span><span style="color: #8D8D84; font-style: italic;">'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),</span>
-        <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">}</span>
-        <span style="color: #008000;">'default'</span>: <span style="color: #7388D6;">{</span>
-                <span style="color: #008000;">'ENGINE'</span>: <span style="color: #008000;">'django.db.backends.mysql'</span>,
-                <span style="color: #008000;">'NAME'</span>: <span style="color: #008000;">'demo'</span>,
-                <span style="color: #008000;">'USER'</span>: <span style="color: #008000;">'root'</span>,
-                <span style="color: #008000;">'PASSWORD'</span>: <span style="color: #008000;">'my-secret'</span>,
-                <span style="color: #008000;">'HOST'</span>: <span style="color: #008000;">'mysql'</span>,
-                <span style="color: #008000;">'PORT'</span>: <span style="color: #008000;">'3306'</span>,
-        <span style="color: #7388D6;">}</span>
-<span style="color: #707183;">}</span>
+<pre class="src src-python"><span style="color: #00538b;">DATABASES</span> = <span style="color: #000000;">{</span>
+    <span style="color: #505050;"># </span><span style="color: #505050;">'default': {</span>
+    <span style="color: #505050;">#     </span><span style="color: #505050;">'ENGINE': 'django.db.backends.sqlite3',</span>
+    <span style="color: #505050;">#     </span><span style="color: #505050;">'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),</span>
+    <span style="color: #505050;"># </span><span style="color: #505050;">}</span>
+    <span style="color: #2544bb;">'default'</span>: <span style="color: #a8007f;">{</span>
+        <span style="color: #2544bb;">'ENGINE'</span>: <span style="color: #2544bb;">'django.db.backends.mysql'</span>,
+        <span style="color: #2544bb;">'NAME'</span>: <span style="color: #2544bb;">'demo'</span>,
+        <span style="color: #2544bb;">'USER'</span>: <span style="color: #2544bb;">'root'</span>,
+        <span style="color: #2544bb;">'PASSWORD'</span>: <span style="color: #2544bb;">'my-secret'</span>,
+        <span style="color: #2544bb;">'HOST'</span>: <span style="color: #2544bb;">'mysql'</span>,
+        <span style="color: #2544bb;">'PORT'</span>: <span style="color: #2544bb;">'3306'</span>,
+    <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -435,7 +412,7 @@ btw，如果仅在本地测试的话 <code>docker-compose</code> 要更方便一
 </ol>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-09-08 10:40 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2018-09-08 10:40 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

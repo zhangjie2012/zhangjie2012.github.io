@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>stackoverflow | C++ | std::wstring vs std::string</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">stackoverflow | C++ | std::wstring vs std::string</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -255,7 +232,7 @@ for the JavaScript code in this tag.
 <li><a href="#解释二">3. 解释二</a>
 <ul>
 <li><a href="#string-wstring">3.1. string? wstring?</a></li>
-<li><a href="#char-vs.-wchar_t">3.2. char vs. wchar_t</a></li>
+<li><a href="#char-vs.-wchar_t">3.2. char vs. wchar<sub>t</sub></a></li>
 <li><a href="#那么关于-unicode-呢">3.3. 那么关于 Unicode 呢？</a></li>
 <li><a href="#在-linux-上">3.4. 在 Linux 上？</a></li>
 <li><a href="#内存问题memory-issues">3.5. 内存问题（Memory issues）</a></li>
@@ -279,8 +256,8 @@ for the JavaScript code in this tag.
 <li>水平有限，如有翻译不当，欢迎探讨、批评与指正。</li>
 </ol>
 
-<div id="outline-container-org3e0d0fa" class="outline-2">
-<h2 id="问题表述"><span class="section-number-2">1</span> 问题表述</h2>
+<div id="outline-container-问题表述" class="outline-2">
+<h2 id="问题表述"><span class="section-number-2">1.</span> 问题表述</h2>
 <div class="outline-text-2" id="text-问题表述">
 <p>
 我不理解 std::string 和 std::wstring 之间的差别。我知道 wstring
@@ -296,8 +273,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org594cd63" class="outline-2">
-<h2 id="解释一"><span class="section-number-2">2</span> 解释一</h2>
+<div id="outline-container-解释一" class="outline-2">
+<h2 id="解释一"><span class="section-number-2">2.</span> 解释一</h2>
 <div class="outline-text-2" id="text-解释一">
 <ol class="org-ol">
 <li>存在一些历史原因，人们希望宽字符可以支持 Unicode。现在常用作 APIs
@@ -324,43 +301,43 @@ part of the character that is two bytes long）。UTF-16
 </div>
 </div>
 
-<div id="outline-container-org8710e97" class="outline-2">
-<h2 id="解释二"><span class="section-number-2">3</span> 解释二</h2>
+<div id="outline-container-解释二" class="outline-2">
+<h2 id="解释二"><span class="section-number-2">3.</span> 解释二</h2>
 <div class="outline-text-2" id="text-解释二">
 </div>
 
-<div id="outline-container-org4e32599" class="outline-3">
-<h3 id="string-wstring"><span class="section-number-3">3.1</span> string? wstring?</h3>
+<div id="outline-container-string-wstring" class="outline-3">
+<h3 id="string-wstring"><span class="section-number-3">3.1.</span> string? wstring?</h3>
 <div class="outline-text-3" id="text-string-wstring">
 <p>
-std::string 是模板类 basic_string 模板用 char 的特化，std::wstring
-对应的是 wchar_t。
+std::string 是模板类 basic<sub>string</sub> 模板用 char 的特化，std::wstring
+对应的是 wchar<sub>t</sub>。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc204dcf" class="outline-3">
-<h3 id="char-vs.-wchar_t"><span class="section-number-3">3.2</span> char vs. wchar_t</h3>
+<div id="outline-container-char-vs.-wchar_t" class="outline-3">
+<h3 id="char-vs.-wchar_t"><span class="section-number-3">3.2.</span> char vs. wchar<sub>t</sub></h3>
 <div class="outline-text-3" id="text-char-vs.-wchar_t">
 <p>
-char 用来存储一个字符，通常来说占一个字节。wchar_t
-用来存储宽字符，于是，事情就有些复杂了：在 Linux 上，一个 wchar_t 占 4
+char 用来存储一个字符，通常来说占一个字节。wchar<sub>t</sub>
+用来存储宽字符，于是，事情就有些复杂了：在 Linux 上，一个 wchar<sub>t</sub> 占 4
 个字节；但是在 Windows 上，占 2 个字节。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgcb2ec7d" class="outline-3">
-<h3 id="那么关于-unicode-呢"><span class="section-number-3">3.3</span> 那么关于 Unicode 呢？</h3>
+<div id="outline-container-那么关于-unicode-呢" class="outline-3">
+<h3 id="那么关于-unicode-呢"><span class="section-number-3">3.3.</span> 那么关于 Unicode 呢？</h3>
 <div class="outline-text-3" id="text-那么关于-unicode-呢">
 <p>
-问题在于 char 和 wchar_t 都没有和 unicode 有直接的关系。
+问题在于 char 和 wchar<sub>t</sub> 都没有和 unicode 有直接的关系。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org9e1cc60" class="outline-3">
-<h3 id="在-linux-上"><span class="section-number-3">3.4</span> 在 Linux 上？</h3>
+<div id="outline-container-在-linux-上" class="outline-3">
+<h3 id="在-linux-上"><span class="section-number-3">3.4.</span> 在 Linux 上？</h3>
 <div class="outline-text-3" id="text-在-linux-上">
 <p>
 我们选一个 Linux 操作系统吧：我的 Ubuntu 系统对 Unicode
@@ -368,7 +345,7 @@ char 用来存储一个字符，通常来说占一个字节。wchar_t
 进行编码（也就是Unicode char 字符串）。下面是代码：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgff48f02">
 #include &lt;cstring&gt;
 #include &lt;iostream&gt;
 
@@ -417,7 +394,7 @@ int main(int argc, char* argv[])
 输出结果如下：
 </p>
 
-<pre class="example">
+<pre class="example" id="orge46d53c">
 sizeof(char)    : 1
 text            : olé
 sizeof(text)    : 5
@@ -433,7 +410,7 @@ wtext(binary)   : 111 108 233
 
 <p>
 你可以看到 char 类型字符串的 "olé" 事实上是由四个字符：110, 108, 195 和
-169 （不包括字符串结尾符0）, (wchar_t 你自己尝试分析一下吧)。
+169 （不包括字符串结尾符0）, (wchar<sub>t</sub> 你自己尝试分析一下吧)。
 </p>
 
 <p>
@@ -467,7 +444,7 @@ Windows 上 "olé" 显示为"olé"，但是在 cyrillic-localized Windows
 </p>
 
 <p>
-对于基于 Unicode 的应用程序，Windows 使用 wchar_t ,也就是两字节宽，使用
+对于基于 Unicode 的应用程序，Windows 使用 wchar<sub>t</sub> ,也就是两字节宽，使用
 <a href="http://en.wikipedia.org/wiki/UTF-16">UTF-16</a>
 编码（每个字符占两个字节）（或者至少和 UCS-2是兼容的，和 IIRC
 大致相同）。
@@ -476,8 +453,8 @@ Windows 上 "olé" 显示为"olé"，但是在 cyrillic-localized Windows
 <p>
 应用程序使用的 char 被称作
 "多字节"（"multibyte"）（因为每一个符号有很多的 chars
-组成）。应用程序使用的 wchar_t 被称作
-"宽字节"（widechar）（因为每个符号由一个或者两个 wchar_t
+组成）。应用程序使用的 wchar<sub>t</sub> 被称作
+"宽字节"（widechar）（因为每个符号由一个或者两个 wchar<sub>t</sub>
 组成）。通过查看 Win32 提供的多字节和宽字节相互转换的 API
 可以获得更多的信息（
 <a href="msdn.microsoft.com/en-us/library/ms776413.aspx">MultiByteToWideChar</a>
@@ -487,16 +464,16 @@ Windows 上 "olé" 显示为"olé"，但是在 cyrillic-localized Windows
 </p>
 
 <p>
-因此，如果在 Windows 下工作的话，你应该尽可能使用 wchar_t
-（除非你使用了一个框架，把它（wchar_t）给隐藏了，比如：<a href="http://en.wikipedia.org/wiki/GTK%2B">GTK+</a>或者<a href="en.wikipedia.org/wiki/Qt_%28toolkit%29">QT</a>&#x2026;）.<br />
-Windows 下使用 wchar_t 字符串，因此，之前的应用程序将会把他们的 char
-字符串转换成 wchar_t （当使用类似于 SetWindowText 这种 API 的时候）。
+因此，如果在 Windows 下工作的话，你应该尽可能使用 wchar<sub>t</sub>
+（除非你使用了一个框架，把它（wchar<sub>t</sub>）给隐藏了，比如：<a href="http://en.wikipedia.org/wiki/GTK%2B">GTK+</a>或者<a href="en.wikipedia.org/wiki/Qt_%28toolkit%29">QT</a>&#x2026;）.<br />
+Windows 下使用 wchar<sub>t</sub> 字符串，因此，之前的应用程序将会把他们的 char
+字符串转换成 wchar<sub>t</sub> （当使用类似于 SetWindowText 这种 API 的时候）。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgb28776d" class="outline-3">
-<h3 id="内存问题memory-issues"><span class="section-number-3">3.5</span> 内存问题（Memory issues）</h3>
+<div id="outline-container-内存问题memory-issues" class="outline-3">
+<h3 id="内存问题memory-issues"><span class="section-number-3">3.5.</span> 内存问题（Memory issues）</h3>
 <div class="outline-text-3" id="text-内存问题memory-issues">
 <p>
 UTF-32 每个字符占 4 个字节，因此没什么要添加的。只要 UTF-8 和 UTF-16
@@ -525,8 +502,8 @@ UTF-16 少占用内存。
 </div>
 </div>
 
-<div id="outline-container-org20c8a82" class="outline-3">
-<h3 id="总结"><span class="section-number-3">3.6</span> 总结</h3>
+<div id="outline-container-总结" class="outline-3">
+<h3 id="总结"><span class="section-number-3">3.6.</span> 总结</h3>
 <div class="outline-text-3" id="text-总结">
 <p>
 1、什么时候我应该使用 std::wstring 替代 std::string 呢？
@@ -569,28 +546,28 @@ UTF-16 少占用内存。
 </p>
 
 <p>
-就 C/C++ 来说，wchar_t 是一个比 char 大的字符类型。它用来存储比
+就 C/C++ 来说，wchar<sub>t</sub> 是一个比 char 大的字符类型。它用来存储比
 255（或者是127，依赖于实现&#x2026;） 大的字符。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd2cdb63" class="outline-3">
-<h3 id="解释三"><span class="section-number-3">3.7</span> 解释三</h3>
+<div id="outline-container-解释三" class="outline-3">
+<h3 id="解释三"><span class="section-number-3">3.7.</span> 解释三</h3>
 <div class="outline-text-3" id="text-解释三">
 <p>
 1、当你想要在你的字符串中存储宽字符的时候。这个"宽"依赖于实现。如果我没有记错的话。Visual
 C++ 默认是 16bit ,GCC 的默认值依赖于目标（target）。这里是 32
-位长。请注意 wchar_t（宽字符类型）和 unicode
+位长。请注意 wchar<sub>t</sub>（宽字符类型）和 unicode
 无关。它只不过保证它可以存储最大字符集（本地实现所支持的）的所有成员，最少和
 char 一样。你可以存储 unicode 字符串到 std::string 中，使用 utf-8
 编码。但是我不了解 unicode 的代码点的含义。因此 str.size()
-不能告诉你你字符串中逻辑字符的个数，只是 char 或者 wchar_t 元素存储在
+不能告诉你你字符串中逻辑字符的个数，只是 char 或者 wchar<sub>t</sub> 元素存储在
 string/wstring 中的个数。因此 gtk/glib C++ 包装器的人（wrapper
-folks）已经开发了 Glib::ustring 类可以处理 utf-8. 如果你的 wchar_t 是
+folks）已经开发了 Glib::ustring 类可以处理 utf-8. 如果你的 wchar<sub>t</sub> 是
 32位 长，你可以使用 utf-32 作为 unicode 编码，你可以存储和处理 unicode
 字符串使用 确定性编码（utf-32就是一种确定性编码）。也就意味着你的
-wstring 的 s.size() 函数将会返回正确的 wchar_t 元素个数和逻辑个数。
+wstring 的 s.size() 函数将会返回正确的 wchar<sub>t</sub> 元素个数和逻辑个数。
 </p>
 
 <p>
@@ -618,7 +595,7 @@ UNICODE，因为我一开始就有曲解，我希望以这个帖子作引，让�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-08-26 00:00:00 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2012-08-26 00:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

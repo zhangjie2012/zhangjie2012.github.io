@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:28 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>[译] Docker 和 VM 的区别</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,67 +193,46 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">[译] Docker 和 VM 的区别</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org48b4088">1. 问题</a></li>
-<li><a href="#orgcbfaaf8">2. 答案</a>
+<li><a href="#orgbe3bcb3">1. 问题</a></li>
+<li><a href="#org92a30df">2. 答案</a>
 <ul>
-<li><a href="#orgc88af3e">2.1. by Ken Cochrane</a></li>
-<li><a href="#orge98163f">2.2. by manu97</a></li>
-<li><a href="#org651d951">2.3. by Ashish Bista</a></li>
+<li><a href="#org1779ac9">2.1. by Ken Cochrane</a></li>
+<li><a href="#org13c13a6">2.2. by manu97</a></li>
+<li><a href="#org3e2106b">2.3. by Ashish Bista</a></li>
 </ul>
 </li>
 </ul>
@@ -265,8 +242,8 @@ for the JavaScript code in this tag.
 原帖链接：<a href="https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine">https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine</a>
 </p>
 
-<div id="outline-container-org48b4088" class="outline-2">
-<h2 id="org48b4088"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-orgbe3bcb3" class="outline-2">
+<h2 id="orgbe3bcb3"><span class="section-number-2">1.</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>Docker 是怎么做到提供完整的文件系统和网络环境隔离，但却不那么重量级呢？</li>
@@ -275,12 +252,12 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgcbfaaf8" class="outline-2">
-<h2 id="orgcbfaaf8"><span class="section-number-2">2</span> 答案</h2>
+<div id="outline-container-org92a30df" class="outline-2">
+<h2 id="org92a30df"><span class="section-number-2">2.</span> 答案</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgc88af3e" class="outline-3">
-<h3 id="orgc88af3e"><span class="section-number-3">2.1</span> by <a href="https://stackoverflow.com/users/356788/ken-cochrane">Ken Cochrane</a></h3>
+<div id="outline-container-org1779ac9" class="outline-3">
+<h3 id="org1779ac9"><span class="section-number-3">2.1.</span> by <a href="https://stackoverflow.com/users/356788/ken-cochrane">Ken Cochrane</a></h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Docker 最初使用的是 <a href="https://linuxcontainers.org/">LinuX Containers</a>（LXC），但是后来切换到了 <a href="https://github.com/opencontainers/runc">runC</a>（之前称为 <code>libcontainer</code> ），它可以把同一个操作系统做为运行主机。这就允许它共享宿主机操作系统的资源。此外，它使用分层文件系统（<a href="http://aufs.sourceforge.net/">AuFS</a>）并管理网络。
@@ -359,15 +336,15 @@ Docker 可以将操作系统的快照放到共享镜像中，并且更容易的�
 </div>
 </div>
 
-<div id="outline-container-orge98163f" class="outline-3">
-<h3 id="orge98163f"><span class="section-number-3">2.2</span> by <a href="https://stackoverflow.com/users/2478933/manu97">manu97</a></h3>
+<div id="outline-container-org13c13a6" class="outline-3">
+<h3 id="org13c13a6"><span class="section-number-3">2.2.</span> by <a href="https://stackoverflow.com/users/2478933/manu97">manu97</a></h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 一张图即可说明容器和 VM 的区别：
 </p>
 
 
-<div class="figure">
+<div id="org45e6ffd" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/docker_vs_VM.png" alt="docker_vs_VM.png" />
 </p>
 </div>
@@ -395,8 +372,8 @@ Docker 可以将操作系统的快照放到共享镜像中，并且更容易的�
 </div>
 </div>
 
-<div id="outline-container-org651d951" class="outline-3">
-<h3 id="org651d951"><span class="section-number-3">2.3</span> by <a href="https://stackoverflow.com/users/1166183/ashish-bista">Ashish Bista</a></h3>
+<div id="outline-container-org3e2106b" class="outline-3">
+<h3 id="org3e2106b"><span class="section-number-3">2.3.</span> by <a href="https://stackoverflow.com/users/1166183/ashish-bista">Ashish Bista</a></h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Docker <del>并不是</del> 一项虚拟化技术。它依赖于实际实现基于容器的虚拟化或者操作系统级别的虚拟化工具。早先使用 LXC 驱动，后来迁移到了 libcontainer 现在改名为为 runC。
@@ -451,7 +428,7 @@ Hyper-V 处理创建客户虚拟机操作的虚拟环境，它监管客户系统
 </p>
 
 
-<div class="figure">
+<div id="org5777a1c" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/FS8uzm.png" alt="FS8uzm.png" />
 </p>
 </div>
@@ -469,7 +446,7 @@ Hyper-V 处理创建客户虚拟机操作的虚拟环境，它监管客户系统
 </p>
 
 
-<div class="figure">
+<div id="orge817736" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/oPO6Um.png" alt="oPO6Um.png" />
 </p>
 </div>
@@ -487,7 +464,7 @@ Hyper-V 处理创建客户虚拟机操作的虚拟环境，它监管客户系统
 </p>
 
 
-<div class="figure">
+<div id="orgfebeb1a" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/qTuWpm.png" alt="qTuWpm.png" />
 </p>
 </div>
@@ -591,7 +568,7 @@ Hyper-v 是 Windows 中的本机管理程序。它们还试图利用 Windows 10 
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-12-15 15:01 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2018-12-15 15:01 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

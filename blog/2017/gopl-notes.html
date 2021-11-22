@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 语言圣经学习笔记</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,56 +193,35 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">Go 语言圣经学习笔记</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -381,13 +358,13 @@ Go
 语言圣经（中文版）：<a href="https://legacy.gitbook.com/book/yar999/gopl-zh/details">https://legacy.gitbook.com/book/yar999/gopl-zh/details</a>。
 </p>
 
-<div id="outline-container-org3c8e6af" class="outline-2">
-<h2 id="程序结构"><span class="section-number-2">1</span> 程序结构</h2>
+<div id="outline-container-程序结构" class="outline-2">
+<h2 id="程序结构"><span class="section-number-2">1.</span> 程序结构</h2>
 <div class="outline-text-2" id="text-程序结构">
 </div>
 
-<div id="outline-container-orgbb988d5" class="outline-3">
-<h3 id="声明"><span class="section-number-3">1.1</span> 声明</h3>
+<div id="outline-container-声明" class="outline-3">
+<h3 id="声明"><span class="section-number-3">1.1.</span> 声明</h3>
 <div class="outline-text-3" id="text-声明">
 <p>
 Go 语言主要有四中声明语句:
@@ -402,8 +379,8 @@ Go 语言主要有四中声明语句:
 </div>
 </div>
 
-<div id="outline-container-org63a8caa" class="outline-3">
-<h3 id="变量"><span class="section-number-3">1.2</span> 变量</h3>
+<div id="outline-container-变量" class="outline-3">
+<h3 id="变量"><span class="section-number-3">1.2.</span> 变量</h3>
 <div class="outline-text-3" id="text-变量">
 <p>
 <code>:=</code> 和 <code>=</code> 的区别:
@@ -432,8 +409,8 @@ Go 语言并不是通过使用 var 还是 new
 </div>
 </div>
 
-<div id="outline-container-orgc2be087" class="outline-3">
-<h3 id="赋值"><span class="section-number-3">1.3</span> 赋值</h3>
+<div id="outline-container-赋值" class="outline-3">
+<h3 id="赋值"><span class="section-number-3">1.3.</span> 赋值</h3>
 <div class="outline-text-3" id="text-赋值">
 <p>
 Go 中的递增和递减是「语句」而非表达式，并且只支持后置的方式。比如：=v++=
@@ -446,8 +423,8 @@ Go 支持向 Python 一样元组赋值。和 Python 一样，=_= 用来丢弃不
 </div>
 </div>
 
-<div id="outline-container-orgffdf39a" class="outline-3">
-<h3 id="包和文件"><span class="section-number-3">1.4</span> 包和文件</h3>
+<div id="outline-container-包和文件" class="outline-3">
+<h3 id="包和文件"><span class="section-number-3">1.4.</span> 包和文件</h3>
 <div class="outline-text-3" id="text-包和文件">
 <p>
 包中如果一个名字是大写字母开头的，那么该名字是导出的，否则在包外不可见。
@@ -459,8 +436,8 @@ Go 支持向 Python 一样元组赋值。和 Python 一样，=_= 用来丢弃不
 </div>
 </div>
 
-<div id="outline-container-org2bce864" class="outline-3">
-<h3 id="作用域"><span class="section-number-3">1.5</span> 作用域</h3>
+<div id="outline-container-作用域" class="outline-3">
+<h3 id="作用域"><span class="section-number-3">1.5.</span> 作用域</h3>
 <div class="outline-text-3" id="text-作用域">
 <p>
 不要将作用域和生命周期混为一谈。声明语句的作用域对应的是一个源代码的文本区域；它是一个编译时的属性。一个变量的生命周期是指程序运行时变量存在的有效时间段，在此时间区域内它可以被程序的其他部分引用；是一个运行时的概念。
@@ -473,16 +450,16 @@ Go 支持向 Python 一样元组赋值。和 Python 一样，=_= 用来丢弃不
 </div>
 </div>
 
-<div id="outline-container-orgca60b6f" class="outline-2">
-<h2 id="基础数据类型"><span class="section-number-2">2</span> 基础数据类型</h2>
+<div id="outline-container-基础数据类型" class="outline-2">
+<h2 id="基础数据类型"><span class="section-number-2">2.</span> 基础数据类型</h2>
 <div class="outline-text-2" id="text-基础数据类型">
 <p>
 Go 语言将数据类型分为四类：基础类型、复合类型、引用类型和接口类型。
 </p>
 </div>
 
-<div id="outline-container-org25a231c" class="outline-3">
-<h3 id="整型"><span class="section-number-3">2.1</span> 整型</h3>
+<div id="outline-container-整型" class="outline-3">
+<h3 id="整型"><span class="section-number-3">2.1.</span> 整型</h3>
 <div class="outline-text-3" id="text-整型">
 <p>
 int8, int16, int32, int64 和 uint8, uint16, uint32, uint64 .
@@ -508,8 +485,8 @@ byte 和 uint8 是等价类型，byte
 </div>
 </div>
 
-<div id="outline-container-org65937a7" class="outline-3">
-<h3 id="浮点数"><span class="section-number-3">2.2</span> 浮点数</h3>
+<div id="outline-container-浮点数" class="outline-3">
+<h3 id="浮点数"><span class="section-number-3">2.2.</span> 浮点数</h3>
 <div class="outline-text-3" id="text-浮点数">
 <p>
 float32, float64
@@ -530,8 +507,8 @@ float32 能提供 6 个十进制数的精度，而 float64 则可以提供大约
 </div>
 </div>
 
-<div id="outline-container-org12cd43a" class="outline-3">
-<h3 id="复数"><span class="section-number-3">2.3</span> 复数</h3>
+<div id="outline-container-复数" class="outline-3">
+<h3 id="复数"><span class="section-number-3">2.3.</span> 复数</h3>
 <div class="outline-text-3" id="text-复数">
 <p>
 complex64, complex128 分别对应 float32 和 float64 两种浮点数精度。
@@ -539,8 +516,8 @@ complex64, complex128 分别对应 float32 和 float64 两种浮点数精度。
 </div>
 </div>
 
-<div id="outline-container-orgc3d60fe" class="outline-3">
-<h3 id="布尔值"><span class="section-number-3">2.4</span> 布尔值</h3>
+<div id="outline-container-布尔值" class="outline-3">
+<h3 id="布尔值"><span class="section-number-3">2.4.</span> 布尔值</h3>
 <div class="outline-text-3" id="text-布尔值">
 <p>
 true, false
@@ -552,12 +529,12 @@ bool 不会隐式的转换为 0 或者 1 。
 </div>
 </div>
 
-<div id="outline-container-org1771232" class="outline-3">
-<h3 id="字符串"><span class="section-number-3">2.5</span> 字符串</h3>
+<div id="outline-container-字符串" class="outline-3">
+<h3 id="字符串"><span class="section-number-3">2.5.</span> 字符串</h3>
 <div class="outline-text-3" id="text-字符串">
 <p>
 一个字符串是一个不可改变的字节序列。索引操作返回第 <code>i</code>
-个__字节__的字节值，也就是说第 <code>i</code> 个字节并不是第 <code>i</code> 个字符，因为对于非
+个_<sub>字节</sub>_<sub>的字节值</sub>，也就是说第 <code>i</code> 个字节并不是第 <code>i</code> 个字符，因为对于非
 ASCII 字符的 UTF8 编码需要两个或者多个字节。
 </p>
 
@@ -574,7 +551,7 @@ ASCII 字符的 UTF8 编码需要两个或者多个字节。
 直接按照索引来遍历得到的字节，所以遍历字符串需要借助 <code>range</code> 关键字。
 </p>
 
-<pre class="example">
+<pre class="example" id="org4c19ab3">
 for i, r := range "Hello, 世界" {
     fmt.Printf("%d\t%q\t%d\n", i, r, r)
 }
@@ -584,7 +561,7 @@ for i, r := range "Hello, 世界" {
 统计字符串长度，也需要这样：
 </p>
 
-<pre class="example">
+<pre class="example" id="org2034a24">
 n := 0
 for range s {
     n++
@@ -592,8 +569,8 @@ for range s {
 </pre>
 </div>
 
-<div id="outline-container-orgfb25f01" class="outline-4">
-<h4 id="字符串和-byte-切片"><span class="section-number-4">2.5.1</span> 字符串和 Byte 切片</h4>
+<div id="outline-container-字符串和-byte-切片" class="outline-4">
+<h4 id="字符串和-byte-切片"><span class="section-number-4">2.5.1.</span> 字符串和 Byte 切片</h4>
 <div class="outline-text-4" id="text-字符串和-byte-切片">
 <p>
 标准库中有四个包对字符串处理尤为重要：
@@ -609,8 +586,8 @@ for range s {
 </div>
 </div>
 
-<div id="outline-container-orgc20dd77" class="outline-4">
-<h4 id="常量"><span class="section-number-4">2.5.2</span> 常量</h4>
+<div id="outline-container-常量" class="outline-4">
+<h4 id="常量"><span class="section-number-4">2.5.2.</span> 常量</h4>
 <div class="outline-text-4" id="text-常量">
 <p>
 常量表达式在编译器计算，而不是运行器。每种常量的潜在类型都是基础类型：boolean,
@@ -625,16 +602,16 @@ string 或者 数字。
 </div>
 </div>
 
-<div id="outline-container-orgba30f66" class="outline-2">
-<h2 id="复合数据类型"><span class="section-number-2">3</span> 复合数据类型</h2>
+<div id="outline-container-复合数据类型" class="outline-2">
+<h2 id="复合数据类型"><span class="section-number-2">3.</span> 复合数据类型</h2>
 <div class="outline-text-2" id="text-复合数据类型">
 <p>
 数据、slice、map、结构体
 </p>
 </div>
 
-<div id="outline-container-org148ffe0" class="outline-3">
-<h3 id="数组"><span class="section-number-3">3.1</span> 数组</h3>
+<div id="outline-container-数组" class="outline-3">
+<h3 id="数组"><span class="section-number-3">3.1.</span> 数组</h3>
 <div class="outline-text-3" id="text-数组">
 <p>
 固定长度的特定元素组成的序列，因为数组的长度是固定的，因此 Golang
@@ -646,7 +623,7 @@ string 或者 数字。
 省略号，则表示数组的长度是根据初始化值的个数来计算的。
 </p>
 
-<pre class="example">
+<pre class="example" id="org96d07bd">
 q := [...]int{1, 2, 3}
 </pre>
 
@@ -655,7 +632,7 @@ q := [...]int{1, 2, 3}
 是数组索引，例如：
 </p>
 
-<pre class="example">
+<pre class="example" id="org79555e3">
 r := [...]int{99: -1}
 </pre>
 
@@ -669,8 +646,8 @@ r := [...]int{99: -1}
 </div>
 </div>
 
-<div id="outline-container-orgadcf2b8" class="outline-3">
-<h3 id="slice"><span class="section-number-3">3.2</span> Slice</h3>
+<div id="outline-container-slice" class="outline-3">
+<h3 id="slice"><span class="section-number-3">3.2.</span> Slice</h3>
 <div class="outline-text-3" id="text-slice">
 <p>
 变长的特定类型的序列，声明一般用 <code>[]T</code> 和数组的区别仅在于没有固定长度。
@@ -695,8 +672,8 @@ slice 的底层实现类似 C++ 中的 vector 或者 string 内置了一个容�
 </p>
 </div>
 
-<div id="outline-container-org402823c" class="outline-4">
-<h4 id="append"><span class="section-number-4">3.2.1</span> append</h4>
+<div id="outline-container-append" class="outline-4">
+<h4 id="append"><span class="section-number-4">3.2.1.</span> append</h4>
 <div class="outline-text-4" id="text-append">
 <p>
 append 对 slice 序列进行扩展，每次添加元素并不能知道 append
@@ -713,8 +690,8 @@ slice
 </div>
 </div>
 
-<div id="outline-container-org66bb85b" class="outline-3">
-<h3 id="map"><span class="section-number-3">3.3</span> Map</h3>
+<div id="outline-container-map" class="outline-3">
+<h3 id="map"><span class="section-number-3">3.3.</span> Map</h3>
 <div class="outline-text-3" id="text-map">
 <p>
 哈希表，声明格式为：=map[K]V=，K, V 分别对应 key 和 value 的类型。K
@@ -730,7 +707,7 @@ slice
 可以想 Python 创建 dict 一样创建 Golang 中的 Map：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgf7021fa">
 ages := map[string]int{
     "alice":   31,
     "charlie": 34,
@@ -744,7 +721,7 @@ ages := map[string]int{
 也可以正确的返回值，所以使用时一般需要对返回值进行判断:
 </p>
 
-<pre class="example">
+<pre class="example" id="org9dd3169">
 m := map[string]int
 m["cc"]  // 如果 cc 不存在将返回 0
 _, err := m["cc"] // 如果 cc 不存在，err = false
@@ -759,7 +736,7 @@ map 的元素并不是一个变量，不能对 map 的元素进行取址操作�
 遍历 map 使用 =range=，将得到对应的键/值对。
 </p>
 
-<pre class="example">
+<pre class="example" id="org2a7a0b7">
 for name, age := range ages {
     fmt.Printf("%s\t%d\n", name, age)
 }
@@ -767,8 +744,8 @@ for name, age := range ages {
 </div>
 </div>
 
-<div id="outline-container-orgef2ea7c" class="outline-3">
-<h3 id="结构体"><span class="section-number-3">3.4</span> 结构体</h3>
+<div id="outline-container-结构体" class="outline-3">
+<h3 id="结构体"><span class="section-number-3">3.4.</span> 结构体</h3>
 <div class="outline-text-3" id="text-结构体">
 <p>
 结构体是一种聚合的数据类型，是由零个或者多个任意类型的值聚合成的实体。每个值称为结构体的成员。结构体的成员通过点操作符来访问。
@@ -801,8 +778,8 @@ Go 中的指针也通过点操作符来访问（WTF?）&#x2026;
 </p>
 </div>
 
-<div id="outline-container-orgab5c53c" class="outline-4">
-<h4 id="结构体比较"><span class="section-number-4">3.4.1</span> 结构体比较</h4>
+<div id="outline-container-结构体比较" class="outline-4">
+<h4 id="结构体比较"><span class="section-number-4">3.4.1.</span> 结构体比较</h4>
 <div class="outline-text-4" id="text-结构体比较">
 <p>
 如果结构体中的全部成员都是可以比较的，那么结构体也是可以比较的，这种情况下两个结构体将可以使用
@@ -815,15 +792,15 @@ Go 中的指针也通过点操作符来访问（WTF?）&#x2026;
 </div>
 </div>
 
-<div id="outline-container-org18cbe4c" class="outline-4">
-<h4 id="匿名成员"><span class="section-number-4">3.4.2</span> 匿名成员</h4>
+<div id="outline-container-匿名成员" class="outline-4">
+<h4 id="匿名成员"><span class="section-number-4">3.4.2.</span> 匿名成员</h4>
 <div class="outline-text-4" id="text-匿名成员">
 <p>
 Go
 语言有个特性让我们只声明成员对应的数据类型，而不是指明成员的名字；这类成员就叫匿名成员。
 </p>
 
-<pre class="example">
+<pre class="example" id="orge688bb4">
 type Circle struct {
     Point
     Radius int
@@ -839,7 +816,7 @@ type Wheel struct {
 访问匿名成员可以直接跳过完整路径访问子成员：
 </p>
 
-<pre class="example">
+<pre class="example" id="org8f573df">
 var w Wheel
 w.X = 8            // equivalent to w.Circle.Point.X = 8
 w.Y = 8            // equivalent to w.Circle.Point.Y = 8
@@ -851,7 +828,7 @@ w.Spokes = 20
 但是结构体字面值，并不能这么简单的表示匿名成员，所以下面是错误的：
 </p>
 
-<pre class="example">
+<pre class="example" id="org8f839a3">
 w = Wheel{8, 8, 5, 20}                       // compile error: unknown fields
 w = Wheel{X: 8, Y: 8, Radius: 5, Spokes: 20} // compile error: unknown fields
 </pre>
@@ -860,7 +837,7 @@ w = Wheel{X: 8, Y: 8, Radius: 5, Spokes: 20} // compile error: unknown fields
 必须采用下面这两种语法，它们彼此是等价的：
 </p>
 
-<pre class="example">
+<pre class="example" id="orge402970">
 w = Wheel{Circle{Point{8, 8}, 5}, 20}
 
 w = Wheel{
@@ -879,8 +856,8 @@ w = Wheel{
 </div>
 </div>
 
-<div id="outline-container-orgf5a7d9b" class="outline-3">
-<h3 id="json"><span class="section-number-3">3.5</span> JSON</h3>
+<div id="outline-container-json" class="outline-3">
+<h3 id="json"><span class="section-number-3">3.5.</span> JSON</h3>
 <div class="outline-text-3" id="text-json">
 <p>
 将 Go 语言中结构体转换成 JSON 的过程叫做编组（marshaling）。
@@ -892,8 +869,8 @@ w = Wheel{
 </div>
 </div>
 
-<div id="outline-container-orgf647233" class="outline-3">
-<h3 id="文本和-html-模板"><span class="section-number-3">3.6</span> 文本和 HTML 模板</h3>
+<div id="outline-container-文本和-html-模板" class="outline-3">
+<h3 id="文本和-html-模板"><span class="section-number-3">3.6.</span> 文本和 HTML 模板</h3>
 <div class="outline-text-3" id="text-文本和-html-模板">
 <p>
 类似 Python，模板化生成字符串。
@@ -902,15 +879,15 @@ w = Wheel{
 </div>
 </div>
 
-<div id="outline-container-org1a5f3f1" class="outline-2">
-<h2 id="函数"><span class="section-number-2">4</span> 函数</h2>
+<div id="outline-container-函数" class="outline-2">
+<h2 id="函数"><span class="section-number-2">4.</span> 函数</h2>
 <div class="outline-text-2" id="text-函数">
 </div>
 
-<div id="outline-container-org9c9c802" class="outline-3">
-<h3 id="函数声明"><span class="section-number-3">4.1</span> 函数声明</h3>
+<div id="outline-container-函数声明" class="outline-3">
+<h3 id="函数声明"><span class="section-number-3">4.1.</span> 函数声明</h3>
 <div class="outline-text-3" id="text-函数声明">
-<pre class="example">
+<pre class="example" id="orgd995878">
 func name(parameter-list) (result-list) {
     body
 }
@@ -920,7 +897,7 @@ func name(parameter-list) (result-list) {
 与 C++ 等语言不同的是，Go 的函数返回值可以设置名称，比如：
 </p>
 
-<pre class="example">
+<pre class="example" id="org1571e89">
 func sub(x, y int) (z int)   { z = x - y; return}
 </pre>
 
@@ -940,8 +917,8 @@ Go 语言没有函数默认参数值。
 </div>
 </div>
 
-<div id="outline-container-org69371d8" class="outline-3">
-<h3 id="错误"><span class="section-number-3">4.2</span> 错误</h3>
+<div id="outline-container-错误" class="outline-3">
+<h3 id="错误"><span class="section-number-3">4.2.</span> 错误</h3>
 <div class="outline-text-3" id="text-错误">
 <p>
 Go 内置了 error 接口，用来表示函数运行中的错误，=nil=
@@ -951,8 +928,8 @@ error 的 Error 函数或者输出函数获得字符串类型的错误信息。
 </div>
 </div>
 
-<div id="outline-container-orgdb8a01a" class="outline-3">
-<h3 id="函数值"><span class="section-number-3">4.3</span> 函数值</h3>
+<div id="outline-container-函数值" class="outline-3">
+<h3 id="函数值"><span class="section-number-3">4.3.</span> 函数值</h3>
 <div class="outline-text-3" id="text-函数值">
 <p>
 类似函数指针，函数可以赋值给其它变量，传递给其它函数，从函数函数中返回。
@@ -960,8 +937,8 @@ error 的 Error 函数或者输出函数获得字符串类型的错误信息。
 </div>
 </div>
 
-<div id="outline-container-org01c6463" class="outline-3">
-<h3 id="匿名函数"><span class="section-number-3">4.4</span> 匿名函数</h3>
+<div id="outline-container-匿名函数" class="outline-3">
+<h3 id="匿名函数"><span class="section-number-3">4.4.</span> 匿名函数</h3>
 <div class="outline-text-3" id="text-匿名函数">
 <p>
 Go 使用闭包（closures）技术实现函数值。
@@ -969,8 +946,8 @@ Go 使用闭包（closures）技术实现函数值。
 </div>
 </div>
 
-<div id="outline-container-org88d30cb" class="outline-3">
-<h3 id="deferred-函数"><span class="section-number-3">4.5</span> Deferred 函数</h3>
+<div id="outline-container-deferred-函数" class="outline-3">
+<h3 id="deferred-函数"><span class="section-number-3">4.5.</span> Deferred 函数</h3>
 <div class="outline-text-3" id="text-deferred-函数">
 <ul class="org-ul">
 <li>如果函数中有多个 defer，执行顺序为先进后出，和栈一样；</li>
@@ -980,14 +957,14 @@ defer 表达式声明时变量的值；</li>
 </div>
 </div>
 
-<div id="outline-container-orgcd17f57" class="outline-3">
-<h3 id="panic-异常"><span class="section-number-3">4.6</span> Panic 异常</h3>
+<div id="outline-container-panic-异常" class="outline-3">
+<h3 id="panic-异常"><span class="section-number-3">4.6.</span> Panic 异常</h3>
 <div class="outline-text-3" id="text-panic-异常">
 </div>
 </div>
 
-<div id="outline-container-orgd923720" class="outline-3">
-<h3 id="recover-捕获异常"><span class="section-number-3">4.7</span> Recover 捕获异常</h3>
+<div id="outline-container-recover-捕获异常" class="outline-3">
+<h3 id="recover-捕获异常"><span class="section-number-3">4.7.</span> Recover 捕获异常</h3>
 <div class="outline-text-3" id="text-recover-捕获异常">
 <p>
 Panic 和 Recover 是互相协作的一对机制，panic 会引发程序崩溃，而 recover
@@ -1002,19 +979,19 @@ Panic 和 Recover 是互相协作的一对机制，panic 会引发程序崩溃�
 </div>
 </div>
 
-<div id="outline-container-org8d31661" class="outline-2">
-<h2 id="方法"><span class="section-number-2">5</span> 方法</h2>
+<div id="outline-container-方法" class="outline-2">
+<h2 id="方法"><span class="section-number-2">5.</span> 方法</h2>
 <div class="outline-text-2" id="text-方法">
 </div>
 
-<div id="outline-container-org3ba5534" class="outline-3">
-<h3 id="方法声明"><span class="section-number-3">5.1</span> 方法声明</h3>
+<div id="outline-container-方法声明" class="outline-3">
+<h3 id="方法声明"><span class="section-number-3">5.1.</span> 方法声明</h3>
 <div class="outline-text-3" id="text-方法声明">
 <p>
 在函数声明时，在其名字之前放上一个变量，即是一个方法。这个附加的参数会将函数附加到这种类型上，即相当于为这种类型定义了一个独占的方法。
 </p>
 
-<pre class="example">
+<pre class="example" id="org97bc635">
 package geometry
 
 import "math"
@@ -1038,8 +1015,8 @@ func (p Point) Distance(q Point) float64 {
 </div>
 </div>
 
-<div id="outline-container-org2e25cd4" class="outline-3">
-<h3 id="基于指针对象的方法"><span class="section-number-3">5.2</span> 基于指针对象的方法</h3>
+<div id="outline-container-基于指针对象的方法" class="outline-3">
+<h3 id="基于指针对象的方法"><span class="section-number-3">5.2.</span> 基于指针对象的方法</h3>
 <div class="outline-text-3" id="text-基于指针对象的方法">
 <p>
 当调用函数时，需要更新一个变量或者函数的其中一个参数太大希望能够避免进行默认的拷贝，这种情况下需要使用指针。
@@ -1055,8 +1032,8 @@ Go
 </p>
 </div>
 
-<div id="outline-container-orgd02797f" class="outline-4">
-<h4 id="nil-也是一个合法的接收器类型"><span class="section-number-4">5.2.1</span> Nil 也是一个合法的接收器类型</h4>
+<div id="outline-container-nil-也是一个合法的接收器类型" class="outline-4">
+<h4 id="nil-也是一个合法的接收器类型"><span class="section-number-4">5.2.1.</span> Nil 也是一个合法的接收器类型</h4>
 <div class="outline-text-4" id="text-nil-也是一个合法的接收器类型">
 <p>
 当 nil 对于对象是合法的零值时，比如 map 或者 slice。也就说 nil
@@ -1066,8 +1043,8 @@ Go
 </div>
 </div>
 
-<div id="outline-container-org31ae198" class="outline-3">
-<h3 id="封装"><span class="section-number-3">5.3</span> 封装</h3>
+<div id="outline-container-封装" class="outline-3">
+<h3 id="封装"><span class="section-number-3">5.3.</span> 封装</h3>
 <div class="outline-text-3" id="text-封装">
 <p>
 Go
@@ -1080,13 +1057,13 @@ struct。
 </div>
 </div>
 
-<div id="outline-container-orga04a7f5" class="outline-2">
-<h2 id="接口"><span class="section-number-2">6</span> 接口</h2>
+<div id="outline-container-接口" class="outline-2">
+<h2 id="接口"><span class="section-number-2">6.</span> 接口</h2>
 <div class="outline-text-2" id="text-接口">
 </div>
 
-<div id="outline-container-orgde06071" class="outline-3">
-<h3 id="接口约定"><span class="section-number-3">6.1</span> 接口约定</h3>
+<div id="outline-container-接口约定" class="outline-3">
+<h3 id="接口约定"><span class="section-number-3">6.1.</span> 接口约定</h3>
 <div class="outline-text-3" id="text-接口约定">
 <p>
 接口类型和具体的类型不同在于接口类型只表示他能干什么，而具体的类型表示他是什么。
@@ -1098,7 +1075,7 @@ Go 中的接口不像 Java 中的接口需要显式实现，也不像 C++
 的鸭子类型。它仅仅是一个约定。如下：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgbbec459">
 type Writer interface {
     Write(p []byte) (n int, err error)
 }
@@ -1109,7 +1086,7 @@ type Writer interface {
 =Write(p []byte) (n int, err error)</code> 的方法，便认为满足了约定：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgdba646f">
 type ByteCounter int
 
 func (c *ByteCounter) Write(p []byte) (int, error) {
@@ -1123,8 +1100,8 @@ func (c *ByteCounter) Write(p []byte) (int, error) {
 </p>
 </div>
 
-<div id="outline-container-orgb5dae08" class="outline-4">
-<h4 id="接口类型"><span class="section-number-4">6.1.1</span> 接口类型</h4>
+<div id="outline-container-接口类型" class="outline-4">
+<h4 id="接口类型"><span class="section-number-4">6.1.1.</span> 接口类型</h4>
 <div class="outline-text-4" id="text-接口类型">
 <p>
 接口类型具体描述了一系列方法的集合，一个实现了这些方法的具体类型是这个接口类型的实例。
@@ -1134,7 +1111,7 @@ func (c *ByteCounter) Write(p []byte) (int, error) {
 接口可以组合 -&gt; 接口内嵌：
 </p>
 
-<pre class="example">
+<pre class="example" id="org7bceece">
 package io
 type Reader interface {
     Read(p []byte) (n int, err error)
@@ -1156,8 +1133,8 @@ type ReadWriteCloser interface {
 </div>
 </div>
 
-<div id="outline-container-orge77545b" class="outline-4">
-<h4 id="实现接口的条件"><span class="section-number-4">6.1.2</span> 实现接口的条件</h4>
+<div id="outline-container-实现接口的条件" class="outline-4">
+<h4 id="实现接口的条件"><span class="section-number-4">6.1.2.</span> 实现接口的条件</h4>
 <div class="outline-text-4" id="text-实现接口的条件">
 <p>
 一个类型如果拥有一个接口需要的所有方法，那么这个类型就实现了这个接口。
@@ -1165,14 +1142,14 @@ type ReadWriteCloser interface {
 </div>
 </div>
 
-<div id="outline-container-orga628639" class="outline-4">
-<h4 id="flag.value-接口"><span class="section-number-4">6.1.3</span> flag.Value 接口</h4>
+<div id="outline-container-flag.value-接口" class="outline-4">
+<h4 id="flag.value-接口"><span class="section-number-4">6.1.3.</span> flag.Value 接口</h4>
 <div class="outline-text-4" id="text-flag.value-接口">
 </div>
 </div>
 
-<div id="outline-container-org004cf48" class="outline-4">
-<h4 id="接口值"><span class="section-number-4">6.1.4</span> 接口值</h4>
+<div id="outline-container-接口值" class="outline-4">
+<h4 id="接口值"><span class="section-number-4">6.1.4.</span> 接口值</h4>
 <div class="outline-text-4" id="text-接口值">
 <p>
 概念上讲一个接口的值，接口值，由两个部分组成，一个具体的类型和那个类型的值。它们被称为接口的动态类型和动态值。
@@ -1180,14 +1157,14 @@ type ReadWriteCloser interface {
 </div>
 </div>
 
-<div id="outline-container-orgab5055c" class="outline-4">
-<h4 id="类型断言type-assertions"><span class="section-number-4">6.1.5</span> 类型断言（Type assertions）</h4>
+<div id="outline-container-类型断言type-assertions" class="outline-4">
+<h4 id="类型断言type-assertions"><span class="section-number-4">6.1.5.</span> 类型断言（Type assertions）</h4>
 <div class="outline-text-4" id="text-类型断言type-assertions">
 <p>
 对于接口类型和类型的表达式，语法如下：
 </p>
 
-<pre class="example">
+<pre class="example" id="org1167dfa">
 x.(T)
 </pre>
 
@@ -1210,7 +1187,7 @@ x。如果断言不成立，会引发一个运行时
 panic。换句话说，只有在运行时才能判断 x 的类型。
 </p>
 
-<pre class="example">
+<pre class="example" id="org9a9f54c">
 var x interface{} = 7          // x 的动态类型是 int 并且值为 7
 i := x.(int)                   // i 类型为 int 并且值为 7
 
@@ -1227,7 +1204,7 @@ func f(y I) {
 类型表达式用来赋值或者用个数的形式初始化：
 </p>
 
-<pre class="example">
+<pre class="example" id="org29c568a">
 v, ok = x.(T)
 v, ok := x.(T)
 var v, ok = x.(T)
@@ -1243,8 +1220,8 @@ var v, ok T1 = x.(T)
 </div>
 </div>
 
-<div id="outline-container-orgb9409d2" class="outline-2">
-<h2 id="goroutines-和-channels"><span class="section-number-2">7</span> GoRoutines 和 Channels</h2>
+<div id="outline-container-goroutines-和-channels" class="outline-2">
+<h2 id="goroutines-和-channels"><span class="section-number-2">7.</span> GoRoutines 和 Channels</h2>
 <div class="outline-text-2" id="text-goroutines-和-channels">
 <p>
 Go 语言支持两种并发手段：
@@ -1257,8 +1234,8 @@ processes)</li>
 </ol>
 </div>
 
-<div id="outline-container-orge3145f5" class="outline-3">
-<h3 id="goroutines"><span class="section-number-3">7.1</span> Goroutines</h3>
+<div id="outline-container-goroutines" class="outline-3">
+<h3 id="goroutines"><span class="section-number-3">7.1.</span> Goroutines</h3>
 <div class="outline-text-3" id="text-goroutines">
 <p>
 在 Go 语言中，每一个并发的执行单元叫作一个 goroutine。
@@ -1271,15 +1248,15 @@ goroutine。新的 goroutine 用 go 语句来创建。
 </div>
 </div>
 
-<div id="outline-container-org5780519" class="outline-3">
-<h3 id="channels"><span class="section-number-3">7.2</span> channels</h3>
+<div id="outline-container-channels" class="outline-3">
+<h3 id="channels"><span class="section-number-3">7.2.</span> channels</h3>
 <div class="outline-text-3" id="text-channels">
 <p>
 channels 是 goroutine 之间的通信机制：一个 goroutine 通过它给另一个
 goroutine 发送值信息。每个 channel 都有一个特殊的类型。
 </p>
 
-<pre class="example">
+<pre class="example" id="orgc5bc160">
 ch := make(chan int) // ch has type 'chan int'
 </pre>
 
@@ -1288,7 +1265,7 @@ ch := make(chan int) // ch has type 'chan int'
 运算符，WTF? 还不如两个方法来的实在：
 </p>
 
-<pre class="example">
+<pre class="example" id="orgab27c03">
 ch &lt;- x  // a send statement
 x = &lt;-ch // a receive expression in an assignment statement
 &lt;-ch     // a receive statement; result is discarded
@@ -1304,8 +1281,8 @@ channel 可以带缓存。
 </p>
 </div>
 
-<div id="outline-container-org5b7954b" class="outline-4">
-<h4 id="不带缓存的-channels"><span class="section-number-4">7.2.1</span> 不带缓存的 Channels</h4>
+<div id="outline-container-不带缓存的-channels" class="outline-4">
+<h4 id="不带缓存的-channels"><span class="section-number-4">7.2.1.</span> 不带缓存的 Channels</h4>
 <div class="outline-text-4" id="text-不带缓存的-channels">
 <p>
 不带缓存的 Channels 的发送操作将导致发送者 goroutine 阻塞，直到另一个
@@ -1317,8 +1294,8 @@ goroutine 在相同的 Channels 上之行接受操作。当发送的值通过 Ch
 </div>
 </div>
 
-<div id="outline-container-org560d47c" class="outline-4">
-<h4 id="串联的-channelspipeline"><span class="section-number-4">7.2.2</span> 串联的 Channels（Pipeline）</h4>
+<div id="outline-container-串联的-channelspipeline" class="outline-4">
+<h4 id="串联的-channelspipeline"><span class="section-number-4">7.2.2.</span> 串联的 Channels（Pipeline）</h4>
 <div class="outline-text-4" id="text-串联的-channelspipeline">
 <p>
 Channels 也可以将多个 goroutine 链接在一起，一个 Channels
@@ -1327,8 +1304,8 @@ Channels 也可以将多个 goroutine 链接在一起，一个 Channels
 </div>
 </div>
 
-<div id="outline-container-org69898ee" class="outline-4">
-<h4 id="单方向的-channel"><span class="section-number-4">7.2.3</span> 单方向的 Channel</h4>
+<div id="outline-container-单方向的-channel" class="outline-4">
+<h4 id="单方向的-channel"><span class="section-number-4">7.2.3.</span> 单方向的 Channel</h4>
 <div class="outline-text-4" id="text-单方向的-channel">
 <p>
 Go 语言类型系统提供了单方向的 channel 类型，分别用于只发送或只接受
@@ -1337,7 +1314,7 @@ channel，只能发送不能接受；相反，类型 <code>&lt;-chan int</code> 
 channel，不能发送。
 </p>
 
-<pre class="example">
+<pre class="example" id="orgef9fce7">
 chan T          // 能发送和接受 T 类型
 chan&lt;- float64  // 只能用来发送 float64
 &lt;-chan int      // 只能用来接受 int
@@ -1345,15 +1322,15 @@ chan&lt;- float64  // 只能用来发送 float64
 </div>
 </div>
 
-<div id="outline-container-org73f9af3" class="outline-4">
-<h4 id="带缓存的-channels"><span class="section-number-4">7.2.4</span> 带缓存的 Channels</h4>
+<div id="outline-container-带缓存的-channels" class="outline-4">
+<h4 id="带缓存的-channels"><span class="section-number-4">7.2.4.</span> 带缓存的 Channels</h4>
 <div class="outline-text-4" id="text-带缓存的-channels">
 <p>
 带缓存的 Channel 内部持有一个元素队列。队列的最大容量是在调用 make
 函数创建 channel 时通过第二个参数指定的。
 </p>
 
-<pre class="example">
+<pre class="example" id="orgbb5537b">
 ch = make(chan string, 3)
 </pre>
 
@@ -1376,8 +1353,8 @@ channel，这些操作是解耦的。同样，即使我们知道将要发送到�
 </div>
 </div>
 
-<div id="outline-container-org7233b18" class="outline-4">
-<h4 id="并发的退出"><span class="section-number-4">7.2.5</span> 并发的退出</h4>
+<div id="outline-container-并发的退出" class="outline-4">
+<h4 id="并发的退出"><span class="section-number-4">7.2.5.</span> 并发的退出</h4>
 <div class="outline-text-4" id="text-并发的退出">
 <p>
 Go 语言并没有提供一个 goroutine 中终止另外一个 goroutine 的方法。
@@ -1387,13 +1364,13 @@ Go 语言并没有提供一个 goroutine 中终止另外一个 goroutine 的方�
 </div>
 </div>
 
-<div id="outline-container-org442e842" class="outline-2">
-<h2 id="基于共享变量的并发"><span class="section-number-2">8</span> 基于共享变量的并发</h2>
+<div id="outline-container-基于共享变量的并发" class="outline-2">
+<h2 id="基于共享变量的并发"><span class="section-number-2">8.</span> 基于共享变量的并发</h2>
 <div class="outline-text-2" id="text-基于共享变量的并发">
 </div>
 
-<div id="outline-container-orgeee02b0" class="outline-3">
-<h3 id="竞争条件"><span class="section-number-3">8.1</span> 竞争条件</h3>
+<div id="outline-container-竞争条件" class="outline-3">
+<h3 id="竞争条件"><span class="section-number-3">8.1.</span> 竞争条件</h3>
 <div class="outline-text-3" id="text-竞争条件">
 <p>
 竞争条件是指程序在多个 goroutine 交叉执行操作时，没有给出正确的结果。
@@ -1406,8 +1383,8 @@ Go 语言并没有提供一个 goroutine 中终止另外一个 goroutine 的方�
 </div>
 </div>
 
-<div id="outline-container-orgb6237eb" class="outline-3">
-<h3 id="sync.mutex-互斥锁"><span class="section-number-3">8.2</span> sync.Mutex 互斥锁</h3>
+<div id="outline-container-sync.mutex-互斥锁" class="outline-3">
+<h3 id="sync.mutex-互斥锁"><span class="section-number-3">8.2.</span> sync.Mutex 互斥锁</h3>
 <div class="outline-text-3" id="text-sync.mutex-互斥锁">
 <p>
 Go 提供了互斥量 Mutex ，并且为之提供了 <code>Lock()</code> 和 <code>UnLock()</code>
@@ -1416,8 +1393,8 @@ Go 提供了互斥量 Mutex ，并且为之提供了 <code>Lock()</code> 和 <co
 </div>
 </div>
 
-<div id="outline-container-org13243e5" class="outline-3">
-<h3 id="sync.rwmutex读写锁"><span class="section-number-3">8.3</span> sync.RWMutex读写锁</h3>
+<div id="outline-container-sync.rwmutex读写锁" class="outline-3">
+<h3 id="sync.rwmutex读写锁"><span class="section-number-3">8.3.</span> sync.RWMutex读写锁</h3>
 <div class="outline-text-3" id="text-sync.rwmutex读写锁">
 <p>
 读写互斥锁（Mutex）在读的时候也会「加锁」，但是对于读频次远大于写频次的情况下，这样性能会比较差，因为大家都是在读，不修改值，没有必要强制限制。所以需要共享锁。
@@ -1430,14 +1407,14 @@ Go 提供了互斥量 Mutex ，并且为之提供了 <code>Lock()</code> 和 <co
 </div>
 </div>
 
-<div id="outline-container-org1c3f67e" class="outline-3">
-<h3 id="内存同步"><span class="section-number-3">8.4</span> 内存同步</h3>
+<div id="outline-container-内存同步" class="outline-3">
+<h3 id="内存同步"><span class="section-number-3">8.4.</span> 内存同步</h3>
 <div class="outline-text-3" id="text-内存同步">
 </div>
 </div>
 
-<div id="outline-container-org3f01a54" class="outline-3">
-<h3 id="sync.once-初始化"><span class="section-number-3">8.5</span> sync.Once 初始化</h3>
+<div id="outline-container-sync.once-初始化" class="outline-3">
+<h3 id="sync.once-初始化"><span class="section-number-3">8.5.</span> sync.Once 初始化</h3>
 <div class="outline-text-3" id="text-sync.once-初始化">
 <p>
 如果初始化成本比较大的话，那么将初始化延迟到需要的时候再做就是一个比较好的选择。因为在程序启动时做初始化会增加程序启动时间并且因为执行的时候可能也不需要这些变量，所以实际上有一些浪费。
@@ -1448,7 +1425,7 @@ Go 提供了互斥量 Mutex ，并且为之提供了 <code>Lock()</code> 和 <co
 包提供了专门的方案来解决一次性初始化的问题：=sync.Once=。
 </p>
 
-<pre class="example">
+<pre class="example" id="orga17e048">
 var loadIconsOnce sync.Once
 var icons map[string]image.Image
 // Concurrency-safe.
@@ -1460,8 +1437,8 @@ func Icon(name string) image.Image {
 </div>
 </div>
 
-<div id="outline-container-orge51905a" class="outline-3">
-<h3 id="竞争条件检测"><span class="section-number-3">8.6</span> 竞争条件检测</h3>
+<div id="outline-container-竞争条件检测" class="outline-3">
+<h3 id="竞争条件检测"><span class="section-number-3">8.6.</span> 竞争条件检测</h3>
 <div class="outline-text-3" id="text-竞争条件检测">
 <p>
 只要在go build，go run或者go
@@ -1470,13 +1447,13 @@ test命令后面加上-race的flag，就会使编译器创建一个你的应用�
 </div>
 </div>
 
-<div id="outline-container-orga4d708b" class="outline-3">
-<h3 id="goroutines-和-线程"><span class="section-number-3">8.7</span> Goroutines 和 线程</h3>
+<div id="outline-container-goroutines-和-线程" class="outline-3">
+<h3 id="goroutines-和-线程"><span class="section-number-3">8.7.</span> Goroutines 和 线程</h3>
 <div class="outline-text-3" id="text-goroutines-和-线程">
 </div>
 
-<div id="outline-container-org65ec420" class="outline-4">
-<h4 id="动态栈"><span class="section-number-4">8.7.1</span> 动态栈</h4>
+<div id="outline-container-动态栈" class="outline-4">
+<h4 id="动态栈"><span class="section-number-4">8.7.1.</span> 动态栈</h4>
 <div class="outline-text-4" id="text-动态栈">
 <p>
 每一个OS线程都有一个固定大小的内存块(一般会是2MB)来做栈，这个栈会用来存储当前正在被调用或挂起(指在调用其它函数时)的函数的内部变量。
@@ -1495,8 +1472,8 @@ OS 线程不太一样的是一个 goroutine
 </div>
 </div>
 
-<div id="outline-container-orgc5caa55" class="outline-4">
-<h4 id="调度"><span class="section-number-4">8.7.2</span> 调度</h4>
+<div id="outline-container-调度" class="outline-4">
+<h4 id="调度"><span class="section-number-4">8.7.2.</span> 调度</h4>
 <div class="outline-text-4" id="text-调度">
 <p>
 OS
@@ -1515,8 +1492,8 @@ Go的运行时包含了其自己的调度器，这个调度器使用了一些技
 </div>
 </div>
 
-<div id="outline-container-org6893cc2" class="outline-4">
-<h4 id="gomaxprocs"><span class="section-number-4">8.7.3</span> GOMAXPROCS</h4>
+<div id="outline-container-gomaxprocs" class="outline-4">
+<h4 id="gomaxprocs"><span class="section-number-4">8.7.3.</span> GOMAXPROCS</h4>
 <div class="outline-text-4" id="text-gomaxprocs">
 <p>
 Go的调度器使用了一个叫做GOMAXPROCS的变量来决定会有多少个操作系统的线程同时执行Go的代码。其默认的值是运行机器上的CPU的核心数。
@@ -1524,8 +1501,8 @@ Go的调度器使用了一个叫做GOMAXPROCS的变量来决定会有多少个�
 </div>
 </div>
 
-<div id="outline-container-org523f2ea" class="outline-4">
-<h4 id="goroutine没有id号"><span class="section-number-4">8.7.4</span> Goroutine没有ID号</h4>
+<div id="outline-container-goroutine没有id号" class="outline-4">
+<h4 id="goroutine没有id号"><span class="section-number-4">8.7.4.</span> Goroutine没有ID号</h4>
 <div class="outline-text-4" id="text-goroutine没有id号">
 <p>
 在支持多线程的程序设计语言中，一般当前线程都会有一个独特的
@@ -1540,23 +1517,23 @@ goroutine 没有被程序员获取 ID 的概念。
 </div>
 </div>
 
-<div id="outline-container-org13d1e54" class="outline-2">
-<h2 id="包和工具"><span class="section-number-2">9</span> 包和工具</h2>
+<div id="outline-container-包和工具" class="outline-2">
+<h2 id="包和工具"><span class="section-number-2">9.</span> 包和工具</h2>
 <div class="outline-text-2" id="text-包和工具">
 <p>
 Go 语言有超过 100 个标准包，可以通过 <a href="https://godoc.org/">https://godoc.org/</a> 进行检索。
 </p>
 </div>
 
-<div id="outline-container-orgfd1aa48" class="outline-3">
-<h3 id="导入声明"><span class="section-number-3">9.1</span> 导入声明</h3>
+<div id="outline-container-导入声明" class="outline-3">
+<h3 id="导入声明"><span class="section-number-3">9.1.</span> 导入声明</h3>
 <div class="outline-text-3" id="text-导入声明">
 <p>
 当导入的两个包有着相同的名字，比如 <code>math/rand</code> 和 <code>crypto/rand</code>
 包，那么导入声明必须要至少为一个同包指定一个新的包名以避免冲突，这称之为导入包的重命名：
 </p>
 
-<pre class="example">
+<pre class="example" id="orga366734">
 import (
     "crypto/rand"
     mrand "math/rand" // alternative name mrand avoids conflict
@@ -1569,22 +1546,22 @@ import (
 </div>
 </div>
 
-<div id="outline-container-orgbf091b3" class="outline-3">
-<h3 id="包的匿名导入"><span class="section-number-3">9.2</span> 包的匿名导入</h3>
+<div id="outline-container-包的匿名导入" class="outline-3">
+<h3 id="包的匿名导入"><span class="section-number-3">9.2.</span> 包的匿名导入</h3>
 <div class="outline-text-3" id="text-包的匿名导入">
 <p>
 如果只是导入包而不使用将会导致的一个编译错误，但是有时候我们想利用导入包而产生的副作用：它会计算包级别变量的初始化表达式和之行导入包的
 <code>init</code> 初始化函数。Go 提供了匿名导入方法。
 </p>
 
-<pre class="example">
+<pre class="example" id="orgc03b79d">
 import _ "image/png" // register PNG decoder
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org3bf6ea9" class="outline-3">
-<h3 id="包和命名"><span class="section-number-3">9.3</span> 包和命名</h3>
+<div id="outline-container-包和命名" class="outline-3">
+<h3 id="包和命名"><span class="section-number-3">9.3.</span> 包和命名</h3>
 <div class="outline-text-3" id="text-包和命名">
 <p>
 包名一般采用单数的形式。
@@ -1592,15 +1569,15 @@ import _ "image/png" // register PNG decoder
 </div>
 </div>
 
-<div id="outline-container-orgf744e2c" class="outline-3">
-<h3 id="工具"><span class="section-number-3">9.4</span> 工具</h3>
+<div id="outline-container-工具" class="outline-3">
+<h3 id="工具"><span class="section-number-3">9.4.</span> 工具</h3>
 <div class="outline-text-3" id="text-工具">
 <p>
 Go
 语言工具箱集合了一系列的功能命令集。可以看作是一个包管理器，用来做包的查询、计算的包依赖关系、从远程版本控制系统和下载它们等任务。它也是一个构建系统，计算文件的依赖关系，然后调用编译器、汇编器和连接器构建程序。
 </p>
 
-<pre class="example">
+<pre class="example" id="org00e3633">
 Go is a tool for managing Go source code.
 
 Usage:
@@ -1644,8 +1621,8 @@ Use "go help [topic]" for more information about that topic.
 </pre>
 </div>
 
-<div id="outline-container-org1f2b6e9" class="outline-4">
-<h4 id="工作区结构"><span class="section-number-4">9.4.1</span> 工作区结构</h4>
+<div id="outline-container-工作区结构" class="outline-4">
+<h4 id="工作区结构"><span class="section-number-4">9.4.1.</span> 工作区结构</h4>
 <div class="outline-text-4" id="text-工作区结构">
 <p>
 对于 Go 语言用户，Go 的工作区通过 GOPATH 来指定，切换工作区只需要更新
@@ -1674,8 +1651,8 @@ GOPATH 即可。
 </div>
 </div>
 
-<div id="outline-container-org58356cf" class="outline-4">
-<h4 id="下载包"><span class="section-number-4">9.4.2</span> 下载包</h4>
+<div id="outline-container-下载包" class="outline-4">
+<h4 id="下载包"><span class="section-number-4">9.4.2.</span> 下载包</h4>
 <div class="outline-text-4" id="text-下载包">
 <p>
 使用命令 <code>go get</code> 可以下载一个单一的包或者用 <code>...</code>
@@ -1697,8 +1674,8 @@ GOPATH 即可。
 </div>
 </div>
 
-<div id="outline-container-org79012d2" class="outline-4">
-<h4 id="构建包"><span class="section-number-4">9.4.3</span> 构建包</h4>
+<div id="outline-container-构建包" class="outline-4">
+<h4 id="构建包"><span class="section-number-4">9.4.3.</span> 构建包</h4>
 <div class="outline-text-4" id="text-构建包">
 <p>
 <code>go build</code> 命令编译命令行参数指定的每个包。如果包的名字是
@@ -1722,7 +1699,7 @@ GOPATH 即可。
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2017-12-07 14:14:44 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2017-12-07 14:14:44 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>

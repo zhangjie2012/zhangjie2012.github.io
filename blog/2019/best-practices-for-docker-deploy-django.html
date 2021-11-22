@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-20 Thu 15:12 -->
+<!-- 2021-11-22 Mon 16:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>使用 Docker 部署 Django Web server 最佳实践</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -42,7 +40,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +52,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,66 +193,45 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
 <h1 class="title">使用 Docker 部署 Django Web server 最佳实践</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgee7ee58">1. 使用 Supervisor</a></li>
-<li><a href="#org6119deb">2. 服务参数传递</a></li>
-<li><a href="#org436abb1">3. 设置 bind mounts</a></li>
-<li><a href="#org61c3f11">4. 将 migrate 在启动脚本中执行</a></li>
-<li><a href="#org720c2af">5. 对上篇文章的纠正</a></li>
+<li><a href="#org7578a91">1. 使用 Supervisor</a></li>
+<li><a href="#org678c956">2. 服务参数传递</a></li>
+<li><a href="#orgc49f9d0">3. 设置 bind mounts</a></li>
+<li><a href="#orgaa4fd61">4. 将 migrate 在启动脚本中执行</a></li>
+<li><a href="#org7be9d22">5. 对上篇文章的纠正</a></li>
 </ul>
 </div>
 </div>
@@ -262,8 +239,8 @@ for the JavaScript code in this tag.
 2018 年 9 月 8 日，我写了 <a href="../2018/docker-run-django-project.html">Docker 运行 Django 项目</a>，随着自己对 Docker 的更深一步了解，以及在 [qwerty](<a href="https://github.com/zhangjie2012/qwerty">https://github.com/zhangjie2012/qwerty</a>) 项目中的实践，感觉之前写的略有不足。这篇文章进行一定的补充说明。
 </p>
 
-<div id="outline-container-orgee7ee58" class="outline-2">
-<h2 id="orgee7ee58"><span class="section-number-2">1</span> 使用 Supervisor</h2>
+<div id="outline-container-org7578a91" class="outline-2">
+<h2 id="org7578a91"><span class="section-number-2">1.</span> 使用 Supervisor</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 在虚拟机上部署 Django 项目，一般使用的是 uwsgi，但是在容器中运行的服务必须有一个前台进程，所以在之前的文章中去掉了 uwsgi 的 <code>daemonize2</code> 选项，uwsgi 日志相关的配置也都删除了（因为要跑到前台），所以 uwsgi 的日志相当于是打在了标准输出上。
@@ -286,8 +263,8 @@ command = /usr/local/bin/uwsgi --ini /code/uwsgi.ini
 </div>
 </div>
 
-<div id="outline-container-org6119deb" class="outline-2">
-<h2 id="org6119deb"><span class="section-number-2">2</span> 服务参数传递</h2>
+<div id="outline-container-org678c956" class="outline-2">
+<h2 id="org678c956"><span class="section-number-2">2.</span> 服务参数传递</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Web 服务会有一些参数要设置，比如 DB，缓存的地址、账号、密码等，以及日志的输出路径等等，Docker 部署时建议可变参数已环境变量（ <code>--env</code> ）的方式注入，但是实际操作中发现服务配置项往往与预期的要多，使用环境的方式启动命令会很长，很容易搞错，不容易维护。
@@ -296,8 +273,8 @@ Web 服务会有一些参数要设置，比如 DB，缓存的地址、账号、�
 </div>
 </div>
 
-<div id="outline-container-org436abb1" class="outline-2">
-<h2 id="org436abb1"><span class="section-number-2">3</span> 设置 bind mounts</h2>
+<div id="outline-container-orgc49f9d0" class="outline-2">
+<h2 id="orgc49f9d0"><span class="section-number-2">3.</span> 设置 bind mounts</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 一些需要落地宿主机的文件，最常见的为服务日志，使用 bind mounts（ <code>--mounts</code> ）日志目录映射到宿主机（按照固定的目录规则，也方面后期日志收集），上面所有的服务配置文件也可以 mount 到容器中；
@@ -305,8 +282,8 @@ Web 服务会有一些参数要设置，比如 DB，缓存的地址、账号、�
 </div>
 </div>
 
-<div id="outline-container-org61c3f11" class="outline-2">
-<h2 id="org61c3f11"><span class="section-number-2">4</span> 将 migrate 在启动脚本中执行</h2>
+<div id="outline-container-orgaa4fd61" class="outline-2">
+<h2 id="orgaa4fd61"><span class="section-number-2">4.</span> 将 migrate 在启动脚本中执行</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 使用 Django 经常会需要 <code>migrate</code> ，在容器启动后，手动进入容器中执行 <code>migrate</code> 非常麻烦。好在 Dockerfile 中的 <code>ENTRYPOINT~，~CMD</code> 运行直接指定一个启动脚本，以应对复杂的服务启动。
@@ -315,8 +292,8 @@ Web 服务会有一些参数要设置，比如 DB，缓存的地址、账号、�
 </div>
 </div>
 
-<div id="outline-container-org720c2af" class="outline-2">
-<h2 id="org720c2af"><span class="section-number-2">5</span> 对上篇文章的纠正</h2>
+<div id="outline-container-org7be9d22" class="outline-2">
+<h2 id="org7be9d22"><span class="section-number-2">5.</span> 对上篇文章的纠正</h2>
 <div class="outline-text-2" id="text-5">
 <ol class="org-ol">
 <li>使用 <code>--network</code> 而不是 <code>--link</code> ， <code>--link</code> 将被 Docker 废弃，network 的方式功能更强大，也比 <code>--link</code> 好用，具体见：<a href="https://docs.docker.com/network/links/">Legacy container links</a>；</li>
@@ -330,7 +307,7 @@ Web 服务会有一些参数要设置，比如 DB，缓存的地址、账号、�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-03-03 15:13 <br />Last updated: 2020-08-10 Mon 14:36 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.2 (<a href="https://orgmode.org">Org</a> mode 9.1.9)</p>
+<p class="postamble">First created: 2019-03-03 15:13 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
 </div>
 </body>
 </html>
