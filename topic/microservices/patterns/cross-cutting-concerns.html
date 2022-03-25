@@ -6,9 +6,8 @@
 <!-- 2022-03-25 Fri 17:55 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>sed</title>
+<title>横向关注（cross-cutting concerns）</title>
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
   #content { max-width: 60em; margin: auto; }
@@ -194,79 +193,69 @@
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script>
-// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-     function CodeHighlightOn(elem, id)
-     {
-       var target = document.getElementById(id);
-       if(null != target) {
-         elem.classList.add("code-highlighted");
-         target.classList.add("code-highlighted");
-       }
-     }
-     function CodeHighlightOff(elem, id)
-     {
-       var target = document.getElementById(id);
-       if(null != target) {
-         elem.classList.remove("code-highlighted");
-         target.classList.remove("code-highlighted");
-       }
-     }
-// @license-end
-</script>
 </head>
 <body>
-<div id="content" class="content">
-<h1 class="title">sed</h1>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href=""> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content" class="content">
+<h1 class="title">横向关注（cross-cutting concerns）</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org05796bb">1. 微服务底座（Microservice chassis）</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org05796bb" class="outline-2">
+<h2 id="org05796bb"><span class="section-number-2">1.</span> 微服务底座（Microservice chassis）</h2>
+<div class="outline-text-2" id="text-1">
 <p>
-<b>sed, a stream editor</b>
+当开始开发应用程序的时候，通常会花费大量的精力来编写并建立机制来处理一些横向的事情。比如说自动化打包构建测试等脚本。表面
+上看简单，其实很有挑战性。
 </p>
 
 <p>
-使用举例:
+除了构建之外，你还要处理的横向事情，跨领域的例子包括：
 </p>
 
 <ul class="org-ul">
-<li>首处替换: <code>sed 's/text/replace_text/' file // 替换每一行的第一处匹配的 text</code></li>
-<li>全局替换: <code>sed 's/text/replace_text/g' file</code></li>
-<li>默认替换后，输出替换后的内容，如果需要直接替换原文件, 使用 -i : <code>sed -i 's/text/repalce_text/g' file</code></li>
-<li>移除空白行: <code>sed '/^$/d' file</code></li>
-<li><p>
-变量转换: 已匹配的字符串通过标记 &amp; 来引用.
-</p>
-<pre class="example">
-echo this is en example | sed 's/\w+/[&amp;]/g'
-$&gt;[this]  [is] [en] [example]
-</pre></li>
-<li>子串匹配标记, 第一个匹配的括号内容使用标记 1 来引用 <code>sed 's/hello\([0-9]\)/\1/'</code></li>
-<li><p>
-双引号求值，sed 通常用单引号来引用；也可使用双引号，使用双引号后，双引号会对表达式求值，当使用双引号时，我们可以在sed样式和替换字符串中指定变量；
-</p>
-<pre class="example">
-eg:
-p=patten
-r=replaced
-echo "line con a patten" | sed "s/$p/$r/g"
-$&gt;line con a replaced
-</pre></li>
-<li>字符串插入字符：将文本中每行内容（ABCDEF） 转换为 ABC/DEF: <code>sed 's/^.\{3\}/&amp;\//g' file</code></li>
+<li>安全 - 比如，REST APIs 安全需要 Access Token</li>
+<li>外部配置化 - 包括证书，以及外部服务的网络位置，比如数据库和消息代理</li>
+<li>日志 - 日志框架配置，比如 log4j 和 logback</li>
+<li>健康检测 - ping url 来判定服务健康</li>
+<li>指标（Metrics） - 服务运行情况的度量</li>
+<li>分布式跟踪 - 为每一次外部请求分配一个服务之间传递的唯一标识符来检测服务</li>
 </ul>
 
 <p>
-官方文档: <a href="https://www.gnu.org/software/sed/manual/sed.html">https://www.gnu.org/software/sed/manual/sed.html</a>
+一种解决方法是创建一个服务模板（Service Template），每次都从这份模板拷贝一份代码。不足是：不太方便，每次要做一些更改。
 </p>
 
 <p>
-Mac 的 sed 和 Linux 不同，直接安装 gnu-sed <code>brew install gnu-sed</code> 然后 <code>alias sed=gsed</code> 。
+另外一种方法是创建一个微服务底座框架：
 </p>
 
+<ul class="org-ul">
+<li>构建和测试服务的可重用构建逻辑。例如，这包括 Gradle 插件</li>
+<li>处理好横向问题，底座通常组装和配置实现此功能的框架和库的集合</li>
+</ul>
+
 <p>
-配合 find : <code>find ./ -name "*.go" sed -i 's/aaa/bbb/g' {} \;</code>
+底座范例：
 </p>
+<ul class="org-ul">
+<li>Java：SpringBoot 和 SprintCloud，<a href="https://www.dropwizard.io/en/latest/">Dropwizard</a></li>
+<li>Go：<a href="https://github.com/nytimes/gizmo">gizmo</a>（2021 年进入维护状态）、<a href="https://micro.dev/">micro</a>、<a href="https://github.com/go-kit/kit">go-kit</a></li>
+</ul>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2017-12-04 11:37:43 <br />Last updated: 2022-02-22 Tue 22:43 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.5.2)</p>
+<p class="postamble">First created:  <br />Last updated: 2022-03-09 Wed 14:45 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.5.2)</p>
 </div>
 </body>
 </html>

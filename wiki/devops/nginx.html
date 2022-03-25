@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:41 -->
+<!-- 2022-03-25 Fri 17:55 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>nginx</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -193,12 +193,10 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
-  /*]]>*/-->
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,16 +213,15 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">nginx</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#org1d62de2">1. Basic Auth</a></li>
 <li><a href="#org775a706">2. FAQ</a>
@@ -244,10 +241,10 @@
 使用「HTTP Basic Authentication」协议做简单的账户名和密码认证。配置如下：
 </p>
 
-<pre class="example" id="org5cfb6c6">
+<pre class="example" id="orgab38975">
 location / {
-	auth_basic           "closed site";
-	auth_basic_user_file conf/htpasswd;
+    auth_basic           "closed site";
+    auth_basic_user_file conf/htpasswd;
 }
 </pre>
 
@@ -263,7 +260,7 @@ location / {
 htpasswd 是 HTTPD 工具集的一部分，所以要先安装：
 </p>
 
-<pre class="example" id="orgdab76f4">
+<pre class="example" id="org5aecf1f">
 yum install -y httpd-tools
 </pre>
 
@@ -271,7 +268,7 @@ yum install -y httpd-tools
 生成认证凭据，
 </p>
 
-<pre class="example" id="org5aceafc">
+<pre class="example" id="orgb1b99f7">
 htpasswd -c /etc/nginx/.htpasswd admin
 </pre>
 
@@ -279,7 +276,7 @@ htpasswd -c /etc/nginx/.htpasswd admin
 <code>/etc/nginx/.htpasswd</code> 是凭据文件位置， <code>admin</code> 是用户名，执行时会提示输入密码，文件内容类似这样：
 </p>
 
-<pre class="example" id="org59eef57">
+<pre class="example" id="org23d07d6">
 # /etc/nginx/.htpasswd
 admin:$apr1$z2.a8U.c$DGsdj6MGmnfnQOwF3mWaE0
 </pre>
@@ -298,7 +295,7 @@ admin:$apr1$z2.a8U.c$DGsdj6MGmnfnQOwF3mWaE0
 <h3 id="orgbd8a6aa"><span class="section-number-3">2.1.</span> http header 包含下划线会被忽略？</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
-有效的 http Header 命名规范是英文字母，数字和中划线，可能包含下划线。下划线被 <code>underscores_in_headers</code> 控制，默认是关闭的状态。<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
+有效的 http Header 命名规范是英文字母，数字和中划线，可能包含下划线。下划线被 <code>underscores_in_headers</code> 控制，默认是关闭的状态。<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
 </p>
 </div>
 </div>
@@ -307,7 +304,7 @@ admin:$apr1$z2.a8U.c$DGsdj6MGmnfnQOwF3mWaE0
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#ignore_invalid_headers">http://nginx.org/en/docs/http/ngx_http_core_module.html#ignore_invalid_headers</a>
 </p></div></div>
 
@@ -315,7 +312,7 @@ admin:$apr1$z2.a8U.c$DGsdj6MGmnfnQOwF3mWaE0
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-06-02 17:28:48 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2019-06-02 17:28:48 <br />Last updated: 2022-03-11 Fri 10:30 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.5.2)</p>
 </div>
 </body>
 </html>

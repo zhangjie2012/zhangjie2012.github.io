@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:41 -->
+<!-- 2022-03-25 Fri 17:55 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>云原生</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -193,12 +193,10 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
-  /*]]>*/-->
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,16 +213,15 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">云原生</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#org339bc7b">1. 定义</a></li>
 <li><a href="#org9cde4cb">2. 常见的术语</a></li>
@@ -235,11 +232,14 @@
 <li><a href="#org4714962">5.1. 概念（Concepts）</a></li>
 <li><a href="#orgfe1c95c">5.2. 监控告警</a></li>
 <li><a href="#org1ab0cdf">5.3. kubectl CLI</a></li>
+<li><a href="#orge636e35">5.4. 最佳实践</a></li>
 </ul>
 </li>
-<li><a href="#org90ef5c9">6. Resources</a>
+<li><a href="#orge9591c4">6. CI/CD  项目</a></li>
+<li><a href="#org0d772f0">7. Serverless</a></li>
+<li><a href="#org90ef5c9">8. Resources</a>
 <ul>
-<li><a href="#org667bf52">6.1. 书籍</a></li>
+<li><a href="#org667bf52">8.1. 书籍</a></li>
 </ul>
 </li>
 </ul>
@@ -249,9 +249,23 @@
 <div id="outline-container-org339bc7b" class="outline-2">
 <h2 id="org339bc7b"><span class="section-number-2">1.</span> 定义</h2>
 <div class="outline-text-2" id="text-1">
+<p>
+2015 ~ 2018 年，CNCF 对于云原生的定义主要包含三个方面：
+</p>
+
+<ul class="org-ul">
+<li>面向微服务架构</li>
+<li>应用容器化部署</li>
+<li>基于容器的编排和调度（Kubernetes）</li>
+</ul>
+
+<p>
+2018 年后，CNCF 对于云原生的定义改为：
+</p>
+
 <blockquote>
 <p>
-云原生技术有利于各组织在公有云、私有云和混合云等新型动态环境中，构建和运行可弹性扩展的应用。云原生的代表技术包括容器、服务网格、微服务、不可变基础设施和声明式API。
+云原生技术有利于各组织在公有云、私有云和混合云等新型动态环境中，构建和运行可弹性扩展的应用。云原生的代表技术包括容器、服务网格、微服务、不可变基础设施和声明式 API。
 </p>
 
 <p>
@@ -265,6 +279,10 @@
 
 <p>
 来自 <a href="https://github.com/cncf/toc/blob/master/DEFINITION.md">https://github.com/cncf/toc/blob/master/DEFINITION.md</a>
+</p>
+
+<p>
+云原生代表技术：不可变的基础设施、声明式 API。容器、服务网格、微服务。
 </p>
 </div>
 </div>
@@ -300,13 +318,13 @@ OCI 于 2015 年 6 月由 Docker，CoreOS 和其他容器行业领导者成立�
 <h2 id="orgd51e7e2"><span class="section-number-2">5.</span> Kubernetes</h2>
 <div class="outline-text-2" id="text-5">
 <p>
-Kubernetes 是开源的微服务或者容器化应用的编排工具，是谷歌开发的集群管理工具（前身是谷歌内部运行十几年的集群管理工具 Borg<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>，
-Kubernetes 吸取 Borg 的经验，然后针对社区定制的开源版本<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>），现已捐赠给 CNCF<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>。
+Kubernetes 是开源的微服务或者容器化应用的编排工具，是谷歌开发的集群管理工具（前身是谷歌内部运行十几年的集群管理工具 Borg<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>，
+Kubernetes 吸取 Borg 的经验，然后针对社区定制的开源版本<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>），现已捐赠给 CNCF<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>。
 </p>
 
 <p>
 Kubernetes 提供了服务发现和负载均衡、自动部署和回滚、弹性伸缩、健康检测和服务自愈等特性。它的主要目标是通过提供一组 REST APIS
-来隐藏管理容器的复杂性<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>。
+来隐藏管理容器的复杂性<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>。
 </p>
 </div>
 
@@ -470,7 +488,6 @@ API server 和它暴露的 HTTP API。用户和集群的不同组件以及外部
 </div>
 </div>
 
-
 <div id="outline-container-orgfe1c95c" class="outline-3">
 <h3 id="orgfe1c95c"><span class="section-number-3">5.2.</span> 监控告警</h3>
 <div class="outline-text-3" id="text-5-2">
@@ -493,11 +510,46 @@ kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </ul>
 </div>
 </div>
+
+<div id="outline-container-orge636e35" class="outline-3">
+<h3 id="orge636e35"><span class="section-number-3">5.4.</span> 最佳实践</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+大规模集群注意事项，Kubernetes 旨在适应满足一下标准的配置环境：
+</p>
+
+<ul class="org-ul">
+<li>单节点不超过 110 个 Pods</li>
+<li>单集群不超过 5000 个节点</li>
+<li>单集群总 Pods 数量不超过 15000 个</li>
+<li>单集群总容器不超过 30000 个</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge9591c4" class="outline-2">
+<h2 id="orge9591c4"><span class="section-number-2">6.</span> CI/CD  项目</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li><a href="https://argoproj.github.io/">argo</a> Get More Done with Kubernetes</li>
+<li><a href="https://fluxcd.io/">flux</a> 云原生体系下的持续部署，GitOps</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0d772f0" class="outline-2">
+<h2 id="org0d772f0"><span class="section-number-2">7.</span> Serverless</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li><a href="https://knative.dev/docs/">Knative</a></li>
+</ul>
+</div>
 </div>
 
 <div id="outline-container-org90ef5c9" class="outline-2">
-<h2 id="org90ef5c9"><span class="section-number-2">6.</span> Resources</h2>
-<div class="outline-text-2" id="text-6">
+<h2 id="org90ef5c9"><span class="section-number-2">8.</span> Resources</h2>
+<div class="outline-text-2" id="text-8">
 <ul class="org-ul">
 <li><a href="../../blog/2018/an-overall-view-on-docker-ecosystem-containers-moby-swarm-linuxkit-containerd-kubernete.html">Docker 生态系统一览</a> 翻译的文章，较为详细的说明了 Docker 的前世今生</li>
 <li><a href="../../blog/2021/kubernetes-vs-docker.html">Kubernetes vs Docker</a> 2021 翻译的文章，容器、Docker、Kubernetes 之间的关系，
@@ -525,8 +577,8 @@ Mac 地址等网络信息都是 Pause 容器的；</li>
 </div>
 
 <div id="outline-container-org667bf52" class="outline-3">
-<h3 id="org667bf52"><span class="section-number-3">6.1.</span> 书籍</h3>
-<div class="outline-text-3" id="text-6-1">
+<h3 id="org667bf52"><span class="section-number-3">8.1.</span> 书籍</h3>
+<div class="outline-text-3" id="text-8-1">
 <ul class="org-ul">
 <li class="off"><code>[&#xa0;]</code> Kubernetes: Up and Running</li>
 <li class="off"><code>[&#xa0;]</code> Kubernetes in Action</li>
@@ -543,19 +595,19 @@ Mac 地址等网络信息都是 Pause 容器的；</li>
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://research.google/pubs/pub44843/">Borg, Omega, and Kubernetes</a>
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://kubernetes.io/blog/2015/04/borg-predecessor-to-kubernetes/">Borg: The Predecessor to Kubernetes</a>
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://zh.wikipedia.org/wiki/Kubernetes">https://zh.wikipedia.org/wiki/Kubernetes</a>
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://wiki.aquasec.com/display/containers/Kubernetes+Architecture+101">https://wiki.aquasec.com/display/containers/Kubernetes+Architecture+101</a>
 </p></div></div>
 
@@ -563,7 +615,7 @@ Mac 地址等网络信息都是 Pause 容器的；</li>
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2022-03-22 Tue 14:33 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.5.2)</p>
 </div>
 </body>
 </html>

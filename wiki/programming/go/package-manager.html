@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:41 -->
+<!-- 2022-03-25 Fri 17:55 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 包管理工具</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -193,12 +193,10 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
-  /*]]>*/-->
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,16 +213,15 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">Go 包管理工具</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#org4e1101e">1. [deprecated] govender</a>
 <ul>
@@ -293,22 +290,23 @@ govendor: <a href="https://github.com/kardianos/govendor">https://github.com/kar
 Go 1.11 之后官方支持包管理工具 <code>go mod</code> 。
 </p>
 
-<pre class="example">
-Usage:
+<div class="org-src-container">
+<pre class="src src-sh">Usage:
 
-    go mod &lt;command&gt; [arguments]
+    go mod &lt;command&gt; <span style="color: #000000;">[</span>arguments<span style="color: #000000;">]</span>
 
 The commands are:
 
     download    download modules to local cache
     edit        edit go.mod from tools or scripts
     graph       print module requirement graph
-    init        initialize new module in current directory
+    init        initialize new module<span style="color: #5317ac;"> in</span> current directory
     tidy        add missing and remove unused modules
     vendor      make vendored copy of dependencies
     verify      verify dependencies have expected content
     why         explain why packages or modules are needed
 </pre>
+</div>
 </div>
 
 <div id="outline-container-orgdabc74b" class="outline-3">
@@ -327,7 +325,7 @@ The commands are:
 <li>移出不常用的依赖 <code>go mod tidy</code></li>
 <li><code>go mod download</code> 下载依赖的 module 到本地缓存</li>
 <li><code>go mod why</code> 查找包的依赖，比如 <code>go mod why golang.org/x/text/encoding</code></li>
-<li><code>go clean -modcache</code> 删除所有的 mod 目录下的文件，注意是所有的，并不是本项目的<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup></li>
+<li><code>go clean -modcache</code> 删除所有的 mod 目录下的文件，注意是所有的，并不是本项目的<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup></li>
 </ul>
 </div>
 </div>
@@ -367,24 +365,19 @@ Go modules 的设计之初是想完全放弃 vendor 目录的，但是社区的 
 <div class="outline-text-3" id="text-2-3">
 <p>
 不使用 go mod 私有库直接手动拷贝到 <code>$GOPATH/src</code> 下面就可以用了，使用 go mod 之后，依赖库的位置放在了 <code>$GOPATH/pkg/mod</code> 下面，并且还有 go.sum 校验，
-所以直接拷贝的方式不可用了，可以用下面的方法来解决。假设 git 仓库的地址为： <code>git.zhangjiee.com</code> 。
+所以直接拷贝的方式不可用了，可以用下面的方法来解决。Go 使用 gitlab 私有 repo：
 </p>
 
 <ol class="org-ol">
-<li><code>go env -w GOPRIVATE=git.zhangjiee.com</code></li>
 <li><p>
 <code>.gitconfig</code> 中添加：
 </p>
 <pre class="example">
-[url "ssh://git@git.zhangjiee.com/"]
-    insteadOf = http://git.zhangjiee.com/
+[url "git@gitlab.com:"]
+insteadOf = https://gitlab.com/
 </pre></li>
-<li><code>go get -u -v -insecure git.zhangjiee.com/group/project</code> 非 https 在 go get 时需要加上 <code>-insecure</code></li>
+<li><code>GOPRIVATE="gitlab.com/c3441" go get -u gitlab.com/c3441/cbl-go@master</code></li>
 </ol>
-
-<p>
-然后在 <code>$GOPATH/pkg/mod</code> 中就会出现 <code>git.zhangjiee.com/group/project@vx.y.z</code> 目录了，并且添加到了 go.mod 和 go.sum 文件中。
-</p>
 
 <p>
 <b><span class="timestamp-wrapper"><span class="timestamp">&lt;2021-08-16 Mon 15:45&gt; </span></span> UPDATE</b>
@@ -411,10 +404,6 @@ use GOPRIVATE or GONOSUMDB. See go help environment for details.
 <li><a href="https://github.com/golang/go/issues/37519">https://github.com/golang/go/issues/37519</a></li>
 <li><a href="https://github.com/golang/go/issues/32966">https://github.com/golang/go/issues/32966</a></li>
 </ul>
-
-<p>
-也就是说，之前的使用方式是 <code>go get -u -v -insecure git.zhangjiee.com/group/project</code> 现在改成了 <code>GOINSECURE=git.zhangjiee.com go get git.zhangjiee.com/group/project</code> 。
-</p>
 </div>
 </div>
 
@@ -439,7 +428,7 @@ use GOPRIVATE or GONOSUMDB. See go help environment for details.
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://groups.google.com/g/golang-nuts/c/8FXS-VEYiQI">https://groups.google.com/g/golang-nuts/c/8FXS-VEYiQI</a>
 </p></div></div>
 
@@ -447,7 +436,7 @@ use GOPRIVATE or GONOSUMDB. See go help environment for details.
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-01-18 11:07 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2019-01-18 11:07 <br />Last updated: 2022-02-24 Thu 21:27 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.5.2)</p>
 </div>
 </body>
 </html>

@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:40 -->
+<!-- 2022-03-25 Fri 17:55 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>InfluxDB v1.x</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -193,12 +193,10 @@
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { width: 90%; }
-  /*]]>*/-->
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,16 +213,15 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">InfluxDB v1.x</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#org7d8d0ed">1. InfluxQL</a>
 <ul>
@@ -278,7 +275,8 @@
 </li>
 <li><a href="#orgad81e93">3. FAQ</a>
 <ul>
-<li><a href="#org4e75cd2">3.1. InfluxDB 如何处理重复的点？</a></li>
+<li><a href="#orgce25932">3.1. InfluxDB 写入时，tag 和 field 的 values 不支持换行符。</a></li>
+<li><a href="#org4e75cd2">3.2. InfluxDB 如何处理重复的点？</a></li>
 </ul>
 </li>
 </ul>
@@ -684,7 +682,7 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_
 <h3 id="org7f986cd"><span class="section-number-3">1.9.</span> 时区（time zone）语句</h3>
 <div class="outline-text-3" id="text-1-9">
 <p>
-<code>tz()</code> 语句指定时区<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
+<code>tz()</code> 语句指定时区<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>。
 </p>
 
 <pre class="example">
@@ -697,7 +695,6 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_
 </div>
 </div>
 </div>
-
 
 <div id="outline-container-orgc2bff5c" class="outline-2">
 <h2 id="orgc2bff5c"><span class="section-number-2">2.</span> 监控</h2>
@@ -767,9 +764,35 @@ InfluxDB 配置文件将 <code>[monitor]</code> 下的 <code>store-enabled</code
 <h2 id="orgad81e93"><span class="section-number-2">3.</span> FAQ</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org4e75cd2" class="outline-3">
-<h3 id="org4e75cd2"><span class="section-number-3">3.1.</span> <a href="https://docs.influxdata.com/influxdb/v1.8/troubleshooting/frequently-asked-questions/#how-does-influxdb-handle-duplicate-points">InfluxDB 如何处理重复的点？</a></h3>
+<div id="outline-container-orgce25932" class="outline-3">
+<h3 id="orgce25932"><span class="section-number-3">3.1.</span> InfluxDB 写入时，tag 和 field 的 values 不支持换行符。</h3>
 <div class="outline-text-3" id="text-3-1">
+<p>
+<a href="https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_reference/">https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_reference/</a>
+</p>
+
+<pre class="example">
+&lt;measurement&gt;[,&lt;tag_key&gt;=&lt;tag_value&gt;[,&lt;tag_key&gt;=&lt;tag_value&gt;]] &lt;field_key&gt;=&lt;field_value&gt;[,&lt;field_key&gt;=&lt;field_value&gt;] [&lt;timestamp&gt;]
+</pre>
+
+<p>
+Line protocol 对于 <code>\n</code> 和空格比较敏感：
+</p>
+
+<ul class="org-ul">
+<li>空格用来分隔 tag、field 和 timestamp；</li>
+<li>换行符用来分隔两个 point（在批量写入的时候），所以当 fields 中出现换行符时，会分隔当前的 point 数据；</li>
+</ul>
+
+<p>
+<a href="https://github.com/influxdata/influxdb/issues/9966">https://github.com/influxdata/influxdb/issues/9966</a> 这个帖子中也有。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4e75cd2" class="outline-3">
+<h3 id="org4e75cd2"><span class="section-number-3">3.2.</span> <a href="https://docs.influxdata.com/influxdb/v1.8/troubleshooting/frequently-asked-questions/#how-does-influxdb-handle-duplicate-points">InfluxDB 如何处理重复的点？</a></h3>
+<div class="outline-text-3" id="text-3-2">
 <p>
 Point（点）由表名，tag 集合和时间戳唯一标识。如果你提交的一个 point 和现有的 point 有相同的标识，fields 集合会变成新的 field
 和老的 field 的合集，关联关系会指向新的 field 集合。这是预料中的事。
@@ -862,7 +885,7 @@ New point: <code>cpu_load,hostname=server02,az=us_west,uniq=2 val_1=5.24 1234567
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List">https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List</a>
 </p></div></div>
 
@@ -870,7 +893,7 @@ New point: <code>cpu_load,hostname=server02,az=us_west,uniq=2 val_1=5.24 1234567
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-23 14:02:41 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2021-04-23 14:02:41 <br />Last updated: 2022-02-23 Wed 21:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.5.2)</p>
 </div>
 </body>
 </html>
