@@ -6,7 +6,7 @@
 <!-- 2022-04-29 Fri 14:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>kubectl 常用命令集合</title>
+<title>podman 使用笔记</title>
 <meta name="author" content="luanhua" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
@@ -218,39 +218,61 @@
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">kubectl 常用命令集合</h1>
+<h1 class="title">podman 使用笔记</h1>
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgf3540f8">1. 节点</a></li>
-<li><a href="#org95c4bad">2. 日志</a></li>
+<li><a href="#orgd4984bf">1. 安装和启动</a></li>
+<li><a href="#orga919a36">2. 配置</a></li>
+<li><a href="#org50333d3">3. 使用</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgf3540f8" class="outline-2">
-<h2 id="orgf3540f8"><span class="section-number-2">1.</span> 节点</h2>
+<div id="outline-container-orgd4984bf" class="outline-2">
+<h2 id="orgd4984bf"><span class="section-number-2">1.</span> 安装和启动</h2>
 <div class="outline-text-2" id="text-1">
-<ul class="org-ul">
-<li>通过标签过滤节点 <code>kubectl get nodes -l "aaa=bbb"</code></li>
-<li>自定义列： <code>kubectl get node -o=custom-columns='NAME:.metadata.name,CPU:.status.capacity.cpu,MEMORY:.status.capacity.memory'</code></li>
-<li>按照创建时间排序： <code>kubectl get nodes -o wide --sort-by=.metadata.creationTimestamp</code></li>
-</ul>
+<p>
+Mac 客户端：
+</p>
+
+<ol class="org-ol">
+<li>安装 podman <code>brew install podman</code></li>
+<li>安装虚拟机 <code>podman machine init</code></li>
+<li>启动虚拟机 <code>podman machine start</code></li>
+<li>验证 podman 是否可用 <code>podman info</code></li>
+</ol>
 </div>
 </div>
 
-<div id="outline-container-org95c4bad" class="outline-2">
-<h2 id="org95c4bad"><span class="section-number-2">2.</span> 日志</h2>
+<div id="outline-container-orga919a36" class="outline-2">
+<h2 id="orga919a36"><span class="section-number-2">2.</span> 配置</h2>
 <div class="outline-text-2" id="text-2">
-<ul class="org-ul">
-<li>Pod 内容器 crash 之后，看之前的日志： <code>kubectl logs --previous &lt;podName&gt;</code></li>
-</ul>
+<blockquote>
+<p>
+Mac 系统上是通过虚拟机来使用 podman 的，所以实际的配置文件是在虚拟机中的，好在提供了 <code>podman machine ssh</code> 命令可以 SSH
+进去后修改配置（如果是 Linux 没有这个中间层，简单许多）。
+</p>
+</blockquote>
+
+<p>
+Docker 也是同样的原理，不过把这一层给简化了（使用无感知）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org50333d3" class="outline-2">
+<h2 id="org50333d3"><span class="section-number-2">3.</span> 使用</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+基本上 Docker 的命令 podman 都可以直接使用，但是有个致命的问题 Mac 下挂载不了本机目录（或者再加一层从 mac 到虚拟机的映射）。
+</p>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-03-29 11:57:19 <br />Last updated: 2022-04-27 Wed 10:17 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.5.2)</p>
+<p class="postamble">First created: 2022-04-12 15:36:10 <br />Last updated: 2022-04-12 Tue 17:26 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.5.2)</p>
 </div>
 </body>
 </html>
