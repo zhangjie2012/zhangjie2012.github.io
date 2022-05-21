@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:41 -->
+<!-- 2022-05-21 Sat 10:49 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Grafana</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,20 +213,36 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">Grafana</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#org99733c3">1. 安装</a>
 <ul>
 <li><a href="#org0fe4e04">1.1. 使用 Docker</a></li>
+<li><a href="#org877d8c3">1.2. Centos 7</a></li>
+</ul>
+</li>
+<li><a href="#orgeab58b4">2. 配置</a></li>
+<li><a href="#org3e7aefa">3. MySQL 报表</a>
+<ul>
+<li><a href="#org0158e1a">3.1. 查询 SQL</a>
+<ul>
+<li><a href="#orgdd779f6">3.1.1. FROM：指定数据表，时间列和指标（Metric）列</a></li>
+<li><a href="#orgc29216f">3.1.2. SELECT：列和聚合函数</a></li>
+<li><a href="#orgf427da1">3.1.3. WHERE：过滤数据</a></li>
+<li><a href="#org00c2f7f">3.1.4. GROUP BY：分组</a></li>
+<li><a href="#orgd3553f1">3.1.5. Gap Filling：数据填充</a></li>
+</ul>
+</li>
+<li><a href="#org26af627">3.2. 宏（Macros）</a></li>
+<li><a href="#org523c59e">3.3. 时间序列查询</a></li>
 </ul>
 </li>
 </ul>
@@ -254,10 +268,246 @@ docker run -d -p 3000:3000 grafana/grafana
 </p>
 </div>
 </div>
+
+<div id="outline-container-org877d8c3" class="outline-3">
+<h3 id="org877d8c3"><span class="section-number-3">1.2.</span> Centos 7</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+<a href="https://grafana.com/docs/grafana/latest/installation/rpm/">https://grafana.com/docs/grafana/latest/installation/rpm/</a>
+</p>
+
+<p>
+按照文档来即可，默认暴露端口为 3000。
+</p>
+
+<p>
+查看运行状态： <code>systemctl status grafana-server</code>
+</p>
 </div>
 </div>
+</div>
+
+<div id="outline-container-orgeab58b4" class="outline-2">
+<h2 id="orgeab58b4"><span class="section-number-2">2.</span> 配置</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+配置文件位置： <code>/etc/grafana/grafana.ini</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3e7aefa" class="outline-2">
+<h2 id="org3e7aefa"><span class="section-number-2">3.</span> MySQL 报表</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org0158e1a" class="outline-3">
+<h3 id="org0158e1a"><span class="section-number-3">3.1.</span> 查询 SQL</h3>
+<div class="outline-text-3" id="text-3-1">
+</div>
+<div id="outline-container-orgdd779f6" class="outline-4">
+<h4 id="orgdd779f6"><span class="section-number-4">3.1.1.</span> FROM：指定数据表，时间列和指标（Metric）列</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+时间列字段指向你时间序列对应的字段。指标列的值是可选的。如果选择之后，指标列的值将作为系列名称（series name）。
+</p>
+
+<p>
+指标列建议只包含文本数据类型。如果想使用不同数据类型作为你的指标列，你可能需要进行列表转换： <code>CAST(numericColumn as CHAR)</code> 。
+你也可以输入任意的 SQL 表达式只要最终计算出来的结果是文本即可 <code>CONCAT(column1, " ", CAST(numericColumn as CHAR))</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc29216f" class="outline-4">
+<h4 id="orgc29216f"><span class="section-number-4">3.1.2.</span> SELECT：列和聚合函数</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+如果使用聚合函数，则需要对结果进行分组操作 <code>GROUP BY</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf427da1" class="outline-4">
+<h4 id="orgf427da1"><span class="section-number-4">3.1.3.</span> WHERE：过滤数据</h4>
+</div>
+
+<div id="outline-container-org00c2f7f" class="outline-4">
+<h4 id="org00c2f7f"><span class="section-number-4">3.1.4.</span> GROUP BY：分组</h4>
+</div>
+
+<div id="outline-container-orgd3553f1" class="outline-4">
+<h4 id="orgd3553f1"><span class="section-number-4">3.1.5.</span> Gap Filling：数据填充</h4>
+<div class="outline-text-4" id="text-3-1-5">
+<p>
+按时间分组的时候，你可以指定确实数据列的值。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org26af627" class="outline-3">
+<h3 id="org26af627"><span class="section-number-3">3.2.</span> 宏（Macros）</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+<code>$__time(dateColumn)</code> <code>$__timeEpoch(dateColumn)</code>
+</p>
+
+<p>
+时间列转换成 UNIX 时间戳，然后重命名为 <code>time_sec</code> ，如 <code>UNIX_TIMESTAMP(dateColumn) as time_sec</code> 。
+</p>
+
+<p>
+<code>$__timeFilter(dateColumn)</code>
+</p>
+
+<p>
+指定时间列名的时间范围过滤器替换。如 <code>dateColumn BETWEEN FROM_UNIXTIME(1494410783) AND FROM_UNIXTIME(1494410983)</code>
+</p>
+
+<p>
+<code>$__timeFrom()</code>
+</p>
+
+<p>
+替换为当前选择时间范围的开始时间。
+</p>
+
+<p>
+<code>$__timeTo()</code>
+</p>
+
+<p>
+替换为当前时间范围的结束时间。
+</p>
+
+<p>
+<code>$__timeGroup(dateColumn,'5m')</code>
+</p>
+
+<p>
+<code>$__timeGroup(dateColumn,'5m', 0)</code>
+</p>
+
+<p>
+<code>$__timeGroup(dateColumn,'5m', NULL)</code>
+</p>
+
+<p>
+<code>$__timeGroup(dateColumn,'5m', previous)</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org523c59e" class="outline-3">
+<h3 id="org523c59e"><span class="section-number-3">3.3.</span> 时间序列查询</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+如果你的格式是 <code>Time series</code> ，那么查询中必须包含一个名为 <code>time</code> 的列，要么是 SQL 的日期时间或者是任何可以表达 Unix 时间秒数。
+此外，查询结果必须按照 time 排序，以便于可视化展示。
+</p>
+
+<p>
+时间序列的查询结果都是宽数据格式<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>。非时间或者字符串之外的列转为为值。字符串字段转换为查询结果的 label。
+</p>
+
+<p>
+<b><code>metric</code> 列示例：</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5317ac;">SELECT</span>
+  $__timeGroup<span style="color: #000000;">(</span>time_date_time,<span style="color: #2544bb;">'5m'</span><span style="color: #000000;">)</span>,
+  <span style="color: #8f0075;">min</span><span style="color: #000000;">(</span>value_double<span style="color: #000000;">)</span>,
+  <span style="color: #2544bb;">'min'</span> <span style="color: #5317ac;">as</span> metric
+<span style="color: #5317ac;">FROM</span> test_data
+<span style="color: #5317ac;">WHERE</span> $__timeFilter<span style="color: #000000;">(</span>time_date_time<span style="color: #000000;">)</span>
+<span style="color: #5317ac;">GROUP</span> <span style="color: #5317ac;">BY</span> <span style="color: #005a5f;">time</span>
+<span style="color: #5317ac;">ORDER</span> <span style="color: #5317ac;">BY</span> <span style="color: #005a5f;">time</span>
+</pre>
+</div>
+
+<p>
+结果：
+</p>
+
+<pre class="example">
++---------------------+-----------------+
+| Name: time          | Name: min       |
+| Labels:             | Labels:         |
+| Type: []time.Time   | Type: []float64 |
++---------------------+-----------------+
+| 2020-01-02 03:05:00 | 3               |
+| 2020-01-02 03:10:00 | 6               |
++---------------------+-----------------+
+</pre>
+
+<p>
+<b>多个列数据：</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5317ac;">SELECT</span>
+  $__timeGroup<span style="color: #000000;">(</span>time_date_time,<span style="color: #2544bb;">'5m'</span><span style="color: #000000;">)</span>,
+  <span style="color: #8f0075;">min</span><span style="color: #000000;">(</span>value_double<span style="color: #000000;">)</span> <span style="color: #5317ac;">as</span> min_value,
+  <span style="color: #8f0075;">max</span><span style="color: #000000;">(</span>value_double<span style="color: #000000;">)</span> <span style="color: #5317ac;">as</span> max_value
+<span style="color: #5317ac;">FROM</span> test_data
+<span style="color: #5317ac;">WHERE</span> $__timeFilter<span style="color: #000000;">(</span>time_date_time<span style="color: #000000;">)</span>
+<span style="color: #5317ac;">GROUP</span> <span style="color: #5317ac;">BY</span> <span style="color: #005a5f;">time</span>
+<span style="color: #5317ac;">ORDER</span> <span style="color: #5317ac;">BY</span> <span style="color: #005a5f;">time</span>
+</pre>
+</div>
+
+<p>
+结果：
+</p>
+
+<pre class="example" id="org7d9a9cc">
++---------------------+-----------------+-----------------+
+| Name: time          | Name: min_value | Name: max_value |
+| Labels:             | Labels:         | Labels:         |
+| Type: []time.Time   | Type: []float64 | Type: []float64 |
++---------------------+-----------------+-----------------+
+| 2020-01-02 03:04:00 | 3               | 4               |
+| 2020-01-02 03:05:00 | 6               | 7               |
++---------------------+-----------------+-----------------+
+</pre>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://grafana.com/docs/grafana/latest/developers/plugins/data-frames/#wide-format">https://grafana.com/docs/grafana/latest/developers/plugins/data-frames/#wide-format</a>
+</p>
+
+<p class="footpara">
+即，第一行数据为时间表达（名称：时间、label：空、时间序列），第二列开始为 series 数据（名称、Label、数值）的标准化结果。
+</p>
+
+<p class="footpara">
+如下：
+</p>
+
+<pre class="example">
+Name: Wide
+Dimensions: 3 fields by 2 rows
++---------------------+-----------------+-----------------+
+| Name: time          | Name: cpu       | Name: cpu       |
+| Labels:             | Labels: host=a  | Labels: host=b  |
+| Type: []time.Time   | Type: []float64 | Type: []float64 |
++---------------------+-----------------+-----------------+
+| 2020-01-02 03:04:00 | 3               | 4               |
+| 2020-01-02 03:05:00 | 6               | 7               |
++---------------------+-----------------+-----------------+
+</pre></div></div>
+
+
+</div>
+</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-24 11:00:19 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2020-02-24 11:00:19 <br />Last updated: 2022-05-10 Tue 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.5.3)</p>
 </div>
 </body>
 </html>
