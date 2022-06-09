@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 17:42 -->
+<!-- 2022-06-09 Thu 17:06 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>WordPress主题开发总结（下）：技巧</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,16 +213,15 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">WordPress主题开发总结（下）：技巧</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#获取发布文章">1. 获取发布文章</a></li>
 <li><a href="#显示热点文章列表">2. 显示热"点"文章列表</a></li>
@@ -247,7 +244,7 @@
 <div id="outline-container-获取发布文章" class="outline-2">
 <h2 id="获取发布文章"><span class="section-number-2">1.</span> 获取发布文章</h2>
 <div class="outline-text-2" id="text-获取发布文章">
-<pre class="example" id="org40523e5">
+<pre class="example" id="org7f107c2">
 &lt;?php
     $args = array( 'numberposts' =&gt; 12, 'orderby' =&gt; 'pubdate' );
     $rand_posts = get_posts( $args );
@@ -274,7 +271,7 @@ numberposts 指的是文章数量。orderby 值为 pubdate 表示最近发布，
 首先要实现文章浏览量，就这个功能而言，把下面的两个函数添加到 functions.php 中。
 </p>
 
-<pre class="example" id="org596fca8">
+<pre class="example" id="org19b7cd0">
 function getPostViews($postID) {
     $count_key = 'post_views_count';
     $count = get_post_meta ( $postID, $count_key, true );
@@ -304,7 +301,7 @@ function setPostViews($postID) {
 在主循环中添加如下代码，应该都能看懂，第一个是在浏览的时候记录，第二是显示浏览次数。
 </p>
 
-<pre class="example" id="org3b8c171">
+<pre class="example" id="orgf48ea39">
 &lt;?php setPostViews(get_the_ID()); ?&gt;
 &lt;?php echo getPostViews(get_the_ID()); ?&gt;[/php]
 </pre>
@@ -313,7 +310,7 @@ function setPostViews($postID) {
 但是，如果要把热门点击文章按列表显示，上面这个方法就不行了，我用的是插件（WP-PostViews）。在需要显示该文章浏览次数处，调用 the_views 方法：
 </p>
 
-<pre class="example" id="orge2379d2">
+<pre class="example" id="org87cbe50">
 &lt;?php if(function_exists('the_views')) { the_views(); } ?&gt;
 </pre>
 
@@ -321,7 +318,7 @@ function setPostViews($postID) {
 在想要显示列表的调用 <code>get_most_viewed</code> 方法：
 </p>
 
-<pre class="example" id="org2193363">
+<pre class="example" id="org95e0405">
 &lt;?php if (function_exists('get_most_viewed')): ?&gt;
    &lt;ul&gt;
    &lt;?php get_most_viewed('both', 12);?&gt;
@@ -343,7 +340,7 @@ function setPostViews($postID) {
 否则显示出来的只是热评文章的标题。你在使用的时候，建议手动修改一下。
 </p>
 
-<pre class="example" id="org862d286">
+<pre class="example" id="orgfce308d">
 /*
 $termId:分类目录 ID,为 0 时是检索所有分类目录
 $posts_num:显示热评文章的数量
@@ -391,7 +388,7 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 在需要显示热评列表的地方，调用 <code>simple_get_most_review</code> （参数含义请看函数声明）。
 </p>
 
-<pre class="example" id="org3e13649">
+<pre class="example" id="org57f2b07">
 &lt;ul&gt;
 &lt;?php if (function_exists('simple_get_most_review')) {simple_get_most_review(0,12,36500); }  ?&gt;
 &lt;/ul&gt;
@@ -402,7 +399,7 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 <div id="outline-container-显示-siteinfo" class="outline-2">
 <h2 id="显示-siteinfo"><span class="section-number-2">4.</span> 显示 SITEINFO</h2>
 <div class="outline-text-2" id="text-显示-siteinfo">
-<pre class="example" id="org8f9ffce">
+<pre class="example" id="org09df116">
 文章数量：&lt;?php $count_posts = wp_count_posts();echo $published_posts = $count_posts-&gt;publish;?&gt;
 分类数量：&lt;?php echo $count_categories =wp_count_terms('category'); ?&gt;
 标签数量：&lt;?php echo $count_tags =wp_count_terms('post_tag'); ?&gt;
@@ -462,7 +459,7 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2013-01-17 15:46:33 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2013-01-17 15:46:33 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:42 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 架构</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,37 +213,36 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">Kubernetes 架构</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orge39b251">1. Master Node</a>
+<li><a href="#org10c73f5">1. Master Node</a>
 <ul>
-<li><a href="#orgb18204f">1.1. etcd 存储</a></li>
-<li><a href="#org9e0693f">1.2. API server</a></li>
-<li><a href="#org9d2d2c9">1.3. kube-controller-manager</a></li>
-<li><a href="#org29959d7">1.4. kube-scheduler</a></li>
+<li><a href="#org16d4ee8">1.1. etcd 存储</a></li>
+<li><a href="#orge4bcc33">1.2. API server</a></li>
+<li><a href="#org3745a94">1.3. kube-controller-manager</a></li>
+<li><a href="#orgabb321c">1.4. kube-scheduler</a></li>
 </ul>
 </li>
-<li><a href="#orgb85304d">2. Worker Node</a>
+<li><a href="#org4728e27">2. Worker Node</a>
 <ul>
-<li><a href="#org0da096c">2.1. 容器运行时(container runtime)</a></li>
-<li><a href="#org4948bc6">2.2. kubelet</a></li>
-<li><a href="#orgff952ee">2.3. kube-proxy</a></li>
+<li><a href="#org4de2d62">2.1. 容器运行时(container runtime)</a></li>
+<li><a href="#org898c196">2.2. kubelet</a></li>
+<li><a href="#orgd3eb4b7">2.3. kube-proxy</a></li>
 </ul>
 </li>
-<li><a href="#org270c7e6">3. 其它</a>
+<li><a href="#org00bef26">3. 其它</a>
 <ul>
-<li><a href="#org9cd4707">3.1. kubectl</a></li>
-<li><a href="#org40da1f5">3.2. <span class="todo TODO">TODO</span> DNS</a></li>
-<li><a href="#org7053c84">3.3. 网络</a></li>
+<li><a href="#orgcf70274">3.1. kubectl</a></li>
+<li><a href="#org0b18c67">3.2. <span class="todo TODO">TODO</span> DNS</a></li>
+<li><a href="#org4699165">3.3. 网络</a></li>
 </ul>
 </li>
 </ul>
@@ -262,7 +259,7 @@ Master 节点主要包含 kube-apiserver、etcd 存储、kube-controller-manager
 </p>
 
 
-<div id="org0678620" class="figure">
+<div id="orgeebf303" class="figure">
 <p><img src="https://wiki-1252349778.cos.ap-shanghai.myqcloud.com/2020/full-kubernetes-model-architecture.png" alt="full-kubernetes-model-architecture.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span><a href="https://phoenixnap.com/kb/understanding-kubernetes-architecture-diagrams">https://phoenixnap.com/kb/understanding-kubernetes-architecture-diagrams</a></p>
@@ -272,12 +269,12 @@ Master 节点主要包含 kube-apiserver、etcd 存储、kube-controller-manager
 <i>Master node 通常被视为控制平面（Control plane），而 Workder Node 被视为计算机器。</i>
 </p>
 
-<div id="outline-container-orge39b251" class="outline-2">
-<h2 id="orge39b251"><span class="section-number-2">1.</span> Master Node</h2>
+<div id="outline-container-org10c73f5" class="outline-2">
+<h2 id="org10c73f5"><span class="section-number-2">1.</span> Master Node</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgb18204f" class="outline-3">
-<h3 id="orgb18204f"><span class="section-number-3">1.1.</span> etcd 存储</h3>
+<div id="outline-container-org16d4ee8" class="outline-3">
+<h3 id="org16d4ee8"><span class="section-number-3">1.1.</span> etcd 存储</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 etcd 是用于分布式系统中最关键数据的的分布式的可靠的 key-value 存储。Kubernetes 用它来存储集群中的数据（比如 pods 的数量和状态，namespace 等）、
@@ -294,8 +291,8 @@ API 对象和服务发现信息的详细信息等。
 </div>
 </div>
 
-<div id="outline-container-org9e0693f" class="outline-3">
-<h3 id="org9e0693f"><span class="section-number-3">1.2.</span> API server</h3>
+<div id="outline-container-orge4bcc33" class="outline-3">
+<h3 id="orge4bcc33"><span class="section-number-3">1.2.</span> API server</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 API server 充当的是集群的前端。顾名思义，所有与集群的交互都要通过 API server，它接受所有的 REST 请求，所有对 Pods，
@@ -308,8 +305,8 @@ Services、RS/RC 或者其它 api 对象的变更都要通过它。
 </div>
 </div>
 
-<div id="outline-container-org9d2d2c9" class="outline-3">
-<h3 id="org9d2d2c9"><span class="section-number-3">1.3.</span> kube-controller-manager</h3>
+<div id="outline-container-org3745a94" class="outline-3">
+<h3 id="org3745a94"><span class="section-number-3">1.3.</span> kube-controller-manager</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 controll manager 是一系列的控制器后台进程组成，但是为了部署和管理方便，打包到了一起。比如，副本控制器（replication controller）来控制容器中副本的数量；
@@ -322,8 +319,8 @@ controll manager 是一系列的控制器后台进程组成，但是为了部署
 </div>
 </div>
 
-<div id="outline-container-org29959d7" class="outline-3">
-<h3 id="org29959d7"><span class="section-number-3">1.4.</span> kube-scheduler</h3>
+<div id="outline-container-orgabb321c" class="outline-3">
+<h3 id="orgabb321c"><span class="section-number-3">1.4.</span> kube-scheduler</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 scheduler，调度器，根据调度策略将 pod 调度到符合条件的节点上。
@@ -346,15 +343,15 @@ scheduler，调度器，根据调度策略将 pod 调度到符合条件的节点
 </div>
 </div>
 
-<div id="outline-container-orgb85304d" class="outline-2">
-<h2 id="orgb85304d"><span class="section-number-2">2.</span> Worker Node</h2>
+<div id="outline-container-org4728e27" class="outline-2">
+<h2 id="org4728e27"><span class="section-number-2">2.</span> Worker Node</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org0da096c" class="outline-3">
-<h3 id="org0da096c"><span class="section-number-3">2.1.</span> 容器运行时(container runtime)</h3>
+<div id="outline-container-org4de2d62" class="outline-3">
+<h3 id="org4de2d62"><span class="section-number-3">2.1.</span> 容器运行时(container runtime)</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
-容器运行是是容器的运行环境（用来支撑容器启停），遵从 CRI 规范的实现都可，一般使用 Docker（但你也可以用其它的）<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
+容器运行是是容器的运行环境（用来支撑容器启停），遵从 CRI 规范的实现都可，一般使用 Docker（但你也可以用其它的）<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>。
 </p>
 
 <p>
@@ -363,8 +360,8 @@ CRI 由 protocol buffers、gRPC API 和库组成，kubelet 充当的是 gRPC cli
 </div>
 </div>
 
-<div id="outline-container-org4948bc6" class="outline-3">
-<h3 id="org4948bc6"><span class="section-number-3">2.2.</span> kubelet</h3>
+<div id="outline-container-org898c196" class="outline-3">
+<h3 id="org898c196"><span class="section-number-3">2.2.</span> kubelet</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 节点上的主要服务（local agent），主要和 kube-apiserver 交互创建新的 pod 或者修改 pod 的规格，确保 pods 的健康在期望（desired）
@@ -377,13 +374,13 @@ CRI 由 protocol buffers、gRPC API 和库组成，kubelet 充当的是 gRPC cli
 
 <p>
 通俗来将，可以说 kubelet 负责维护 apiserver 分配给该节点的一群 pod，使它们的状态与集群的期望保持一致。
-事实上，它可以脱离 master 单独运行<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>。
+事实上，它可以脱离 master 单独运行<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgff952ee" class="outline-3">
-<h3 id="orgff952ee"><span class="section-number-3">2.3.</span> kube-proxy</h3>
+<div id="outline-container-orgd3eb4b7" class="outline-3">
+<h3 id="orgd3eb4b7"><span class="section-number-3">2.3.</span> kube-proxy</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 kube-proxy 是节点上运行的代理服务，它配合 services 将请求正确的转发到对应的 pods 或者容器中。
@@ -396,12 +393,12 @@ kube-proxy 是节点上运行的代理服务，它配合 services 将请求正�
 </div>
 </div>
 
-<div id="outline-container-org270c7e6" class="outline-2">
-<h2 id="org270c7e6"><span class="section-number-2">3.</span> 其它</h2>
+<div id="outline-container-org00bef26" class="outline-2">
+<h2 id="org00bef26"><span class="section-number-2">3.</span> 其它</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org9cd4707" class="outline-3">
-<h3 id="org9cd4707"><span class="section-number-3">3.1.</span> kubectl</h3>
+<div id="outline-container-orgcf70274" class="outline-3">
+<h3 id="orgcf70274"><span class="section-number-3">3.1.</span> kubectl</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 kubectl 是 kubernetes 集群的 CLI，它与 apiserver 交互，通过 kubectl 操作集群中的所有资源。
@@ -409,15 +406,15 @@ kubectl 是 kubernetes 集群的 CLI，它与 apiserver 交互，通过 kubectl 
 </div>
 </div>
 
-<div id="outline-container-org40da1f5" class="outline-3">
-<h3 id="org40da1f5"><span class="section-number-3">3.2.</span> <span class="todo TODO">TODO</span> DNS</h3>
+<div id="outline-container-org0b18c67" class="outline-3">
+<h3 id="org0b18c67"><span class="section-number-3">3.2.</span> <span class="todo TODO">TODO</span> DNS</h3>
 </div>
-<div id="outline-container-org7053c84" class="outline-3">
-<h3 id="org7053c84"><span class="section-number-3">3.3.</span> 网络</h3>
+<div id="outline-container-org4699165" class="outline-3">
+<h3 id="org4699165"><span class="section-number-3">3.3.</span> 网络</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 kube-proxy <b>并不是</b> 集群的网络配置方案，kubernetes 架构中没有网络模型，并且认为主机上已经配置它所需的网络，
-它对网络的要求是<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>：
+它对网络的要求是<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>：
 </p>
 
 <ul class="org-ul">
@@ -441,15 +438,15 @@ flannel 适合大多数情况，它配置简单，但是性能和灵活性不足
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://kubernetes.io/blog/2016/12/container-runtime-interface-cri-in-kubernetes/">https://kubernetes.io/blog/2016/12/container-runtime-interface-cri-in-kubernetes/</a>
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://coreos.com/blog/introducing-the-kubelet-in-coreos.html">https://coreos.com/blog/introducing-the-kubelet-in-coreos.html</a>
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://kubernetes.io/docs/concepts/cluster-administration/networking/#the-kubernetes-network-model">https://kubernetes.io/docs/concepts/cluster-administration/networking/#the-kubernetes-network-model</a>
 </p></div></div>
 
@@ -457,7 +454,7 @@ flannel 适合大多数情况，它配置简单，但是性能和灵活性不足
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-29 21:19:31 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2020-03-29 21:19:31 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-03-25 Fri 17:55 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>MySQL</title>
-<meta name="author" content="luanhua" />
+<meta name="author" content="ZJ" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -192,7 +192,7 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
 <script>
@@ -223,45 +223,45 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgc889a96">1. 安装</a>
+<li><a href="#org8985475">1. 安装</a>
 <ul>
-<li><a href="#org6c6e99d">1.1. Docker</a></li>
+<li><a href="#org7c27749">1.1. Docker</a></li>
 </ul>
 </li>
-<li><a href="#orgbf5aa15">2. Command</a>
+<li><a href="#orgd716cfc">2. Command</a>
 <ul>
-<li><a href="#org7d16b12">2.1. Database</a></li>
-<li><a href="#orga9288f0">2.2. Table</a></li>
-<li><a href="#orgcd5f9d6">2.3. Grant</a></li>
-<li><a href="#orga02f9b2">2.4. Backup</a></li>
-<li><a href="#org3c4195e">2.5. Restore</a></li>
+<li><a href="#orgcdf4d88">2.1. Database</a></li>
+<li><a href="#orgfa833fb">2.2. Table</a></li>
+<li><a href="#orgc0bdaf3">2.3. Grant</a></li>
+<li><a href="#org54f68d9">2.4. Backup</a></li>
+<li><a href="#orgd5aca80">2.5. Restore</a></li>
 </ul>
 </li>
-<li><a href="#orgacfca7e">3. Data Type</a>
+<li><a href="#orgd4f052c">3. Data Type</a>
 <ul>
-<li><a href="#org7727472">3.1. BLOB 和 TEXT</a></li>
-<li><a href="#orgea5d4c8">3.2. BLOB 和 TEXT 与 VARBINARY 和 VARCHAR 的不同 **</a></li>
+<li><a href="#org719759c">3.1. BLOB 和 TEXT</a></li>
+<li><a href="#org6fc251e">3.2. BLOB 和 TEXT 与 VARBINARY 和 VARCHAR 的不同 **</a></li>
 </ul>
 </li>
-<li><a href="#org0c7fe5a">4. Configure</a>
+<li><a href="#org391c6f0">4. Configure</a>
 <ul>
-<li><a href="#org86bc92b">4.1. 某公司的 my.cnf 样例</a></li>
-<li><a href="#org98d7faf">4.2. 慢查询</a></li>
-<li><a href="#orgbac6f79">4.3. Docker MySQL 设置 utf8mb4 编码</a></li>
+<li><a href="#org960ce2b">4.1. 某公司的 my.cnf 样例</a></li>
+<li><a href="#org8ccd75a">4.2. 慢查询</a></li>
+<li><a href="#org29da64d">4.3. Docker MySQL 设置 utf8mb4 编码</a></li>
 </ul>
 </li>
-<li><a href="#orgd804f40">5. Best Practices</a></li>
-<li><a href="#org489c781">6. Resource</a></li>
+<li><a href="#orgd5ca09d">5. Best Practices</a></li>
+<li><a href="#orgf1bd5ad">6. Resource</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc889a96" class="outline-2">
-<h2 id="orgc889a96"><span class="section-number-2">1.</span> 安装</h2>
+<div id="outline-container-org8985475" class="outline-2">
+<h2 id="org8985475"><span class="section-number-2">1.</span> 安装</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org6c6e99d" class="outline-3">
-<h3 id="org6c6e99d"><span class="section-number-3">1.1.</span> Docker</h3>
+<div id="outline-container-org7c27749" class="outline-3">
+<h3 id="org7c27749"><span class="section-number-3">1.1.</span> Docker</h3>
 <div class="outline-text-3" id="text-1-1">
 <ol class="org-ol">
 <li><code>docker pull mysql:5.7</code></li>
@@ -272,12 +272,12 @@
 </div>
 </div>
 
-<div id="outline-container-orgbf5aa15" class="outline-2">
-<h2 id="orgbf5aa15"><span class="section-number-2">2.</span> Command</h2>
+<div id="outline-container-orgd716cfc" class="outline-2">
+<h2 id="orgd716cfc"><span class="section-number-2">2.</span> Command</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org7d16b12" class="outline-3">
-<h3 id="org7d16b12"><span class="section-number-3">2.1.</span> Database</h3>
+<div id="outline-container-orgcdf4d88" class="outline-3">
+<h3 id="orgcdf4d88"><span class="section-number-3">2.1.</span> Database</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>建库: <code>CREATE DATABASE db_name charset="utf8mb4"</code></li>
@@ -287,8 +287,8 @@
 </div>
 </div>
 
-<div id="outline-container-orga9288f0" class="outline-3">
-<h3 id="orga9288f0"><span class="section-number-3">2.2.</span> Table</h3>
+<div id="outline-container-orgfa833fb" class="outline-3">
+<h3 id="orgfa833fb"><span class="section-number-3">2.2.</span> Table</h3>
 <div class="outline-text-3" id="text-2-2">
 <ul class="org-ul">
 <li>建表: <code>CREATE TABLE tbl_name (&lt;col_name_1&gt; &lt;TYPE1&gt;2 [,..&lt;col_name_n&gt; &lt;TYPEn&gt;])</code></li>
@@ -391,8 +391,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgcd5f9d6" class="outline-3">
-<h3 id="orgcd5f9d6"><span class="section-number-3">2.3.</span> Grant</h3>
+<div id="outline-container-orgc0bdaf3" class="outline-3">
+<h3 id="orgc0bdaf3"><span class="section-number-3">2.3.</span> Grant</h3>
 <div class="outline-text-3" id="text-2-3">
 <ul class="org-ul">
 <li>查询所有用户: <code>select User from mysql.user</code></li>
@@ -408,10 +408,10 @@
 </div>
 </div>
 
-<div id="outline-container-orga02f9b2" class="outline-3">
-<h3 id="orga02f9b2"><span class="section-number-3">2.4.</span> Backup</h3>
+<div id="outline-container-org54f68d9" class="outline-3">
+<h3 id="org54f68d9"><span class="section-number-3">2.4.</span> Backup</h3>
 <div class="outline-text-3" id="text-2-4">
-<pre class="example" id="org9d2df05">
+<pre class="example" id="org51869bb">
 mysqldump -h${hostname} -u${username} -p${password}  --add-drop-table --databases ${db_name} &gt; backupfile.sql
 </pre>
 
@@ -429,10 +429,10 @@ mysqldump -h${hostname} -u${username} -p${password}  --add-drop-table --database
 </div>
 </div>
 
-<div id="outline-container-org3c4195e" class="outline-3">
-<h3 id="org3c4195e"><span class="section-number-3">2.5.</span> Restore</h3>
+<div id="outline-container-orgd5aca80" class="outline-3">
+<h3 id="orgd5aca80"><span class="section-number-3">2.5.</span> Restore</h3>
 <div class="outline-text-3" id="text-2-5">
-<pre class="example" id="org9bb7915">
+<pre class="example" id="org9ce22c8">
 mysql -h${hostname} -u${username} -p${password} &lt; backupfile.sql
 </pre>
 
@@ -443,12 +443,12 @@ mysql -h${hostname} -u${username} -p${password} &lt; backupfile.sql
 </div>
 </div>
 
-<div id="outline-container-orgacfca7e" class="outline-2">
-<h2 id="orgacfca7e"><span class="section-number-2">3.</span> Data Type</h2>
+<div id="outline-container-orgd4f052c" class="outline-2">
+<h2 id="orgd4f052c"><span class="section-number-2">3.</span> Data Type</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org7727472" class="outline-3">
-<h3 id="org7727472"><span class="section-number-3">3.1.</span> BLOB 和 TEXT</h3>
+<div id="outline-container-org719759c" class="outline-3">
+<h3 id="org719759c"><span class="section-number-3">3.1.</span> BLOB 和 TEXT</h3>
 <div class="outline-text-3" id="text-3-1">
 <ul class="org-ul">
 <li>BLOB 四种类型: <code>TINYBLOB</code>, <code>BLOB</code>, <code>MEDIUMBLOB</code>, <code>LONGBLOB</code></li>
@@ -466,8 +466,8 @@ mysql -h${hostname} -u${username} -p${password} &lt; backupfile.sql
 </div>
 </div>
 
-<div id="outline-container-orgea5d4c8" class="outline-3">
-<h3 id="orgea5d4c8"><span class="section-number-3">3.2.</span> BLOB 和 TEXT 与 VARBINARY 和 VARCHAR 的不同 **</h3>
+<div id="outline-container-org6fc251e" class="outline-3">
+<h3 id="org6fc251e"><span class="section-number-3">3.2.</span> BLOB 和 TEXT 与 VARBINARY 和 VARCHAR 的不同 **</h3>
 <div class="outline-text-3" id="text-3-2">
 <ol class="org-ol">
 <li>BLOB 和 TEXT 列不能有默认值</li>
@@ -478,18 +478,18 @@ mysql -h${hostname} -u${username} -p${password} &lt; backupfile.sql
 </div>
 </div>
 
-<div id="outline-container-org0c7fe5a" class="outline-2">
-<h2 id="org0c7fe5a"><span class="section-number-2">4.</span> Configure</h2>
+<div id="outline-container-org391c6f0" class="outline-2">
+<h2 id="org391c6f0"><span class="section-number-2">4.</span> Configure</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 在线 my.cnf 生成器: <a href="http://imysql.com/my_cnf_generator">http://imysql.com/my_cnf_generator</a>
 </p>
 </div>
 
-<div id="outline-container-org86bc92b" class="outline-3">
-<h3 id="org86bc92b"><span class="section-number-3">4.1.</span> 某公司的 my.cnf 样例</h3>
+<div id="outline-container-org960ce2b" class="outline-3">
+<h3 id="org960ce2b"><span class="section-number-3">4.1.</span> 某公司的 my.cnf 样例</h3>
 <div class="outline-text-3" id="text-4-1">
-<pre class="example" id="orgb42e3d9">
+<pre class="example" id="org7264bc2">
 # my.cnf
 [client]
 port            = 3306
@@ -606,14 +606,14 @@ open-files-limit = 65535
 </div>
 </div>
 
-<div id="outline-container-org98d7faf" class="outline-3">
-<h3 id="org98d7faf"><span class="section-number-3">4.2.</span> 慢查询</h3>
+<div id="outline-container-org8ccd75a" class="outline-3">
+<h3 id="org8ccd75a"><span class="section-number-3">4.2.</span> 慢查询</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 开启:
 </p>
 
-<pre class="example" id="org995db31">
+<pre class="example" id="org3d67fbe">
 slow_query_log = 1
 slow_query_log_file = /data/log/mysql/mysql-slow.log
 long_query_time = 0.01
@@ -644,14 +644,14 @@ log-queries-not-using-indexes
 </div>
 </div>
 
-<div id="outline-container-orgbac6f79" class="outline-3">
-<h3 id="orgbac6f79"><span class="section-number-3">4.3.</span> Docker MySQL 设置 utf8mb4 编码</h3>
+<div id="outline-container-org29da64d" class="outline-3">
+<h3 id="org29da64d"><span class="section-number-3">4.3.</span> Docker MySQL 设置 utf8mb4 编码</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
 <a href="https://hub.docker.com/_/mysql/">https://hub.docker.com/_/mysql/</a>
 </p>
 
-<pre class="example" id="org507e107">
+<pre class="example" id="org8e70e5e">
 docker run -it -d --name xxx --restart=always --network qwerty -e MYSQL_ROOT_PASSWORD=xxx  -p 3306:3306 mysql:5.7 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 </pre>
 
@@ -688,8 +688,8 @@ default-character-set=utf8mb4
 </div>
 </div>
 
-<div id="outline-container-orgd804f40" class="outline-2">
-<h2 id="orgd804f40"><span class="section-number-2">5.</span> Best Practices</h2>
+<div id="outline-container-orgd5ca09d" class="outline-2">
+<h2 id="orgd5ca09d"><span class="section-number-2">5.</span> Best Practices</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>在控制台执行一条 SQL 语句: <code>mysql -h127.0.0.1 -uuser -ppassword db_name -e "select xxx from xxx" &gt; aa.txt</code></li>
@@ -700,7 +700,7 @@ default-character-set=utf8mb4
 <li><p>
 MySQL 5.6 占内存解决方法:
 </p>
-<pre class="example" id="orgf8a3427">
+<pre class="example" id="orgfe9232e">
 performance_schema_max_table_instances=400
 table_definition_cache=400
 table_open_cache=256
@@ -710,7 +710,7 @@ table_open_cache=256
 <li><p>
 数据库中每一个表的大小:
 </p>
-<pre class="example" id="orgf938aee">
+<pre class="example" id="orgb3b23d1">
 SELECT
   TABLE_NAME AS `Table`,
   ROUND((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024) AS `Size (MB)`
@@ -725,7 +725,7 @@ DESC;
 <li><p>
 数据库中某一个表的大小(扩展: <a href="https://chartio.com/resources/tutorials/how-to-get-the-size-of-a-table-in-mysql">https://chartio.com/resources/tutorials/how-to-get-the-size-of-a-table-in-mysql</a>):
 </p>
-<pre class="example" id="orgb91be37">
+<pre class="example" id="org00def3a">
 SELECT
 TABLE_NAME AS `Table`,
 ROUND((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024) AS `Size (MB)`
@@ -761,8 +761,8 @@ DESC;
 </div>
 </div>
 
-<div id="outline-container-org489c781" class="outline-2">
-<h2 id="org489c781"><span class="section-number-2">6.</span> Resource</h2>
+<div id="outline-container-orgf1bd5ad" class="outline-2">
+<h2 id="orgf1bd5ad"><span class="section-number-2">6.</span> Resource</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li><a href="https://www.pureweber.com/article/myisam-vs-innodb/">MyISAM vs InnoDB</a></li>
@@ -789,7 +789,7 @@ DESC;
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2017-12-04 10:54:25 <br />Last updated: 2022-03-01 Tue 15:38 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.5.2)</p>
+<p class="postamble">First created: 2017-12-04 10:54:25 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

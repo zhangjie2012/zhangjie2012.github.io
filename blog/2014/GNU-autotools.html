@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 17:43 -->
+<!-- 2022-06-09 Thu 17:06 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GNU Autotools</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,16 +213,15 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">GNU Autotools</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#hello-world">1. Hello World</a>
 <ul>
@@ -294,7 +291,7 @@ Part II</a>。*
 <i>src/main.c</i>
 </p>
 
-<pre class="example" id="orgff94689">
+<pre class="example" id="orge77930e">
 #include &lt;config.h&gt;
 #include &lt;stdio.h&gt;
 
@@ -310,7 +307,7 @@ int main(void)
 <i>configure.ac</i>
 </p>
 
-<pre class="example" id="org5792736">
+<pre class="example" id="org5b03bb7">
 AC_INIT([amhello], [1.0], [bug-report@address])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_PROG_CC
@@ -323,7 +320,7 @@ AC_OUTPUT
 <i>Makefile.am</i>
 </p>
 
-<pre class="example" id="orgcd0dcf5">
+<pre class="example" id="org778d3cf">
 SUBDIRS = src
 </pre>
 
@@ -331,7 +328,7 @@ SUBDIRS = src
 <i>src/Makefile.am</i>
 </p>
 
-<pre class="example" id="orgb0e0271">
+<pre class="example" id="org4f0a7b5">
 bin_PROGRAMS = hello
 hello_SOURCES = main.c
 </pre>
@@ -340,7 +337,7 @@ hello_SOURCES = main.c
 此时的文件结构为(<code>ls -R</code>):
 </p>
 
-<pre class="example" id="org4802e46">
+<pre class="example" id="org25be8a7">
 .:
 Makefile.am  configure.ac  src
 
@@ -353,7 +350,7 @@ Makefile.am  main.c
 <div id="outline-container-autoreconf-install" class="outline-3">
 <h3 id="autoreconf-install"><span class="section-number-3">1.2.</span> autoreconf &#x2013;install</h3>
 <div class="outline-text-3" id="text-autoreconf-install">
-<pre class="example" id="org10fa6b6">
+<pre class="example" id="org4981dbc">
 $: autoreconf --install
 configure.ac:2: installing `./install-sh'
 configure.ac:2: installing `./missing'
@@ -364,7 +361,7 @@ src/Makefile.am: installing `./depcomp'
 此时的文件结构为(<code>ls -R</code>):
 </p>
 
-<pre class="example" id="orgdebc8f0">
+<pre class="example" id="org68b8714">
 .:
 Makefile.am  aclocal.m4      config.h.in  configure.ac  install-sh  src
 Makefile.in  autom4te.cache  configure    depcomp       missing
@@ -389,7 +386,7 @@ configuration templates.</li>
 <div id="outline-container-configure" class="outline-3">
 <h3 id="configure"><span class="section-number-3">1.3.</span> <code>./configure</code></h3>
 <div class="outline-text-3" id="text-configure">
-<pre class="example" id="orgb4746f2">
+<pre class="example" id="org615fd95">
 checking for a BSD-compatible install... /usr/bin/install -c
 checking whether build environment is sane... yes
 checking for a thread-safe mkdir -p... /bin/mkdir -p
@@ -409,7 +406,7 @@ config.status: executing depfiles commands
 <div id="outline-container-make" class="outline-3">
 <h3 id="make"><span class="section-number-3">1.4.</span> <code>make</code></h3>
 <div class="outline-text-3" id="text-make">
-<pre class="example" id="orge782dbc">
+<pre class="example" id="org43f517f">
 /usr/bin/make  all-recursive
 make[1]: Entering directory `/home/zhangjie/TempFile/src'
 Making all in src
@@ -428,7 +425,7 @@ make[1]: Leaving directory `/home/zhangjie/TempFile/src'
 <div id="outline-container-编译链接成功运行程序-srchello" class="outline-3">
 <h3 id="编译链接成功运行程序-srchello"><span class="section-number-3">1.5.</span> 编译、链接成功，运行程序: <code>src/hello</code></h3>
 <div class="outline-text-3" id="text-编译链接成功运行程序-srchello">
-<pre class="example" id="org87d870a">
+<pre class="example" id="orgb7415d6">
 $: src/hello
 Hello World!
 This is amhello 1.0.
@@ -439,7 +436,7 @@ This is amhello 1.0.
 <div id="outline-container-源码打包-make-distcheck" class="outline-3">
 <h3 id="源码打包-make-distcheck"><span class="section-number-3">1.6.</span> 源码打包: <code>make distcheck</code></h3>
 <div class="outline-text-3" id="text-源码打包-make-distcheck">
-<pre class="example" id="org1f5a68f">
+<pre class="example" id="org06a202c">
 $: make distcheck
 ...
 =============================================
@@ -453,7 +450,7 @@ amhello-1.0.tar.gz
 <div id="outline-container-解包查看文件内容" class="outline-3">
 <h3 id="解包查看文件内容"><span class="section-number-3">1.7.</span> 解包，查看文件内容</h3>
 <div class="outline-text-3" id="text-解包查看文件内容">
-<pre class="example" id="org87d6ac2">
+<pre class="example" id="orge50dc5b">
 $ tar ztf amhello-1.0.tar.gz
 amhello-1.0/
 amhello-1.0/Makefile.am
@@ -513,7 +510,7 @@ gather denitions in <code>aclocal.m4</code>.</li>
 <h3 id="autoreconf"><span class="section-number-3">2.3.</span> autoreconf</h3>
 <div class="outline-text-3" id="text-autoreconf">
 
-<div id="org7daab24" class="figure">
+<div id="orgfda5d18" class="figure">
 <p><img src="file:///img/wiki/autoreconf.jpg" alt="autoreconf.jpg" />
 </p>
 <p><span class="figure-number">Figure 1: </span>autoreconf</p>
@@ -541,7 +538,7 @@ gather denitions in <code>aclocal.m4</code>.</li>
 <div id="outline-container-configure.ac" class="outline-3">
 <h3 id="configure.ac"><span class="section-number-3">3.1.</span> configure.ac</h3>
 <div class="outline-text-3" id="text-configure.ac">
-<pre class="example" id="orgf941b0a">
+<pre class="example" id="orgd6678b8">
 AC_INIT([amhello], [1.0], [bug-report@address])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_PROG_CC
@@ -567,7 +564,7 @@ files.</li>
 <div id="outline-container-makefile.am" class="outline-3">
 <h3 id="makefile.am"><span class="section-number-3">3.2.</span> Makefile.am</h3>
 <div class="outline-text-3" id="text-makefile.am">
-<pre class="example" id="org0b2aa8e">
+<pre class="example" id="org177a764">
 SUBDIRS = src
 </pre>
 
@@ -582,7 +579,7 @@ SUBDIRS = src
 <div id="outline-container-srcmakefile.am" class="outline-3">
 <h3 id="srcmakefile.am"><span class="section-number-3">3.3.</span> src/Makefile.am</h3>
 <div class="outline-text-3" id="text-srcmakefile.am">
-<pre class="example" id="org2d61b0b">
+<pre class="example" id="org2977fb6">
 bin_PROGRAMS = hello
 hello_SOURCES = main.c
 </pre>
@@ -599,7 +596,7 @@ hello_SOURCES = main.c
 </p>
 
 
-<div id="orgfffc7c6" class="figure">
+<div id="orgd35054c" class="figure">
 <p><img src="file:///img/wiki/sys_hierarchy.jpg" alt="sys_hierarchy.jpg" />
 </p>
 </div>
@@ -638,7 +635,7 @@ infrastructure on top of that, plus the pool of macros.</li>
 <i>exmple.m4:</i>
 </p>
 
-<pre class="example" id="org770ab41">
+<pre class="example" id="org09c2965">
 m4_define(NAME1, Harry)
 m4_define(NAME2, Sally)
 m4_define(MET, $1 met $2)
@@ -649,7 +646,7 @@ MET(NAME1, NAME2)
 output:
 </p>
 
-<pre class="example" id="orgd692224">
+<pre class="example" id="org8ccb633">
 $: m4 -P example.m4
 # 空白
 # 空白
@@ -681,7 +678,7 @@ M4
 也因此在 Shell 中做比较使用 <code>test</code> ，而不是 <code>[</code> 。
 </p>
 
-<pre class="example" id="org33ed071">
+<pre class="example" id="orgceda602">
 if test "$x" = "$y"; then ...
 </pre></li>
 
@@ -689,7 +686,7 @@ if test "$x" = "$y"; then ...
 使用 <code>AC_DEFUN</code> 定义宏。
 </p>
 
-<pre class="example" id="orgaab4122">
+<pre class="example" id="org83ab4eb">
 AC_DEFUN([NAME1], [Harry, Jr.])
 AC_DEFUN([NAME2], [Sally])
 AC_DEFUN([MET], [$1 met $2])
@@ -702,7 +699,7 @@ MET([NAME1], [NAME2])
 <div id="outline-container-一个-configure.ac-的结构" class="outline-3">
 <h3 id="一个-configure.ac-的结构"><span class="section-number-3">4.4.</span> 一个 configure.ac 的结构</h3>
 <div class="outline-text-3" id="text-一个-configure.ac-的结构">
-<pre class="example" id="org1c64c99">
+<pre class="example" id="orgad017ca">
 # Prelude
 AC_INIT([PACKAGE], [VERSION], [BUG-REPORT-ADDRESS])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
@@ -810,7 +807,7 @@ eg: <code>AC_CONFIG_FILES([Makefile sub/Makefile])</code> 会生成 <i>Makefile.
 <div id="outline-container-声明源文件" class="outline-3">
 <h3 id="声明源文件"><span class="section-number-3">5.3.</span> 声明源文件</h3>
 <div class="outline-text-3" id="text-声明源文件">
-<pre class="example" id="org5213e8d">
+<pre class="example" id="org46e731d">
 bin_PROGRAMS = foo run-me
 foo_SOURCES = foo.c foo.h print.c print.h
 run_me_SOURCES = run.c run.h print.c
@@ -834,7 +831,7 @@ about).</li>
 <div id="outline-container-静态库" class="outline-3">
 <h3 id="静态库"><span class="section-number-3">5.4.</span> (静态)库</h3>
 <div class="outline-text-3" id="text-静态库">
-<pre class="example" id="orgc0f888e">
+<pre class="example" id="orgf437f13">
 lib_LIBRARIES = libfoo.a libbar.a
 libfoo_a_SOURCES = foo.c privfoo.h
 libbar_a_SOURCES = bar.c privbar.h
@@ -860,7 +857,7 @@ include_HEADERS = foo.h bar.h
 所有的 <i>Makefile</i> 都要在 <i>configure.ac</i> 中声明.
 </p>
 
-<pre class="example" id="orgcdb71be">
+<pre class="example" id="org774d453">
 AC_CONFIG_FILES([Makefile lib/Makefile src/Makefile src/dira/Makefile src/dirb/Makefile])
 </pre></li>
 
@@ -871,7 +868,7 @@ AC_CONFIG_FILES([Makefile lib/Makefile src/Makefile src/dira/Makefile src/dirb/M
 using the /SUBDIRS</i> variable.
 </p>
 
-<pre class="example" id="org2e1e35f">
+<pre class="example" id="org119d14e">
 file: Makefile.am
 SUBDIRS = lib src
 </pre></li>
@@ -914,7 +911,7 @@ would fetch headers from the build tree.)</li>
 <i>lib/Makefile.am</i>:
 </p>
 
-<pre class="example" id="orgfb545b7">
+<pre class="example" id="orgd9433d2">
 noinst_LIBRARIES = libcompat.a
 libcompat_a_SOURCES = xalloc.c xalloc.h
 </pre>
@@ -923,7 +920,7 @@ libcompat_a_SOURCES = xalloc.c xalloc.h
 <i>src/Makefile.am</i>:
 </p>
 
-<pre class="example" id="org4ebfe83">
+<pre class="example" id="orgdeb72f6">
 bin_PROGRAMS = foo run-me
 foo_SOURCES = foo.c foo.h print.c print.h
 run_me_SOURCES = run.c run.h print.c
@@ -970,7 +967,7 @@ Use plain file names to refer to libraries inside your package (keep
 <i>src/Makefile.am</i>:
 </p>
 
-<pre class="example" id="org1c71697">
+<pre class="example" id="orgff02c65">
 bin_PROGRAMS = foo run-me
 foo_SOURCES = foo.c foo.h print.c print.h
 run_me_SOURCES = run.c run.h print.c
@@ -1011,7 +1008,7 @@ run_me_LDADD = ../lib/libcompat.a $(EFENCELIB)
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2014-08-09 00:00:00 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2014-08-09 00:00:00 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 17:42 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Protocol Buffers 生成代码</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,25 +213,24 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">Protocol Buffers 生成代码</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org323fcdc">1. 生成结果</a></li>
-<li><a href="#orgdefc8af">2. 命令行</a></li>
+<li><a href="#org4dbcfb6">1. 生成结果</a></li>
+<li><a href="#org4daf64b">2. 命令行</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org323fcdc" class="outline-2">
-<h2 id="org323fcdc"><span class="section-number-2">1.</span> 生成结果</h2>
+<div id="outline-container-org4dbcfb6" class="outline-2">
+<h2 id="org4dbcfb6"><span class="section-number-2">1.</span> 生成结果</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 protobuf 编译器运行一个 <code>.proto</code> 文件，会编译生成具体语言的源代码（定义的类型、get/set 接口，序列化和反序列化接口）。
@@ -312,8 +309,8 @@ protobuf 编译器运行一个 <code>.proto</code> 文件，会编译生成具�
 </div>
 </div>
 
-<div id="outline-container-orgdefc8af" class="outline-2">
-<h2 id="orgdefc8af"><span class="section-number-2">2.</span> 命令行</h2>
+<div id="outline-container-org4daf64b" class="outline-2">
+<h2 id="org4daf64b"><span class="section-number-2">2.</span> 命令行</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 安装编译器（用于将 .proto 文件生成不同语言的源代码）：
@@ -352,17 +349,17 @@ apt install protobuf-compiler
 </p>
 
 <div class="org-src-container">
-<pre class="src src-protobuf" id="orgadc9da0">syntax = <span style="color: #2544bb;">"proto3"</span>;
+<pre class="src src-protobuf" id="org4bf151c">syntax = <span style="color: #2544bb;">"proto3"</span>;
 
-<span style="color: #5317ac;">message</span> <span style="color: #005a5f;">User</span> {
-  <span style="color: #5317ac;">enum</span> <span style="color: #005a5f;">Gender</span> {
+<span style="color: #5317ac;">message</span> <span style="color: #005a5f;">User</span> <span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">enum</span> <span style="color: #005a5f;">Gender</span> <span style="color: #a8007f;">{</span>
         MALE = 0;
         FEMALE = 1;
-  }
+  <span style="color: #a8007f;">}</span>
   <span style="color: #005a5f;">string</span> <span style="color: #00538b;">username</span> = 1;
   <span style="color: #005a5f;">int32</span> <span style="color: #00538b;">age</span> = 2;
   <span style="color: #005a5f;">Gender</span> <span style="color: #00538b;">gender</span> = 3;
-}
+<span style="color: #000000;">}</span>
 </pre>
 </div>
 
@@ -426,7 +423,7 @@ option go_package = "github.com/zhangjie2012/xxxx/libproto"
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-20 14:50:18 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2020-05-20 14:50:18 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

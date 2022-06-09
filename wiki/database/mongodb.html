@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:40 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>MongoDB</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,39 +213,38 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">MongoDB</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org168dd36">1. 安装</a></li>
-<li><a href="#org89a67eb">2. 常用命令</a>
+<li><a href="#org14f70b3">1. 安装</a></li>
+<li><a href="#org59be9ae">2. 常用命令</a>
 <ul>
-<li><a href="#org9364c43">2.1. 库级别命令</a></li>
-<li><a href="#orgb4b911a">2.2. 表级别命令</a></li>
-<li><a href="#org2e7969f">2.3. 其它</a></li>
+<li><a href="#org0303cec">2.1. 库级别命令</a></li>
+<li><a href="#orgb52d6ec">2.2. 表级别命令</a></li>
+<li><a href="#org20a4013">2.3. 其它</a></li>
 </ul>
 </li>
-<li><a href="#org7206e8c">3. 备份与恢复</a></li>
-<li><a href="#orgb1fb68b">4. FAQ</a>
+<li><a href="#org0f8b19f">3. 备份与恢复</a></li>
+<li><a href="#org9659a6e">4. FAQ</a>
 <ul>
-<li><a href="#orgfc12b8c">4.1. Q: 如何查询嵌套内容？</a></li>
-<li><a href="#orgbe113dc">4.2. Q: <code>db.stats()</code> 中 <code>dataSize</code> 为什么比 <code>storageSize</code> 要大？</a></li>
+<li><a href="#orgf3a14c0">4.1. Q: 如何查询嵌套内容？</a></li>
+<li><a href="#orge15c755">4.2. Q: <code>db.stats()</code> 中 <code>dataSize</code> 为什么比 <code>storageSize</code> 要大？</a></li>
 </ul>
 </li>
-<li><a href="#orgfae919d">5. Resource</a></li>
+<li><a href="#org871448e">5. Resource</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org168dd36" class="outline-2">
-<h2 id="org168dd36"><span class="section-number-2">1.</span> 安装</h2>
+<div id="outline-container-org14f70b3" class="outline-2">
+<h2 id="org14f70b3"><span class="section-number-2">1.</span> 安装</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>设置清华大学提供的镜像源：<a href="https://mirror.tuna.tsinghua.edu.cn/help/mongodb/">https://mirror.tuna.tsinghua.edu.cn/help/mongodb/</a>，然后通过包管理工具（yum、apt 等）安装</li>
@@ -260,12 +257,12 @@
 </div>
 </div>
 
-<div id="outline-container-org89a67eb" class="outline-2">
-<h2 id="org89a67eb"><span class="section-number-2">2.</span> 常用命令</h2>
+<div id="outline-container-org59be9ae" class="outline-2">
+<h2 id="org59be9ae"><span class="section-number-2">2.</span> 常用命令</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org9364c43" class="outline-3">
-<h3 id="org9364c43"><span class="section-number-3">2.1.</span> 库级别命令</h3>
+<div id="outline-container-org0303cec" class="outline-3">
+<h3 id="org0303cec"><span class="section-number-3">2.1.</span> 库级别命令</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li><code>user ${db}</code>: 切换数据库</li>
@@ -279,8 +276,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgb4b911a" class="outline-3">
-<h3 id="orgb4b911a"><span class="section-number-3">2.2.</span> 表级别命令</h3>
+<div id="outline-container-orgb52d6ec" class="outline-3">
+<h3 id="orgb52d6ec"><span class="section-number-3">2.2.</span> 表级别命令</h3>
 <div class="outline-text-3" id="text-2-2">
 <ul class="org-ul">
 <li><code>show collections</code>: 查看所有的 collections</li>
@@ -294,8 +291,8 @@
 </div>
 </div>
 
-<div id="outline-container-org2e7969f" class="outline-3">
-<h3 id="org2e7969f"><span class="section-number-3">2.3.</span> 其它</h3>
+<div id="outline-container-org20a4013" class="outline-3">
+<h3 id="org20a4013"><span class="section-number-3">2.3.</span> 其它</h3>
 <div class="outline-text-3" id="text-2-3">
 <ul class="org-ul">
 <li><code>help</code>: 万能的帮助命令，可针对库，表等分别调用，用好了基本上不需要查阅手册</li>
@@ -305,8 +302,8 @@
 </div>
 </div>
 
-<div id="outline-container-org7206e8c" class="outline-2">
-<h2 id="org7206e8c"><span class="section-number-2">3.</span> 备份与恢复</h2>
+<div id="outline-container-org0f8b19f" class="outline-2">
+<h2 id="org0f8b19f"><span class="section-number-2">3.</span> 备份与恢复</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 MongoDB 中常使用 <code>mongodump</code> 来备份数据，使用 <code>mongorestore</code> 来恢复数据。
@@ -337,12 +334,12 @@ error connecting to host: could not connect to server: connection() : auth error
 </div>
 </div>
 
-<div id="outline-container-orgb1fb68b" class="outline-2">
-<h2 id="orgb1fb68b"><span class="section-number-2">4.</span> FAQ</h2>
+<div id="outline-container-org9659a6e" class="outline-2">
+<h2 id="org9659a6e"><span class="section-number-2">4.</span> FAQ</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orgfc12b8c" class="outline-3">
-<h3 id="orgfc12b8c"><span class="section-number-3">4.1.</span> Q: 如何查询嵌套内容？</h3>
+<div id="outline-container-orgf3a14c0" class="outline-3">
+<h3 id="orgf3a14c0"><span class="section-number-3">4.1.</span> Q: 如何查询嵌套内容？</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 A: 使用 <code>.</code> 语法，比如 <code>db.xxx.find({"aa.bb": "cc"})</code> 将会查询 <code>xxx</code> 表中 <code>aa</code> 结构中的 <code>bb = cc</code> 的条目。
@@ -350,8 +347,8 @@ A: 使用 <code>.</code> 语法，比如 <code>db.xxx.find({"aa.bb": "cc"})</cod
 </div>
 </div>
 
-<div id="outline-container-orgbe113dc" class="outline-3">
-<h3 id="orgbe113dc"><span class="section-number-3">4.2.</span> Q: <code>db.stats()</code> 中 <code>dataSize</code> 为什么比 <code>storageSize</code> 要大？</h3>
+<div id="outline-container-orge15c755" class="outline-3">
+<h3 id="orge15c755"><span class="section-number-3">4.2.</span> Q: <code>db.stats()</code> 中 <code>dataSize</code> 为什么比 <code>storageSize</code> 要大？</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 A: <code>storageSize</code> 是实际数据库所有占用大小的总和，不做压缩的情况下，要比 <code>dataSize</code> 要大，因为它还包含未使用的空间。但是如果你使用 <code>WiredTiger</code> 存储引擎，数据在磁盘是上压缩过的，所以比 <code>dataSize</code> 看起来要小。看 <a href="https://stackoverflow.com/questions/34054780/how-can-mongodb-datasize-be-larger-than-storagesize">这里</a>。
@@ -360,8 +357,8 @@ A: <code>storageSize</code> 是实际数据库所有占用大小的总和，不�
 </div>
 </div>
 
-<div id="outline-container-orgfae919d" class="outline-2">
-<h2 id="orgfae919d"><span class="section-number-2">5.</span> Resource</h2>
+<div id="outline-container-org871448e" class="outline-2">
+<h2 id="org871448e"><span class="section-number-2">5.</span> Resource</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li><a href="https://ruby-china.org/topics/27659">数据库 MongoDB 与 MySQL 深入对比</a></li>
@@ -370,7 +367,7 @@ A: <code>storageSize</code> 是实际数据库所有占用大小的总和，不�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-07-09 12:02:46 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2018-07-09 12:02:46 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

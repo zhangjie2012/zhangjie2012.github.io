@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 17:43 -->
+<!-- 2022-06-09 Thu 17:06 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>前端开发从入门到放弃</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,40 +213,39 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">前端开发从入门到放弃</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org8c87db4">1. 分享目标</a></li>
-<li><a href="#org931ea8e">2. 四个议题</a></li>
-<li><a href="#orgdfec1a9">3. 为什么程序员应该了解一点前端</a>
+<li><a href="#org0b2cdeb">1. 分享目标</a></li>
+<li><a href="#orgeadfca1">2. 四个议题</a></li>
+<li><a href="#orgfd35ad9">3. 为什么程序员应该了解一点前端</a>
 <ul>
-<li><a href="#orgd3c8970">3.1. 前端开发经历</a></li>
-<li><a href="#org5b7387e">3.2. 广义上的前端</a></li>
-<li><a href="#org17c7c1a">3.3. 总结</a></li>
+<li><a href="#orgc759333">3.1. 前端开发经历</a></li>
+<li><a href="#org305e758">3.2. 广义上的前端</a></li>
+<li><a href="#orgb0de399">3.3. 总结</a></li>
 </ul>
 </li>
-<li><a href="#org1873597">4. 前端开发到底在解决什么问题</a>
+<li><a href="#org5a15576">4. 前端开发到底在解决什么问题</a>
 <ul>
-<li><a href="#org8aa1f02">4.1. 程序设计</a></li>
-<li><a href="#org4e7d519">4.2. 衍生的技术</a></li>
+<li><a href="#org3ef69cb">4.1. 程序设计</a></li>
+<li><a href="#org49b209e">4.2. 衍生的技术</a></li>
 </ul>
 </li>
-<li><a href="#org9d5bad9">5. 基于 umi 的前端开发简介</a></li>
-<li><a href="#org002645d">6. <span class="todo TODO">TODO</span> 浅析前端开发现状与未来</a></li>
+<li><a href="#orgb5c6d16">5. 基于 umi 的前端开发简介</a></li>
+<li><a href="#orgca0e96c">6. <span class="todo TODO">TODO</span> 浅析前端开发现状与未来</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org8c87db4" class="outline-2">
-<h2 id="org8c87db4"><span class="section-number-2">1.</span> 分享目标</h2>
+<div id="outline-container-org0b2cdeb" class="outline-2">
+<h2 id="org0b2cdeb"><span class="section-number-2">1.</span> 分享目标</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>前端知识（技术栈）科普</li>
@@ -257,8 +254,8 @@
 </div>
 </div>
 
-<div id="outline-container-org931ea8e" class="outline-2">
-<h2 id="org931ea8e"><span class="section-number-2">2.</span> 四个议题</h2>
+<div id="outline-container-orgeadfca1" class="outline-2">
+<h2 id="orgeadfca1"><span class="section-number-2">2.</span> 四个议题</h2>
 <div class="outline-text-2" id="text-2">
 <ol class="org-ol">
 <li>Why :: 为什么程序员应该了解一点前端</li>
@@ -269,12 +266,12 @@
 </div>
 </div>
 
-<div id="outline-container-orgdfec1a9" class="outline-2">
-<h2 id="orgdfec1a9"><span class="section-number-2">3.</span> 为什么程序员应该了解一点前端</h2>
+<div id="outline-container-orgfd35ad9" class="outline-2">
+<h2 id="orgfd35ad9"><span class="section-number-2">3.</span> 为什么程序员应该了解一点前端</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgd3c8970" class="outline-3">
-<h3 id="orgd3c8970"><span class="section-number-3">3.1.</span> 前端开发经历</h3>
+<div id="outline-container-orgc759333" class="outline-3">
+<h3 id="orgc759333"><span class="section-number-3">3.1.</span> 前端开发经历</h3>
 <div class="outline-text-3" id="text-3-1">
 <dl class="org-dl">
 <dt>2014 之前 - 随便玩玩</dt><dd>WordPress 主题（静态页面） =&gt; <span class="underline">CSS</span> / <span class="underline">HTML</span></dd>
@@ -284,19 +281,19 @@
 </div>
 </div>
 
-<div id="outline-container-org5b7387e" class="outline-3">
-<h3 id="org5b7387e"><span class="section-number-3">3.2.</span> 广义上的前端</h3>
+<div id="outline-container-org305e758" class="outline-3">
+<h3 id="org305e758"><span class="section-number-3">3.2.</span> 广义上的前端</h3>
 <div class="outline-text-3" id="text-3-2">
 
-<div id="org1888424" class="figure">
+<div id="orgcc96970" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/frontend-category.png" alt="frontend-category.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org17c7c1a" class="outline-3">
-<h3 id="org17c7c1a"><span class="section-number-3">3.3.</span> 总结</h3>
+<div id="outline-container-orgb0de399" class="outline-3">
+<h3 id="orgb0de399"><span class="section-number-3">3.3.</span> 总结</h3>
 <div class="outline-text-3" id="text-3-3">
 <ul class="org-ul">
 <li>前端技术是 <span class="underline">产品化</span> 必不可少的一个环节（尤其对于个人开发者）</li>
@@ -307,15 +304,15 @@
 </div>
 </div>
 
-<div id="outline-container-org1873597" class="outline-2">
-<h2 id="org1873597"><span class="section-number-2">4.</span> 前端开发到底在解决什么问题</h2>
+<div id="outline-container-org5a15576" class="outline-2">
+<h2 id="org5a15576"><span class="section-number-2">4.</span> 前端开发到底在解决什么问题</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org8aa1f02" class="outline-3">
-<h3 id="org8aa1f02"><span class="section-number-3">4.1.</span> 程序设计</h3>
+<div id="outline-container-org3ef69cb" class="outline-3">
+<h3 id="org3ef69cb"><span class="section-number-3">4.1.</span> 程序设计</h3>
 <div class="outline-text-3" id="text-4-1">
 
-<div id="org60b1985" class="figure">
+<div id="orge21be17" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/programming.png" alt="programming.png" />
 </p>
 </div>
@@ -326,11 +323,11 @@
 </div>
 </div>
 
-<div id="outline-container-org4e7d519" class="outline-3">
-<h3 id="org4e7d519"><span class="section-number-3">4.2.</span> 衍生的技术</h3>
+<div id="outline-container-org49b209e" class="outline-3">
+<h3 id="org49b209e"><span class="section-number-3">4.2.</span> 衍生的技术</h3>
 <div class="outline-text-3" id="text-4-2">
 
-<div id="org6d08def" class="figure">
+<div id="orgbc0523d" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/frontend-stack.png" alt="frontend-stack.png" />
 </p>
 </div>
@@ -338,8 +335,8 @@
 </div>
 </div>
 
-<div id="outline-container-org9d5bad9" class="outline-2">
-<h2 id="org9d5bad9"><span class="section-number-2">5.</span> 基于 umi 的前端开发简介</h2>
+<div id="outline-container-orgb5c6d16" class="outline-2">
+<h2 id="orgb5c6d16"><span class="section-number-2">5.</span> 基于 umi 的前端开发简介</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 见文章： <a href="intro-to-umi.html">基于 umi 的中后台前端项目入门</a>
@@ -347,8 +344,8 @@
 </div>
 </div>
 
-<div id="outline-container-org002645d" class="outline-2">
-<h2 id="org002645d"><span class="section-number-2">6.</span> <span class="todo TODO">TODO</span> 浅析前端开发现状与未来</h2>
+<div id="outline-container-orgca0e96c" class="outline-2">
+<h2 id="orgca0e96c"><span class="section-number-2">6.</span> <span class="todo TODO">TODO</span> 浅析前端开发现状与未来</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 俺也不知道。
@@ -357,7 +354,7 @@
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-12-14 11:04:29 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2019-12-14 11:04:29 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:41 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>K8s Ingress</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,36 +213,35 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">K8s Ingress</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orge5e88c9">1. 什么是 Ingress ？</a></li>
-<li><a href="#org5e7bcd7">2. 先决条件</a></li>
-<li><a href="#org2bb97a0">3. Ingress 资源</a></li>
-<li><a href="#orgd56b05b">4. Ingress controllers</a></li>
-<li><a href="#orgcde519b">5. 开始之前</a></li>
-<li><a href="#orgb4d16de">6. Ingress 类型</a>
+<li><a href="#orgb7fa6bb">1. 什么是 Ingress ？</a></li>
+<li><a href="#orgcba4bc8">2. 先决条件</a></li>
+<li><a href="#orgd5d4d04">3. Ingress 资源</a></li>
+<li><a href="#org81615e1">4. Ingress controllers</a></li>
+<li><a href="#org5111612">5. 开始之前</a></li>
+<li><a href="#orgd200464">6. Ingress 类型</a>
 <ul>
-<li><a href="#orga614b6c">6.1. 单个服务</a></li>
-<li><a href="#org2ce758f">6.2. 简单的扇出（fanout）</a></li>
-<li><a href="#orge4ca254">6.3. 基于名称的 vhost</a></li>
-<li><a href="#org2c78d27">6.4. TLS</a></li>
-<li><a href="#orgdd2e716">6.5. 负载均衡</a></li>
+<li><a href="#org6b31dc8">6.1. 单个服务</a></li>
+<li><a href="#orgcf8733f">6.2. 简单的扇出（fanout）</a></li>
+<li><a href="#org10a91ed">6.3. 基于名称的 vhost</a></li>
+<li><a href="#org042a40c">6.4. TLS</a></li>
+<li><a href="#org5627a68">6.5. 负载均衡</a></li>
 </ul>
 </li>
-<li><a href="#org3c16a81">7. 更新 Ingress</a></li>
-<li><a href="#org62081a2">8. 跨可用区域失败</a></li>
-<li><a href="#org31a6d46">9. 未来的工作</a>
+<li><a href="#org80c1a5f">7. 更新 Ingress</a></li>
+<li><a href="#orgbd284d9">8. 跨可用区域失败</a></li>
+<li><a href="#org7a1e213">9. 未来的工作</a>
 <ul>
-<li><a href="#org135c46b">9.1. 备选方案</a></li>
+<li><a href="#org3d55c7d">9.1. 备选方案</a></li>
 </ul>
 </li>
 </ul>
@@ -260,7 +257,7 @@ Ingress 可以提供负载均衡，SSL 终端和基于名称的虚拟主机（na
 
 <p>
 _tips_：Vhosts 分为两种情况，一种是基于 IP 的（IP-based virtual hosting），一台机器上运行多个网站，不同的网站有不同的 IP 地址；
-另外一种是基于名称的，即多个网站有相同的 IP 地址，用名称来隔离 <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
+另外一种是基于名称的，即多个网站有相同的 IP 地址，用名称来隔离 <sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>。
 </p>
 
 <p>
@@ -275,8 +272,8 @@ _tips_：Vhosts 分为两种情况，一种是基于 IP 的（IP-based virtual h
 <li>服务：K8s 中的服务等价于使用了 label 选择器的 pods 集合。除非另有说明，否则服务被当做成拥有虚拟 IPs 只能在集群内部网络路由</li>
 </ul>
 
-<div id="outline-container-orge5e88c9" class="outline-2">
-<h2 id="orge5e88c9"><span class="section-number-2">1.</span> 什么是 Ingress ？</h2>
+<div id="outline-container-orgb7fa6bb" class="outline-2">
+<h2 id="orgb7fa6bb"><span class="section-number-2">1.</span> 什么是 Ingress ？</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 通常，服务和 pods 拥有的 IPs 只能在集群网络路由。所有的在边缘路由器结束的流量会被丢弃或者转发到别的地方。就像下面这样：
@@ -308,8 +305,8 @@ Ingress 提供了一系列的规则允许入站连接到达集群服务。
 </div>
 </div>
 
-<div id="outline-container-org5e7bcd7" class="outline-2">
-<h2 id="org5e7bcd7"><span class="section-number-2">2.</span> 先决条件</h2>
+<div id="outline-container-orgcba4bc8" class="outline-2">
+<h2 id="orgcba4bc8"><span class="section-number-2">2.</span> 先决条件</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 在你使用 Ingress 资源之前，你需要了解一些事情。Ingress 是一个 beta 资源，在任何 K8s 发布 1.1 之前都是不可用的。你需要一个 Ingress 控制器来满足 Ingress，简单的创建资源将不起作用。
@@ -325,8 +322,8 @@ GCE/谷歌 K8s 引擎在 master 上部署了一个 ingress 控制器。你可以
 </div>
 </div>
 
-<div id="outline-container-org2bb97a0" class="outline-2">
-<h2 id="org2bb97a0"><span class="section-number-2">3.</span> Ingress 资源</h2>
+<div id="outline-container-orgd5d4d04" class="outline-2">
+<h2 id="orgd5d4d04"><span class="section-number-2">3.</span> Ingress 资源</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 一个最小的 Ingress 像这样：
@@ -376,8 +373,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-orgd56b05b" class="outline-2">
-<h2 id="orgd56b05b"><span class="section-number-2">4.</span> Ingress controllers</h2>
+<div id="outline-container-org81615e1" class="outline-2">
+<h2 id="org81615e1"><span class="section-number-2">4.</span> Ingress controllers</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 为了使 ingress 资源生效，集群必须有一个 Ingress controller 运行。这和其他类型的控制器不用，通常作为 <code>kube-controller-manager</code>  二进制的一部分来运行，跟随集群一直启动。选择一个合适你集群的 ingress controller 实现，或者你自己实现一个。
@@ -391,8 +388,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-orgcde519b" class="outline-2">
-<h2 id="orgcde519b"><span class="section-number-2">5.</span> 开始之前</h2>
+<div id="outline-container-org5111612" class="outline-2">
+<h2 id="org5111612"><span class="section-number-2">5.</span> 开始之前</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 以下文档介绍了一套 Ingress 资源跨平台资源暴露的特性，在理想情况下，所有的 Ingress 控制器应该满足这个规范，但是我们还没有实现。
@@ -401,12 +398,12 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-orgb4d16de" class="outline-2">
-<h2 id="orgb4d16de"><span class="section-number-2">6.</span> Ingress 类型</h2>
+<div id="outline-container-orgd200464" class="outline-2">
+<h2 id="orgd200464"><span class="section-number-2">6.</span> Ingress 类型</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-orga614b6c" class="outline-3">
-<h3 id="orga614b6c"><span class="section-number-3">6.1.</span> 单个服务</h3>
+<div id="outline-container-org6b31dc8" class="outline-3">
+<h3 id="org6b31dc8"><span class="section-number-3">6.1.</span> 单个服务</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 现有的 K8s 概念允许你暴露单个服务（查看<a href="https://kubernetes.io/docs/concepts/services-networking/ingress/#alternatives">备选方案</a>），不过你也可以通过 Ingress 来实现，通过指定一个没有规则的默认后端服务。
@@ -439,8 +436,8 @@ test-ingress        -             testsvc:80     107.178.254.228
 </div>
 </div>
 
-<div id="outline-container-org2ce758f" class="outline-3">
-<h3 id="org2ce758f"><span class="section-number-3">6.2.</span> 简单的扇出（fanout）</h3>
+<div id="outline-container-orgcf8733f" class="outline-3">
+<h3 id="orgcf8733f"><span class="section-number-3">6.2.</span> 简单的扇出（fanout）</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 如前所述，在 K8s 中的 pods 的 IPs 只能在集群内部访问，所以我们需要在边缘获取流量并且代理到正确的端点。这个组件通常用来做高可用负载均衡。Ingress 允许你将负载均衡的量降到最低，比如像下面的设置:
@@ -496,8 +493,8 @@ test      -
 </div>
 </div>
 
-<div id="outline-container-orge4ca254" class="outline-3">
-<h3 id="orge4ca254"><span class="section-number-3">6.3.</span> 基于名称的 vhost</h3>
+<div id="outline-container-org10a91ed" class="outline-3">
+<h3 id="org10a91ed"><span class="section-number-3">6.3.</span> 基于名称的 vhost</h3>
 <div class="outline-text-3" id="text-6-3">
 <p>
 基于名称的 vhosts 为相同的 IP 地址提供不同的 host 名称。
@@ -540,8 +537,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-org2c78d27" class="outline-3">
-<h3 id="org2c78d27"><span class="section-number-3">6.4.</span> TLS</h3>
+<div id="outline-container-org042a40c" class="outline-3">
+<h3 id="org042a40c"><span class="section-number-3">6.4.</span> TLS</h3>
 <div class="outline-text-3" id="text-6-4">
 <p>
 通过指定包含 TLS 私有 key 和证书的 secret 可以提高 Ingress 的安全。当前 Ingress 只支持单一的 TLS 端口，443，并假定 TLS termination。如果 TLS 配置小节指定了不同的 hosts，
@@ -583,8 +580,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-orgdd2e716" class="outline-3">
-<h3 id="orgdd2e716"><span class="section-number-3">6.5.</span> 负载均衡</h3>
+<div id="outline-container-org5627a68" class="outline-3">
+<h3 id="org5627a68"><span class="section-number-3">6.5.</span> 负载均衡</h3>
 <div class="outline-text-3" id="text-6-5">
 <p>
 一个 Ingress 控制器是一些负载均衡策略设置的引导，可以应用到所有的 Ingress 上，比如负载均衡算法，后端权重方案，等等。更多的高级负载均衡概念（比如：回话保持、动态权重等），还没有通过 Ingress 暴露。
@@ -598,8 +595,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-org3c16a81" class="outline-2">
-<h2 id="org3c16a81"><span class="section-number-2">7.</span> 更新 Ingress</h2>
+<div id="outline-container-org80c1a5f" class="outline-2">
+<h2 id="org80c1a5f"><span class="section-number-2">7.</span> 更新 Ingress</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 你已经添加了一个 Ingress，现在你可以编辑它：
@@ -659,8 +656,8 @@ test      -                       178.91.123.132
 </div>
 </div>
 
-<div id="outline-container-org62081a2" class="outline-2">
-<h2 id="org62081a2"><span class="section-number-2">8.</span> 跨可用区域失败</h2>
+<div id="outline-container-orgbd284d9" class="outline-2">
+<h2 id="orgbd284d9"><span class="section-number-2">8.</span> 跨可用区域失败</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 云服务提供商之间的跨故障域传播流量的技术不同，请详细查询 Ingress 控制器的文档，有关在联合群集中部署 Ingress 的详细信息，请参阅 <a href="https://kubernetes.io/docs/concepts/cluster-administration/federation/">联合文档</a>。
@@ -668,8 +665,8 @@ test      -                       178.91.123.132
 </div>
 </div>
 
-<div id="outline-container-org31a6d46" class="outline-2">
-<h2 id="org31a6d46"><span class="section-number-2">9.</span> 未来的工作</h2>
+<div id="outline-container-org7a1e213" class="outline-2">
+<h2 id="org7a1e213"><span class="section-number-2">9.</span> 未来的工作</h2>
 <div class="outline-text-2" id="text-9">
 <ul class="org-ul">
 <li>支持各种 HTTPS/TLS 模式</li>
@@ -679,8 +676,8 @@ test      -                       178.91.123.132
 </ul>
 </div>
 
-<div id="outline-container-org135c46b" class="outline-3">
-<h3 id="org135c46b"><span class="section-number-3">9.1.</span> 备选方案</h3>
+<div id="outline-container-org3d55c7d" class="outline-3">
+<h3 id="org3d55c7d"><span class="section-number-3">9.1.</span> 备选方案</h3>
 <div class="outline-text-3" id="text-9-1">
 <p>
 不直接涉及 Ingress 资源你可以有多重方式暴露服务：
@@ -698,7 +695,7 @@ test      -                       178.91.123.132
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="http://www.aboutlinux.info/2005/09/apache-name-based-vs-ip-based-virtual.html">http://www.aboutlinux.info/2005/09/apache-name-based-vs-ip-based-virtual.html</a>
 </p></div></div>
 
@@ -706,7 +703,7 @@ test      -                       178.91.123.132
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-06-04 11:28:27 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2018-06-04 11:28:27 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

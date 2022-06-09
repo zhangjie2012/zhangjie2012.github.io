@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 17:42 -->
+<!-- 2022-06-09 Thu 17:06 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C++ 深入探究 while(cin)</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,18 +213,17 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">C++ 深入探究 while(cin)</h1>
 <p>
 今天看到这个帖子："<a href="http://www.cppleyuan.com/viewthread.php?tid=10415">C++中字符串的结束字符是什么？</a>"，代码是：
 </p>
 
-<pre class="example" id="org4539365">
+<pre class="example" id="org50a33cd">
 while(cin &gt;&gt; str)
     ivec.push_back(str);
 </pre>
@@ -249,7 +246,7 @@ while(cin &gt;&gt; str)
 看他回复另外一个朋友的源码是：
 </p>
 
-<pre class="example" id="org6f4925e">
+<pre class="example" id="org0f0f49b">
 #include &lt;iostream&gt;
 #include &lt;vector&gt;
 #include &lt;string&gt;
@@ -294,7 +291,7 @@ cin 是一个全局变量，变量类型是 istream。我开始想着把 cin &gt
 找 <code>istream &gt;&gt;</code> 的声明：
 </p>
 
-<pre class="example" id="orgea99b14">
+<pre class="example" id="org3808c41">
 basic_istream&lt;_CharT, _Traits&gt;&amp; operator&gt;&gt;(short&amp; __n)
 {
     // _GLIBCXX_RESOLVE_LIB_DEFECTS
@@ -316,7 +313,7 @@ basic_istream&lt;_CharT, _Traits&gt;&amp; operator&gt;&gt;(short&amp; __n)
 想必有很多重载，拿一个就够分析了。假如有如下代码:
 </p>
 
-<pre class="example" id="org6f41ff4">
+<pre class="example" id="orgbb61227">
 short s;
 
 cin &gt;&gt; s;
@@ -330,7 +327,7 @@ cin &gt;&gt; s;
 找 <code>_M_extract</code> 实现：
 </p>
 
-<pre class="example" id="org6487101">
+<pre class="example" id="org4765713">
 basic_istream&lt;_CharT, _Traits&gt;&amp; _M_extract(_ValueT &amp; __v)
 {
     sentry __cerb(*this, false);
@@ -368,7 +365,7 @@ basic_istream&lt;_CharT, _Traits&gt;&amp; _M_extract(_ValueT &amp; __v)
 找到它的源码：
 </p>
 
-<pre class="example" id="org7c4a320">
+<pre class="example" id="org91935fd">
 bool fail() const
 {
     return (this-&gt;rdstate() &amp; (badbit | failbit)) != 0;
@@ -379,7 +376,7 @@ bool fail() const
 继续找 rdstate 的源码：
 </p>
 
-<pre class="example" id="org13ca443">
+<pre class="example" id="orgea0f4e8">
 iostate rdstate() const
 {
     return _M_streambuf_state;
@@ -396,7 +393,7 @@ badbit，failbit， <code>_M_streambuf_state</code> 是什么含义对我们来�
 就在我迷茫之时看到了这么一行代码：
 </p>
 
-<pre class="example" id="org703b6d4">
+<pre class="example" id="org2af17ba">
 /**
  *  @brief  The quick-and-easy status check.
  *
@@ -412,7 +409,7 @@ operator void*() const
 现在的问题在于，什么情况下会调用这个函数？在执行 <code>while (cin &gt;&gt; str)</code> 时进行了 <code>(void*)</code> 这个转换吗，要验证很简单，看下面这个例子：
 </p>
 
-<pre class="example" id="orgacef294">
+<pre class="example" id="org098d959">
 #include &lt;iostream&gt;
 
 class my_istream
@@ -442,7 +439,7 @@ int main ()
 假如将 <code>operator void * () const</code> 去掉编译器会提示如下错误：
 </p>
 
-<pre class="example" id="orge90061c">
+<pre class="example" id="org72657f6">
 E:\TEMP_FILE\test_volatile\main.cpp||In function 'int main()':|
 
 E:\TEMP_FILE\test_volatile\main.cpp|18|error: could not convert 'mi_ref' to 'bool'|
@@ -454,7 +451,7 @@ E:\TEMP_FILE\test_volatile\main.cpp|18|error: could not convert 'mi_ref' to 'boo
 Ok，总结：
 </p>
 
-<pre class="example" id="org872e149">
+<pre class="example" id="org9962c9c">
 while(cin &gt;&gt; str)
     ivec.push_back(str);
 </pre>
@@ -502,7 +499,7 @@ set.（可以看出和我的理解是一致的）
 </ol>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2013-01-18 15:21:35 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2013-01-18 15:21:35 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

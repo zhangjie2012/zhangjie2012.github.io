@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 17:44 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>[译] Docker 生态系统一览 - Containers, Moby, Swarm, Linuxkit, containerd, Kubernetes ..</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,50 +213,49 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">[译] Docker 生态系统一览 - Containers, Moby, Swarm, Linuxkit, containerd, Kubernetes ..</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org0c46479">1. Docker</a></li>
-<li><a href="#orgc65bba1">2. 让我们深入的了解一些概念和工具，比如 containerd 和 LXC</a>
+<li><a href="#org3091558">1. Docker</a></li>
+<li><a href="#org5f2e9c4">2. 让我们深入的了解一些概念和工具，比如 containerd 和 LXC</a>
 <ul>
-<li><a href="#org7f87e36">2.1. Docker &amp; LXC</a></li>
-<li><a href="#org251327a">2.2. Docker &amp; libcontainer</a></li>
-<li><a href="#org4c0feb1">2.3. 2015 - Docker &amp; runC</a></li>
-<li><a href="#orgb92d992">2.4. Docker &amp; The Open Containers Initiative</a></li>
-<li><a href="#org08c81ed">2.5. 2016 - Docker &amp; containerd</a></li>
-<li><a href="#org4f9fb1b">2.6. Docker 组件</a></li>
-<li><a href="#org07886ea">2.7. 2017 - 容器成为了主流</a></li>
+<li><a href="#orgea829b0">2.1. Docker &amp; LXC</a></li>
+<li><a href="#orgf4f6d84">2.2. Docker &amp; libcontainer</a></li>
+<li><a href="#orgf5c5bde">2.3. 2015 - Docker &amp; runC</a></li>
+<li><a href="#org2cd3292">2.4. Docker &amp; The Open Containers Initiative</a></li>
+<li><a href="#orga4dc08e">2.5. 2016 - Docker &amp; containerd</a></li>
+<li><a href="#org5b65995">2.6. Docker 组件</a></li>
+<li><a href="#org8fad27f">2.7. 2017 - 容器成为了主流</a></li>
 </ul>
 </li>
-<li><a href="#org8be8c06">3. Moby 项目</a>
+<li><a href="#org790524a">3. Moby 项目</a>
 <ul>
-<li><a href="#org67aaeb8">3.1. 现在，我们来一起看看 Moby 项目的组件</a>
+<li><a href="#org703de84">3.1. 现在，我们来一起看看 Moby 项目的组件</a>
 <ul>
-<li><a href="#orga668b96">3.1.1. Containerd</a></li>
-<li><a href="#orgc046c64">3.1.2. Linuxkit</a></li>
-<li><a href="#orgbe26a97">3.1.3. Infrakit</a></li>
-<li><a href="#orgd39c7aa">3.1.4. Libnetwork</a></li>
-<li><a href="#org9deeb1c">3.1.5. Docker &amp; Docker Swarm</a></li>
-<li><a href="#org60a7bfd">3.1.6. Docker &amp; Kubernetes</a></li>
-<li><a href="#org49f5624">3.1.7. 从 2013 年到 2017 年 Docker Pulls 情况</a></li>
+<li><a href="#orgc2fbbc6">3.1.1. Containerd</a></li>
+<li><a href="#org9880c7a">3.1.2. Linuxkit</a></li>
+<li><a href="#orgda078b7">3.1.3. Infrakit</a></li>
+<li><a href="#org5cd69f4">3.1.4. Libnetwork</a></li>
+<li><a href="#org5f2c159">3.1.5. Docker &amp; Docker Swarm</a></li>
+<li><a href="#orgaba55c6">3.1.6. Docker &amp; Kubernetes</a></li>
+<li><a href="#org9d4df79">3.1.7. 从 2013 年到 2017 年 Docker Pulls 情况</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgeb30e1a">4. 笔者：一些补充</a>
+<li><a href="#org4379879">4. 笔者：一些补充</a>
 <ul>
-<li><a href="#org8213ba3">4.1. LXC vs Docker</a></li>
-<li><a href="#org004deac">4.2. containerd</a></li>
-<li><a href="#orga42a702">4.3. RunC</a></li>
-<li><a href="#org507e2f7">4.4. OCI</a></li>
+<li><a href="#orgdd1fcd8">4.1. LXC vs Docker</a></li>
+<li><a href="#org916d903">4.2. containerd</a></li>
+<li><a href="#orgf943195">4.3. RunC</a></li>
+<li><a href="#orgd4fdd51">4.4. OCI</a></li>
 </ul>
 </li>
 </ul>
@@ -286,8 +283,8 @@
 
 <hr />
 
-<div id="outline-container-org0c46479" class="outline-2">
-<h2 id="org0c46479"><span class="section-number-2">1.</span> Docker</h2>
+<div id="outline-container-org3091558" class="outline-2">
+<h2 id="org3091558"><span class="section-number-2">1.</span> Docker</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Docker 是使用容器更轻松的创建，部署，和运行应用程序的工具。
@@ -436,7 +433,7 @@ Docker 是一个将应用程序和依赖项目打包到一起，然后几乎可�
 </p>
 
 
-<div id="org811d575" class="figure">
+<div id="org720c45a" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/docker-infrastructure.png" alt="docker-infrastructure.png" />
 </p>
 </div>
@@ -451,12 +448,12 @@ Docker 是一个将应用程序和依赖项目打包到一起，然后几乎可�
 </div>
 </div>
 
-<div id="outline-container-orgc65bba1" class="outline-2">
-<h2 id="orgc65bba1"><span class="section-number-2">2.</span> 让我们深入的了解一些概念和工具，比如 containerd 和 LXC</h2>
+<div id="outline-container-org5f2e9c4" class="outline-2">
+<h2 id="org5f2e9c4"><span class="section-number-2">2.</span> 让我们深入的了解一些概念和工具，比如 containerd 和 LXC</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org7f87e36" class="outline-3">
-<h3 id="org7f87e36"><span class="section-number-3">2.1.</span> Docker &amp; LXC</h3>
+<div id="outline-container-orgea829b0" class="outline-3">
+<h3 id="orgea829b0"><span class="section-number-3">2.1.</span> Docker &amp; LXC</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Docker 的第一个执行环境时 LXC，从 0.9 版本开始被 libcontainer 取代。
@@ -464,23 +461,23 @@ Docker 的第一个执行环境时 LXC，从 0.9 版本开始被 libcontainer �
 </div>
 </div>
 
-<div id="outline-container-org251327a" class="outline-3">
-<h3 id="org251327a"><span class="section-number-3">2.2.</span> Docker &amp; libcontainer</h3>
+<div id="outline-container-orgf4f6d84" class="outline-3">
+<h3 id="orgf4f6d84"><span class="section-number-3">2.2.</span> Docker &amp; libcontainer</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 libcontainer 是 Linux 基础设施的 Docker 接口比如 Cgroups，namespaces，netlink 和 netfilter。
 </p>
 
 
-<div id="org3c30d3a" class="figure">
+<div id="orga7b59df" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/docker-libcontainer.jpeg" alt="docker-libcontainer.jpeg" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org4c0feb1" class="outline-3">
-<h3 id="org4c0feb1"><span class="section-number-3">2.3.</span> 2015 - Docker &amp; runC</h3>
+<div id="outline-container-orgf5c5bde" class="outline-3">
+<h3 id="orgf5c5bde"><span class="section-number-3">2.3.</span> 2015 - Docker &amp; runC</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 2015 年，Docker 宣布使用轻量级的、可移植的运行时 runC，它基本上是一个直接使用 libcontainer 的命令行工具，而无需通过 Docker 引擎。
@@ -492,8 +489,8 @@ runC 的目标是使标准容器随处可用，该项目转赠给了 OCI。
 </div>
 </div>
 
-<div id="outline-container-orgb92d992" class="outline-3">
-<h3 id="orgb92d992"><span class="section-number-3">2.4.</span> Docker &amp; The Open Containers Initiative</h3>
+<div id="outline-container-org2cd3292" class="outline-3">
+<h3 id="org2cd3292"><span class="section-number-3">2.4.</span> Docker &amp; The Open Containers Initiative</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 OCI 是一个轻量级的，开放的治理结构（项目），由 Docker，CoreOS 和其他容器行业的领导者在 2015 年推出。
@@ -505,8 +502,8 @@ OCI 是一个轻量级的，开放的治理结构（项目），由 Docker，Cor
 </div>
 </div>
 
-<div id="outline-container-org08c81ed" class="outline-3">
-<h3 id="org08c81ed"><span class="section-number-3">2.5.</span> 2016 - Docker &amp; containerd</h3>
+<div id="outline-container-orga4dc08e" class="outline-3">
+<h3 id="orga4dc08e"><span class="section-number-3">2.5.</span> 2016 - Docker &amp; containerd</h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 2016 年，Docker 拆分出 containerd ，并把它捐赠给新的社区项目。containerd 从核心的 Docker 引擎中移出，并变成一个单独的守护进程。
@@ -514,11 +511,11 @@ OCI 是一个轻量级的，开放的治理结构（项目），由 Docker，Cor
 </div>
 </div>
 
-<div id="outline-container-org4f9fb1b" class="outline-3">
-<h3 id="org4f9fb1b"><span class="section-number-3">2.6.</span> Docker 组件</h3>
+<div id="outline-container-org5b65995" class="outline-3">
+<h3 id="org5b65995"><span class="section-number-3">2.6.</span> Docker 组件</h3>
 <div class="outline-text-3" id="text-2-6">
 
-<div id="org4381a0e" class="figure">
+<div id="orge058274" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/docker-component.png" alt="docker-component.png" />
 </p>
 </div>
@@ -550,8 +547,8 @@ OCI 是一个轻量级的，开放的治理结构（项目），由 Docker，Cor
 </div>
 </div>
 
-<div id="outline-container-org07886ea" class="outline-3">
-<h3 id="org07886ea"><span class="section-number-3">2.7.</span> 2017 - 容器成为了主流</h3>
+<div id="outline-container-org8fad27f" class="outline-3">
+<h3 id="org8fad27f"><span class="section-number-3">2.7.</span> 2017 - 容器成为了主流</h3>
 <div class="outline-text-3" id="text-2-7">
 <p>
 2017 是容器成为主流的一年，这也是 Docker 在 Linux 之外构建多个 Docker 版本的原因（Docker for Mac，Docker for Windows，Docker for AWS，GCP，等等）。
@@ -564,8 +561,8 @@ OCI 是一个轻量级的，开放的治理结构（项目），由 Docker，Cor
 </div>
 </div>
 
-<div id="outline-container-org8be8c06" class="outline-2">
-<h2 id="org8be8c06"><span class="section-number-2">3.</span> Moby 项目</h2>
+<div id="outline-container-org790524a" class="outline-2">
+<h2 id="org790524a"><span class="section-number-2">3.</span> Moby 项目</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Moby 开始实现新的协作和生产级别，这是一个开源项目，旨在推进软件容器化运动。
@@ -582,7 +579,7 @@ Moby 开始实现新的协作和生产级别，这是一个开源项目，旨在
 </p>
 
 
-<div id="org07ac5f3" class="figure">
+<div id="orgd8d4eca" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/moby-01.png" alt="moby-01.png" />
 </p>
 </div>
@@ -592,7 +589,7 @@ Moby 开始实现新的协作和生产级别，这是一个开源项目，旨在
 </p>
 
 
-<div id="orge47370a" class="figure">
+<div id="org809a8f0" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/moby-02.png" alt="moby-02.png" />
 </p>
 </div>
@@ -602,7 +599,7 @@ Moby 开始实现新的协作和生产级别，这是一个开源项目，旨在
 </p>
 
 
-<div id="org4d250dd" class="figure">
+<div id="org453af8b" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/moby-03.png" alt="moby-03.png" />
 </p>
 </div>
@@ -612,18 +609,18 @@ Moby 开始实现新的协作和生产级别，这是一个开源项目，旨在
 </p>
 
 
-<div id="org21fb48b" class="figure">
+<div id="org93e618b" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/moby-04.png" alt="moby-04.png" />
 </p>
 </div>
 </div>
 
-<div id="outline-container-org67aaeb8" class="outline-3">
-<h3 id="org67aaeb8"><span class="section-number-3">3.1.</span> 现在，我们来一起看看 Moby 项目的组件</h3>
+<div id="outline-container-org703de84" class="outline-3">
+<h3 id="org703de84"><span class="section-number-3">3.1.</span> 现在，我们来一起看看 Moby 项目的组件</h3>
 <div class="outline-text-3" id="text-3-1">
 </div>
-<div id="outline-container-orga668b96" class="outline-4">
-<h4 id="orga668b96"><span class="section-number-4">3.1.1.</span> Containerd</h4>
+<div id="outline-container-orgc2fbbc6" class="outline-4">
+<h4 id="orgc2fbbc6"><span class="section-number-4">3.1.1.</span> Containerd</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <p>
 Containerd 是行业的核心运行时。它可用作 Linux 和 Windows 的守护程序，它管理整个容器生命周期，如图像传输和存储，容器执行和监视，低级存储和网络附件。
@@ -631,8 +628,8 @@ Containerd 是行业的核心运行时。它可用作 Linux 和 Windows 的守�
 </div>
 </div>
 
-<div id="outline-container-orgc046c64" class="outline-4">
-<h4 id="orgc046c64"><span class="section-number-4">3.1.2.</span> Linuxkit</h4>
+<div id="outline-container-org9880c7a" class="outline-4">
+<h4 id="org9880c7a"><span class="section-number-4">3.1.2.</span> Linuxkit</h4>
 <div class="outline-text-4" id="text-3-1-2">
 <p>
 Linuxkit 是另一个 Moby 项目的组件，它是为容器构建安全，可移植和精益操作系统的工具。
@@ -650,8 +647,8 @@ Linuxkit 是另一个 Moby 项目的组件，它是为容器构建安全，可�
 </div>
 </div>
 
-<div id="outline-container-orgbe26a97" class="outline-4">
-<h4 id="orgbe26a97"><span class="section-number-4">3.1.3.</span> Infrakit</h4>
+<div id="outline-container-orgda078b7" class="outline-4">
+<h4 id="orgda078b7"><span class="section-number-4">3.1.3.</span> Infrakit</h4>
 <div class="outline-text-4" id="text-3-1-3">
 <p>
 Infrakit 也是 Moby 项目的一部分。
@@ -671,8 +668,8 @@ Infrakit 旨在自动化基础架构的设置和管理，以支持分布式系�
 </div>
 </div>
 
-<div id="outline-container-orgd39c7aa" class="outline-4">
-<h4 id="orgd39c7aa"><span class="section-number-4">3.1.4.</span> Libnetwork</h4>
+<div id="outline-container-org5cd69f4" class="outline-4">
+<h4 id="org5cd69f4"><span class="section-number-4">3.1.4.</span> Libnetwork</h4>
 <div class="outline-text-4" id="text-3-1-4">
 <p>
 Libnetwork 是用于连接容器的 native Go 实现。
@@ -684,23 +681,23 @@ Libnetwork 是用于连接容器的 native Go 实现。
 </div>
 </div>
 
-<div id="outline-container-org9deeb1c" class="outline-4">
-<h4 id="org9deeb1c"><span class="section-number-4">3.1.5.</span> Docker &amp; Docker Swarm</h4>
+<div id="outline-container-org5f2c159" class="outline-4">
+<h4 id="org5f2c159"><span class="section-number-4">3.1.5.</span> Docker &amp; Docker Swarm</h4>
 <div class="outline-text-4" id="text-3-1-5">
 <p>
 Swarm 是 Docker 引擎构建的编排工具。起初是一个独立的工具，在 1.12 版本之后包含在 Docker 中。它使用 Docker CLI 创建 swarm 集群、部署和管理应用程序和服务。
 </p>
 
 
-<div id="org0b93da6" class="figure">
+<div id="org63d0de4" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/docker-infrastructure.png" alt="docker-infrastructure.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org60a7bfd" class="outline-4">
-<h4 id="org60a7bfd"><span class="section-number-4">3.1.6.</span> Docker &amp; Kubernetes</h4>
+<div id="outline-container-orgaba55c6" class="outline-4">
+<h4 id="orgaba55c6"><span class="section-number-4">3.1.6.</span> Docker &amp; Kubernetes</h4>
 <div class="outline-text-4" id="text-3-1-6">
 <p>
 在 2017 年 10 月份宣布，将 Kubernetes 本地集成到 Docker 中，这是很重要的一次变更。
@@ -725,18 +722,18 @@ Kubernetes 被认为是和 Swarm 一样的本地编排工具
 </blockquote>
 
 
-<div id="orga8e0609" class="figure">
+<div id="orgdb45543" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/docker-now.png" alt="docker-now.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org49f5624" class="outline-4">
-<h4 id="org49f5624"><span class="section-number-4">3.1.7.</span> 从 2013 年到 2017 年 Docker Pulls 情况</h4>
+<div id="outline-container-org9d4df79" class="outline-4">
+<h4 id="org9d4df79"><span class="section-number-4">3.1.7.</span> 从 2013 年到 2017 年 Docker Pulls 情况</h4>
 <div class="outline-text-4" id="text-3-1-7">
 
-<div id="orgb52b4c8" class="figure">
+<div id="orgbbcf5aa" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/docker-pull-2013-2017.png" alt="docker-pull-2013-2017.png" />
 </p>
 </div>
@@ -753,22 +750,22 @@ Kubernetes 被认为是和 Swarm 一样的本地编排工具
 </div>
 </div>
 
-<div id="outline-container-orgeb30e1a" class="outline-2">
-<h2 id="orgeb30e1a"><span class="section-number-2">4.</span> 笔者：一些补充</h2>
+<div id="outline-container-org4379879" class="outline-2">
+<h2 id="org4379879"><span class="section-number-2">4.</span> 笔者：一些补充</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org8213ba3" class="outline-3">
-<h3 id="org8213ba3"><span class="section-number-3">4.1.</span> LXC vs Docker</h3>
+<div id="outline-container-orgdd1fcd8" class="outline-3">
+<h3 id="orgdd1fcd8"><span class="section-number-3">4.1.</span> LXC vs Docker</h3>
 <div class="outline-text-3" id="text-4-1">
 
-<div id="orgc902787" class="figure">
+<div id="org59e4821" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/docker_vs_lxc.png" alt="docker_vs_lxc.png" />
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org004deac" class="outline-3">
-<h3 id="org004deac"><span class="section-number-3">4.2.</span> containerd</h3>
+<div id="outline-container-org916d903" class="outline-3">
+<h3 id="org916d903"><span class="section-number-3">4.2.</span> containerd</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 <a href="https://containerd.io/">containerd</a> 是一个行业标准的运行时，强调简单行、健壮性、可移植性。
@@ -779,7 +776,7 @@ Kubernetes 被认为是和 Swarm 一样的本地编排工具
 </p>
 
 
-<div id="org277b783" class="figure">
+<div id="org3a72e0e" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/containerd-architecture.png" alt="containerd-architecture.png" />
 </p>
 </div>
@@ -794,8 +791,8 @@ Kubernetes 被认为是和 Swarm 一样的本地编排工具
 </div>
 </div>
 
-<div id="outline-container-orga42a702" class="outline-3">
-<h3 id="orga42a702"><span class="section-number-3">4.3.</span> RunC</h3>
+<div id="outline-container-orgf943195" class="outline-3">
+<h3 id="orgf943195"><span class="section-number-3">4.3.</span> RunC</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
 <a href="https://github.com/opencontainers/runc">runc</a> 的前身是 <a href="https://github.com/docker/libcontainer">libcontainer</a>， <code>runc = libcontainer + client</code> ，所以官方说的是符合 OCI 规范的管理容器的 CLI 工具。容器这里对应的是 libcontainer。
@@ -811,8 +808,8 @@ Kubernetes 被认为是和 Swarm 一样的本地编排工具
 </div>
 </div>
 
-<div id="outline-container-org507e2f7" class="outline-3">
-<h3 id="org507e2f7"><span class="section-number-3">4.4.</span> OCI</h3>
+<div id="outline-container-orgd4fdd51" class="outline-3">
+<h3 id="orgd4fdd51"><span class="section-number-3">4.4.</span> OCI</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 <a href="https://www.opencontainers.org/">OCI</a> open container initiative，开放容器协议，是一个轻量级的，开放的治理结构（项目），在 Linux 基金会的支持下成立，旨在围绕容器格式和运行时创建的开放行业标准。OCI 于 2015 年 6 月 22 日由 Docker，CoreOS 和其他容器行业领导者推出。
@@ -830,7 +827,7 @@ OCI 目前包含两个规范：运行时规范（<a href="https://github.com/ope
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-12-17 17:11 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-12-17 17:11 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

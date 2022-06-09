@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 17:42 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>gRPC 转 RESTful JSON API</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,29 +213,28 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">gRPC 转 RESTful JSON API</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org08a32d0">1. 安装</a></li>
-<li><a href="#org9b9b17a">2. 书写规则</a></li>
-<li><a href="#orge2c53e1">3. 生成 stub</a></li>
-<li><a href="#orgab42fbe">4. http 服务</a></li>
-<li><a href="#org5805258">5. 和 gRPC 服务整合</a></li>
-<li><a href="#orga413e38">6. 关联的资料汇总</a></li>
-<li><a href="#orgb1a63ca">7. FAQ</a>
+<li><a href="#org84244f8">1. 安装</a></li>
+<li><a href="#org91948ac">2. 书写规则</a></li>
+<li><a href="#org4240c99">3. 生成 stub</a></li>
+<li><a href="#org8ceab1e">4. http 服务</a></li>
+<li><a href="#org438962e">5. 和 gRPC 服务整合</a></li>
+<li><a href="#org3bcb1ee">6. 关联的资料汇总</a></li>
+<li><a href="#orgb781ff1">7. FAQ</a>
 <ul>
-<li><a href="#org0f57327">7.1. 编译报错 <code>cannot use myFilter (type func(context.Context, http.ResponseWriter, protoreflect.ProtoMessage) error) as type func(context.Context, http.ResponseWriter, protoiface.MessageV1) error in argument to "github.com/grpc-ecosystem/grpc-gateway/runtime".WithForwardResponseOption</code></a></li>
-<li><a href="#org382ced5">7.2. 自定义返回 body 格式</a></li>
-<li><a href="#org80a1a57">7.3. 跨域问题</a></li>
-<li><a href="#orgc4c949c">7.4. 解决返回数据时空字段不返回的问题</a></li>
+<li><a href="#org15ce79c">7.1. 编译报错 <code>cannot use myFilter (type func(context.Context, http.ResponseWriter, protoreflect.ProtoMessage) error) as type func(context.Context, http.ResponseWriter, protoiface.MessageV1) error in argument to "github.com/grpc-ecosystem/grpc-gateway/runtime".WithForwardResponseOption</code></a></li>
+<li><a href="#org72c13ff">7.2. 自定义返回 body 格式</a></li>
+<li><a href="#orga40dc3f">7.3. 跨域问题</a></li>
+<li><a href="#org0311d92">7.4. 解决返回数据时空字段不返回的问题</a></li>
 </ul>
 </li>
 </ul>
@@ -255,8 +252,8 @@ gRPC 很诱人，它兼具了易用性和高效，同时支持多重编程语言
 本文档偏向于实操和最佳实践，而且假定读者了解了 protobuf、gRPC、gRPC-go 相关的知识（如果不知道可以查看 <a href="index.html">gRPC 专题</a>）。
 </p>
 
-<div id="outline-container-org08a32d0" class="outline-2">
-<h2 id="org08a32d0"><span class="section-number-2">1.</span> 安装</h2>
+<div id="outline-container-org84244f8" class="outline-2">
+<h2 id="org84244f8"><span class="section-number-2">1.</span> 安装</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
@@ -269,8 +266,8 @@ gRPC 很诱人，它兼具了易用性和高效，同时支持多重编程语言
 </div>
 </div>
 
-<div id="outline-container-org9b9b17a" class="outline-2">
-<h2 id="org9b9b17a"><span class="section-number-2">2.</span> 书写规则</h2>
+<div id="outline-container-org91948ac" class="outline-2">
+<h2 id="org91948ac"><span class="section-number-2">2.</span> 书写规则</h2>
 <div class="outline-text-2" id="text-2">
 <pre class="example">
 service Messaging {
@@ -320,8 +317,8 @@ import "google/api/annotations.proto";
 </div>
 </div>
 
-<div id="outline-container-orge2c53e1" class="outline-2">
-<h2 id="orge2c53e1"><span class="section-number-2">3.</span> 生成 stub</h2>
+<div id="outline-container-org4240c99" class="outline-2">
+<h2 id="org4240c99"><span class="section-number-2">3.</span> 生成 stub</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 以上全部操作完毕之后，生成 gRPC 和 gateway stub，比如：
@@ -338,8 +335,8 @@ protoc -I=libproto -I=googleapis --grpc-gateway_out=logtostderr=true,paths=sourc
 </div>
 </div>
 
-<div id="outline-container-orgab42fbe" class="outline-2">
-<h2 id="orgab42fbe"><span class="section-number-2">4.</span> http 服务</h2>
+<div id="outline-container-org8ceab1e" class="outline-2">
+<h2 id="org8ceab1e"><span class="section-number-2">4.</span> http 服务</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 需要另外起一个 http：
@@ -376,8 +373,8 @@ protoc -I=libproto -I=googleapis --grpc-gateway_out=logtostderr=true,paths=sourc
 </div>
 </div>
 
-<div id="outline-container-org5805258" class="outline-2">
-<h2 id="org5805258"><span class="section-number-2">5.</span> 和 gRPC 服务整合</h2>
+<div id="outline-container-org438962e" class="outline-2">
+<h2 id="org438962e"><span class="section-number-2">5.</span> 和 gRPC 服务整合</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 上面的方法虽然可行，但部署的时候是两个进程，一个 gateway 服务进程，一个 rpc 服务进程。这样在生产化部署时，会有一定的部署成本（容器化之后，一个容器只能有一起服务在前台运行）。
@@ -407,8 +404,8 @@ protoc -I=libproto -I=googleapis --grpc-gateway_out=logtostderr=true,paths=sourc
 </div>
 </div>
 
-<div id="outline-container-orga413e38" class="outline-2">
-<h2 id="orga413e38"><span class="section-number-2">6.</span> 关联的资料汇总</h2>
+<div id="outline-container-org3bcb1ee" class="outline-2">
+<h2 id="org3bcb1ee"><span class="section-number-2">6.</span> 关联的资料汇总</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>grcp-gateway <a href="https://github.com/grpc-ecosystem/grpc-gateway">https://github.com/grpc-ecosystem/grpc-gateway</a></li>
@@ -419,12 +416,12 @@ protoc -I=libproto -I=googleapis --grpc-gateway_out=logtostderr=true,paths=sourc
 </div>
 </div>
 
-<div id="outline-container-orgb1a63ca" class="outline-2">
-<h2 id="orgb1a63ca"><span class="section-number-2">7.</span> FAQ</h2>
+<div id="outline-container-orgb781ff1" class="outline-2">
+<h2 id="orgb781ff1"><span class="section-number-2">7.</span> FAQ</h2>
 <div class="outline-text-2" id="text-7">
 </div>
-<div id="outline-container-org0f57327" class="outline-3">
-<h3 id="org0f57327"><span class="section-number-3">7.1.</span> 编译报错 <code>cannot use myFilter (type func(context.Context, http.ResponseWriter, protoreflect.ProtoMessage) error) as type func(context.Context, http.ResponseWriter, protoiface.MessageV1) error in argument to "github.com/grpc-ecosystem/grpc-gateway/runtime".WithForwardResponseOption</code></h3>
+<div id="outline-container-org15ce79c" class="outline-3">
+<h3 id="org15ce79c"><span class="section-number-3">7.1.</span> 编译报错 <code>cannot use myFilter (type func(context.Context, http.ResponseWriter, protoreflect.ProtoMessage) error) as type func(context.Context, http.ResponseWriter, protoiface.MessageV1) error in argument to "github.com/grpc-ecosystem/grpc-gateway/runtime".WithForwardResponseOption</code></h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 因为 gateway 用的是 <code>github.com/golang/protobuf/proto</code> ，而 proto 一般默认引入的是 <code>google.golang.org/protobuf/proto</code> .
@@ -440,8 +437,8 @@ protoc -I=libproto -I=googleapis --grpc-gateway_out=logtostderr=true,paths=sourc
 </div>
 </div>
 
-<div id="outline-container-org382ced5" class="outline-3">
-<h3 id="org382ced5"><span class="section-number-3">7.2.</span> 自定义返回 body 格式</h3>
+<div id="outline-container-org72c13ff" class="outline-3">
+<h3 id="org72c13ff"><span class="section-number-3">7.2.</span> 自定义返回 body 格式</h3>
 <div class="outline-text-3" id="text-7-2">
 <p>
 gRPC gateway 默认情况下返回的是 Resp Struct 对应的 JSON，出错时返回 <code>code,error,message</code> 三个字段。如果想要统一返回值，则需要自定义返回 body。
@@ -549,8 +546,8 @@ httpError 也就是 <code>WithProtoErrorHandler</code> 。看源码可以知道�
 </div>
 </div>
 
-<div id="outline-container-org80a1a57" class="outline-3">
-<h3 id="org80a1a57"><span class="section-number-3">7.3.</span> 跨域问题</h3>
+<div id="outline-container-orga40dc3f" class="outline-3">
+<h3 id="orga40dc3f"><span class="section-number-3">7.3.</span> 跨域问题</h3>
 <div class="outline-text-3" id="text-7-3">
 <p>
 gateway 的 server 本质上还是标准的 <code>http.Server</code> ，在 <code>ServeHTTP</code> 之前加一个跨域头即可：
@@ -565,8 +562,8 @@ w.<span style="color: #721045;">Header</span><span style="color: #000000;">()</s
 </div>
 </div>
 
-<div id="outline-container-orgc4c949c" class="outline-3">
-<h3 id="orgc4c949c"><span class="section-number-3">7.4.</span> 解决返回数据时空字段不返回的问题</h3>
+<div id="outline-container-org0311d92" class="outline-3">
+<h3 id="org0311d92"><span class="section-number-3">7.4.</span> 解决返回数据时空字段不返回的问题</h3>
 <div class="outline-text-3" id="text-7-4">
 <p>
 protobuf 生成的 pb.go 中 struct 字段都是用 <code>json:",omitempty"</code> 修饰，这会导致在 gateway 转发返回时 json marshal 空的字段（初始值，0，空 slice 等）不返回。
@@ -602,7 +599,7 @@ protobuf 生成的 pb.go 中 struct 字段都是用 <code>json:",omitempty"</cod
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-08-19 14:50:25 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2020-08-19 14:50:25 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

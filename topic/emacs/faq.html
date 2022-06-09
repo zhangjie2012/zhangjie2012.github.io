@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:42 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Emacs 常见问题</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,51 +213,51 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">Emacs 常见问题</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org7786b2f">1. FAQ</a>
+<li><a href="#org23145fa">1. FAQ</a>
 <ul>
-<li><a href="#orgc7a1f17">1.1. Emacs 启动速度太慢怎么办？</a></li>
-<li><a href="#org525b0a4">1.2. eshell git diff 高亮</a></li>
-<li><a href="#orga02fcff">1.3. Org mode 如何排序，按列表，按标题等</a></li>
-<li><a href="#org3aa9369">1.4. Windows 系统下使用 Emacs</a></li>
-<li><a href="#orged2dd33">1.5. 行逆序排序</a></li>
-<li><a href="#org304af9d">1.6. 如何更新所有的依赖包？</a></li>
-<li><a href="#orgb6c6483">1.7. 如何记忆 Emacs 快捷键？</a></li>
-<li><a href="#org512d153">1.8. 如何将 markdown 转成 org-mode</a></li>
-<li><a href="#org5653ce2">1.9. 如何去掉空白字符</a></li>
-<li><a href="#orge13f357">1.10. 如何软重启 Emacs？</a></li>
-<li><a href="#org40080a2">1.11. 如何显示所有安装的 package</a></li>
-<li><a href="#org64ae26c">1.12. 使用 GUI 版本还是 Terminal ?</a></li>
-<li><a href="#org428ea63">1.13. 是否要使用 Evil ？</a></li>
-<li><a href="#org222b2c6">1.14. 我可不可以用 Emacs 完成 XXX 能做的事情？</a></li>
+<li><a href="#orgac81d9a">1.1. Emacs 启动速度太慢怎么办？</a></li>
+<li><a href="#orgb29af62">1.2. eshell git diff 高亮</a></li>
+<li><a href="#org45560d6">1.3. Org mode 如何排序，按列表，按标题等</a></li>
+<li><a href="#orgca1f15e">1.4. Windows 系统下使用 Emacs</a></li>
+<li><a href="#org9160701">1.5. 行逆序排序</a></li>
+<li><a href="#org4e3464e">1.6. 如何更新所有的依赖包？</a></li>
+<li><a href="#orgc3aa26b">1.7. 如何记忆 Emacs 快捷键？</a></li>
+<li><a href="#org4fa58ba">1.8. 如何将 markdown 转成 org-mode</a></li>
+<li><a href="#org90c443f">1.9. 如何去掉空白字符</a></li>
+<li><a href="#org7651698">1.10. 如何软重启 Emacs？</a></li>
+<li><a href="#org3148096">1.11. 如何显示所有安装的 package</a></li>
+<li><a href="#org5692423">1.12. 使用 GUI 版本还是 Terminal ?</a></li>
+<li><a href="#orge79c027">1.13. 是否要使用 Evil ？</a></li>
+<li><a href="#org4680681">1.14. 我可不可以用 Emacs 完成 XXX 能做的事情？</a></li>
+<li><a href="#orgf8e90e6">1.15. 跨平台换行符统一</a></li>
 </ul>
 </li>
-<li><a href="#org92c4e1d">2. Troubleshooting</a>
+<li><a href="#orgca991b3">2. Troubleshooting</a>
 <ul>
-<li><a href="#orgb1e0977">2.1. 安装 lsp-mode 报错 spinner-1.7.3 is unavailable？</a></li>
-<li><a href="#org84d0e3e">2.2. lsp go: Suspicious state fromsyntax checker go-vet ?</a></li>
+<li><a href="#orgfb30a17">2.1. 安装 lsp-mode 报错 spinner-1.7.3 is unavailable？</a></li>
+<li><a href="#orge3f2693">2.2. lsp go: Suspicious state fromsyntax checker go-vet ?</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org7786b2f" class="outline-2">
-<h2 id="org7786b2f"><span class="section-number-2">1.</span> FAQ</h2>
+<div id="outline-container-org23145fa" class="outline-2">
+<h2 id="org23145fa"><span class="section-number-2">1.</span> FAQ</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgc7a1f17" class="outline-3">
-<h3 id="orgc7a1f17"><span class="section-number-3">1.1.</span> Emacs 启动速度太慢怎么办？</h3>
+<div id="outline-container-orgac81d9a" class="outline-3">
+<h3 id="orgac81d9a"><span class="section-number-3">1.1.</span> Emacs 启动速度太慢怎么办？</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 <code>M-x emacs-init-time</code> 可以查看 Emacs 启动耗费时间。
@@ -295,11 +293,11 @@ bind 等）实现延迟加载，提高打开的速度。
 </div>
 </div>
 
-<div id="outline-container-org525b0a4" class="outline-3">
-<h3 id="org525b0a4"><span class="section-number-3">1.2.</span> eshell git diff 高亮</h3>
+<div id="outline-container-orgb29af62" class="outline-3">
+<h3 id="orgb29af62"><span class="section-number-3">1.2.</span> eshell git diff 高亮</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
-在 <code>.git/config</code> 文件中添加<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>：
+在 <code>.git/config</code> 文件中添加<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>：
 </p>
 
 <pre class="example">
@@ -313,17 +311,17 @@ bind 等）实现延迟加载，提高打开的速度。
 </div>
 </div>
 
-<div id="outline-container-orga02fcff" class="outline-3">
-<h3 id="orga02fcff"><span class="section-number-3">1.3.</span> Org mode 如何排序，按列表，按标题等</h3>
+<div id="outline-container-org45560d6" class="outline-3">
+<h3 id="org45560d6"><span class="section-number-3">1.3.</span> Org mode 如何排序，按列表，按标题等</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
-<code>org-sort*</code> <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>
+<code>org-sort*</code> <sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org3aa9369" class="outline-3">
-<h3 id="org3aa9369"><span class="section-number-3">1.4.</span> Windows 系统下使用 Emacs</h3>
+<div id="outline-container-orgca1f15e" class="outline-3">
+<h3 id="orgca1f15e"><span class="section-number-3">1.4.</span> Windows 系统下使用 Emacs</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 Emacs 本身是支持 Windows 系统的，但是它的一些都依赖于系统命令，比如 projectile 会用到 tr，counsel 会用到 ag 等。
@@ -336,8 +334,8 @@ Emacs 本身是支持 Windows 系统的，但是它的一些都依赖于系统�
 </div>
 </div>
 
-<div id="outline-container-orged2dd33" class="outline-3">
-<h3 id="orged2dd33"><span class="section-number-3">1.5.</span> 行逆序排序</h3>
+<div id="outline-container-org9160701" class="outline-3">
+<h3 id="org9160701"><span class="section-number-3">1.5.</span> 行逆序排序</h3>
 <div class="outline-text-3" id="text-1-5">
 <ol class="org-ol">
 <li><code>M-x sort-lines</code></li>
@@ -346,8 +344,8 @@ Emacs 本身是支持 Windows 系统的，但是它的一些都依赖于系统�
 </div>
 </div>
 
-<div id="outline-container-org304af9d" class="outline-3">
-<h3 id="org304af9d"><span class="section-number-3">1.6.</span> 如何更新所有的依赖包？</h3>
+<div id="outline-container-org4e3464e" class="outline-3">
+<h3 id="org4e3464e"><span class="section-number-3">1.6.</span> 如何更新所有的依赖包？</h3>
 <div class="outline-text-3" id="text-1-6">
 <ol class="org-ol">
 <li><code>M-x list-package</code></li>
@@ -357,8 +355,8 @@ Emacs 本身是支持 Windows 系统的，但是它的一些都依赖于系统�
 </div>
 </div>
 
-<div id="outline-container-orgb6c6483" class="outline-3">
-<h3 id="orgb6c6483"><span class="section-number-3">1.7.</span> 如何记忆 Emacs 快捷键？</h3>
+<div id="outline-container-orgc3aa26b" class="outline-3">
+<h3 id="orgc3aa26b"><span class="section-number-3">1.7.</span> 如何记忆 Emacs 快捷键？</h3>
 <div class="outline-text-3" id="text-1-7">
 <p>
 Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外（就是上面描述的内容）并不需要刻意的记忆，只要你掌握了两点：
@@ -376,18 +374,18 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </p>
 
 
-<div id="org0449a6e" class="figure">
+<div id="org4335f22" class="figure">
 <p><img src="https://wiki-1252349778.cos.ap-shanghai.myqcloud.com/2019/emacs-wiki-which-key-0.png" alt="emacs-wiki-which-key-0.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org512d153" class="outline-3">
-<h3 id="org512d153"><span class="section-number-3">1.8.</span> 如何将 markdown 转成 org-mode</h3>
+<div id="outline-container-org4fa58ba" class="outline-3">
+<h3 id="org4fa58ba"><span class="section-number-3">1.8.</span> 如何将 markdown 转成 org-mode</h3>
 <div class="outline-text-3" id="text-1-8">
 <p>
-<code>.org</code> 文件可以很轻松的通过 <code>org-md-export-to-markdown</code> 生成 <code>.md</code> 文件。 <code>.md</code> 文件可以借助 Pandoc 生成 <code>.org</code>  <sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>。
+<code>.org</code> 文件可以很轻松的通过 <code>org-md-export-to-markdown</code> 生成 <code>.md</code> 文件。 <code>.md</code> 文件可以借助 Pandoc 生成 <code>.org</code>  <sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>。
 </p>
 
 <div class="org-src-container">
@@ -397,17 +395,19 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 </div>
 
-<div id="outline-container-org5653ce2" class="outline-3">
-<h3 id="org5653ce2"><span class="section-number-3">1.9.</span> 如何去掉空白字符</h3>
+<div id="outline-container-org90c443f" class="outline-3">
+<h3 id="org90c443f"><span class="section-number-3">1.9.</span> 如何去掉空白字符</h3>
 <div class="outline-text-3" id="text-1-9">
 <ul class="org-ul">
 <li><code>M-\</code> ：删除光标周围的空格和 tab</li>
-<li><code>M-&lt;SPC&gt;</code> ：删除光标周围的空格和 tab，但是保留一个</li>
-</ul>
+<li><p>
+<code>M-&lt;SPC&gt;</code> ：删除光标周围的空格和 tab，但是保留一个
+</p>
 
 <p>
 另外，我会给文件保存（~C-x s~）时，添加一个 hook：
-</p>
+</p></li>
+</ul>
 
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #000000;">(</span><span style="color: #5317ac;">setq</span> show-trailing-whitespace t<span style="color: #000000;">)</span>
@@ -421,8 +421,8 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 </div>
 
-<div id="outline-container-orge13f357" class="outline-3">
-<h3 id="orge13f357"><span class="section-number-3">1.10.</span> 如何软重启 Emacs？</h3>
+<div id="outline-container-org7651698" class="outline-3">
+<h3 id="org7651698"><span class="section-number-3">1.10.</span> 如何软重启 Emacs？</h3>
 <div class="outline-text-3" id="text-1-10">
 <p>
 所谓软重启指的是通过命令重新加载配置文件：
@@ -439,16 +439,17 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 </div>
 
-<div id="outline-container-org40080a2" class="outline-3">
-<h3 id="org40080a2"><span class="section-number-3">1.11.</span> 如何显示所有安装的 package</h3>
+<div id="outline-container-org3148096" class="outline-3">
+<h3 id="org3148096"><span class="section-number-3">1.11.</span> 如何显示所有安装的 package</h3>
 <div class="outline-text-3" id="text-1-11">
 <p>
 <code>C-h v package-activated-list</code>
 </p>
 </div>
 </div>
-<div id="outline-container-org64ae26c" class="outline-3">
-<h3 id="org64ae26c"><span class="section-number-3">1.12.</span> 使用 GUI 版本还是 Terminal ?</h3>
+
+<div id="outline-container-org5692423" class="outline-3">
+<h3 id="org5692423"><span class="section-number-3">1.12.</span> 使用 GUI 版本还是 Terminal ?</h3>
 <div class="outline-text-3" id="text-1-12">
 <p>
 推荐 GUI 的人比 Terminal 的多很多，这个分歧很大，各有优劣势。
@@ -472,8 +473,8 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 </div>
 
-<div id="outline-container-org428ea63" class="outline-3">
-<h3 id="org428ea63"><span class="section-number-3">1.13.</span> 是否要使用 Evil ？</h3>
+<div id="outline-container-orge79c027" class="outline-3">
+<h3 id="orge79c027"><span class="section-number-3">1.13.</span> 是否要使用 Evil ？</h3>
 <div class="outline-text-3" id="text-1-13">
 <p>
 因人而异，如果之前你曾是 Vim 用户，建议你用 Evil。因为我一开始就用的是 Emacs，而不是 Vim，所以我一直用的是 Emacs 的键映射。
@@ -481,22 +482,46 @@ Emacs 的快捷键非常多，但是除了基本的编辑操作快捷键之外�
 </div>
 </div>
 
-<div id="outline-container-org222b2c6" class="outline-3">
-<h3 id="org222b2c6"><span class="section-number-3">1.14.</span> 我可不可以用 Emacs 完成 XXX 能做的事情？</h3>
+<div id="outline-container-org4680681" class="outline-3">
+<h3 id="org4680681"><span class="section-number-3">1.14.</span> 我可不可以用 Emacs 完成 XXX 能做的事情？</h3>
 <div class="outline-text-3" id="text-1-14">
 <p>
 没有银弹！纵然 Emacs 可能「可以做任何事情」，比如收发邮件、GTD、阅读 pdf、打开图片等等。然而我以为用合适的工具做合适的事情才是重要的.
 </p>
 </div>
 </div>
+
+<div id="outline-container-orgf8e90e6" class="outline-3">
+<h3 id="orgf8e90e6"><span class="section-number-3">1.15.</span> 跨平台换行符统一</h3>
+<div class="outline-text-3" id="text-1-15">
+<ul class="org-ul">
+<li>Unix/Linux 用的是 <code>LF</code></li>
+<li>MacOS 早期使用 <code>CR</code> 后来统一使用 <code>LF</code> 与 Linux 保持一致</li>
+<li>DOS/Windows 一直用的都是 <code>CRLF</code></li>
+</ul>
+
+<p>
+这种情况下在跨平台协作的时候就会出现换行符混乱，解决办法：Emacs 统一设置 buffer 编码为 <code>utf-8-unix</code> 。如下代码：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp"><span style="color: #000000;">(</span><span style="color: #5317ac;">setq</span> default-buffer-file-coding-system 'utf-8-unix<span style="color: #000000;">)</span>
+</pre>
 </div>
 
-<div id="outline-container-org92c4e1d" class="outline-2">
-<h2 id="org92c4e1d"><span class="section-number-2">2.</span> Troubleshooting</h2>
+<p>
+如果当前 buffer 是 CRLF，也可以使用 <code>M-x set-buffer-file-coding-system</code> 选择 <code>utf-8-unix</code> 进行转换。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgca991b3" class="outline-2">
+<h2 id="orgca991b3"><span class="section-number-2">2.</span> Troubleshooting</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgb1e0977" class="outline-3">
-<h3 id="orgb1e0977"><span class="section-number-3">2.1.</span> 安装 lsp-mode 报错 spinner-1.7.3 is unavailable？</h3>
+<div id="outline-container-orgfb30a17" class="outline-3">
+<h3 id="orgfb30a17"><span class="section-number-3">2.1.</span> 安装 lsp-mode 报错 spinner-1.7.3 is unavailable？</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 spinner 在 <code>gnu</code> 中，确保 <code>package-archives</code> 中包含 <code>https://elpa.gnu.org/packages/</code> 。
@@ -504,12 +529,12 @@ spinner 在 <code>gnu</code> 中，确保 <code>package-archives</code> 中包�
 </div>
 </div>
 
-<div id="outline-container-org84d0e3e" class="outline-3">
-<h3 id="org84d0e3e"><span class="section-number-3">2.2.</span> lsp go: Suspicious state fromsyntax checker go-vet ?</h3>
+<div id="outline-container-orge3f2693" class="outline-3">
+<h3 id="orge3f2693"><span class="section-number-3">2.2.</span> lsp go: Suspicious state fromsyntax checker go-vet ?</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 错误是由 flycheck 报出来的，高于 1.12 的 Go <code>go vet</code> 已被废弃，而是使用 <code>go tool vet</code> 代替。
-flycheck 最新稳定的版本还停留在 <code>Flycheck 31</code> 支持到 go1.11 。解决办法是要么升级 flycheck，使用 <code>melpa</code> 源，不要用 <code>melpa-stable</code> 即可 <sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>。
+flycheck 最新稳定的版本还停留在 <code>Flycheck 31</code> 支持到 go1.11 。解决办法是要么升级 flycheck，使用 <code>melpa</code> 源，不要用 <code>melpa-stable</code> 即可 <sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>。
 </p>
 </div>
 </div>
@@ -518,19 +543,19 @@ flycheck 最新稳定的版本还停留在 <code>Flycheck 31</code> 支持到 go
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="http://mbork.pl/2018-06-10_Git_diff_in_Eshell">http://mbork.pl/2018-06-10_Git_diff_in_Eshell</a>
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://emacs.stackexchange.com/questions/30547/sort-list-by-checked-unchecked-state">https://emacs.stackexchange.com/questions/30547/sort-list-by-checked-unchecked-state</a>
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://emacs.stackexchange.com/questions/5465/how-to-migrate-markdown-files-to-emacs-org-mode-format">https://emacs.stackexchange.com/questions/5465/how-to-migrate-markdown-files-to-emacs-org-mode-format</a>
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://github.com/hlissner/doom-emacs/issues/1225">https://github.com/hlissner/doom-emacs/issues/1225</a>
 </p></div></div>
 
@@ -538,7 +563,7 @@ flycheck 最新稳定的版本还停留在 <code>Flycheck 31</code> 支持到 go
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-28 20:44:09 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2020-03-28 20:44:09 <br />Last updated: 2022-06-09 Thu 16:47 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

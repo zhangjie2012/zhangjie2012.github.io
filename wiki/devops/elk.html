@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:41 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DevOps - 日志收集 ELK</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,37 +213,36 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">DevOps - 日志收集 ELK</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org1b6c863">1. 一个简易的日志收集方案</a></li>
-<li><a href="#orga205c34">2. ELK</a></li>
-<li><a href="#orga631898">3. 组件</a>
+<li><a href="#org943ea12">1. 一个简易的日志收集方案</a></li>
+<li><a href="#orgf8da9e2">2. ELK</a></li>
+<li><a href="#org25285aa">3. 组件</a>
 <ul>
-<li><a href="#orgd014d9e">3.1. Journalbeat</a></li>
+<li><a href="#org47fb027">3.1. Journalbeat</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1b6c863" class="outline-2">
-<h2 id="org1b6c863"><span class="section-number-2">1.</span> 一个简易的日志收集方案</h2>
+<div id="outline-container-org943ea12" class="outline-2">
+<h2 id="org943ea12"><span class="section-number-2">1.</span> 一个简易的日志收集方案</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 设计图：
 </p>
 
 
-<div id="org55bdb62" class="figure">
+<div id="org10d0106" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/log.png" alt="log.png" />
 </p>
 </div>
@@ -274,8 +271,8 @@
 </div>
 </div>
 
-<div id="outline-container-orga205c34" class="outline-2">
-<h2 id="orga205c34"><span class="section-number-2">2.</span> ELK</h2>
+<div id="outline-container-orgf8da9e2" class="outline-2">
+<h2 id="orgf8da9e2"><span class="section-number-2">2.</span> ELK</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 上面只是一个简易的日志收集方案，业内常用的标准是 ELK：
@@ -390,8 +387,8 @@ ELK 技术栈现在也有很多人称为 EFK。
 </div>
 </div>
 
-<div id="outline-container-orga631898" class="outline-2">
-<h2 id="orga631898"><span class="section-number-2">3.</span> 组件</h2>
+<div id="outline-container-org25285aa" class="outline-2">
+<h2 id="org25285aa"><span class="section-number-2">3.</span> 组件</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 beats 的 目录结构，以及默认的配置。
@@ -402,8 +399,8 @@ beats 的 目录结构，以及默认的配置。
 </p>
 </div>
 
-<div id="outline-container-orgd014d9e" class="outline-3">
-<h3 id="orgd014d9e"><span class="section-number-3">3.1.</span> Journalbeat</h3>
+<div id="outline-container-org47fb027" class="outline-3">
+<h3 id="org47fb027"><span class="section-number-3">3.1.</span> Journalbeat</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 <a href="https://www.elastic.co/guide/en/beats/journalbeat/master/index.html">https://www.elastic.co/guide/en/beats/journalbeat/master/index.html</a>
@@ -474,7 +471,7 @@ sudo rpm -vi journalbeat-7.8.0-x86_64.rpm
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-04-11 15:48 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2019-04-11 15:48 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

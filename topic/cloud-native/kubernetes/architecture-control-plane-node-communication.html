@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:42 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 架构：控制平面 - 节点通信</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,24 +213,23 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">Kubernetes 架构：控制平面 - 节点通信</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4d91eaf">1. 节点到控制平面</a></li>
-<li><a href="#org0d617dd">2. 控制平面到节点</a>
+<li><a href="#org3cd4a55">1. 节点到控制平面</a></li>
+<li><a href="#orgc6001d4">2. 控制平面到节点</a>
 <ul>
-<li><a href="#org48a3162">2.1. apiserver 到 kubelet</a></li>
-<li><a href="#org7063810">2.2. apiserver 到节点，pods 和 services</a></li>
-<li><a href="#orgd5a5583">2.3. SSH 隧道（tunnels）</a></li>
-<li><a href="#org5989f95">2.4. Konnectivity service</a></li>
+<li><a href="#orgd98c2da">2.1. apiserver 到 kubelet</a></li>
+<li><a href="#org7574fe9">2.2. apiserver 到节点，pods 和 services</a></li>
+<li><a href="#org48f02fd">2.3. SSH 隧道（tunnels）</a></li>
+<li><a href="#orge55a105">2.4. Konnectivity service</a></li>
 </ul>
 </li>
 </ul>
@@ -246,8 +243,8 @@
 所谓控制平面就是 Kubernetes 的 apiserver。
 </p>
 
-<div id="outline-container-org4d91eaf" class="outline-2">
-<h2 id="org4d91eaf"><span class="section-number-2">1.</span> 节点到控制平面</h2>
+<div id="outline-container-org3cd4a55" class="outline-2">
+<h2 id="org3cd4a55"><span class="section-number-2">1.</span> 节点到控制平面</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Kubernetes 是集中式的 API 模式。来自节点的所有 API 使用（或者他们运行的 Pods）在 apiserver 处终止（其他控制平面组件都未被设计为公开远程服务）。
@@ -273,8 +270,8 @@ As a result, the default operating mode for connections from the nodes and pods 
 </div>
 </div>
 
-<div id="outline-container-org0d617dd" class="outline-2">
-<h2 id="org0d617dd"><span class="section-number-2">2.</span> 控制平面到节点</h2>
+<div id="outline-container-orgc6001d4" class="outline-2">
+<h2 id="orgc6001d4"><span class="section-number-2">2.</span> 控制平面到节点</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 从控制平面（apiserver）到节点两种主要的通信方式是：
@@ -286,8 +283,8 @@ As a result, the default operating mode for connections from the nodes and pods 
 </ol>
 </div>
 
-<div id="outline-container-org48a3162" class="outline-3">
-<h3 id="org48a3162"><span class="section-number-3">2.1.</span> apiserver 到 kubelet</h3>
+<div id="outline-container-orgd98c2da" class="outline-3">
+<h3 id="orgd98c2da"><span class="section-number-3">2.1.</span> apiserver 到 kubelet</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 从 apiserver 到 kubelet 的连接用于：
@@ -318,8 +315,8 @@ Finally, Kubelet authentication and/or authorization should be enabled to secure
 </div>
 </div>
 
-<div id="outline-container-org7063810" class="outline-3">
-<h3 id="org7063810"><span class="section-number-3">2.2.</span> apiserver 到节点，pods 和 services</h3>
+<div id="outline-container-org7574fe9" class="outline-3">
+<h3 id="org7574fe9"><span class="section-number-3">2.2.</span> apiserver 到节点，pods 和 services</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 The connections from the apiserver to a node, pod, or service default to plain HTTP connections and are therefore
@@ -331,8 +328,8 @@ of integrity. These connections are not currently safe to run over untrusted or 
 </div>
 </div>
 
-<div id="outline-container-orgd5a5583" class="outline-3">
-<h3 id="orgd5a5583"><span class="section-number-3">2.3.</span> SSH 隧道（tunnels）</h3>
+<div id="outline-container-org48f02fd" class="outline-3">
+<h3 id="org48f02fd"><span class="section-number-3">2.3.</span> SSH 隧道（tunnels）</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Kubernetes supports SSH tunnels to protect the control plane to nodes communication paths.
@@ -350,8 +347,8 @@ The Konnectivity service is a replacement for this communication channel.
 </div>
 
 
-<div id="outline-container-org5989f95" class="outline-3">
-<h3 id="org5989f95"><span class="section-number-3">2.4.</span> Konnectivity service</h3>
+<div id="outline-container-orge55a105" class="outline-3">
+<h3 id="orge55a105"><span class="section-number-3">2.4.</span> Konnectivity service</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 FEATURE STATE: Kubernetes v1.18 [beta]
@@ -373,7 +370,7 @@ Follow the Konnectivity service task to set up the Konnectivity service in your 
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-03-23 18:03:02 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2021-03-23 18:03:02 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

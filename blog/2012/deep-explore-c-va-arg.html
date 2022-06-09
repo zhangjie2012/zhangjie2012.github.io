@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 17:43 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>深度探索C语言函数可变长参数</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,7 +213,6 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 <script type="text/x-mathjax-config">
@@ -238,15 +235,14 @@
              }
 });
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">深度探索C语言函数可变长参数</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#一基础部分">1. 一、基础部分</a>
 <ul>
@@ -284,7 +280,7 @@ printf 系列的（格式化输入输出等）函数，都是参数可变的。�
 函数的声明：
 </p>
 
-<pre class="example" id="org5864244">
+<pre class="example" id="org0fe77dc">
 int printf ( const char * format, ... );
 </pre>
 
@@ -302,7 +298,7 @@ int printf ( const char * format, ... );
 C语言可变参数通过三个宏（=va_start、va_end、va_arg=）和一个类型（=va_list=）实现的，
 </p>
 
-<pre class="example" id="org16d20ad">
+<pre class="example" id="org9585bb1">
 void va_start ( va_list ap, paramN );
 </pre>
 
@@ -319,7 +315,7 @@ void va_start ( va_list ap, paramN );
 功能：初始化可变参数列表（把函数在 paramN 之后的参数地址放到 ap 中）。
 </p>
 
-<pre class="example" id="org5fd0156">
+<pre class="example" id="org9a90514">
 void va_end ( va_list ap );
 </pre>
 
@@ -327,7 +323,7 @@ void va_end ( va_list ap );
 功能：关闭初始化列表（将 ap 置空）。
 </p>
 
-<pre class="example" id="org1b9daad">
+<pre class="example" id="org42b8883">
 type va_arg ( va_list ap, type );
 </pre>
 
@@ -349,7 +345,7 @@ va_start 获取参数列表（的地址）存储到 ap 中，用 va_arg
 <div id="outline-container-举例" class="outline-3">
 <h3 id="举例"><span class="section-number-3">2.1.</span> 1.3 举例</h3>
 <div class="outline-text-3" id="text-举例">
-<pre class="example" id="org649e26b">
+<pre class="example" id="org292e518">
 /* 作者：独酌逸醉
  * 时间：2012.08.18
  * 功能：用C语言实现变长参数小例：求和
@@ -417,7 +413,7 @@ int main ()
 以下源码，来自=“..\Microsoft Visual Studio 10.0\VC\include”=
 </p>
 
-<pre class="example" id="orgdbb44c0">
+<pre class="example" id="org7eee078">
 // stdarg.h
 #define va_start _crt_va_start
 #define va_arg _crt_va_arg
@@ -435,7 +431,7 @@ typedef char *  va_list;
 除了 <code>_INTSIZEOF</code> 之外，其他都很好理解，举个例子吧：
 </p>
 
-<pre class="example" id="orga173a24">
+<pre class="example" id="org1bf3fcc">
 /* 作者：独酌逸醉
  * 时间：2012.08.18
  * 功能：测试 _INTSIZEOF 宏
@@ -461,7 +457,7 @@ int main ()
 输出结果：
 </p>
 
-<pre class="example" id="org815cbbc">
+<pre class="example" id="orgce4b36a">
 _INTSIZEOF(i) = 4
 _INTSIZEOF(f) = 4
 _INTSIZEOF("Hello,world") = 12
@@ -542,7 +538,7 @@ sizeof("Hello,world") = 12
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-08-18 06:56:40 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2012-08-18 06:56:40 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

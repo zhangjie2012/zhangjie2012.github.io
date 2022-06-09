@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2021-11-22 Mon 17:42 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>gRPC 负载均衡</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css"/>
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,46 +213,45 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">gRPC 负载均衡</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org13aae04">1. 常用负载均衡方法</a>
+<li><a href="#org177b45d">1. 常用负载均衡方法</a>
 <ul>
-<li><a href="#org0b457d4">1.1. 代理模式</a></li>
-<li><a href="#orga864055">1.2. 客户端的均衡</a></li>
-<li><a href="#org688d41f">1.3. 额外的负载均衡服务</a></li>
+<li><a href="#org6bed82c">1.1. 代理模式</a></li>
+<li><a href="#org0ff7462">1.2. 客户端的均衡</a></li>
+<li><a href="#org136e27d">1.3. 额外的负载均衡服务</a></li>
 </ul>
 </li>
-<li><a href="#org21bc6bf">2. gRPC Load Balancing 2017</a>
+<li><a href="#orgaebc9f6">2. gRPC Load Balancing 2017</a>
 <ul>
-<li><a href="#org6240930">2.1. 代理的负载均衡器选项</a></li>
-<li><a href="#org4953d56">2.2. 客户端和服务器的负载均衡对比</a></li>
-<li><a href="#orgaf297c3">2.3. 最佳实践</a></li>
+<li><a href="#orgb47ba47">2.1. 代理的负载均衡器选项</a></li>
+<li><a href="#org599b8a7">2.2. 客户端和服务器的负载均衡对比</a></li>
+<li><a href="#org6d47d0f">2.3. 最佳实践</a></li>
 </ul>
 </li>
-<li><a href="#org0bf2f06">3. Nginx gRPC 支持</a></li>
+<li><a href="#org93a0436">3. Nginx gRPC 支持</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org13aae04" class="outline-2">
-<h2 id="org13aae04"><span class="section-number-2">1.</span> 常用负载均衡方法</h2>
+<div id="outline-container-org177b45d" class="outline-2">
+<h2 id="org177b45d"><span class="section-number-2">1.</span> 常用负载均衡方法</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 来自：<a href="https://github.com/grpc/grpc/blob/master/doc/load-balancing.md#approaches-to-load-balancing">https://github.com/grpc/grpc/blob/master/doc/load-balancing.md#approaches-to-load-balancing</a>
 </p>
 </div>
 
-<div id="outline-container-org0b457d4" class="outline-3">
-<h3 id="org0b457d4"><span class="section-number-3">1.1.</span> 代理模式</h3>
+<div id="outline-container-org6bed82c" class="outline-3">
+<h3 id="org6bed82c"><span class="section-number-3">1.1.</span> 代理模式</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 在客户端和服务器之间提供一层服务转发代理，代理需要拥有将 RPC 的请求和响应临时副本，会消耗更多的资源。
@@ -263,8 +260,8 @@
 </div>
 </div>
 
-<div id="outline-container-orga864055" class="outline-3">
-<h3 id="orga864055"><span class="section-number-3">1.2.</span> 客户端的均衡</h3>
+<div id="outline-container-org0ff7462" class="outline-3">
+<h3 id="org0ff7462"><span class="section-number-3">1.2.</span> 客户端的均衡</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 把负载均衡的逻辑放在客户端中。客户端自己实现负载均衡策略（比如：轮询，随机分发等）来选择一个后端服务。在这种情况下，客户端通过 name resolution 系统
@@ -282,8 +279,8 @@
 </div>
 </div>
 
-<div id="outline-container-org688d41f" class="outline-3">
-<h3 id="org688d41f"><span class="section-number-3">1.3.</span> 额外的负载均衡服务</h3>
+<div id="outline-container-org136e27d" class="outline-3">
+<h3 id="org136e27d"><span class="section-number-3">1.3.</span> 额外的负载均衡服务</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 客户端向负载均衡服务发出请求，负载均衡服务负责维护服务器列表的维护，以及实现各种复杂的负载均衡策略，而且通过健康检测和服务器的负载来合理的处理服务器可用性。
@@ -304,12 +301,12 @@
 </div>
 </div>
 
-<div id="outline-container-org21bc6bf" class="outline-2">
-<h2 id="org21bc6bf"><span class="section-number-2">2.</span> <a href="https://grpc.io/blog/grpc-load-balancing/">gRPC Load Balancing</a> 2017</h2>
+<div id="outline-container-orgaebc9f6" class="outline-2">
+<h2 id="orgaebc9f6"><span class="section-number-2">2.</span> <a href="https://grpc.io/blog/grpc-load-balancing/">gRPC Load Balancing</a> 2017</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org6240930" class="outline-3">
-<h3 id="org6240930"><span class="section-number-3">2.1.</span> 代理的负载均衡器选项</h3>
+<div id="outline-container-orgb47ba47" class="outline-3">
+<h3 id="orgb47ba47"><span class="section-number-3">2.1.</span> 代理的负载均衡器选项</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 代理分为：L3/L4（传输层）代理或者 L7（应用层）代理。
@@ -373,8 +370,8 @@ LB 可以在多个后端之间分配来自同一个客户端的流。
 </div>
 </div>
 
-<div id="outline-container-org4953d56" class="outline-3">
-<h3 id="org4953d56"><span class="section-number-3">2.2.</span> 客户端和服务器的负载均衡对比</h3>
+<div id="outline-container-org599b8a7" class="outline-3">
+<h3 id="org599b8a7"><span class="section-number-3">2.2.</span> 客户端和服务器的负载均衡对比</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 （略），一般不会选择客户端。
@@ -382,8 +379,8 @@ LB 可以在多个后端之间分配来自同一个客户端的流。
 </div>
 </div>
 
-<div id="outline-container-orgaf297c3" class="outline-3">
-<h3 id="orgaf297c3"><span class="section-number-3">2.3.</span> 最佳实践</h3>
+<div id="outline-container-org6d47d0f" class="outline-3">
+<h3 id="org6d47d0f"><span class="section-number-3">2.3.</span> 最佳实践</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 <b>场景 1</b>
@@ -463,8 +460,8 @@ LB 可以在多个后端之间分配来自同一个客户端的流。
 </div>
 </div>
 
-<div id="outline-container-org0bf2f06" class="outline-2">
-<h2 id="org0bf2f06"><span class="section-number-2">3.</span> Nginx gRPC 支持</h2>
+<div id="outline-container-org93a0436" class="outline-2">
+<h2 id="org93a0436"><span class="section-number-2">3.</span> Nginx gRPC 支持</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 <a href="https://www.nginx.com/blog/nginx-1-13-10-grpc/">https://www.nginx.com/blog/nginx-1-13-10-grpc/</a>
@@ -475,7 +472,7 @@ LB 可以在多个后端之间分配来自同一个客户端的流。
 </p>
 
 
-<div id="orgdbc04bd" class="figure">
+<div id="org350867e" class="figure">
 <p><img src="https://www.nginx.com/wp-content/uploads/2018/03/gRPC-nginx-routing.png" alt="gRPC-nginx-routing.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span><a href="https://www.nginx.com/blog/nginx-1-13-10-grpc/">https://www.nginx.com/blog/nginx-1-13-10-grpc/</a></p>
@@ -488,7 +485,7 @@ Nginx 作为 client 和 server 之间的 proxy，跟之前支持 HTTP 和 TCP �
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-28 11:17:11 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2020-05-28 11:17:11 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:42 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GCE 的 Kubernetes 最佳实践系列</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,34 +213,33 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">GCE 的 Kubernetes 最佳实践系列</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org2687a82">1. 使用命令空间进行组织</a>
+<li><a href="#org3c762ed">1. 使用命令空间进行组织</a>
 <ul>
-<li><a href="#org061c122">1.1. 服务发现</a></li>
-<li><a href="#org03d670f">1.2. 空间的粒度</a></li>
+<li><a href="#orga33530b">1.1. 服务发现</a></li>
+<li><a href="#org94fe1fd">1.2. 空间的粒度</a></li>
 </ul>
 </li>
-<li><a href="#org258caac">2. 使用就绪探针和存活探针进行健康检测</a></li>
-<li><a href="#orga76ce09">3. 资源的 requests 和 limits</a></li>
-<li><a href="#org24e0df3">4. 优雅终止</a></li>
-<li><a href="#orgb721caa">5. 外部服务映射</a></li>
-<li><a href="#orgef75084">6. 零宕机更新集群</a></li>
+<li><a href="#org892d07c">2. 使用就绪探针和存活探针进行健康检测</a></li>
+<li><a href="#orge598f8c">3. 资源的 requests 和 limits</a></li>
+<li><a href="#org6fa2286">4. 优雅终止</a></li>
+<li><a href="#org7c7085a">5. 外部服务映射</a></li>
+<li><a href="#orge834179">6. 零宕机更新集群</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2687a82" class="outline-2">
-<h2 id="org2687a82"><span class="section-number-2">1.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-organizing-with-namespaces">使用命令空间进行组织</a></h2>
+<div id="outline-container-org3c762ed" class="outline-2">
+<h2 id="org3c762ed"><span class="section-number-2">1.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-organizing-with-namespaces">使用命令空间进行组织</a></h2>
 <div class="outline-text-2" id="text-1">
 <p>
 命名空间可以理解成 Kubernetes 集群中的虚拟集群，一个 Kubernetes 集群中可以包含多个命名空间，逻辑上相互隔离；
@@ -265,8 +262,8 @@
 </p>
 </div>
 
-<div id="outline-container-org061c122" class="outline-3">
-<h3 id="org061c122"><span class="section-number-3">1.1.</span> 服务发现</h3>
+<div id="outline-container-orga33530b" class="outline-3">
+<h3 id="orga33530b"><span class="section-number-3">1.1.</span> 服务发现</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Kubernetes 中 Services 使用以下的通用 DNS 模式来暴露他们的端点（endpoints）。类似这样：
@@ -291,8 +288,8 @@ Kubernetes 中 Services 使用以下的通用 DNS 模式来暴露他们的端点
 </div>
 </div>
 
-<div id="outline-container-org03d670f" class="outline-3">
-<h3 id="org03d670f"><span class="section-number-3">1.2.</span> 空间的粒度</h3>
+<div id="outline-container-org94fe1fd" class="outline-3">
+<h3 id="org94fe1fd"><span class="section-number-3">1.2.</span> 空间的粒度</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 视公司的阶段和规模而定。大公司下业务比较复杂（技术栈丰富），团队较多，需要配合 CI/CD 工具来使用，使用 RBAC 和资源配合是个好主意。
@@ -301,12 +298,12 @@ Kubernetes 中 Services 使用以下的通用 DNS 模式来暴露他们的端点
 </div>
 </div>
 
-<div id="outline-container-org258caac" class="outline-2">
-<h2 id="org258caac"><span class="section-number-2">2.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-setting-up-health-checks-with-readiness-and-liveness-probes">使用就绪探针和存活探针进行健康检测</a></h2>
+<div id="outline-container-org892d07c" class="outline-2">
+<h2 id="org892d07c"><span class="section-number-2">2.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-setting-up-health-checks-with-readiness-and-liveness-probes">使用就绪探针和存活探针进行健康检测</a></h2>
 </div>
 
-<div id="outline-container-orga76ce09" class="outline-2">
-<h2 id="orga76ce09"><span class="section-number-2">3.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits">资源的 requests 和 limits</a></h2>
+<div id="outline-container-orge598f8c" class="outline-2">
+<h2 id="orge598f8c"><span class="section-number-2">3.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits">资源的 requests 和 limits</a></h2>
 <div class="outline-text-2" id="text-3">
 <p>
 requests 和 limits 是 Kubernetes 控制 CPU 和内存资源的机制。Requests 的值是 Kubernetes 一定给服务分配到的，分配不到就会提示
@@ -324,8 +321,8 @@ requests 和 limits 是 Kubernetes 控制 CPU 和内存资源的机制。Request
 </div>
 </div>
 
-<div id="outline-container-org24e0df3" class="outline-2">
-<h2 id="org24e0df3"><span class="section-number-2">4.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-terminating-with-grace">优雅终止</a></h2>
+<div id="outline-container-org6fa2286" class="outline-2">
+<h2 id="org6fa2286"><span class="section-number-2">4.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-terminating-with-grace">优雅终止</a></h2>
 <div class="outline-text-2" id="text-4">
 <ol class="org-ol">
 <li>Pod 被设置为 "Terminating" 时，会从 Service 中的 endpoints 列表中移出；</li>
@@ -341,8 +338,8 @@ requests 和 limits 是 Kubernetes 控制 CPU 和内存资源的机制。Request
 </div>
 </div>
 
-<div id="outline-container-orgb721caa" class="outline-2">
-<h2 id="orgb721caa"><span class="section-number-2">5.</span> <a href="https://prog.world/kubernetes-best-practices-mapping-external-services/">外部服务映射</a></h2>
+<div id="outline-container-org7c7085a" class="outline-2">
+<h2 id="org7c7085a"><span class="section-number-2">5.</span> <a href="https://prog.world/kubernetes-best-practices-mapping-external-services/">外部服务映射</a></h2>
 <div class="outline-text-2" id="text-5">
 <p>
 类似数据库这样的服务通常是运行在集群外部的，在集群内部通常会有这样一个需求：一个服务在不同的环境，有相同的配置，但是却要连到不同
@@ -359,12 +356,12 @@ requests 和 limits 是 Kubernetes 控制 CPU 和内存资源的机制。Request
 </div>
 </div>
 
-<div id="outline-container-orgef75084" class="outline-2">
-<h2 id="orgef75084"><span class="section-number-2">6.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-upgrading-your-clusters-with-zero-downtime">零宕机更新集群</a></h2>
+<div id="outline-container-orge834179" class="outline-2">
+<h2 id="orge834179"><span class="section-number-2">6.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-upgrading-your-clusters-with-zero-downtime">零宕机更新集群</a></h2>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-05-11 16:58:20 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2021-05-11 16:58:20 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

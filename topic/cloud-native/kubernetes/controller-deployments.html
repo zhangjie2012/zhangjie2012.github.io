@@ -3,16 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 17:41 -->
+<!-- 2022-06-09 Thu 17:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Deployments</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="luanhua" />
-<meta name="description" content="Keep It Simple, Stupid"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="author" content="ZJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -33,8 +32,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -43,21 +43,21 @@
   pre.src {
     position: relative;
     overflow: auto;
-    padding-top: 1.2em;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
   pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -192,13 +192,11 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/site.css" />
-<script type="text/javascript">
+<script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
      function CodeHighlightOn(elem, id)
      {
        var target = document.getElementById(id);
@@ -215,46 +213,45 @@
          target.classList.remove("code-highlighted");
        }
      }
-    /*]]>*///-->
 // @license-end
 </script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">Kubernetes - Deployments</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org2fa9174">1. 使用场景</a></li>
-<li><a href="#org48fccab">2. 创建 Deployment</a></li>
-<li><a href="#orge823023">3. 更新 Deployment</a>
+<li><a href="#org68bd48b">1. 使用场景</a></li>
+<li><a href="#orgfc04253">2. 创建 Deployment</a></li>
+<li><a href="#org25923b8">3. 更新 Deployment</a>
 <ul>
-<li><a href="#org9001be4">3.1. 滚动更新更新比例说明</a></li>
+<li><a href="#orga3b14a1">3.1. 滚动更新更新比例说明</a></li>
 </ul>
 </li>
-<li><a href="#org0404a17">4. 回滚 Deployment</a></li>
-<li><a href="#orgcd0cd53">5. 弹性伸缩（Scaling）</a></li>
-<li><a href="#orgbd77005">6. 暂停和恢复 Deployment</a></li>
-<li><a href="#orge3f49b6">7. Deployment 状态</a>
+<li><a href="#orgb40c183">4. 回滚 Deployment</a></li>
+<li><a href="#org0f4bc8b">5. 弹性伸缩（Scaling）</a></li>
+<li><a href="#orge5ccc48">6. 暂停和恢复 Deployment</a></li>
+<li><a href="#orgc6575c1">7. Deployment 状态</a>
 <ul>
-<li><a href="#org9844f3a">7.1. 进行中（Processing）</a></li>
-<li><a href="#org25f3d5c">7.2. 完成（complete）</a></li>
-<li><a href="#org49fb2c9">7.3. 失败（Failed）</a></li>
+<li><a href="#org0ecaafa">7.1. 进行中（Processing）</a></li>
+<li><a href="#org15e1c32">7.2. 完成（complete）</a></li>
+<li><a href="#orgfe27ed9">7.3. 失败（Failed）</a></li>
 </ul>
 </li>
-<li><a href="#orgb024d40">8. 清理策略</a></li>
-<li><a href="#orgeb9080c">9. 金丝雀部署（灰度发布）</a></li>
-<li><a href="#org2d4d262">10. 书写 Deployment 规范</a>
+<li><a href="#org9aa1997">8. 清理策略</a></li>
+<li><a href="#org9906276">9. 金丝雀部署（灰度发布）</a></li>
+<li><a href="#org68279d6">10. 书写 Deployment 规范</a>
 <ul>
-<li><a href="#org3b0c1a8">10.1. Pod Template</a></li>
-<li><a href="#org57ecc0a">10.2. Replicas</a></li>
-<li><a href="#org1c0cdfb">10.3. Selector</a></li>
-<li><a href="#orgd8be5ff">10.4. Strategy</a></li>
-<li><a href="#orgb159db7">10.5. Progress Deadline Seconds</a></li>
-<li><a href="#org31a73f2">10.6. Min Ready Seconds</a></li>
-<li><a href="#orgf1c2041">10.7. Revision History Limit</a></li>
-<li><a href="#org5f442f1">10.8. Paused</a></li>
+<li><a href="#orgd9f908b">10.1. Pod Template</a></li>
+<li><a href="#org5055ccf">10.2. Replicas</a></li>
+<li><a href="#orge30e220">10.3. Selector</a></li>
+<li><a href="#org3a6aaee">10.4. Strategy</a></li>
+<li><a href="#org53e8330">10.5. Progress Deadline Seconds</a></li>
+<li><a href="#org1a7d699">10.6. Min Ready Seconds</a></li>
+<li><a href="#orgdc62128">10.7. Revision History Limit</a></li>
+<li><a href="#org2962b40">10.8. Paused</a></li>
 </ul>
 </li>
 </ul>
@@ -269,8 +266,8 @@
 你可以定义 Deployments 来创建新的 ReplicaSet，或者删除已存在的 Deployments 然后根据新的 Deployments 分配资源。
 </p>
 
-<div id="outline-container-org2fa9174" class="outline-2">
-<h2 id="org2fa9174"><span class="section-number-2">1.</span> 使用场景</h2>
+<div id="outline-container-org68bd48b" class="outline-2">
+<h2 id="org68bd48b"><span class="section-number-2">1.</span> 使用场景</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 下面是 Deployments 典型用例：
@@ -289,15 +286,15 @@
 </div>
 </div>
 
-<div id="outline-container-org48fccab" class="outline-2">
-<h2 id="org48fccab"><span class="section-number-2">2.</span> 创建 Deployment</h2>
+<div id="outline-container-orgfc04253" class="outline-2">
+<h2 id="orgfc04253"><span class="section-number-2">2.</span> 创建 Deployment</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 下面是 Deployment 的一个例子。它创建了一个 ReplicaSet 包含 3 个 <code>nginx</code> Pods：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml" id="orga2be596"><span style="color: #00538b;">apiVersion</span>: apps/v1
+<pre class="src src-yaml" id="org6d4e0b2"><span style="color: #00538b;">apiVersion</span>: apps/v1
 <span style="color: #00538b;">kind</span>: Deployment
 <span style="color: #00538b;">metadata</span>:
   <span style="color: #00538b;">name</span>: nginx-deployment
@@ -367,8 +364,8 @@ RANDOM-STRING 是随机生成的，使用 <code>pod-template-hash</code> 作为�
 </div>
 </div>
 
-<div id="outline-container-orge823023" class="outline-2">
-<h2 id="orge823023"><span class="section-number-2">3.</span> 更新 Deployment</h2>
+<div id="outline-container-org25923b8" class="outline-2">
+<h2 id="org25923b8"><span class="section-number-2">3.</span> 更新 Deployment</h2>
 <div class="outline-text-2" id="text-3">
 <blockquote>
 <p>
@@ -409,8 +406,8 @@ Deployment 的 replica 为止，更新结束。
 </p>
 </div>
 
-<div id="outline-container-org9001be4" class="outline-3">
-<h3 id="org9001be4"><span class="section-number-3">3.1.</span> 滚动更新更新比例说明</h3>
+<div id="outline-container-orga3b14a1" class="outline-3">
+<h3 id="orga3b14a1"><span class="section-number-3">3.1.</span> 滚动更新更新比例说明</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 滚动更新允许设置 <code>maxSurge</code> 和 <code>maxUnavaible</code> 来限制更新比例。上面已经说过了，
@@ -484,8 +481,8 @@ nginx-deployment     15        18        7            8           7m
 </div>
 </div>
 
-<div id="outline-container-org0404a17" class="outline-2">
-<h2 id="org0404a17"><span class="section-number-2">4.</span> 回滚 Deployment</h2>
+<div id="outline-container-orgb40c183" class="outline-2">
+<h2 id="orgb40c183"><span class="section-number-2">4.</span> 回滚 Deployment</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 默认情况下，所有 Deployment 的 rollout 记录都会保存在系统中，保证任何时候你想回滚的时候都可以回滚（你可以修改修订
@@ -510,8 +507,8 @@ nginx-deployment     15        18        7            8           7m
 </div>
 </div>
 
-<div id="outline-container-orgcd0cd53" class="outline-2">
-<h2 id="orgcd0cd53"><span class="section-number-2">5.</span> 弹性伸缩（Scaling）</h2>
+<div id="outline-container-org0f4bc8b" class="outline-2">
+<h2 id="org0f4bc8b"><span class="section-number-2">5.</span> 弹性伸缩（Scaling）</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Deployment 允许弹性伸缩（增加或者减少副本数量），命令是 <code>kubectl scale</code> 。
@@ -535,8 +532,8 @@ Deployment 允许弹性伸缩（增加或者减少副本数量），命令是 <c
 </div>
 </div>
 
-<div id="outline-container-orgbd77005" class="outline-2">
-<h2 id="orgbd77005"><span class="section-number-2">6.</span> 暂停和恢复 Deployment</h2>
+<div id="outline-container-orge5ccc48" class="outline-2">
+<h2 id="orge5ccc48"><span class="section-number-2">6.</span> 暂停和恢复 Deployment</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 当有多个更新的时候，先暂停，后修改，然后恢复可以声调很多次不必要的 rollout。
@@ -557,16 +554,16 @@ Deployment 允许弹性伸缩（增加或者减少副本数量），命令是 <c
 </div>
 </div>
 
-<div id="outline-container-orge3f49b6" class="outline-2">
-<h2 id="orge3f49b6"><span class="section-number-2">7.</span> Deployment 状态</h2>
+<div id="outline-container-orgc6575c1" class="outline-2">
+<h2 id="orgc6575c1"><span class="section-number-2">7.</span> Deployment 状态</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 在 Deployment 的生命周期会有不同的状态。
 </p>
 </div>
 
-<div id="outline-container-org9844f3a" class="outline-3">
-<h3 id="org9844f3a"><span class="section-number-3">7.1.</span> 进行中（Processing）</h3>
+<div id="outline-container-org0ecaafa" class="outline-3">
+<h3 id="org0ecaafa"><span class="section-number-3">7.1.</span> 进行中（Processing）</h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 执行下面的操作时，Deployment 会被标记为 <i>processing</i> ：
@@ -589,8 +586,8 @@ Deployment 允许弹性伸缩（增加或者减少副本数量），命令是 <c
 </div>
 </div>
 
-<div id="outline-container-org25f3d5c" class="outline-3">
-<h3 id="org25f3d5c"><span class="section-number-3">7.2.</span> 完成（complete）</h3>
+<div id="outline-container-org15e1c32" class="outline-3">
+<h3 id="org15e1c32"><span class="section-number-3">7.2.</span> 完成（complete）</h3>
 <div class="outline-text-3" id="text-7-2">
 <p>
 当 Deployment 有下面的特点时，会被标记为 <i>complete</i> ：
@@ -608,8 +605,8 @@ Deployment 允许弹性伸缩（增加或者减少副本数量），命令是 <c
 </div>
 </div>
 
-<div id="outline-container-org49fb2c9" class="outline-3">
-<h3 id="org49fb2c9"><span class="section-number-3">7.3.</span> 失败（Failed）</h3>
+<div id="outline-container-orgfe27ed9" class="outline-3">
+<h3 id="orgfe27ed9"><span class="section-number-3">7.3.</span> 失败（Failed）</h3>
 <div class="outline-text-3" id="text-7-3">
 <p>
 Deployment 更新未完成，更新卡住了。可能是以下因素引起的：
@@ -650,8 +647,8 @@ Conditions:
 </div>
 </div>
 
-<div id="outline-container-orgb024d40" class="outline-2">
-<h2 id="orgb024d40"><span class="section-number-2">8.</span> 清理策略</h2>
+<div id="outline-container-org9aa1997" class="outline-2">
+<h2 id="org9aa1997"><span class="section-number-2">8.</span> 清理策略</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 你可以设置 <code>.spec.revisionHistoryLimit</code> 字段设置旧的 ReplicaSet 最多保留多少份，多余的部分会被后台的垃圾收集回收掉。
@@ -660,8 +657,8 @@ Conditions:
 </div>
 </div>
 
-<div id="outline-container-orgeb9080c" class="outline-2">
-<h2 id="orgeb9080c"><span class="section-number-2">9.</span> 金丝雀部署（灰度发布）</h2>
+<div id="outline-container-org9906276" class="outline-2">
+<h2 id="org9906276"><span class="section-number-2">9.</span> 金丝雀部署（灰度发布）</h2>
 <div class="outline-text-2" id="text-9">
 <p>
 如果你想不同的版本给部分用户使用。你可以按照 <a href="https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments">管理资源</a> 中的描述创建多个 Deployment，每个版本一个 Deployment。
@@ -673,16 +670,16 @@ Conditions:
 </div>
 </div>
 
-<div id="outline-container-org2d4d262" class="outline-2">
-<h2 id="org2d4d262"><span class="section-number-2">10.</span> 书写 Deployment 规范</h2>
+<div id="outline-container-org68279d6" class="outline-2">
+<h2 id="org68279d6"><span class="section-number-2">10.</span> 书写 Deployment 规范</h2>
 <div class="outline-text-2" id="text-10">
 <p>
 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#writing-a-deployment-spec</a>
 </p>
 </div>
 
-<div id="outline-container-org3b0c1a8" class="outline-3">
-<h3 id="org3b0c1a8"><span class="section-number-3">10.1.</span> Pod Template</h3>
+<div id="outline-container-orgd9f908b" class="outline-3">
+<h3 id="orgd9f908b"><span class="section-number-3">10.1.</span> Pod Template</h3>
 <div class="outline-text-3" id="text-10-1">
 <p>
 <code>.spec.template</code> 和 <code>.spec.selector</code> 是 <code>.spec</code> 唯二的必填字段。
@@ -702,8 +699,8 @@ Conditions:
 </div>
 </div>
 
-<div id="outline-container-org57ecc0a" class="outline-3">
-<h3 id="org57ecc0a"><span class="section-number-3">10.2.</span> Replicas</h3>
+<div id="outline-container-org5055ccf" class="outline-3">
+<h3 id="org5055ccf"><span class="section-number-3">10.2.</span> Replicas</h3>
 <div class="outline-text-3" id="text-10-2">
 <p>
 <code>.spec.replicas</code> 表示期望的副本数量，不填写默认是 1。
@@ -711,8 +708,8 @@ Conditions:
 </div>
 </div>
 
-<div id="outline-container-org1c0cdfb" class="outline-3">
-<h3 id="org1c0cdfb"><span class="section-number-3">10.3.</span> Selector</h3>
+<div id="outline-container-orge30e220" class="outline-3">
+<h3 id="orge30e220"><span class="section-number-3">10.3.</span> Selector</h3>
 <div class="outline-text-3" id="text-10-3">
 <p>
 <code>.spec.selector</code> 是必填字段，用于标识此 Deployment 部署的 Pod。
@@ -724,8 +721,8 @@ Conditions:
 </div>
 </div>
 
-<div id="outline-container-orgd8be5ff" class="outline-3">
-<h3 id="orgd8be5ff"><span class="section-number-3">10.4.</span> Strategy</h3>
+<div id="outline-container-org3a6aaee" class="outline-3">
+<h3 id="org3a6aaee"><span class="section-number-3">10.4.</span> Strategy</h3>
 <div class="outline-text-3" id="text-10-4">
 <p>
 <code>.spec.strategy</code> 指定新 Pod 替换旧 Pod 的策略。 <code>.spec.strategy.type</code> 可以是 "Recreate" 或者 "RollingUpdate"，
@@ -751,8 +748,8 @@ Conditions:
 </div>
 </div>
 
-<div id="outline-container-orgb159db7" class="outline-3">
-<h3 id="orgb159db7"><span class="section-number-3">10.5.</span> Progress Deadline Seconds</h3>
+<div id="outline-container-org53e8330" class="outline-3">
+<h3 id="org53e8330"><span class="section-number-3">10.5.</span> Progress Deadline Seconds</h3>
 <div class="outline-text-3" id="text-10-5">
 <p>
 <code>.spec.progressDeadlineSeconds</code> 可选的字段，用来指定等待部署进度，然后系统报告 Deployment 失败的秒数。
@@ -766,8 +763,8 @@ Deployment 控制器将继续重试部署。在未来，等自动回滚实现了
 </div>
 </div>
 
-<div id="outline-container-org31a73f2" class="outline-3">
-<h3 id="org31a73f2"><span class="section-number-3">10.6.</span> Min Ready Seconds</h3>
+<div id="outline-container-org1a7d699" class="outline-3">
+<h3 id="org1a7d699"><span class="section-number-3">10.6.</span> Min Ready Seconds</h3>
 <div class="outline-text-3" id="text-10-6">
 <p>
 最小就绪（ready）秒， <code>.spec.minReadySeconds</code> 是一个可选的字段，用来表示新创建的 Pod 在容器不会崩溃的的情况下准备就绪
@@ -776,8 +773,8 @@ Deployment 控制器将继续重试部署。在未来，等自动回滚实现了
 </div>
 </div>
 
-<div id="outline-container-orgf1c2041" class="outline-3">
-<h3 id="orgf1c2041"><span class="section-number-3">10.7.</span> Revision History Limit</h3>
+<div id="outline-container-orgdc62128" class="outline-3">
+<h3 id="orgdc62128"><span class="section-number-3">10.7.</span> Revision History Limit</h3>
 <div class="outline-text-3" id="text-10-7">
 <p>
 <code>.spec.revisionHistoryLimit</code> 可选字段，表明要保留的允许回滚的旧的 ReplicaSets 数量。这些旧的 ReplicaSets 会消耗 etcd
@@ -787,8 +784,8 @@ Deployment 控制器将继续重试部署。在未来，等自动回滚实现了
 </div>
 </div>
 
-<div id="outline-container-org5f442f1" class="outline-3">
-<h3 id="org5f442f1"><span class="section-number-3">10.8.</span> Paused</h3>
+<div id="outline-container-org2962b40" class="outline-3">
+<h3 id="org2962b40"><span class="section-number-3">10.8.</span> Paused</h3>
 <div class="outline-text-3" id="text-10-8">
 <p>
 <code>.spec.paused</code> 是一个可选的字段，用于暂停和恢复 Deployment。
@@ -798,7 +795,7 @@ Deployment 控制器将继续重试部署。在未来，等自动回滚实现了
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-07 11:51:47 <br />Last updated: 2021-11-15 Mon 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.6)</p>
+<p class="postamble">First created: 2020-04-07 11:51:47 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>
