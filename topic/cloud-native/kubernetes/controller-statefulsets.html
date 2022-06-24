@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-09 Thu 17:05 -->
+<!-- 2022-06-24 Fri 11:02 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - StatefulSet</title>
-<meta name="author" content="ZJ" />
+<meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,22 +223,22 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org269df2d">1. 应用场景</a></li>
-<li><a href="#org555bc75">2. 局限性</a></li>
-<li><a href="#org95f7a90">3. 组件</a></li>
-<li><a href="#orgf7dda53">4. Pod Selector</a></li>
-<li><a href="#org613df62">5. Pod ID</a>
+<li><a href="#org536e7a6">1. 应用场景</a></li>
+<li><a href="#org125adbf">2. 局限性</a></li>
+<li><a href="#org9d97c1d">3. 组件</a></li>
+<li><a href="#orgf0b5d77">4. Pod Selector</a></li>
+<li><a href="#orgea01c83">5. Pod ID</a>
 <ul>
-<li><a href="#org12ef584">5.1. 有序索引</a></li>
-<li><a href="#org64794ab">5.2. 稳定的网络 ID</a></li>
-<li><a href="#org62caa04">5.3. 稳定的存储</a></li>
-<li><a href="#org743c8df">5.4. Pod Name Label</a></li>
+<li><a href="#orgbe5d22c">5.1. 有序索引</a></li>
+<li><a href="#org5526646">5.2. 稳定的网络 ID</a></li>
+<li><a href="#org969e216">5.3. 稳定的存储</a></li>
+<li><a href="#org61b61b1">5.4. Pod Name Label</a></li>
 </ul>
 </li>
-<li><a href="#org54ef791">6. 部署和扩展保证</a>
+<li><a href="#org8e86c33">6. 部署和扩展保证</a>
 <ul>
-<li><a href="#org9a7c5e6">6.1. Pod 管理方针</a></li>
-<li><a href="#orgd616ce7">6.2. 更新策略</a></li>
+<li><a href="#org94585c1">6.1. Pod 管理方针</a></li>
+<li><a href="#org6fa4763">6.2. 更新策略</a></li>
 </ul>
 </li>
 </ul>
@@ -252,8 +252,8 @@ Deployment 和 ReplicaSet 是针对无状态服务部署的；与此对应，Sta
 StatefulSet 管理一组 Pod 的部署和扩展，并保证 Pod 有序和名称唯一性。
 </p>
 
-<div id="outline-container-org269df2d" class="outline-2">
-<h2 id="org269df2d"><span class="section-number-2">1.</span> 应用场景</h2>
+<div id="outline-container-org536e7a6" class="outline-2">
+<h2 id="org536e7a6"><span class="section-number-2">1.</span> 应用场景</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>稳定，唯一的网络标识符</li>
@@ -269,8 +269,8 @@ StatefulSet 管理一组 Pod 的部署和扩展，并保证 Pod 有序和名称�
 </div>
 </div>
 
-<div id="outline-container-org555bc75" class="outline-2">
-<h2 id="org555bc75"><span class="section-number-2">2.</span> 局限性</h2>
+<div id="outline-container-org125adbf" class="outline-2">
+<h2 id="org125adbf"><span class="section-number-2">2.</span> 局限性</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>Pod 给定的存储必须是根据要求 <code>storage class</code> 由 PersistentVolumen Provisioner 提供的，或者是管理员预先设置好的。</li>
@@ -283,8 +283,8 @@ StatefulSet 管理一组 Pod 的部署和扩展，并保证 Pod 有序和名称�
 </div>
 </div>
 
-<div id="outline-container-org95f7a90" class="outline-2">
-<h2 id="org95f7a90"><span class="section-number-2">3.</span> 组件</h2>
+<div id="outline-container-org9d97c1d" class="outline-2">
+<h2 id="org9d97c1d"><span class="section-number-2">3.</span> 组件</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 下面的例子展示了 StatefulSet 组件：
@@ -354,8 +354,8 @@ StatefulSet 管理一组 Pod 的部署和扩展，并保证 Pod 有序和名称�
 </div>
 </div>
 
-<div id="outline-container-orgf7dda53" class="outline-2">
-<h2 id="orgf7dda53"><span class="section-number-2">4.</span> Pod Selector</h2>
+<div id="outline-container-orgf0b5d77" class="outline-2">
+<h2 id="orgf0b5d77"><span class="section-number-2">4.</span> Pod Selector</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 必须设置 <code>.spec.selector</code> 字段以匹配 <code>.spec.template.metadata.labels</code> 标签。
@@ -368,16 +368,16 @@ StatefulSet 管理一组 Pod 的部署和扩展，并保证 Pod 有序和名称�
 </div>
 </div>
 
-<div id="outline-container-org613df62" class="outline-2">
-<h2 id="org613df62"><span class="section-number-2">5.</span> Pod ID</h2>
+<div id="outline-container-orgea01c83" class="outline-2">
+<h2 id="orgea01c83"><span class="section-number-2">5.</span> Pod ID</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 StatefulSet Pod 由唯一的身份：不变的序号，稳定的网络 ID 和稳定的存储组成。身份与 Pod 绑定，无论被（重新）调度在哪个节点上。
 </p>
 </div>
 
-<div id="outline-container-org12ef584" class="outline-3">
-<h3 id="org12ef584"><span class="section-number-3">5.1.</span> 有序索引</h3>
+<div id="outline-container-orgbe5d22c" class="outline-3">
+<h3 id="orgbe5d22c"><span class="section-number-3">5.1.</span> 有序索引</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 N 个副本的 StatefulSet，Pod 的编号从 0 到 N-1。如果 StatefulSet 的名字是 <code>nginx</code> ，那么 Pod 名字为 <code>nginx-0</code> <code>nginx-1</code> 以此类推。
@@ -385,8 +385,8 @@ N 个副本的 StatefulSet，Pod 的编号从 0 到 N-1。如果 StatefulSet 的
 </div>
 </div>
 
-<div id="outline-container-org64794ab" class="outline-3">
-<h3 id="org64794ab"><span class="section-number-3">5.2.</span> 稳定的网络 ID</h3>
+<div id="outline-container-org5526646" class="outline-3">
+<h3 id="org5526646"><span class="section-number-3">5.2.</span> 稳定的网络 ID</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 主机名的构造方法为 <code>$(statefulset name)-$(ordinal)</code> 。比如 <code>web-1, web-2, web-3</code> 。
@@ -466,8 +466,8 @@ Headless Service 控制 Pod 域，此服务管理的域才用以下形式： <co
 </div>
 </div>
 
-<div id="outline-container-org62caa04" class="outline-3">
-<h3 id="org62caa04"><span class="section-number-3">5.3.</span> 稳定的存储</h3>
+<div id="outline-container-org969e216" class="outline-3">
+<h3 id="org969e216"><span class="section-number-3">5.3.</span> 稳定的存储</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 Kubernetes 为每个 VolumeClaimTemplate 创建一个 PersistentVolume。
@@ -478,8 +478,8 @@ Kubernetes 为每个 VolumeClaimTemplate 创建一个 PersistentVolume。
 </div>
 </div>
 
-<div id="outline-container-org743c8df" class="outline-3">
-<h3 id="org743c8df"><span class="section-number-3">5.4.</span> Pod Name Label</h3>
+<div id="outline-container-org61b61b1" class="outline-3">
+<h3 id="org61b61b1"><span class="section-number-3">5.4.</span> Pod Name Label</h3>
 <div class="outline-text-3" id="text-5-4">
 <p>
 StatefulSet 控制器创建 Pod 时，会添加一个标签： <code>statefulset.kubernetes.io/pod-name</code> ，值是 Pod 名称。
@@ -488,8 +488,8 @@ StatefulSet 控制器创建 Pod 时，会添加一个标签： <code>statefulset
 </div>
 </div>
 
-<div id="outline-container-org54ef791" class="outline-2">
-<h2 id="org54ef791"><span class="section-number-2">6.</span> 部署和扩展保证</h2>
+<div id="outline-container-org8e86c33" class="outline-2">
+<h2 id="org8e86c33"><span class="section-number-2">6.</span> 部署和扩展保证</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>部署时，按照 Pod 的序号依次创建，{0..N-1}</li>
@@ -503,8 +503,8 @@ StatefulSet 不应该 <code>pod.Spec.TerminationGracePeriodSeconds</code> 为 0�
 </p>
 </div>
 
-<div id="outline-container-org9a7c5e6" class="outline-3">
-<h3 id="org9a7c5e6"><span class="section-number-3">6.1.</span> Pod 管理方针</h3>
+<div id="outline-container-org94585c1" class="outline-3">
+<h3 id="org94585c1"><span class="section-number-3">6.1.</span> Pod 管理方针</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 Kubernetes 1.7 及之后的版本，StatefulSet 通过 <code>.spec.podManagementPolicy</code> 字段允许你放宽顺序保证，同时又保留唯一性和身份保证。
@@ -517,8 +517,8 @@ Kubernetes 1.7 及之后的版本，StatefulSet 通过 <code>.spec.podManagement
 </div>
 </div>
 
-<div id="outline-container-orgd616ce7" class="outline-3">
-<h3 id="orgd616ce7"><span class="section-number-3">6.2.</span> 更新策略</h3>
+<div id="outline-container-org6fa4763" class="outline-3">
+<h3 id="org6fa4763"><span class="section-number-3">6.2.</span> 更新策略</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 Kubernetes 1.7 及之后的版本，StatefulSet 的 <code>.spec.updateStrategy</code> 字段允许你配置或者禁掉自动滚动更新
@@ -543,7 +543,7 @@ Kubernetes 1.7 及之后的版本，StatefulSet 的 <code>.spec.updateStrategy</
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-08 11:48:30 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2020-04-08 11:48:30 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

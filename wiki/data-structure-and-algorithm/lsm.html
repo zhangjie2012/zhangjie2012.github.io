@@ -6,7 +6,7 @@
 <!-- 2022-06-24 Fri 11:02 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Kubernetes 镜像</title>
+<title>LSM</title>
 <meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
@@ -218,51 +218,35 @@
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">Kubernetes 镜像</h1>
+<h1 class="title">LSM</h1>
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org0449187">1. Pod 镜像更新策略</a></li>
-<li><a href="#orgb4ed9cb">2. 使用私有仓库</a></li>
+<li><a href="#orgc854b7d">1. 拓展资料</a></li>
 </ul>
 </div>
 </div>
 <p>
-本地构建镜像然后推送到镜像仓库，然后在 Kubernetes pod 中使用。
+LSM-Tree，即 Log Structured Merge Tree。
 </p>
 
-<div id="outline-container-org0449187" class="outline-2">
-<h2 id="org0449187"><span class="section-number-2">1.</span> Pod 镜像更新策略</h2>
+<p>
+用于读少于写，对写性能要求很高的场景。LSM 是利用磁盘的顺序写性能原高于随机写的特性，写完之后再合并。
+</p>
+
+<div id="outline-container-orgc854b7d" class="outline-2">
+<h2 id="orgc854b7d"><span class="section-number-2">1.</span> 拓展资料</h2>
 <div class="outline-text-2" id="text-1">
-<p>
-默认的镜像拉取策略是 <code>IfNotPresent</code> ，即镜像已经存在，不会重复拉取。如果每次都想拉取新的镜像，你可以：
-</p>
-
 <ul class="org-ul">
-<li>设置容器的 <code>imagePullPolicy</code> 为 <code>Always</code></li>
-<li>省略 <code>imagePullPolicy</code> ，并使用 <code>:latest</code> 作为要使用的镜像标签</li>
-<li>省略 <code>imagePullPolicy</code> 和要使用的镜像标签</li>
-<li>启用 AlwaysPullImages admission controller</li>
+<li><a href="https://wingsxdu.com/posts/database/leveldb/">LSM-Tree 与 LevelDB 的原理和实现 · Analyze</a></li>
+<li><a href="https://segmentfault.com/a/1190000039269078">理解 LSM Tree : 是什么让数据库这么能写？</a></li>
 </ul>
-
-<p>
-<b>注意</b> 应该避免使用 <code>:latest</code> 标签。
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgb4ed9cb" class="outline-2">
-<h2 id="orgb4ed9cb"><span class="section-number-2">2.</span> 使用私有仓库</h2>
-<div class="outline-text-2" id="text-2">
-<p>
-略。
-</p>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-07 16:08:29 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2022-06-17 11:10:31 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

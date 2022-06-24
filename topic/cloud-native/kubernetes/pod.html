@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-09 Thu 17:05 -->
+<!-- 2022-06-24 Fri 11:02 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Pod</title>
-<meta name="author" content="ZJ" />
+<meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,26 +223,26 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org6d01317">1. 基本概念</a></li>
-<li><a href="#org472a6ff">2. 设计 pod 的目的</a></li>
-<li><a href="#orgaa04c06">3. 使用 pod</a></li>
-<li><a href="#orgd98b613">4. 终止 pod</a>
+<li><a href="#org5849d4c">1. 基本概念</a></li>
+<li><a href="#orgb01c12a">2. 设计 pod 的目的</a></li>
+<li><a href="#org2ff8041">3. 使用 pod</a></li>
+<li><a href="#org1a93f84">4. 终止 pod</a>
 <ul>
-<li><a href="#org1963265">4.1. 优雅终止</a></li>
-<li><a href="#orga07415f">4.2. 强制删除</a></li>
+<li><a href="#org8bc543f">4.1. 优雅终止</a></li>
+<li><a href="#orgd1d9706">4.2. 强制删除</a></li>
 </ul>
 </li>
-<li><a href="#org75337ed">5. Pod 的持久性（或稀缺性）</a></li>
-<li><a href="#org097e081">6. Pod 的状态标识</a></li>
-<li><a href="#org7b1cea1">7. 容器探针(probes)</a></li>
-<li><a href="#org830188f">8. Pod 的重启策略</a></li>
-<li><a href="#orgc33f876">9. Pod 的 lifetime</a></li>
+<li><a href="#org9519f92">5. Pod 的持久性（或稀缺性）</a></li>
+<li><a href="#org21efe23">6. Pod 的状态标识</a></li>
+<li><a href="#org4041359">7. 容器探针(probes)</a></li>
+<li><a href="#org4eb4461">8. Pod 的重启策略</a></li>
+<li><a href="#orgb0b4036">9. Pod 的 lifetime</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6d01317" class="outline-2">
-<h2 id="org6d01317"><span class="section-number-2">1.</span> 基本概念</h2>
+<div id="outline-container-org5849d4c" class="outline-2">
+<h2 id="org5849d4c"><span class="section-number-2">1.</span> 基本概念</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Pod 是 Kubernetes 的基本执行单元，是对象模型中创建或者部署的最小和最简单的单元。Pod 表示在集群上运行的进程。
@@ -279,8 +279,8 @@ Pod 是 Kubernetes 的基本执行单元，是对象模型中创建或者部署�
 </div>
 </div>
 
-<div id="outline-container-org472a6ff" class="outline-2">
-<h2 id="org472a6ff"><span class="section-number-2">2.</span> 设计 pod 的目的</h2>
+<div id="outline-container-orgb01c12a" class="outline-2">
+<h2 id="orgb01c12a"><span class="section-number-2">2.</span> 设计 pod 的目的</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Pod 是形成内聚服务单元的多个协作过程模式的模型。它们提供了一个比它们的应用组成集合更高级的抽象，从而简化了应用的部署和管理。
@@ -308,8 +308,8 @@ Pod 可以用作部署、水平扩展和制作副本的最小单元。
 </div>
 </div>
 
-<div id="outline-container-orgaa04c06" class="outline-2">
-<h2 id="orgaa04c06"><span class="section-number-2">3.</span> 使用 pod</h2>
+<div id="outline-container-org2ff8041" class="outline-2">
+<h2 id="org2ff8041"><span class="section-number-2">3.</span> 使用 pod</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 尽管 pod 可以单独被创建，但是实际使用过程中，不会直接使用。因为以 pod 为单独，不方便用户管理而且服务不可自愈。
@@ -345,12 +345,12 @@ Kubernetes 提供了更高级别的抽象 <i>控制器</i> 来管理 pod。
 </div>
 </div>
 
-<div id="outline-container-orgd98b613" class="outline-2">
-<h2 id="orgd98b613"><span class="section-number-2">4.</span> 终止 pod</h2>
+<div id="outline-container-org1a93f84" class="outline-2">
+<h2 id="org1a93f84"><span class="section-number-2">4.</span> 终止 pod</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org1963265" class="outline-3">
-<h3 id="org1963265"><span class="section-number-3">4.1.</span> 优雅终止</h3>
+<div id="outline-container-org8bc543f" class="outline-3">
+<h3 id="org8bc543f"><span class="section-number-3">4.1.</span> 优雅终止</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 优雅终止 pod 是很重要的，用户可以设置容器的 <b>宽限期</b> ，默认的时间是 30 秒。流程如下：
@@ -390,8 +390,8 @@ Kubernetes 提供了更高级别的抽象 <i>控制器</i> 来管理 pod。
 </div>
 </div>
 
-<div id="outline-container-orga07415f" class="outline-3">
-<h3 id="orga07415f"><span class="section-number-3">4.2.</span> 强制删除</h3>
+<div id="outline-container-orgd1d9706" class="outline-3">
+<h3 id="orgd1d9706"><span class="section-number-3">4.2.</span> 强制删除</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 强制删除指的是：从集群状态和 etcd 中立即删除 Pod；API 服务器不会等待 kubelet 的确认信息（该 Pod 是否被所运行的节点终止）。
@@ -404,8 +404,8 @@ Kubernetes 提供了更高级别的抽象 <i>控制器</i> 来管理 pod。
 </div>
 </div>
 
-<div id="outline-container-org75337ed" class="outline-2">
-<h2 id="org75337ed"><span class="section-number-2">5.</span> Pod 的持久性（或稀缺性）</h2>
+<div id="outline-container-org9519f92" class="outline-2">
+<h2 id="org9519f92"><span class="section-number-2">5.</span> Pod 的持久性（或稀缺性）</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 <b>不能将 pod 视为持久的实体。</b> 它们无法在调度失败、节点故障或其他驱逐策略（例如由于缺乏资源或在节点维护的情况下）中生存。
@@ -445,8 +445,8 @@ Pod 可以当做一个应用实例，但不能当成虚拟机的定位。它们�
 </div>
 </div>
 
-<div id="outline-container-org097e081" class="outline-2">
-<h2 id="org097e081"><span class="section-number-2">6.</span> Pod 的状态标识</h2>
+<div id="outline-container-org21efe23" class="outline-2">
+<h2 id="org21efe23"><span class="section-number-2">6.</span> Pod 的状态标识</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Pod 的 <code>status</code> 字段是一个 PodStatus 对象，其中包含 <code>phase</code> 和 <code>conditions</code> 用来标识 pod 的状态。
@@ -532,8 +532,8 @@ Pod 的阶段（phase）是一个简单的，高层次的总结了 Pod 在生命
 </div>
 </div>
 
-<div id="outline-container-org7b1cea1" class="outline-2">
-<h2 id="org7b1cea1"><span class="section-number-2">7.</span> 容器探针(probes)</h2>
+<div id="outline-container-org4041359" class="outline-2">
+<h2 id="org4041359"><span class="section-number-2">7.</span> 容器探针(probes)</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 探针（probes）是 kubelet 对容器的定时诊断。提供三种探测方式：
@@ -581,8 +581,8 @@ kubelet 对已经运行的容器可选的执行下面三种探针：
 </div>
 </div>
 
-<div id="outline-container-org830188f" class="outline-2">
-<h2 id="org830188f"><span class="section-number-2">8.</span> Pod 的重启策略</h2>
+<div id="outline-container-org4eb4461" class="outline-2">
+<h2 id="org4eb4461"><span class="section-number-2">8.</span> Pod 的重启策略</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 Pod 有可以设置重启策略，由 pod 所在容器的 kubelet 来判断容器状态（异常退出、存活检测失败），重启策略由 PodSpec 中的
@@ -601,8 +601,8 @@ Pod 有可以设置重启策略，由 pod 所在容器的 kubelet 来判断容�
 </div>
 </div>
 
-<div id="outline-container-orgc33f876" class="outline-2">
-<h2 id="orgc33f876"><span class="section-number-2">9.</span> Pod 的 lifetime</h2>
+<div id="outline-container-orgb0b4036" class="outline-2">
+<h2 id="orgb0b4036"><span class="section-number-2">9.</span> Pod 的 lifetime</h2>
 <div class="outline-text-2" id="text-9">
 <p>
 Pod 除非是人工或者控制器删除，否则会一直存在。当 pod 的数量超过配置的阈值时（由 kube-controller-manager 配置的
@@ -632,7 +632,7 @@ ReplicationControllers 仅适用于 <code>restartPolicy</code> 为 always 的 po
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-08 15:20:07 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2020-02-08 15:20:07 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

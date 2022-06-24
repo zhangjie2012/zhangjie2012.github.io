@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-06-09 Thu 17:05 -->
+<!-- 2022-06-24 Fri 11:02 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C语言预处理过程</title>
-<meta name="author" content="ZJ" />
+<meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -265,7 +265,7 @@
 预处理指令是以#号开头的代码行。#号必须是该行除了任何空白字符外的第一个字符。#后是指令关键字，在关键字和#号之间允许存在任意个数的空白字符。整行语句构成了一条预处理指令，该指令将在编译器进行编译之前对源代码做某些转换。下面是部分预处理指令：
 </p>
 
-<pre class="example" id="orgaca1bd6">
+<pre class="example" id="org36fe883">
 指令   用途
 #      空指令，无任何效果
 #include 包含一个源代码文件
@@ -292,7 +292,7 @@ C 编译器至少支持八重嵌套包含。
 预处理过程不检查在转换单元中是否已经包含了某个文件并阻止对它的多次包含。这样就可以在多次包含同一个头文件时，通过给定编译时的条件来达到不同的效果。例如：
 </p>
 
-<pre class="example" id="org243d091">
+<pre class="example" id="org4675c8b">
 #define AAA
 #include t.c
 #undef AAA
@@ -303,7 +303,7 @@ C 编译器至少支持八重嵌套包含。
 为了避免那些只能包含一次的头文件被多次包含，可以在头文件中用编译时条件来进行控制。例如：
 </p>
 
-<pre class="example" id="orgb9f6891">
+<pre class="example" id="org1fa82f0">
 /*my.h*/
 #ifndef MY_H
 #define MY_H
@@ -315,7 +315,7 @@ C 编译器至少支持八重嵌套包含。
 在程序中包含头文件有两种格式：
 </p>
 
-<pre class="example" id="org3ca1659">
+<pre class="example" id="org8a3154c">
 #include &lt;my.h&gt;
 #include "my.h"[/c]
 </pre>
@@ -345,7 +345,7 @@ C 编译器至少支持八重嵌套包含。
 =#define=预处理指令是用来定义宏的。该指令最简单的格式是：首先声明一个标识符，然后给出这个标识符代表的代码。在后面的源代码中，就用这些代码来替代该标识符。这种宏把程序中要用到的一些全局值提取出来，赋给一些记忆标识符。
 </p>
 
-<pre class="example" id="orgbd5b448">
+<pre class="example" id="org70015bb">
 #define MAX_NUM 10
 int array[MAX_NUM];
 for(i=0;i&lt;MAX_NUM;i++)  /*……*/
@@ -359,7 +359,7 @@ for(i=0;i&lt;MAX_NUM;i++)  /*……*/
 宏表示的值可以是一个常量表达式，其中允许包括前面已经定义的宏标识符。例如：
 </p>
 
-<pre class="example" id="orgf2bc021">
+<pre class="example" id="org21b0524">
 #define ONE 1
 #define TWO 2
 #define THREE (ONE+TWO)
@@ -410,7 +410,7 @@ for(i=0;i&lt;MAX_NUM;i++)  /*……*/
 可以时任何数字表达式甚至函数调用来代替参数x。这里再次提醒大家注意括号的使用。宏展开后完全包含在一对括号中，而且参数也包含在括号中，这样就保证了宏和参数的完整性。看一个用法：
 </p>
 
-<pre class="example" id="org463d50b">
+<pre class="example" id="org64af396">
 int num=8+2;
 volume=Cube(num);
 </pre>
@@ -435,7 +435,7 @@ volume=Cube(num);
 如果Cube是一个函数，上面的写法是可以理解的。但是，因为Cube是一个宏，所以会产生副作用。这里的擦书不是简单的表达式，它们将产生意想不到的结果。它们展开后是这样的：
 </p>
 
-<pre class="example" id="org400577f">
+<pre class="example" id="org7566a00">
 volume=(num++)*(num++)*(num++);
 </pre>
 
@@ -447,7 +447,7 @@ volume=(num++)*(num++)*(num++);
 那么怎样安全的使用Cube宏呢？必须把可能产生副作用的操作移到宏调用的外面进行：
 </p>
 
-<pre class="example" id="org4414b56">
+<pre class="example" id="org230478b">
 int num=8+2;
 volume=Cube(num);
 num++;
@@ -462,7 +462,7 @@ num++;
 出现在宏定义中的#运算符把跟在其后的参数转换成一个字符串。有时把这种用法的#称为字符串化运算符。例如：
 </p>
 
-<pre class="example" id="org65d67cc">
+<pre class="example" id="orgd0ce86d">
 #include &lt;stdio.h&gt;
 
 #define PASTE(n) #n
@@ -486,7 +486,7 @@ int main()
 =##=运算符用于把参数连接到一起。预处理程序把出现在##两侧的参数合并成一个符号。看下面的例子：
 </p>
 
-<pre class="example" id="org53af392">
+<pre class="example" id="org95c8925">
 #include &lt;stdio.h&gt;
 
 #define SYM_COM(a, b, c) a##b##c
@@ -542,7 +542,7 @@ int main()
 =#endif=用于终止#if预处理指令。
 </p>
 
-<pre class="example" id="org192a6ad">
+<pre class="example" id="org91bd89f">
 #include &lt;stdio.h&gt;
 #define DEBUG 0
 
@@ -565,7 +565,7 @@ int main()
 <div id="outline-container-ifdef和ifndef" class="outline-3">
 <h3 id="ifdef和ifndef"><span class="section-number-3">3.3.</span> 3.#ifdef和#ifndef</h3>
 <div class="outline-text-3" id="text-ifdef和ifndef">
-<pre class="example" id="org4b0d5a7">
+<pre class="example" id="org27b96f5">
 #include &lt;stdio.h&gt;
 #define DEBUG
 
@@ -584,7 +584,7 @@ int main()
 输出结果是：
 </p>
 
-<pre class="example" id="org0fa9d2b">
+<pre class="example" id="orgcf33f83">
 Debugging
 
 Running
@@ -612,7 +612,7 @@ Running
 =#elif=预处理指令综合了#else和#if指令的作用。
 </p>
 
-<pre class="example" id="org9050760">
+<pre class="example" id="orgd46de6f">
 #include &lt;stdio.h&gt;
 #define TWO
 
@@ -653,7 +653,7 @@ int main()
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-11-30 00:00:00 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2012-11-30 00:00:00 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

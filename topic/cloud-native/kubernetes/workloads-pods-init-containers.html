@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-09 Thu 17:05 -->
+<!-- 2022-06-24 Fri 11:02 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 工作负载：Pod - Init Containers</title>
-<meta name="author" content="ZJ" />
+<meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,28 +223,28 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgdf9ab6f">1. 理解 init containers</a>
+<li><a href="#orgb60ec6c">1. 理解 init containers</a>
 <ul>
-<li><a href="#org8ccfff8">1.1. 与普通容器的不同</a></li>
+<li><a href="#orgef71dfe">1.1. 与普通容器的不同</a></li>
 </ul>
 </li>
-<li><a href="#org5b21d49">2. 使用 init containers</a>
+<li><a href="#orge5ccb7c">2. 使用 init containers</a>
 <ul>
-<li><a href="#orgd0b7fe0">2.1. 例子</a>
+<li><a href="#org798029a">2.1. 例子</a>
 <ul>
-<li><a href="#org8436e8c">2.1.1. 使用中的 Init containers</a></li>
+<li><a href="#orgc0c5cf1">2.1.1. 使用中的 Init containers</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org68c414f">3. 详细行为</a>
+<li><a href="#org9e8e09b">3. 详细行为</a>
 <ul>
-<li><a href="#org5f45a91">3.1. 资源</a></li>
-<li><a href="#org2ed0666">3.2. Pod 重启原因</a></li>
+<li><a href="#orgd26bd82">3.1. 资源</a></li>
+<li><a href="#org3fe6a7e">3.2. Pod 重启原因</a></li>
 </ul>
 </li>
-<li><a href="#org15fac8e">4. 下一步</a></li>
-<li><a href="#org9a2c7fa">5. 其他资料</a></li>
+<li><a href="#org4564b4a">4. 下一步</a></li>
+<li><a href="#org0168795">5. 其他资料</a></li>
 </ul>
 </div>
 </div>
@@ -260,8 +260,8 @@ Init containers 是在 Pod 中的应用容器之前运行的专有容器；Init 
 你可以在 Pod 规范（Spec）中与 <code>containers</code> 数组一起指定 init containers。
 </p>
 
-<div id="outline-container-orgdf9ab6f" class="outline-2">
-<h2 id="orgdf9ab6f"><span class="section-number-2">1.</span> 理解 init containers</h2>
+<div id="outline-container-orgb60ec6c" class="outline-2">
+<h2 id="orgb60ec6c"><span class="section-number-2">1.</span> 理解 init containers</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Pod 中可以有多个运行应用程序的容器，同时也可以有一个或者多个 init containers，它们会在应用容器启动之前运行。
@@ -287,8 +287,8 @@ Never，并且在 Pod 启动期间 init container 失败了，Kubernetes 会将�
 </p>
 </div>
 
-<div id="outline-container-org8ccfff8" class="outline-3">
-<h3 id="org8ccfff8"><span class="section-number-3">1.1.</span> 与普通容器的不同</h3>
+<div id="outline-container-orgef71dfe" class="outline-3">
+<h3 id="orgef71dfe"><span class="section-number-3">1.1.</span> 与普通容器的不同</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Init containers 支持应用程序容器的所有字段和功能，包括资源限制，卷和安全设置。但是，如 <a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#resources">资源</a> 文档中所说，init container 的资源请求（requests）
@@ -308,8 +308,8 @@ Init containers 支持应用程序容器的所有字段和功能，包括资源�
 </div>
 </div>
 
-<div id="outline-container-org5b21d49" class="outline-2">
-<h2 id="org5b21d49"><span class="section-number-2">2.</span> 使用 init containers</h2>
+<div id="outline-container-orge5ccb7c" class="outline-2">
+<h2 id="orge5ccb7c"><span class="section-number-2">2.</span> 使用 init containers</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 由于 init containers 和应用容器的镜像是分开的，所以它们在启动相关代码的时候有一些优点：
@@ -327,8 +327,8 @@ Init containers 支持应用程序容器的所有字段和功能，包括资源�
 </ul>
 </div>
 
-<div id="outline-container-orgd0b7fe0" class="outline-3">
-<h3 id="orgd0b7fe0"><span class="section-number-3">2.1.</span> 例子</h3>
+<div id="outline-container-org798029a" class="outline-3">
+<h3 id="org798029a"><span class="section-number-3">2.1.</span> 例子</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 以下是如何使用初始化容器的一些想法：
@@ -362,8 +362,8 @@ Init containers 支持应用程序容器的所有字段和功能，包括资源�
 </ul>
 </div>
 
-<div id="outline-container-org8436e8c" class="outline-4">
-<h4 id="org8436e8c"><span class="section-number-4">2.1.1.</span> 使用中的 Init containers</h4>
+<div id="outline-container-orgc0c5cf1" class="outline-4">
+<h4 id="orgc0c5cf1"><span class="section-number-4">2.1.1.</span> 使用中的 Init containers</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 本示例定义了一个简单的 Pod 包含两个 init containers。第一个等待 <code>myservice</code> ，第二个等待 <code>myapp</code> 。一旦两个初始化容器都完成，
@@ -560,8 +560,8 @@ myapp-pod   1/1       Running   0          9m
 </div>
 </div>
 
-<div id="outline-container-org68c414f" class="outline-2">
-<h2 id="org68c414f"><span class="section-number-2">3.</span> 详细行为</h2>
+<div id="outline-container-org9e8e09b" class="outline-2">
+<h2 id="org9e8e09b"><span class="section-number-2">3.</span> 详细行为</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 在 Pod 启动期间，kubelet 会延迟运行 init containers 直到网络和存储就绪。然后，kubelet 按照 Pod spec 中出现的顺序运行 Pod
@@ -606,8 +606,8 @@ Pod 中的每个应用和 init container 的名称必须唯一；任何一个名
 </p>
 </div>
 
-<div id="outline-container-org5f45a91" class="outline-3">
-<h3 id="org5f45a91"><span class="section-number-3">3.1.</span> 资源</h3>
+<div id="outline-container-orgd26bd82" class="outline-3">
+<h3 id="orgd26bd82"><span class="section-number-3">3.1.</span> 资源</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 考虑到 init container 的有序执行，适用于以下资源的使用规则：
@@ -636,8 +636,8 @@ Pod level control groups (cgroups) are based on the effective Pod request and li
 </div>
 </div>
 
-<div id="outline-container-org2ed0666" class="outline-3">
-<h3 id="org2ed0666"><span class="section-number-3">3.2.</span> Pod 重启原因</h3>
+<div id="outline-container-org3fe6a7e" class="outline-3">
+<h3 id="org3fe6a7e"><span class="section-number-3">3.2.</span> Pod 重启原因</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 A Pod can restart, causing re-execution of init containers, for the following reasons:
@@ -658,8 +658,8 @@ consult the documentation for the version you are using.
 </div>
 </div>
 
-<div id="outline-container-org15fac8e" class="outline-2">
-<h2 id="org15fac8e"><span class="section-number-2">4.</span> 下一步</h2>
+<div id="outline-container-org4564b4a" class="outline-2">
+<h2 id="org4564b4a"><span class="section-number-2">4.</span> 下一步</h2>
 <div class="outline-text-2" id="text-4">
 <ul class="org-ul">
 <li>阅读 <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-initialization/#create-a-pod-that-has-an-init-container">Create a Pod that has an Init Container</a></li>
@@ -669,8 +669,8 @@ consult the documentation for the version you are using.
 </div>
 
 
-<div id="outline-container-org9a2c7fa" class="outline-2">
-<h2 id="org9a2c7fa"><span class="section-number-2">5.</span> 其他资料</h2>
+<div id="outline-container-org0168795" class="outline-2">
+<h2 id="org0168795"><span class="section-number-2">5.</span> 其他资料</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li><a href="https://medium.com/bb-tutorials-and-thoughts/kubernetes-learn-init-container-pattern-7a757742de6b">https://medium.com/bb-tutorials-and-thoughts/kubernetes-learn-init-container-pattern-7a757742de6b</a></li>
@@ -679,7 +679,7 @@ consult the documentation for the version you are using.
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-25 21:11:40 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2021-04-25 21:11:40 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

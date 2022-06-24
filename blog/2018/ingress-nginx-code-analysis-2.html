@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-06-09 Thu 17:05 -->
+<!-- 2022-06-24 Fri 11:02 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ingress-nginx 工作原理（下）：服务启动、运行和停止</title>
-<meta name="author" content="ZJ" />
+<meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,10 +223,10 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgef9339c">1. 服务启动</a></li>
-<li><a href="#org4d6d404">2. 服务运行</a></li>
-<li><a href="#org28b9b81">3. 服务终止</a></li>
-<li><a href="#org3c7886a">4. syncIngress</a></li>
+<li><a href="#orgbeb2d31">1. 服务启动</a></li>
+<li><a href="#org2a13d96">2. 服务运行</a></li>
+<li><a href="#orgd5d4c73">3. 服务终止</a></li>
+<li><a href="#org3d4d86c">4. syncIngress</a></li>
 </ul>
 </div>
 </div>
@@ -234,14 +234,14 @@
 接上文。
 </p>
 
-<div id="outline-container-orgef9339c" class="outline-2">
-<h2 id="orgef9339c"><span class="section-number-2">1.</span> 服务启动</h2>
+<div id="outline-container-orgbeb2d31" class="outline-2">
+<h2 id="orgbeb2d31"><span class="section-number-2">1.</span> 服务启动</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 在 main 中 <code>ngx.Start()</code> 将启动服务。
 </p>
 
-<pre class="example" id="orga42ae07">
+<pre class="example" id="org9f47f69">
 // internal/ingress/controller/nginx.go
 func (n *NGINXController) Start() {
     // (1)
@@ -333,8 +333,8 @@ func (n *NGINXController) Start() {
 </div>
 </div>
 
-<div id="outline-container-org4d6d404" class="outline-2">
-<h2 id="org4d6d404"><span class="section-number-2">2.</span> 服务运行</h2>
+<div id="outline-container-org2a13d96" class="outline-2">
+<h2 id="org2a13d96"><span class="section-number-2">2.</span> 服务运行</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 服务正常运行是不断从 K8s 接受资源变更事件，然后转换成 nginx 新配置，进而 reload nginx 的过程。也就是上面 <code>for ... select</code> 中
@@ -352,8 +352,8 @@ func (n *NGINXController) Start() {
 </div>
 </div>
 
-<div id="outline-container-org28b9b81" class="outline-2">
-<h2 id="org28b9b81"><span class="section-number-2">3.</span> 服务终止</h2>
+<div id="outline-container-orgd5d4c73" class="outline-2">
+<h2 id="orgd5d4c73"><span class="section-number-2">3.</span> 服务终止</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 上面的 <code>for ... select</code> 中的 <code>case &lt;-n.stopCh</code> ，等 <code>stopCh</code> 有数据时，for 循环 break，服务正常结束。
@@ -363,7 +363,7 @@ func (n *NGINXController) Start() {
 在 <code>main</code> 函数中有这么一段代码：
 </p>
 
-<pre class="example" id="org6b339d0">
+<pre class="example" id="orga9124b7">
 go handleSigterm(ngx, func(code int) {
     os.Exit(code)
 })
@@ -373,7 +373,7 @@ go handleSigterm(ngx, func(code int) {
 <code>handleSigterm</code> 的实现为：
 </p>
 
-<pre class="example" id="orgfdcb17a">
+<pre class="example" id="orge5c34d9">
 func handleSigterm(ngx *controller.NGINXController, exit exiter) {
     signalChan := make(chan os.Signal, 1)
     signal.Notify(signalChan, syscall.SIGTERM)
@@ -398,7 +398,7 @@ func handleSigterm(ngx *controller.NGINXController, exit exiter) {
 接受任意的 <code>SIGTERM</code> 信号，然后调用 <code>ngx.Stop()</code> ：
 </p>
 
-<pre class="example" id="org7987b2d">
+<pre class="example" id="org63d1dae">
 func (n *NGINXController) Stop() error {
     n.isShuttingDown = true
 
@@ -422,7 +422,7 @@ func (n *NGINXController) Stop() error {
 发送 <code>SIGTERM</code> 信号可能是终端（=kill pid=），也可能是调用 <code>/stop</code> ：
 </p>
 
-<pre class="example" id="org15897eb">
+<pre class="example" id="org74a2b80">
 mux.HandleFunc("/stop", func(w http.ResponseWriter, r *http.Request) {
     err := syscall.Kill(syscall.Getpid(), syscall.SIGTERM) // &lt;- 这里
 })
@@ -434,10 +434,10 @@ mux.HandleFunc("/stop", func(w http.ResponseWriter, r *http.Request) {
 </div>
 </div>
 
-<div id="outline-container-org3c7886a" class="outline-2">
-<h2 id="org3c7886a"><span class="section-number-2">4.</span> syncIngress</h2>
+<div id="outline-container-org3d4d86c" class="outline-2">
+<h2 id="org3d4d86c"><span class="section-number-2">4.</span> syncIngress</h2>
 <div class="outline-text-2" id="text-4">
-<pre class="example" id="org4e1fee7">
+<pre class="example" id="orgd1d02c0">
 // ingress/controller/controller.go
 func (n *NGINXController) syncIngress(interface{}) error {
     n.syncRateLimiter.Accept()
@@ -508,7 +508,7 @@ func (n *NGINXController) syncIngress(interface{}) error {
 在 Informers 的事件回调处理函数 <code>AddFunc</code> 中有下面三行代码：
 </p>
 
-<pre class="example" id="org35c9799">
+<pre class="example" id="orgba57d19">
 store.extractAnnotations(ing)
 store.updateSecretIngressMap(ing)
 store.syncSecrets(ing)
@@ -559,7 +559,7 @@ store.syncSecrets(ing)
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2022-06-09 Thu 15:50 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
