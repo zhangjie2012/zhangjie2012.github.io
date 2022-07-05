@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-24 Fri 11:02 -->
+<!-- 2022-07-05 Tue 10:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 容器 - 容器的生命周期 hooks</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="DESKTOP-FKSEO5E" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,13 +223,13 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org491975c">1. 概览</a></li>
-<li><a href="#org60bc754">2. 容器 hooks</a>
+<li><a href="#orgcef1895">1. 概览</a></li>
+<li><a href="#org3ca9237">2. 容器 hooks</a>
 <ul>
-<li><a href="#orgbc09f62">2.1. Hook 处理器的实现</a></li>
-<li><a href="#orgb4f365a">2.2. Hook 处理器执行</a></li>
-<li><a href="#org7c25970">2.3. Hook 交付保证</a></li>
-<li><a href="#org338a43e">2.4. 调试 Hook 处理器</a></li>
+<li><a href="#orga2675c7">2.1. Hook 处理器的实现</a></li>
+<li><a href="#org9defe61">2.2. Hook 处理器执行</a></li>
+<li><a href="#orgbc30c5c">2.3. Hook 交付保证</a></li>
+<li><a href="#orgaa474a6">2.4. 调试 Hook 处理器</a></li>
 </ul>
 </li>
 </ul>
@@ -239,8 +239,8 @@
 本页面描述 kubelet 管理的容器可以使用容器的生命周期 hook 框架来运行事件在其管理生命周期中触发的代码。
 </p>
 
-<div id="outline-container-org491975c" class="outline-2">
-<h2 id="org491975c"><span class="section-number-2">1.</span> 概览</h2>
+<div id="outline-container-orgcef1895" class="outline-2">
+<h2 id="orgcef1895"><span class="section-number-2">1.</span> 概览</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 类似许多编程语言框架有生命周期 hooks，比如 Angular，Kubernetes 提供了容器的生命周期 hook。
@@ -249,8 +249,8 @@ hooks 使容器能够了解其管理生命周期中的事件和执行相应的�
 </div>
 </div>
 
-<div id="outline-container-org60bc754" class="outline-2">
-<h2 id="org60bc754"><span class="section-number-2">2.</span> 容器 hooks</h2>
+<div id="outline-container-org3ca9237" class="outline-2">
+<h2 id="org3ca9237"><span class="section-number-2">2.</span> 容器 hooks</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 有两个暴露给容器的 hooks：
@@ -279,8 +279,8 @@ hooks 使容器能够了解其管理生命周期中的事件和执行相应的�
 </p>
 </div>
 
-<div id="outline-container-orgbc09f62" class="outline-3">
-<h3 id="orgbc09f62"><span class="section-number-3">2.1.</span> Hook 处理器的实现</h3>
+<div id="outline-container-orga2675c7" class="outline-3">
+<h3 id="orga2675c7"><span class="section-number-3">2.1.</span> Hook 处理器的实现</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 实现和注册一个 hook 的处理器，容器才可以使用 hook。有两种类型的 hook 处理器：
@@ -293,8 +293,8 @@ hooks 使容器能够了解其管理生命周期中的事件和执行相应的�
 </div>
 </div>
 
-<div id="outline-container-orgb4f365a" class="outline-3">
-<h3 id="orgb4f365a"><span class="section-number-3">2.2.</span> Hook 处理器执行</h3>
+<div id="outline-container-org9defe61" class="outline-3">
+<h3 id="org9defe61"><span class="section-number-3">2.2.</span> Hook 处理器执行</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 当容器生命周期管理 hook 被调用时，Kubernetes 管理系统根据 hook 行为执行处理器， <code>httpGet</code> 和 <code>tcpSocket</code> 是通过 kubelet 进程执行的，
@@ -324,8 +324,8 @@ Pod 的 phase 会被设置为 <code>Terminating</code> 然后一直保持这个�
 </div>
 </div>
 
-<div id="outline-container-org7c25970" class="outline-3">
-<h3 id="org7c25970"><span class="section-number-3">2.3.</span> Hook 交付保证</h3>
+<div id="outline-container-orgbc30c5c" class="outline-3">
+<h3 id="orgbc30c5c"><span class="section-number-3">2.3.</span> Hook 交付保证</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Hook 会保证至少执行一次，这意味着给定任何事件 (<code>PostStart</code> 或者 <code>PreStop</code>)，hook 可能被多次调用。hook 的执行程序需要能够适配这种可能情况。
@@ -338,8 +338,8 @@ Hook 会保证至少执行一次，这意味着给定任何事件 (<code>PostSta
 </div>
 </div>
 
-<div id="outline-container-org338a43e" class="outline-3">
-<h3 id="org338a43e"><span class="section-number-3">2.4.</span> 调试 Hook 处理器</h3>
+<div id="outline-container-orgaa474a6" class="outline-3">
+<h3 id="orgaa474a6"><span class="section-number-3">2.4.</span> 调试 Hook 处理器</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 Hook 处理程序的日志没有在 Pod 事件中公开。如果处理程序因为某种原因失败，它将广播一个事件。对于 <code>PostStart</code> 是 <code>FailedPostStartHook</code> 事件，
@@ -367,7 +367,7 @@ Hook 处理程序的日志没有在 Pod 事件中公开。如果处理程序因�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-19 22:16:45 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2021-04-19 22:16:45 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.3)</p>
 </div>
 </body>
 </html>

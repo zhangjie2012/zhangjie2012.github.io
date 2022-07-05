@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-24 Fri 11:02 -->
+<!-- 2022-07-05 Tue 10:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - DaemonSet</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="DESKTOP-FKSEO5E" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,26 +223,26 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org1c14bed">1. 书写 DaemonSet 规范</a>
+<li><a href="#org268130a">1. 书写 DaemonSet 规范</a>
 <ul>
-<li><a href="#org79b405b">1.1. Pod Tempate</a></li>
-<li><a href="#org079a131">1.2. Pod Selector</a></li>
-<li><a href="#org9e5f0fc">1.3. 仅在某些节点上运行 Pod</a></li>
+<li><a href="#org9cc4c33">1.1. Pod Tempate</a></li>
+<li><a href="#org2d963af">1.2. Pod Selector</a></li>
+<li><a href="#orgcde3532">1.3. 仅在某些节点上运行 Pod</a></li>
 </ul>
 </li>
-<li><a href="#orgbb6ab6e">2. Daemon Pods 是如何调度的</a>
+<li><a href="#orgc38492e">2. Daemon Pods 是如何调度的</a>
 <ul>
-<li><a href="#org394bc2f">2.1. 默认的调度器调度</a></li>
-<li><a href="#orga4102f2">2.2. Taints and Tolerations</a></li>
+<li><a href="#orgf903eed">2.1. 默认的调度器调度</a></li>
+<li><a href="#org6e3775a">2.2. Taints and Tolerations</a></li>
 </ul>
 </li>
-<li><a href="#org77c5bd5">3. 与 Daemon Pods 通信</a></li>
-<li><a href="#org8e50b6a">4. 更新 DaemonSet</a></li>
-<li><a href="#org9894cc8">5. 替代品</a>
+<li><a href="#org7f2ccf9">3. 与 Daemon Pods 通信</a></li>
+<li><a href="#org4e34b35">4. 更新 DaemonSet</a></li>
+<li><a href="#org623709f">5. 替代品</a>
 <ul>
-<li><a href="#org274ccd7">5.1. Init 脚本</a></li>
-<li><a href="#org7384bf0">5.2. 裸 Pods（Bare Pods）</a></li>
-<li><a href="#orgb8aca87">5.3. 静态 Pods</a></li>
+<li><a href="#org3fbc503">5.1. Init 脚本</a></li>
+<li><a href="#orgb7b43e8">5.2. 裸 Pods（Bare Pods）</a></li>
+<li><a href="#orgd23f42b">5.3. 静态 Pods</a></li>
 </ul>
 </li>
 </ul>
@@ -263,11 +263,11 @@
 <li>运行集群每个节点的监控，比如 Promethues Node Exporter</li>
 </ul>
 
-<div id="outline-container-org1c14bed" class="outline-2">
-<h2 id="org1c14bed"><span class="section-number-2">1.</span> 书写 DaemonSet 规范</h2>
+<div id="outline-container-org268130a" class="outline-2">
+<h2 id="org268130a"><span class="section-number-2">1.</span> 书写 DaemonSet 规范</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
-<pre class="src src-yaml" id="orgbbd8ff4"><span style="color: #00538b;">apiVersion</span>: apps/v1
+<pre class="src src-yaml" id="orgacb033a"><span style="color: #00538b;">apiVersion</span>: apps/v1
 <span style="color: #00538b;">kind</span>: DaemonSet
 <span style="color: #00538b;">metadata</span>:
   <span style="color: #00538b;">name</span>: fluentd-elasticsearch
@@ -315,8 +315,8 @@
 </div>
 </div>
 
-<div id="outline-container-org79b405b" class="outline-3">
-<h3 id="org79b405b"><span class="section-number-3">1.1.</span> Pod Tempate</h3>
+<div id="outline-container-org9cc4c33" class="outline-3">
+<h3 id="org9cc4c33"><span class="section-number-3">1.1.</span> Pod Tempate</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 <code>.spec.template</code> 是 <code>.spec</code> 必填字段之一，是一个 <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/#pod-templates">pod template</a>。除了 <code>apiVersion</code> 和 <code>kind</code> 之外，其它的跟 Pod
@@ -330,8 +330,8 @@
 </div>
 </div>
 
-<div id="outline-container-org079a131" class="outline-3">
-<h3 id="org079a131"><span class="section-number-3">1.2.</span> Pod Selector</h3>
+<div id="outline-container-org2d963af" class="outline-3">
+<h3 id="org2d963af"><span class="section-number-3">1.2.</span> Pod Selector</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 <code>.spec.selector</code> 字段是一个 pod 选择器，和 Job 的 <code>.spec.selector</code> 类似。它是一个对象由两个字段组成：
@@ -357,8 +357,8 @@ Kubernetes 1.8 以后，这个字段是你必须要指定的，留空不再会�
 </div>
 </div>
 
-<div id="outline-container-org9e5f0fc" class="outline-3">
-<h3 id="org9e5f0fc"><span class="section-number-3">1.3.</span> 仅在某些节点上运行 Pod</h3>
+<div id="outline-container-orgcde3532" class="outline-3">
+<h3 id="orgcde3532"><span class="section-number-3">1.3.</span> 仅在某些节点上运行 Pod</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 如果指定了 <code>.spec.template.spec.nodeSelector</code> ，控制器只会在匹配的节点（<a href="https://kubernetes.io/docs/concepts/configuration/assign-pod-node/">节点选择器</a>）上创建 Pods。
@@ -369,12 +369,12 @@ Kubernetes 1.8 以后，这个字段是你必须要指定的，留空不再会�
 </div>
 </div>
 
-<div id="outline-container-orgbb6ab6e" class="outline-2">
-<h2 id="orgbb6ab6e"><span class="section-number-2">2.</span> Daemon Pods 是如何调度的</h2>
+<div id="outline-container-orgc38492e" class="outline-2">
+<h2 id="orgc38492e"><span class="section-number-2">2.</span> Daemon Pods 是如何调度的</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org394bc2f" class="outline-3">
-<h3 id="org394bc2f"><span class="section-number-3">2.1.</span> 默认的调度器调度</h3>
+<div id="outline-container-orgf903eed" class="outline-3">
+<h3 id="orgf903eed"><span class="section-number-3">2.1.</span> 默认的调度器调度</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 DaemonSet 保证所有合适的节点运行一个 Pod 副本。一般来说，节点上运行的 Pod 都是由集群的调度器来选择的。
@@ -411,8 +411,8 @@ Pods 时，会自动忽略 <code>unschedulable</code> 节点。
 </div>
 </div>
 
-<div id="outline-container-orga4102f2" class="outline-3">
-<h3 id="orga4102f2"><span class="section-number-3">2.2.</span> Taints and Tolerations</h3>
+<div id="outline-container-org6e3775a" class="outline-3">
+<h3 id="org6e3775a"><span class="section-number-3">2.2.</span> Taints and Tolerations</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Although Daemon Pods respect taints and tolerations, the following tolerations are added to DaemonSet Pods
@@ -487,8 +487,8 @@ automatically according to the related features.
 </div>
 </div>
 
-<div id="outline-container-org77c5bd5" class="outline-2">
-<h2 id="org77c5bd5"><span class="section-number-2">3.</span> 与 Daemon Pods 通信</h2>
+<div id="outline-container-org7f2ccf9" class="outline-2">
+<h2 id="org7f2ccf9"><span class="section-number-2">3.</span> 与 Daemon Pods 通信</h2>
 <div class="outline-text-2" id="text-3">
 <ul class="org-ul">
 <li><b>Push</b> 用来将更新发送给另外一个服务，比如统计数据。它们没有 clients。</li>
@@ -500,8 +500,8 @@ automatically according to the related features.
 </div>
 </div>
 
-<div id="outline-container-org8e50b6a" class="outline-2">
-<h2 id="org8e50b6a"><span class="section-number-2">4.</span> 更新 DaemonSet</h2>
+<div id="outline-container-org4e34b35" class="outline-2">
+<h2 id="org4e34b35"><span class="section-number-2">4.</span> 更新 DaemonSet</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 当节点 labes 被修改之后，DaemonSet 立即将 Pod 添加到新匹配的节点，然后从不匹配的节点删除 Pod。
@@ -523,12 +523,12 @@ automatically according to the related features.
 </div>
 </div>
 
-<div id="outline-container-org9894cc8" class="outline-2">
-<h2 id="org9894cc8"><span class="section-number-2">5.</span> 替代品</h2>
+<div id="outline-container-org623709f" class="outline-2">
+<h2 id="org623709f"><span class="section-number-2">5.</span> 替代品</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org274ccd7" class="outline-3">
-<h3 id="org274ccd7"><span class="section-number-3">5.1.</span> Init 脚本</h3>
+<div id="outline-container-org3fbc503" class="outline-3">
+<h3 id="org3fbc503"><span class="section-number-3">5.1.</span> Init 脚本</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 你可以直接在节点上运行守护进程（比如使用 <code>init</code>, <code>upstartd</code>, <code>systemd</code> ）。这样也是可以的。但是使用 DaemonSet 有如下好处：
@@ -543,8 +543,8 @@ automatically according to the related features.
 </div>
 </div>
 
-<div id="outline-container-org7384bf0" class="outline-3">
-<h3 id="org7384bf0"><span class="section-number-3">5.2.</span> 裸 Pods（Bare Pods）</h3>
+<div id="outline-container-orgb7b43e8" class="outline-3">
+<h3 id="orgb7b43e8"><span class="section-number-3">5.2.</span> 裸 Pods（Bare Pods）</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 可以指定节点直接创建 Pod。然而，DaemonSet 会替换由于任何原因（例如在节点故障或者破坏性节点维护，比如内核升级的情况下）
@@ -553,8 +553,8 @@ automatically according to the related features.
 </div>
 </div>
 
-<div id="outline-container-orgb8aca87" class="outline-3">
-<h3 id="orgb8aca87"><span class="section-number-3">5.3.</span> 静态 Pods</h3>
+<div id="outline-container-orgd23f42b" class="outline-3">
+<h3 id="orgd23f42b"><span class="section-number-3">5.3.</span> 静态 Pods</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 通过向 kubelet 监听的目录写入文件来创建 Pod，称之为静态 Pods。不像 DaemonSet，静态 Pods 不能使用 kubectl 或其它的
@@ -569,7 +569,7 @@ kubernetes API 客户端管理。静态 pod 不依赖于 apiserver，使得它�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-11 18:20:37 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2020-04-11 18:20:37 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.3)</p>
 </div>
 </body>
 </html>

@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-06-24 Fri 11:02 -->
+<!-- 2022-07-05 Tue 10:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>[译] 一致性 hash 指南</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="DESKTOP-FKSEO5E" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,12 +223,12 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org52a6709">1. Hashing 是什么？</a></li>
-<li><a href="#org8ad0b64">2. Hash 表介绍（Hash Maps）</a></li>
-<li><a href="#org4ddfce0">3. 横向扩展：分布式 hashing</a></li>
-<li><a href="#org9463003">4. 重新出现的问题</a></li>
-<li><a href="#orgbdf3e4d">5. 解决方案：一致性 hash</a></li>
-<li><a href="#orgdf93199">6. 接下来干些什么？</a></li>
+<li><a href="#orgb7e9d2e">1. Hashing 是什么？</a></li>
+<li><a href="#org85af54e">2. Hash 表介绍（Hash Maps）</a></li>
+<li><a href="#org8f85c28">3. 横向扩展：分布式 hashing</a></li>
+<li><a href="#org348a558">4. 重新出现的问题</a></li>
+<li><a href="#org68a111b">5. 解决方案：一致性 hash</a></li>
+<li><a href="#org5e6fdca">6. 接下来干些什么？</a></li>
 </ul>
 </div>
 </div>
@@ -259,13 +259,13 @@ hash 有时可被翻译成哈希，有时可被翻译成散列，文中保留英
 </p>
 
 
-<div id="org4d1c98c" class="figure">
+<div id="org96ee083" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/consistent_hash_01.jpg" alt="consistent_hash_01.jpg" />
 </p>
 </div>
 
-<div id="outline-container-org52a6709" class="outline-2">
-<h2 id="org52a6709"><span class="section-number-2">1.</span> Hashing 是什么？</h2>
+<div id="outline-container-orgb7e9d2e" class="outline-2">
+<h2 id="orgb7e9d2e"><span class="section-number-2">1.</span> Hashing 是什么？</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 什么是「Hashing」？<a href="https://www.merriam-webster.com/dictionary/hash">Merriam-Webster</a> 定义了名词 <span class="underline">hash</span> 是『切碎的肉混合和土豆和褐色』，动词含义是『将（肉和土豆）切成小块』。
@@ -292,8 +292,8 @@ hash 函数有很多种用途，并且不同的函数可能需要不同的属性
 </div>
 </div>
 
-<div id="outline-container-org8ad0b64" class="outline-2">
-<h2 id="org8ad0b64"><span class="section-number-2">2.</span> Hash 表介绍（Hash Maps）</h2>
+<div id="outline-container-org85af54e" class="outline-2">
+<h2 id="org85af54e"><span class="section-number-2">2.</span> Hash 表介绍（Hash Maps）</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 想象一下我们需要保留一些俱乐部成员的所有成员名单，而且有搜索成员的需求。我们可以把他们保存在数组（或者链表）当中，执行搜索时，遍历列表的每一个元素直到我们找到他（比如说用他们的名字进行搜索）。在最坏的情况下，要遍历所有的成员（如果我们搜索的恰好是最后一个，或者根本不存在）。在复杂性理论术语中，搜索拥有 <code>O(n)</code> 的复杂度，列表比较小时相当快，但会随着成员的数量变多越来越慢。
@@ -334,8 +334,8 @@ hash 函数有很多种用途，并且不同的函数可能需要不同的属性
 </div>
 </div>
 
-<div id="outline-container-org4ddfce0" class="outline-2">
-<h2 id="org4ddfce0"><span class="section-number-2">3.</span> 横向扩展：分布式 hashing</h2>
+<div id="outline-container-org8f85c28" class="outline-2">
+<h2 id="org8f85c28"><span class="section-number-2">3.</span> 横向扩展：分布式 hashing</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 现在我们继续讨论 hashing，是时候探讨 <span class="underline">分布式 hashing</span> 了。
@@ -408,8 +408,8 @@ A	     B	     C
 </div>
 </div>
 
-<div id="outline-container-org9463003" class="outline-2">
-<h2 id="org9463003"><span class="section-number-2">4.</span> 重新出现的问题</h2>
+<div id="outline-container-org348a558" class="outline-2">
+<h2 id="org348a558"><span class="section-number-2">4.</span> 重新出现的问题</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 这种分布式方案很简单、直接、可以正常通过。但问题是，如果服务器的数量发生变化（一台服务器崩溃了不可用、添加新的服务器、服务器下架等），
@@ -451,8 +451,8 @@ A	    B
 </div>
 </div>
 
-<div id="outline-container-orgbdf3e4d" class="outline-2">
-<h2 id="orgbdf3e4d"><span class="section-number-2">5.</span> 解决方案：一致性 hash</h2>
+<div id="outline-container-org68a111b" class="outline-2">
+<h2 id="org68a111b"><span class="section-number-2">5.</span> 解决方案：一致性 hash</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 那么，怎么解决这个问题？我们需要一个不直接依赖服务器数量的分布式的方案，以确保，添加或者删除服务器时，只有小部分 key 需要重新缓存。一个聪明且简单的人想了一个方案叫 <span class="underline">一致性 hash</span> ，第一次在 1997 年的 academic 论文被 <a href="http://courses.cse.tamu.edu/caverlee/csce438/readings/consistent-hashing.pdf">Karger et al. at MIT</a> 进行描述。
@@ -470,7 +470,7 @@ A	    B
 </p>
 
 
-<div id="org47f0999" class="figure">
+<div id="orga365765" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/consistent_hash_02.jpg" alt="consistent_hash_02.jpg" />
 </p>
 </div>
@@ -493,7 +493,7 @@ KEY	    HASH	    ANGLE (DEG)
 </p>
 
 
-<div id="org2d1a732" class="figure">
+<div id="org3862290" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/consistent_hash_03.jpg" alt="consistent_hash_03.jpg" />
 </p>
 </div>
@@ -519,7 +519,7 @@ KEY	    HASH    	ANGLE (DEG)
 </p>
 
 
-<div id="org3d8935f" class="figure">
+<div id="org1e09c5d" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/consistent_hash_04.jpg" alt="consistent_hash_04.jpg" />
 </p>
 </div>
@@ -562,7 +562,7 @@ KEY	    HASH	    ANGLE (DEG)	LABEL	SERVER
 </p>
 
 
-<div id="orge458663" class="figure">
+<div id="org49a1805" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/consistent_hash_05.jpg" alt="consistent_hash_05.jpg" />
 </p>
 </div>
@@ -630,7 +630,7 @@ KEY	    HASH     	ANGLE (DEG) 	LABEL	SERVER
 </p>
 
 
-<div id="orgdd64d17" class="figure">
+<div id="orgc4e60d1" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/consistent_hash_06.jpg" alt="consistent_hash_06.jpg" />
 </p>
 </div>
@@ -684,7 +684,7 @@ KEY	    HASH	    ANGLE (DEG)	    LABEL	SERVER
 </p>
 
 
-<div id="org80feadf" class="figure">
+<div id="org690332c" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/consistent_hash_07.jpg" alt="consistent_hash_07.jpg" />
 </p>
 </div>
@@ -747,8 +747,8 @@ KEY   	HASH    	ANGLE (DEG)	LABEL	SERVER
 </div>
 </div>
 
-<div id="outline-container-orgdf93199" class="outline-2">
-<h2 id="orgdf93199"><span class="section-number-2">6.</span> 接下来干些什么？</h2>
+<div id="outline-container-org5e6fdca" class="outline-2">
+<h2 id="org5e6fdca"><span class="section-number-2">6.</span> 接下来干些什么？</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 我们观察到使用分布式缓存在优化性能时，缓存服务器的数量可能发生变化（可能是服务器崩溃、添加或者删除服务器以扩大和减少总体容量）。通过使用 hash 一致性在服务器之前分配 keys，如果发生了这种情况，我们可以知晓重新分配的 keys 的数量，将原始数据服务器的影响降到最低，防止出现潜在的性能问题甚至是宕机的情况。
@@ -765,7 +765,7 @@ KEY   	HASH    	ANGLE (DEG)	LABEL	SERVER
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-10-24 19:05 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-10-24 19:05 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

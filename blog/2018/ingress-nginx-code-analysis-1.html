@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-06-24 Fri 11:02 -->
+<!-- 2022-07-05 Tue 10:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ingress-nginx 工作原理（上）：服务初始化</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="DESKTOP-FKSEO5E" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,7 +223,7 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org73b5bb6">1. 服务初始化</a></li>
+<li><a href="#org1d23e4d">1. 服务初始化</a></li>
 </ul>
 </div>
 </div>
@@ -243,7 +243,7 @@
 </p>
 
 
-<div id="orgd197216" class="figure">
+<div id="orga78705c" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/nginx-ingress/ingress-nginx-1-1.svg" alt="ingress-nginx-1-1.svg" class="org-svg" />
 </p>
 </div>
@@ -259,14 +259,14 @@
 
 <hr />
 
-<div id="outline-container-org73b5bb6" class="outline-2">
-<h2 id="org73b5bb6"><span class="section-number-2">1.</span> 服务初始化</h2>
+<div id="outline-container-org1d23e4d" class="outline-2">
+<h2 id="org1d23e4d"><span class="section-number-2">1.</span> 服务初始化</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 服务初始化，可以拆分成 K8s 客户端创建、NGINXController、对外 HTTP 服务、启动服务几块。
 </p>
 
-<pre class="example" id="org51f856b">
+<pre class="example" id="org8aac896">
 // cmd/nginx/main.go
 func main() {
     // (1)
@@ -318,7 +318,7 @@ func main() {
 因为<a href="https://github.com/kubernetes/ingress-nginx/issues/1968">在一些环境中第一次可能连不上 API Server</a>，所以这里有重试策略。
 </p>
 
-<pre class="example" id="orge4e9de7">
+<pre class="example" id="org96f332d">
 // cmd/nginx/main.go
 func createApiserverClient(apiserverHost string, kubeConfig string) (*kubernetes.Clientset, error) {
     var v *discovery.Info
@@ -363,7 +363,7 @@ func createApiserverClient(apiserverHost string, kubeConfig string) (*kubernetes
 4、创建 NGINXController，根据名字就知道了，NGINXController 是 ingress-controller 的 controller。
 </p>
 
-<pre class="example" id="org0563d7c">
+<pre class="example" id="org4e4b65a">
 // internal/ingress/controller/nginx.go
 func NewNGINXController(config *Configuration, fs file.Filesystem) *NGINXController {
     // 环境变量查看 NGINX_BINARY，如果未设置则使用 nginxBinary = "/usr/sbin/nginx"
@@ -478,7 +478,7 @@ Error loading new template : %v
 是同一个（指针）。创建 Store 做了很多事情，需要注意（代码比较长，我进行了精简，只看思路）：
 </p>
 
-<pre class="example" id="orge213a80">
+<pre class="example" id="org4bb3fa4">
 // ingress/controller/store/store.go
 // 参数省略了
 func New() Storer {
@@ -588,7 +588,7 @@ func New() Storer {
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

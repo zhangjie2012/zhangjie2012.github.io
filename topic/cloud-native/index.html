@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-24 Fri 11:02 -->
+<!-- 2022-07-05 Tue 10:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>云原生</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="DESKTOP-FKSEO5E" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,33 +223,40 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org9e0e4c1">1. 定义</a></li>
-<li><a href="#orge4b2afc">2. 常见的术语</a></li>
-<li><a href="#orgc49e4d3">3. <span class="todo TODO">TODO</span> 容器</a></li>
-<li><a href="#orga329b6e">4. <span class="todo TODO">TODO</span> Docker</a></li>
-<li><a href="#org5b77ddc">5. Container Tools（podman、buildah、skopeo）：Docker CLI 替代品</a></li>
-<li><a href="#org55da22c">6. Kubernetes</a>
+<li><a href="#orgf96e1b7">1. 定义</a></li>
+<li><a href="#orgf793b68">2. 常见的术语</a></li>
+<li><a href="#org20b9f55">3. 服务可用性定义</a>
 <ul>
-<li><a href="#orgbcef557">6.1. 概念（Concepts）</a></li>
-<li><a href="#org7ecdc53">6.2. 监控告警</a></li>
-<li><a href="#org403f938">6.3. kubectl CLI</a></li>
-<li><a href="#orgc32ea42">6.4. 最佳实践</a></li>
+<li><a href="#org2e5ba93">3.1. SLA(Service-Level Agreement)：服务级别协议</a></li>
+<li><a href="#orge3a831b">3.2. SLO(Service-Level Objective)：服务级别目标</a></li>
+<li><a href="#org50ab490">3.3. SLI (Service-Level Indicator)：服务级别指标</a></li>
 </ul>
 </li>
-<li><a href="#org47ac186">7. CI/CD  项目</a></li>
-<li><a href="#orgb92661a">8. Service Mash</a></li>
-<li><a href="#org0d00daa">9. Serverless</a></li>
-<li><a href="#orga800338">10. Resources</a>
+<li><a href="#org03108e2">4. <span class="todo TODO">TODO</span> 容器</a></li>
+<li><a href="#org60954d7">5. <span class="todo TODO">TODO</span> Docker</a></li>
+<li><a href="#orgc642cfb">6. Container Tools（podman、buildah、skopeo）：Docker CLI 替代品</a></li>
+<li><a href="#org51a6786">7. Kubernetes</a>
 <ul>
-<li><a href="#org5af9a18">10.1. 书籍</a></li>
+<li><a href="#org2372184">7.1. 概念（Concepts）</a></li>
+<li><a href="#org3fbd3d9">7.2. 监控告警</a></li>
+<li><a href="#org2445b7d">7.3. kubectl CLI</a></li>
+<li><a href="#orgd589e51">7.4. 最佳实践</a></li>
+</ul>
+</li>
+<li><a href="#org685281f">8. CI/CD  项目</a></li>
+<li><a href="#org814af6c">9. Service Mash</a></li>
+<li><a href="#org37b7d30">10. Serverless</a></li>
+<li><a href="#orgcd5256f">11. Resources</a>
+<ul>
+<li><a href="#org2f574d1">11.1. 书籍</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9e0e4c1" class="outline-2">
-<h2 id="org9e0e4c1"><span class="section-number-2">1.</span> 定义</h2>
+<div id="outline-container-orgf96e1b7" class="outline-2">
+<h2 id="orgf96e1b7"><span class="section-number-2">1.</span> 定义</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 2015 ~ 2018 年，CNCF 对于云原生的定义主要包含三个方面：
@@ -289,8 +296,8 @@
 </div>
 </div>
 
-<div id="outline-container-orge4b2afc" class="outline-2">
-<h2 id="orge4b2afc"><span class="section-number-2">2.</span> 常见的术语</h2>
+<div id="outline-container-orgf793b68" class="outline-2">
+<h2 id="orgf793b68"><span class="section-number-2">2.</span> 常见的术语</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li><a href="https://www.cncf.io/">CNCF</a> The Cloud Native Computing Foundation，云原生计算基金会。</li>
@@ -310,15 +317,134 @@ OCI 于 2015 年 6 月由 Docker，CoreOS 和其他容器行业领导者成立�
 </div>
 </div>
 
-<div id="outline-container-orgc49e4d3" class="outline-2">
-<h2 id="orgc49e4d3"><span class="section-number-2">3.</span> <span class="todo TODO">TODO</span> 容器</h2>
+<div id="outline-container-org20b9f55" class="outline-2">
+<h2 id="org20b9f55"><span class="section-number-2">3.</span> 服务可用性定义</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+谷歌 SRE 对服务的可用性进行了如下三个维度的定义。<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
+</p>
 </div>
-<div id="outline-container-orga329b6e" class="outline-2">
-<h2 id="orga329b6e"><span class="section-number-2">4.</span> <span class="todo TODO">TODO</span> Docker</h2>
+
+<div id="outline-container-org2e5ba93" class="outline-3">
+<h3 id="org2e5ba93"><span class="section-number-3">3.1.</span> SLA(Service-Level Agreement)：服务级别协议</h3>
+<div class="outline-text-3" id="text-3-1">
+<blockquote>
+<p>
+是服务提供商与客户之间定义的正式承诺，SLO 是 SLA 的基础。
+</p>
+</blockquote>
+
+<p>
+注意：是官方的承诺，是协议、合同。出了问题是要承担责任的。
+</p>
+
+<p>
+我们经常说的 N 个 9，对应的宕机容忍（计算器<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>）：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">x</td>
+<td class="org-left">一年</td>
+<td class="org-left">一月</td>
+<td class="org-left">一周</td>
+<td class="org-left">一日</td>
+</tr>
+
+<tr>
+<td class="org-right">99.9%</td>
+<td class="org-left">8h45m</td>
+<td class="org-left">43m</td>
+<td class="org-left">10m5s</td>
+<td class="org-left">1m26s</td>
+</tr>
+
+<tr>
+<td class="org-right">99.99%</td>
+<td class="org-left">52m34s</td>
+<td class="org-left">4m19s</td>
+<td class="org-left">1m</td>
+<td class="org-left">9s</td>
+</tr>
+
+<tr>
+<td class="org-right">99.995%</td>
+<td class="org-left">26m17s</td>
+<td class="org-left">2m10s</td>
+<td class="org-left">30s</td>
+<td class="org-left">4s</td>
+</tr>
+
+<tr>
+<td class="org-right">99.999%</td>
+<td class="org-left">5m15s</td>
+<td class="org-left">26s</td>
+<td class="org-left">6s</td>
+<td class="org-left">不足 1s</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+阿里云、AWS 等主机的 SLA 是每月 99.95%，即超过 5 分钟主机不可用（可获得赔偿）。
+</p>
 </div>
-<div id="outline-container-org5b77ddc" class="outline-2">
-<h2 id="org5b77ddc"><span class="section-number-2">5.</span> Container Tools（podman、buildah、skopeo）：Docker CLI 替代品</h2>
-<div class="outline-text-2" id="text-5">
+</div>
+
+<div id="outline-container-orge3a831b" class="outline-3">
+<h3 id="orge3a831b"><span class="section-number-3">3.2.</span> SLO(Service-Level Objective)：服务级别目标</h3>
+<div class="outline-text-3" id="text-3-2">
+<blockquote>
+<p>
+指服务提供者向客户作出的服务保证的量化指标。
+</p>
+</blockquote>
+
+<p>
+注意：是可量化的目标，目标可以包含很多的 SLA。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org50ab490" class="outline-3">
+<h3 id="org50ab490"><span class="section-number-3">3.3.</span> SLI (Service-Level Indicator)：服务级别指标</h3>
+<div class="outline-text-3" id="text-3-3">
+<blockquote>
+<p>
+是对服务提供商提供给客户的服务级别的度量。是 SLO 的基础，通用性的度量指标，比如：延迟、吞吐量、可用性、错误率。
+</p>
+</blockquote>
+
+<p>
+延迟、吞吐量、可用性、错误率也是目前最常用来度量服务的四个维度（很多监控都是这四个维度的范畴和延伸）。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org03108e2" class="outline-2">
+<h2 id="org03108e2"><span class="section-number-2">4.</span> <span class="todo TODO">TODO</span> 容器</h2>
+</div>
+<div id="outline-container-org60954d7" class="outline-2">
+<h2 id="org60954d7"><span class="section-number-2">5.</span> <span class="todo TODO">TODO</span> Docker</h2>
+</div>
+<div id="outline-container-orgc642cfb" class="outline-2">
+<h2 id="orgc642cfb"><span class="section-number-2">6.</span> Container Tools（podman、buildah、skopeo）：Docker CLI 替代品</h2>
+<div class="outline-text-2" id="text-6">
 <blockquote>
 <p>
 Docker CLI 真的越来越臃肿了（啥都不干，内存好几 G 没了），集合了 compose、swarm、Kubernetes。而且很明显现在整个云原生生态
@@ -391,23 +517,23 @@ Mac 不是纯正的 Linux 系统，所以不管是 Docker 还是 podman 都需�
 </div>
 </div>
 
-<div id="outline-container-org55da22c" class="outline-2">
-<h2 id="org55da22c"><span class="section-number-2">6.</span> Kubernetes</h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-org51a6786" class="outline-2">
+<h2 id="org51a6786"><span class="section-number-2">7.</span> Kubernetes</h2>
+<div class="outline-text-2" id="text-7">
 <p>
-Kubernetes 是开源的微服务或者容器化应用的编排工具，是谷歌开发的集群管理工具（前身是谷歌内部运行十几年的集群管理工具 Borg<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>，
-Kubernetes 吸取 Borg 的经验，然后针对社区定制的开源版本<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>），现已捐赠给 CNCF<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>。
+Kubernetes 是开源的微服务或者容器化应用的编排工具，是谷歌开发的集群管理工具（前身是谷歌内部运行十几年的集群管理工具 Borg<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>，
+Kubernetes 吸取 Borg 的经验，然后针对社区定制的开源版本<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>），现已捐赠给 CNCF<sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>。
 </p>
 
 <p>
 Kubernetes 提供了服务发现和负载均衡、自动部署和回滚、弹性伸缩、健康检测和服务自愈等特性。它的主要目标是通过提供一组 REST APIS
-来隐藏管理容器的复杂性<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>。
+来隐藏管理容器的复杂性<sup><a id="fnr.6" class="footref" href="#fn.6" role="doc-backlink">6</a></sup>。
 </p>
 </div>
 
-<div id="outline-container-orgbcef557" class="outline-3">
-<h3 id="orgbcef557"><span class="section-number-3">6.1.</span> 概念（Concepts）</h3>
-<div class="outline-text-3" id="text-6-1">
+<div id="outline-container-org2372184" class="outline-3">
+<h3 id="org2372184"><span class="section-number-3">7.1.</span> 概念（Concepts）</h3>
+<div class="outline-text-3" id="text-7-1">
 <p>
 以下文档大都来自 Kubernetes 官方文档 <a href="https://kubernetes.io/docs/concepts/">Concepts</a>，加上自己的理解。
 </p>
@@ -565,18 +691,18 @@ API server 和它暴露的 HTTP API。用户和集群的不同组件以及外部
 </div>
 </div>
 
-<div id="outline-container-org7ecdc53" class="outline-3">
-<h3 id="org7ecdc53"><span class="section-number-3">6.2.</span> 监控告警</h3>
-<div class="outline-text-3" id="text-6-2">
+<div id="outline-container-org3fbd3d9" class="outline-3">
+<h3 id="org3fbd3d9"><span class="section-number-3">7.2.</span> 监控告警</h3>
+<div class="outline-text-3" id="text-7-2">
 <ul class="org-ul">
 <li><a href="kubernetes/monitor.html">监控</a>: 通过 kube-state-metrics 和 cAdvisor 暴露指标</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org403f938" class="outline-3">
-<h3 id="org403f938"><span class="section-number-3">6.3.</span> kubectl CLI</h3>
-<div class="outline-text-3" id="text-6-3">
+<div id="outline-container-org2445b7d" class="outline-3">
+<h3 id="org2445b7d"><span class="section-number-3">7.3.</span> kubectl CLI</h3>
+<div class="outline-text-3" id="text-7-3">
 <p>
 kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </p>
@@ -588,9 +714,9 @@ kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </div>
 </div>
 
-<div id="outline-container-orgc32ea42" class="outline-3">
-<h3 id="orgc32ea42"><span class="section-number-3">6.4.</span> 最佳实践</h3>
-<div class="outline-text-3" id="text-6-4">
+<div id="outline-container-orgd589e51" class="outline-3">
+<h3 id="orgd589e51"><span class="section-number-3">7.4.</span> 最佳实践</h3>
+<div class="outline-text-3" id="text-7-4">
 <p>
 大规模集群注意事项，Kubernetes 旨在适应满足一下标准的配置环境：
 </p>
@@ -605,9 +731,9 @@ kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </div>
 </div>
 
-<div id="outline-container-org47ac186" class="outline-2">
-<h2 id="org47ac186"><span class="section-number-2">7.</span> CI/CD  项目</h2>
-<div class="outline-text-2" id="text-7">
+<div id="outline-container-org685281f" class="outline-2">
+<h2 id="org685281f"><span class="section-number-2">8.</span> CI/CD  项目</h2>
+<div class="outline-text-2" id="text-8">
 <ul class="org-ul">
 <li><a href="https://argoproj.github.io/">argo</a> Get More Done with Kubernetes</li>
 <li><a href="https://fluxcd.io/">flux</a> 云原生体系下的持续部署，GitOps</li>
@@ -615,27 +741,27 @@ kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </div>
 </div>
 
-<div id="outline-container-orgb92661a" class="outline-2">
-<h2 id="orgb92661a"><span class="section-number-2">8.</span> Service Mash</h2>
-<div class="outline-text-2" id="text-8">
+<div id="outline-container-org814af6c" class="outline-2">
+<h2 id="org814af6c"><span class="section-number-2">9.</span> Service Mash</h2>
+<div class="outline-text-2" id="text-9">
 <ul class="org-ul">
 <li><a href="https://cloudnative.to/blog/jimmy-service-mesh-talk/">都 2021 年了，对于服务网格，社区到底在讨论什么？</a> 2021年11月24日，“Istio 架构已经稳定，生产可用，生态正处于萌芽中”</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0d00daa" class="outline-2">
-<h2 id="org0d00daa"><span class="section-number-2">9.</span> Serverless</h2>
-<div class="outline-text-2" id="text-9">
+<div id="outline-container-org37b7d30" class="outline-2">
+<h2 id="org37b7d30"><span class="section-number-2">10.</span> Serverless</h2>
+<div class="outline-text-2" id="text-10">
 <ul class="org-ul">
 <li><a href="https://knative.dev/docs/">Knative</a> “2018.07 首次发布 Knative，2021.11 发布 1.0 版本”</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga800338" class="outline-2">
-<h2 id="orga800338"><span class="section-number-2">10.</span> Resources</h2>
-<div class="outline-text-2" id="text-10">
+<div id="outline-container-orgcd5256f" class="outline-2">
+<h2 id="orgcd5256f"><span class="section-number-2">11.</span> Resources</h2>
+<div class="outline-text-2" id="text-11">
 <ul class="org-ul">
 <li><a href="../../blog/2018/an-overall-view-on-docker-ecosystem-containers-moby-swarm-linuxkit-containerd-kubernete.html">Docker 生态系统一览</a> 翻译的文章，较为详细的说明了 Docker 的前世今生</li>
 <li><a href="https://www.qikqiak.com/post/containerd-usage/">一文搞懂容器运行时 Containerd</a> <span class="timestamp-wrapper"><span class="timestamp">&lt;2021-08-12 Thu&gt; </span></span> 搞清楚 libcontainer, runc, containerd, CRI, OCI 之间的关系</li>
@@ -663,9 +789,9 @@ Mac 地址等网络信息都是 Pause 容器的；</li>
 </ul>
 </div>
 
-<div id="outline-container-org5af9a18" class="outline-3">
-<h3 id="org5af9a18"><span class="section-number-3">10.1.</span> 书籍</h3>
-<div class="outline-text-3" id="text-10-1">
+<div id="outline-container-org2f574d1" class="outline-3">
+<h3 id="org2f574d1"><span class="section-number-3">11.1.</span> 书籍</h3>
+<div class="outline-text-3" id="text-11-1">
 <ul class="org-ul">
 <li class="off"><code>[&#xa0;]</code> Kubernetes: Up and Running</li>
 <li class="off"><code>[&#xa0;]</code> Kubernetes in Action</li>
@@ -683,18 +809,26 @@ Mac 地址等网络信息都是 Pause 容器的；</li>
 <div id="text-footnotes">
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://research.google/pubs/pub44843/">Borg, Omega, and Kubernetes</a>
+<a href="https://cloud.google.com/blog/products/devops-sre/sre-fundamentals-slis-slas-and-slos">https://cloud.google.com/blog/products/devops-sre/sre-fundamentals-slis-slas-and-slos</a>
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://kubernetes.io/blog/2015/04/borg-predecessor-to-kubernetes/">Borg: The Predecessor to Kubernetes</a>
+<a href="http://www.slatools.com/sla-uptime-calculator">http://www.slatools.com/sla-uptime-calculator</a>
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://zh.wikipedia.org/wiki/Kubernetes">https://zh.wikipedia.org/wiki/Kubernetes</a>
+<a href="https://research.google/pubs/pub44843/">Borg, Omega, and Kubernetes</a>
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://kubernetes.io/blog/2015/04/borg-predecessor-to-kubernetes/">Borg: The Predecessor to Kubernetes</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://zh.wikipedia.org/wiki/Kubernetes">https://zh.wikipedia.org/wiki/Kubernetes</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6" role="doc-backlink">6</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://wiki.aquasec.com/display/containers/Kubernetes+Architecture+101">https://wiki.aquasec.com/display/containers/Kubernetes+Architecture+101</a>
 </p></div></div>
 
@@ -702,7 +836,7 @@ Mac 地址等网络信息都是 Pause 容器的；</li>
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.3)</p>
 </div>
 </body>
 </html>

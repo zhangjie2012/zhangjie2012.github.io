@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-24 Fri 11:02 -->
+<!-- 2022-07-05 Tue 10:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 架构：控制平面 - 节点通信</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="DESKTOP-FKSEO5E" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,13 +223,13 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgc61548e">1. 节点到控制平面</a></li>
-<li><a href="#orgaf68230">2. 控制平面到节点</a>
+<li><a href="#org0d11890">1. 节点到控制平面</a></li>
+<li><a href="#orgb0b9c35">2. 控制平面到节点</a>
 <ul>
-<li><a href="#org9e4e003">2.1. apiserver 到 kubelet</a></li>
-<li><a href="#org1361f30">2.2. apiserver 到节点，pods 和 services</a></li>
-<li><a href="#org59f7a14">2.3. SSH 隧道（tunnels）</a></li>
-<li><a href="#org6e55962">2.4. Konnectivity service</a></li>
+<li><a href="#orge65b0aa">2.1. apiserver 到 kubelet</a></li>
+<li><a href="#org1af44e3">2.2. apiserver 到节点，pods 和 services</a></li>
+<li><a href="#orgb5f740b">2.3. SSH 隧道（tunnels）</a></li>
+<li><a href="#org5423115">2.4. Konnectivity service</a></li>
 </ul>
 </li>
 </ul>
@@ -243,8 +243,8 @@
 所谓控制平面就是 Kubernetes 的 apiserver。
 </p>
 
-<div id="outline-container-orgc61548e" class="outline-2">
-<h2 id="orgc61548e"><span class="section-number-2">1.</span> 节点到控制平面</h2>
+<div id="outline-container-org0d11890" class="outline-2">
+<h2 id="org0d11890"><span class="section-number-2">1.</span> 节点到控制平面</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Kubernetes 是集中式的 API 模式。来自节点的所有 API 使用（或者他们运行的 Pods）在 apiserver 处终止（其他控制平面组件都未被设计为公开远程服务）。
@@ -270,8 +270,8 @@ As a result, the default operating mode for connections from the nodes and pods 
 </div>
 </div>
 
-<div id="outline-container-orgaf68230" class="outline-2">
-<h2 id="orgaf68230"><span class="section-number-2">2.</span> 控制平面到节点</h2>
+<div id="outline-container-orgb0b9c35" class="outline-2">
+<h2 id="orgb0b9c35"><span class="section-number-2">2.</span> 控制平面到节点</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 从控制平面（apiserver）到节点两种主要的通信方式是：
@@ -283,8 +283,8 @@ As a result, the default operating mode for connections from the nodes and pods 
 </ol>
 </div>
 
-<div id="outline-container-org9e4e003" class="outline-3">
-<h3 id="org9e4e003"><span class="section-number-3">2.1.</span> apiserver 到 kubelet</h3>
+<div id="outline-container-orge65b0aa" class="outline-3">
+<h3 id="orge65b0aa"><span class="section-number-3">2.1.</span> apiserver 到 kubelet</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 从 apiserver 到 kubelet 的连接用于：
@@ -315,8 +315,8 @@ Finally, Kubelet authentication and/or authorization should be enabled to secure
 </div>
 </div>
 
-<div id="outline-container-org1361f30" class="outline-3">
-<h3 id="org1361f30"><span class="section-number-3">2.2.</span> apiserver 到节点，pods 和 services</h3>
+<div id="outline-container-org1af44e3" class="outline-3">
+<h3 id="org1af44e3"><span class="section-number-3">2.2.</span> apiserver 到节点，pods 和 services</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 The connections from the apiserver to a node, pod, or service default to plain HTTP connections and are therefore
@@ -328,8 +328,8 @@ of integrity. These connections are not currently safe to run over untrusted or 
 </div>
 </div>
 
-<div id="outline-container-org59f7a14" class="outline-3">
-<h3 id="org59f7a14"><span class="section-number-3">2.3.</span> SSH 隧道（tunnels）</h3>
+<div id="outline-container-orgb5f740b" class="outline-3">
+<h3 id="orgb5f740b"><span class="section-number-3">2.3.</span> SSH 隧道（tunnels）</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Kubernetes supports SSH tunnels to protect the control plane to nodes communication paths.
@@ -347,8 +347,8 @@ The Konnectivity service is a replacement for this communication channel.
 </div>
 
 
-<div id="outline-container-org6e55962" class="outline-3">
-<h3 id="org6e55962"><span class="section-number-3">2.4.</span> Konnectivity service</h3>
+<div id="outline-container-org5423115" class="outline-3">
+<h3 id="org5423115"><span class="section-number-3">2.4.</span> Konnectivity service</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 FEATURE STATE: Kubernetes v1.18 [beta]
@@ -370,7 +370,7 @@ Follow the Konnectivity service task to set up the Konnectivity service in your 
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-03-23 18:03:02 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2021-03-23 18:03:02 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.3)</p>
 </div>
 </body>
 </html>

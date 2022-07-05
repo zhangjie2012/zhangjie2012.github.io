@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-24 Fri 11:02 -->
+<!-- 2022-07-05 Tue 10:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go MongoDB</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="DESKTOP-FKSEO5E" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,12 +223,12 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgeef6082">1. 连接报错</a></li>
-<li><a href="#org7770168">2. interface{} decode to bson.M</a></li>
-<li><a href="#org7f40e4f">3. 分页、排序</a></li>
-<li><a href="#orgec3fce8">4. 只取 Document 中的一部分</a></li>
-<li><a href="#org495dbd4">5. 存储时间时区问题</a></li>
-<li><a href="#orgbd2a371">6. mongo-go-driver 构建索引报错：</a></li>
+<li><a href="#org5e3c542">1. 连接报错</a></li>
+<li><a href="#org9666a1c">2. interface{} decode to bson.M</a></li>
+<li><a href="#orgc50def4">3. 分页、排序</a></li>
+<li><a href="#orgac8633d">4. 只取 Document 中的一部分</a></li>
+<li><a href="#orge977898">5. 存储时间时区问题</a></li>
+<li><a href="#org1eee3f5">6. mongo-go-driver 构建索引报错：</a></li>
 </ul>
 </div>
 </div>
@@ -236,8 +236,8 @@
 建议使用 <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a>，目前已经 v1.5.1。mgo.v2 我也用过一段时间，但是目前已经不在维护了。
 </p>
 
-<div id="outline-container-orgeef6082" class="outline-2">
-<h2 id="orgeef6082"><span class="section-number-2">1.</span> 连接报错</h2>
+<div id="outline-container-org5e3c542" class="outline-2">
+<h2 id="org5e3c542"><span class="section-number-2">1.</span> 连接报错</h2>
 <div class="outline-text-2" id="text-1">
 <pre class="example">
 connection() error occured during connection handshake: auth error: sasl conversation error: unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.
@@ -255,8 +255,8 @@ MongoDB 的权限比较复杂，我也折腾不明白。不过报这个错，肯
 </div>
 </div>
 
-<div id="outline-container-org7770168" class="outline-2">
-<h2 id="org7770168"><span class="section-number-2">2.</span> interface{} decode to bson.M</h2>
+<div id="outline-container-org9666a1c" class="outline-2">
+<h2 id="org9666a1c"><span class="section-number-2">2.</span> interface{} decode to bson.M</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 业务场景是这样的：在插入 MongoDB 时，会插入一个前端给的 JSON，而后端对 JSON 的具体格式并不确定，希望怎么插入就怎么输出。
@@ -310,8 +310,8 @@ MongoDB 的权限比较复杂，我也折腾不明白。不过报这个错，肯
 </div>
 </div>
 
-<div id="outline-container-org7f40e4f" class="outline-2">
-<h2 id="org7f40e4f"><span class="section-number-2">3.</span> 分页、排序</h2>
+<div id="outline-container-orgc50def4" class="outline-2">
+<h2 id="orgc50def4"><span class="section-number-2">3.</span> 分页、排序</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 MongoDB 在查询时的选项都是有 <code>FindOptions</code> 控制的。分页通过 <code>FindOptions</code> 的 <code>Skip</code> 和 <code>Limit</code> 来实现：
@@ -332,8 +332,8 @@ options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.M{"create_timestamp": 
 </div>
 </div>
 
-<div id="outline-container-orgec3fce8" class="outline-2">
-<h2 id="orgec3fce8"><span class="section-number-2">4.</span> 只取 Document 中的一部分</h2>
+<div id="outline-container-orgac8633d" class="outline-2">
+<h2 id="orgac8633d"><span class="section-number-2">4.</span> 只取 Document 中的一部分</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 很多时候，把 Document 中的所有的字段全部取出来性能是很低下的，而且真实的业务场景也是需要其中的部分字段。
@@ -349,8 +349,8 @@ options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.M{"create_timestamp": 
 </div>
 </div>
 
-<div id="outline-container-org495dbd4" class="outline-2">
-<h2 id="org495dbd4"><span class="section-number-2">5.</span> 存储时间时区问题</h2>
+<div id="outline-container-orge977898" class="outline-2">
+<h2 id="orge977898"><span class="section-number-2">5.</span> 存储时间时区问题</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 MongoDB 在存储的时候本地时间会自动转换成 <a href="https://time.is/zh/UTC">UTC</a> 时间。在 Mongo cli 查询需要 <code>ISODate</code> 加上本地时区做转换。
@@ -364,8 +364,8 @@ MongoDB 在存储的时候本地时间会自动转换成 <a href="https://time.i
 </div>
 </div>
 
-<div id="outline-container-orgbd2a371" class="outline-2">
-<h2 id="orgbd2a371"><span class="section-number-2">6.</span> <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a> 构建索引报错：</h2>
+<div id="outline-container-org1eee3f5" class="outline-2">
+<h2 id="org1eee3f5"><span class="section-number-2">6.</span> <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a> 构建索引报错：</h2>
 <div class="outline-text-2" id="text-6">
 <blockquote>
 <p>
@@ -427,7 +427,7 @@ maxTimeMS
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.3)</p>
 </div>
 </body>
 </html>

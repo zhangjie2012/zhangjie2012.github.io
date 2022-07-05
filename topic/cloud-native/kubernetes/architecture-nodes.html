@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-06-24 Fri 11:02 -->
+<!-- 2022-07-05 Tue 10:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 架构：节点</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="DESKTOP-FKSEO5E" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,30 +223,30 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgb4f0d98">1. 管理</a>
+<li><a href="#org5dabe60">1. 管理</a>
 <ul>
-<li><a href="#org48a1296">1.1. 节点名称唯一性</a></li>
-<li><a href="#org32959c4">1.2. 节点的自注册</a></li>
-<li><a href="#org0f1f26d">1.3. 手动管理节点</a></li>
+<li><a href="#orgaedba77">1.1. 节点名称唯一性</a></li>
+<li><a href="#orgca25877">1.2. 节点的自注册</a></li>
+<li><a href="#orgb0d6852">1.3. 手动管理节点</a></li>
 </ul>
 </li>
-<li><a href="#org3225232">2. 节点状态</a>
+<li><a href="#org9349dde">2. 节点状态</a>
 <ul>
-<li><a href="#org41bf7be">2.1. 地址（Addresses）</a></li>
-<li><a href="#orgac88c16">2.2. 状况（Conditions）</a></li>
-<li><a href="#orgd831c0f">2.3. 容量和可分配（Capacity and Allocatable）</a></li>
-<li><a href="#org342ffea">2.4. 信息（info）</a></li>
-<li><a href="#org26821ae">2.5. 节点控制器</a>
+<li><a href="#orgc7607c1">2.1. 地址（Addresses）</a></li>
+<li><a href="#org41521e3">2.2. 状况（Conditions）</a></li>
+<li><a href="#org149ac8b">2.3. 容量和可分配（Capacity and Allocatable）</a></li>
+<li><a href="#org3f458d6">2.4. 信息（info）</a></li>
+<li><a href="#orgec3e357">2.5. 节点控制器</a>
 <ul>
-<li><a href="#org235f377">2.5.1. 心跳</a></li>
-<li><a href="#orgcb20379">2.5.2. 可靠性</a></li>
+<li><a href="#orgbb1064d">2.5.1. 心跳</a></li>
+<li><a href="#org9a751a2">2.5.2. 可靠性</a></li>
 </ul>
 </li>
-<li><a href="#orgb37dbe6">2.6. 节点容量</a></li>
+<li><a href="#orgf398a14">2.6. 节点容量</a></li>
 </ul>
 </li>
-<li><a href="#orge9a896e">3. 节点拓扑结构</a></li>
-<li><a href="#orgd2d55df">4. 优雅关闭节点</a></li>
+<li><a href="#orgee980e0">3. 节点拓扑结构</a></li>
+<li><a href="#org2bdc93e">4. 优雅关闭节点</a></li>
 </ul>
 </div>
 </div>
@@ -267,8 +267,8 @@ Kubernetes 在 <i>节点（nodes）</i> 上将容器放入 Pods 中运行你的�
 节点上的 <a href="https://kubernetes.io/docs/concepts/overview/components/#node-components">组件</a> 包含：kubelet，容器运行时（container runtime）和 kube-proxy。
 </p>
 
-<div id="outline-container-orgb4f0d98" class="outline-2">
-<h2 id="orgb4f0d98"><span class="section-number-2">1.</span> 管理</h2>
+<div id="outline-container-org5dabe60" class="outline-2">
+<h2 id="org5dabe60"><span class="section-number-2">1.</span> 管理</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 将节点添加到 API server 主要有两种方法：
@@ -317,8 +317,8 @@ Kubernetes 在内部创建一个节点对象，Kubernetes 会检查 kubelet 已�
 </p>
 </div>
 
-<div id="outline-container-org48a1296" class="outline-3">
-<h3 id="org48a1296"><span class="section-number-3">1.1.</span> 节点名称唯一性</h3>
+<div id="outline-container-orgaedba77" class="outline-3">
+<h3 id="orgaedba77"><span class="section-number-3">1.1.</span> 节点名称唯一性</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 名字可以标识一个节点。两个节点不可能在同一个时间内有相同的名字。Kubernetes 假定具有相同名称的资源是相同的对象。对于节点，他隐式的假定相同名称的实例
@@ -328,8 +328,8 @@ Kubernetes 在内部创建一个节点对象，Kubernetes 会检查 kubelet 已�
 </div>
 </div>
 
-<div id="outline-container-org32959c4" class="outline-3">
-<h3 id="org32959c4"><span class="section-number-3">1.2.</span> 节点的自注册</h3>
+<div id="outline-container-orgca25877" class="outline-3">
+<h3 id="orgca25877"><span class="section-number-3">1.2.</span> 节点的自注册</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 如果 kubelet 的 <code>--register-node</code> 是 true（默认值），kubelet 会尝试注册自己到 API server。这是大多数发行版首选的模式。
@@ -356,8 +356,8 @@ Kubernetes 在内部创建一个节点对象，Kubernetes 会检查 kubelet 已�
 </div>
 </div>
 
-<div id="outline-container-org0f1f26d" class="outline-3">
-<h3 id="org0f1f26d"><span class="section-number-3">1.3.</span> 手动管理节点</h3>
+<div id="outline-container-orgb0d6852" class="outline-3">
+<h3 id="orgb0d6852"><span class="section-number-3">1.3.</span> 手动管理节点</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 你可以使用 kubectl 创建或者修改节点对象。
@@ -398,16 +398,16 @@ Kubernetes 在内部创建一个节点对象，Kubernetes 会检查 kubelet 已�
 </div>
 </div>
 
-<div id="outline-container-org3225232" class="outline-2">
-<h2 id="org3225232"><span class="section-number-2">2.</span> 节点状态</h2>
+<div id="outline-container-org9349dde" class="outline-2">
+<h2 id="org9349dde"><span class="section-number-2">2.</span> 节点状态</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 一个节点包含：<a href="https://kubernetes.io/docs/concepts/architecture/nodes/#addresses">地址</a>、<a href="https://kubernetes.io/docs/concepts/architecture/nodes/#condition">状况（conditions）</a>、<a href="https://kubernetes.io/docs/concepts/architecture/nodes/#capacity">容量和可分配</a>、<a href="https://kubernetes.io/docs/concepts/architecture/nodes/#info">信息</a>。可通过 <code>kubectl describe node &lt;node-name&gt;</code> 查看详细信息。
 </p>
 </div>
 
-<div id="outline-container-org41bf7be" class="outline-3">
-<h3 id="org41bf7be"><span class="section-number-3">2.1.</span> 地址（Addresses）</h3>
+<div id="outline-container-orgc7607c1" class="outline-3">
+<h3 id="orgc7607c1"><span class="section-number-3">2.1.</span> 地址（Addresses）</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 这些字段值的运用取决于你的云提供商或者裸机配置。
@@ -421,8 +421,8 @@ Kubernetes 在内部创建一个节点对象，Kubernetes 会检查 kubelet 已�
 </div>
 </div>
 
-<div id="outline-container-orgac88c16" class="outline-3">
-<h3 id="orgac88c16"><span class="section-number-3">2.2.</span> 状况（Conditions）</h3>
+<div id="outline-container-org41521e3" class="outline-3">
+<h3 id="org41521e3"><span class="section-number-3">2.2.</span> 状况（Conditions）</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 <code>conditions</code> 描述 <code>Running</code> 节点的状态。Conditions 的 Type 包括：
@@ -519,8 +519,8 @@ kubelet 通信。删除 Pod 的决定无法传递给 kubelet 直到 kubelet 与 
 </div>
 </div>
 
-<div id="outline-container-orgd831c0f" class="outline-3">
-<h3 id="orgd831c0f"><span class="section-number-3">2.3.</span> 容量和可分配（Capacity and Allocatable）</h3>
+<div id="outline-container-org149ac8b" class="outline-3">
+<h3 id="org149ac8b"><span class="section-number-3">2.3.</span> 容量和可分配（Capacity and Allocatable）</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 描述节点上的可用资源：CPU、内存和可以调度到该节点上的 Pods 最大数量。
@@ -533,8 +533,8 @@ kubelet 通信。删除 Pod 的决定无法传递给 kubelet 直到 kubelet 与 
 </div>
 </div>
 
-<div id="outline-container-org342ffea" class="outline-3">
-<h3 id="org342ffea"><span class="section-number-3">2.4.</span> 信息（info）</h3>
+<div id="outline-container-org3f458d6" class="outline-3">
+<h3 id="org3f458d6"><span class="section-number-3">2.4.</span> 信息（info）</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 节点的通用信息（System Info），包含：内核版本、系统、容器运行时以及 Kubernetes 版本信息等。
@@ -542,8 +542,8 @@ kubelet 通信。删除 Pod 的决定无法传递给 kubelet 直到 kubelet 与 
 </div>
 </div>
 
-<div id="outline-container-org26821ae" class="outline-3">
-<h3 id="org26821ae"><span class="section-number-3">2.5.</span> 节点控制器</h3>
+<div id="outline-container-orgec3e357" class="outline-3">
+<h3 id="orgec3e357"><span class="section-number-3">2.5.</span> 节点控制器</h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 节点控制器是 Kubernetes 控制面板组件用来管理节点的各个方面。
@@ -565,8 +565,8 @@ kubelet 通信。删除 Pod 的决定无法传递给 kubelet 直到 kubelet 与 
 </p>
 </div>
 
-<div id="outline-container-org235f377" class="outline-4">
-<h4 id="org235f377"><span class="section-number-4">2.5.1.</span> 心跳</h4>
+<div id="outline-container-orgbb1064d" class="outline-4">
+<h4 id="orgbb1064d"><span class="section-number-4">2.5.1.</span> 心跳</h4>
 <div class="outline-text-4" id="text-2-5-1">
 <p>
 心跳，由 Kubernetes 节点，帮助确定节点的可用性。
@@ -590,8 +590,8 @@ kubelet 负责创建和更新 <code>NodeStatus</code> 和租赁对象。
 </div>
 </div>
 
-<div id="outline-container-orgcb20379" class="outline-4">
-<h4 id="orgcb20379"><span class="section-number-4">2.5.2.</span> 可靠性</h4>
+<div id="outline-container-org9a751a2" class="outline-4">
+<h4 id="org9a751a2"><span class="section-number-4">2.5.2.</span> 可靠性</h4>
 <div class="outline-text-4" id="text-2-5-2">
 <p>
 多数情况下，节点控制器将驱逐速率限制为每秒 <code>--node-eviction-rate</code> （默认为 0.1），表示每 10 秒不会从一个以上的节点上驱逐 Pod。
@@ -625,8 +625,8 @@ kubelet 负责创建和更新 <code>NodeStatus</code> 和租赁对象。
 </div>
 </div>
 
-<div id="outline-container-orgb37dbe6" class="outline-3">
-<h3 id="orgb37dbe6"><span class="section-number-3">2.6.</span> 节点容量</h3>
+<div id="outline-container-orgf398a14" class="outline-3">
+<h3 id="orgf398a14"><span class="section-number-3">2.6.</span> 节点容量</h3>
 <div class="outline-text-3" id="text-2-6">
 <p>
 节点对象会跟踪节点资源的容量信息（比如：可用内存量和 CPU 数量）。自注册的节点在注册过程中报告其容量。如果你手动添加的节点，你需要在添加的时候设置节点的容量。
@@ -646,8 +646,8 @@ Kubernetes 调度程序确保所有的 Pod 都有足够的资源。调度器检�
 </div>
 </div>
 
-<div id="outline-container-orge9a896e" class="outline-2">
-<h2 id="orge9a896e"><span class="section-number-2">3.</span> 节点拓扑结构</h2>
+<div id="outline-container-orgee980e0" class="outline-2">
+<h2 id="orgee980e0"><span class="section-number-2">3.</span> 节点拓扑结构</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 <b>FEATURE STATE:</b> <code>Kubernetes v1.16 [alpha]</code>
@@ -659,8 +659,8 @@ Kubernetes 调度程序确保所有的 Pod 都有足够的资源。调度器检�
 </div>
 </div>
 
-<div id="outline-container-orgd2d55df" class="outline-2">
-<h2 id="orgd2d55df"><span class="section-number-2">4.</span> 优雅关闭节点</h2>
+<div id="outline-container-org2bdc93e" class="outline-2">
+<h2 id="org2bdc93e"><span class="section-number-2">4.</span> 优雅关闭节点</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 如果你启动了 <code>GracefulNodeShutdown</code> 特性开关，kubelet 会尝试检测节点系统关闭并终止在节点上运行的 Pod。 kubelet 确保节点在关闭期间，容器遵循正常的
@@ -700,7 +700,7 @@ Kubernetes 调度程序确保所有的 Pod 都有足够的资源。调度器检�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-02-28 18:00:19 <br />Last updated: 2022-06-24 Fri 10:59 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2021-02-28 18:00:19 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.3)</p>
 </div>
 </body>
 </html>
