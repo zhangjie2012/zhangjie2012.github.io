@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-07-05 Tue 10:00 -->
+<!-- 2022-07-14 Thu 15:18 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>云原生</title>
@@ -233,17 +233,27 @@
 </ul>
 </li>
 <li><a href="#org03108e2">4. <span class="todo TODO">TODO</span> 容器</a></li>
-<li><a href="#org60954d7">5. <span class="todo TODO">TODO</span> Docker</a></li>
-<li><a href="#orgc642cfb">6. Container Tools（podman、buildah、skopeo）：Docker CLI 替代品</a></li>
+<li><a href="#org60954d7">5. <span class="todo TODO">TODO</span> Docker</a>
+<ul>
+<li><a href="#orgda73a92">5.1. Docker CLI 替代品：Container Tools（podman、buildah、skopeo）</a></li>
+</ul>
+</li>
+<li><a href="#org685281f">6. CI/CD 项目</a></li>
 <li><a href="#org51a6786">7. Kubernetes</a>
 <ul>
 <li><a href="#org2372184">7.1. 概念（Concepts）</a></li>
-<li><a href="#org3fbd3d9">7.2. 监控告警</a></li>
-<li><a href="#org2445b7d">7.3. kubectl CLI</a></li>
-<li><a href="#orgd589e51">7.4. 最佳实践</a></li>
+<li><a href="#org2c92ba3">7.2. 搭建本地 Kubernetes</a></li>
+<li><a href="#org3fbd3d9">7.3. 监控告警</a></li>
+<li><a href="#org2445b7d">7.4. kubectl CLI</a></li>
+<li><a href="#orgd589e51">7.5. 最佳实践</a></li>
+<li><a href="#org073400a">7.6. 管理平台</a></li>
 </ul>
 </li>
-<li><a href="#org685281f">8. CI/CD  项目</a></li>
+<li><a href="#orgcfed9b3">8. 日志体系</a>
+<ul>
+<li><a href="#org72898e3">8.1. 数据收集 agent</a></li>
+</ul>
+</li>
 <li><a href="#org814af6c">9. Service Mash</a></li>
 <li><a href="#org37b7d30">10. Serverless</a></li>
 <li><a href="#orgcd5256f">11. Resources</a>
@@ -441,10 +451,11 @@ OCI 于 2015 年 6 月由 Docker，CoreOS 和其他容器行业领导者成立�
 </div>
 <div id="outline-container-org60954d7" class="outline-2">
 <h2 id="org60954d7"><span class="section-number-2">5.</span> <span class="todo TODO">TODO</span> Docker</h2>
+<div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-orgc642cfb" class="outline-2">
-<h2 id="orgc642cfb"><span class="section-number-2">6.</span> Container Tools（podman、buildah、skopeo）：Docker CLI 替代品</h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-orgda73a92" class="outline-3">
+<h3 id="orgda73a92"><span class="section-number-3">5.1.</span> Docker CLI 替代品：Container Tools（podman、buildah、skopeo）</h3>
+<div class="outline-text-3" id="text-5-1">
 <blockquote>
 <p>
 Docker CLI 真的越来越臃肿了（啥都不干，内存好几 G 没了），集合了 compose、swarm、Kubernetes。而且很明显现在整个云原生生态
@@ -514,6 +525,17 @@ Mac 不是纯正的 Linux 系统，所以不管是 Docker 还是 podman 都需�
 <p>
 结论是：听起来很好，Mac 下实际可行性较差。
 </p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org685281f" class="outline-2">
+<h2 id="org685281f"><span class="section-number-2">6.</span> CI/CD 项目</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li><a href="https://argoproj.github.io/">argo</a> Get More Done with Kubernetes</li>
+<li><a href="https://fluxcd.io/">flux</a> 云原生体系下的持续部署，GitOps</li>
+</ul>
 </div>
 </div>
 
@@ -691,9 +713,31 @@ API server 和它暴露的 HTTP API。用户和集群的不同组件以及外部
 </div>
 </div>
 
-<div id="outline-container-org3fbd3d9" class="outline-3">
-<h3 id="org3fbd3d9"><span class="section-number-3">7.2.</span> 监控告警</h3>
+<div id="outline-container-org2c92ba3" class="outline-3">
+<h3 id="org2c92ba3"><span class="section-number-3">7.2.</span> 搭建本地 Kubernetes</h3>
 <div class="outline-text-3" id="text-7-2">
+<p>
+一般用于 K8s 学习和应用程序开发人员。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://minikube.sigs.k8s.io/docs/">minikube</a></li>
+<li><a href="https://kind.sigs.k8s.io/">kind</a>：全称：”Kubernetes In Docker“，集群节点运行于 Docker 中，很快</li>
+<li><a href="https://k3s.io/">K3S</a>：轻量级的 K8s，旨在资源匮乏的位于边缘的物联网和边缘设备上运行 K8s，可以在 VMWare 和 VirtualBox 等虚拟机环境下运行
+简单、安全、优化的 K8s 环境</li>
+<li><a href="https://microk8s.io/">MicroK8s</a> 如其名，微小的 K8s</li>
+</ul>
+
+<p>
+minikube 和 kind 的定位是完全相同的：避免 K8s 安装复杂，用于开发人员本地学习，K3s 和 MicroK8s 也可以实现相同的效果，不过
+他们的定位是提供生产级别的 IoT 和边缘场景下的 K8s 需求。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3fbd3d9" class="outline-3">
+<h3 id="org3fbd3d9"><span class="section-number-3">7.3.</span> 监控告警</h3>
+<div class="outline-text-3" id="text-7-3">
 <ul class="org-ul">
 <li><a href="kubernetes/monitor.html">监控</a>: 通过 kube-state-metrics 和 cAdvisor 暴露指标</li>
 </ul>
@@ -701,8 +745,8 @@ API server 和它暴露的 HTTP API。用户和集群的不同组件以及外部
 </div>
 
 <div id="outline-container-org2445b7d" class="outline-3">
-<h3 id="org2445b7d"><span class="section-number-3">7.3.</span> kubectl CLI</h3>
-<div class="outline-text-3" id="text-7-3">
+<h3 id="org2445b7d"><span class="section-number-3">7.4.</span> kubectl CLI</h3>
+<div class="outline-text-3" id="text-7-4">
 <p>
 kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </p>
@@ -715,8 +759,8 @@ kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </div>
 
 <div id="outline-container-orgd589e51" class="outline-3">
-<h3 id="orgd589e51"><span class="section-number-3">7.4.</span> 最佳实践</h3>
-<div class="outline-text-3" id="text-7-4">
+<h3 id="orgd589e51"><span class="section-number-3">7.5.</span> 最佳实践</h3>
+<div class="outline-text-3" id="text-7-5">
 <p>
 大规模集群注意事项，Kubernetes 旨在适应满足一下标准的配置环境：
 </p>
@@ -729,15 +773,48 @@ kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </ul>
 </div>
 </div>
+
+<div id="outline-container-org073400a" class="outline-3">
+<h3 id="org073400a"><span class="section-number-3">7.6.</span> 管理平台</h3>
+<div class="outline-text-3" id="text-7-6">
+<p>
+Kubernetes 管理平台一般是对 K8s 能力平台化，降低运维管理成本（标准化化、自动化，DevOps），覆盖应用研发迭代生命周期（CI、CD、告警、日志等）。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://www.okd.io/">OKR</a> OpenShift 的社区版本，红帽 OpenShift 应该是业内做的比较早的的企业级混合云（PaaS），算是行业标杆吧</li>
+<li><a href="https://docs.rancher.cn/">rancher</a> 2016 Rancher Labs 发布 1.0 rancher，2020年12月1日，公司被 <a href="https://www.suse.com/zh-cn/">suse</a> 收购</li>
+<li><a href="https://kubesphere.io/zh/">KubeSphere</a> 全栈的 Kubernetes 容器云 PaaS 解决方案，如他的描述。KubeSphere 适合作为小企业的私有云，常用的功能比较完备，开箱即用</li>
+<li><a href="https://github.com/portainer/portainer">portainer</a> 轻量级的 Docker、Docker swarm、Kubernetes 集群管理工具（可以算成一个界面化管理工具）</li>
+</ul>
+
+<p>
+如果没有一定的容器化、DevOps 人员储备不太敢用 K8s，即便开箱急用的管理平台在生产环境使用大家也不太敢用。那换过来，有人员储
+备之后，用原生的开源的各组件方案自研一套难度也不大（而且可以根据业务所需选择合适的技术体系，灵活性高，也易于接受）。所以，
+很多企业是不太会用类似的管理平台的（或者有一种场景，有强力的 K8s 运维能力，但是无平台研发能力可以选择）。另外，如果企业直
+接使用云服务，云厂商也都提供了简易的 UI 界面来操作 K8s。
+</p>
+</div>
+</div>
 </div>
 
-<div id="outline-container-org685281f" class="outline-2">
-<h2 id="org685281f"><span class="section-number-2">8.</span> CI/CD  项目</h2>
+<div id="outline-container-orgcfed9b3" class="outline-2">
+<h2 id="orgcfed9b3"><span class="section-number-2">8.</span> 日志体系</h2>
 <div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org72898e3" class="outline-3">
+<h3 id="org72898e3"><span class="section-number-3">8.1.</span> 数据收集 agent</h3>
+<div class="outline-text-3" id="text-8-1">
 <ul class="org-ul">
-<li><a href="https://argoproj.github.io/">argo</a> Get More Done with Kubernetes</li>
-<li><a href="https://fluxcd.io/">flux</a> 云原生体系下的持续部署，GitOps</li>
+<li><a href="https://www.fluentd.org/">fluentd</a>：开源的数据收集器，2011 年至今，2016.11.8 被 CNCF 所录取，2019 年成为毕业项目。
+<ul class="org-ul">
+<li>数据统一结构化为 JSON</li>
+<li>可插拔，支持多种上游数据源（data sources）和下游输出（data output）</li>
+<li>低资源消耗：使用 C，Ruby 混合编码</li>
+<li>数据可靠：支持内存和文件缓冲，防止数据丢失，还只是故障转移（高可用）；2000+ 数据驱动公司背书</li>
+</ul></li>
 </ul>
+</div>
 </div>
 </div>
 
@@ -836,7 +913,7 @@ Mac 地址等网络信息都是 Pause 容器的；</li>
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.3)</p>
+<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2022-07-14 Thu 15:17 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.3)</p>
 </div>
 </body>
 </html>
