@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-07-05 Tue 10:00 -->
+<!-- 2022-08-10 Wed 15:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Docker 学习笔记</title>
-<meta name="author" content="DESKTOP-FKSEO5E" />
+<meta name="author" content="DESKTOP-ZHJ" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -410,11 +410,11 @@ Registry =&gt; Repositories =&gt; Tags = Image
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #000000;">{</span>
-    <span style="color: #2544bb;">"registry-mirrors"</span>: <span style="color: #a8007f;">[</span>
-        <span style="color: #2544bb;">"https://dockerhub.azk8s.cn"</span>
-    <span style="color: #a8007f;">]</span>
-<span style="color: #000000;">}</span>
+<pre class="src src-javascript"><span style="color: #707183;">{</span>
+    <span style="color: #008000;">"registry-mirrors"</span>: <span style="color: #7388D6;">[</span>
+        <span style="color: #008000;">"https://dockerhub.azk8s.cn"</span>
+    <span style="color: #7388D6;">]</span>
+<span style="color: #707183;">}</span>
 </pre>
 </div>
 
@@ -430,6 +430,26 @@ Registry =&gt; Repositories =&gt; Tags = Image
 <li>中科大：<a href="https://mirrors.ustc.edu.cn/help/dockerhub.html">https://mirrors.ustc.edu.cn/help/dockerhub.html</a></li>
 <li>daocloud: <a href="https://www.daocloud.io/mirror">https://www.daocloud.io/mirror</a></li>
 </ul>
+
+
+<p>
+<code>WSL Ubuntu 22.04</code> 启动 docker 报错：
+</p>
+
+<pre class="example">
+failed to start daemon: Error initializing network controller: error obtaining controller instance: unable to add return
+rule in DOCKER-ISOLATION-STAGE-1 chain:  (iptables failed: iptables --wait -A DOCKER-ISOLATION-STAGE-1 -j RETURN:
+iptables v1.8.7     (nf_tables):  RULE_APPEND failed (No such file or directory): rule in chain DOCKER-ISOLATION-STAGE-1
+</pre>
+
+<p>
+解决办法<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>：
+</p>
+
+<pre class="example">
+sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+</pre>
 </div>
 </div>
 </div>
@@ -640,7 +660,7 @@ Dockerfile 每一行由指令和参数两部分组成: <code>INSTRUCTION argumen
 <h4 id="org4abe5e6"><span class="section-number-4">6.3.2.</span> 查看资源占用</h4>
 <div class="outline-text-4" id="text-6-3-2">
 <div class="org-src-container">
-<pre class="src src-shell">docker stats <span style="color: #000000;">[</span>OPTIONS<span style="color: #000000;">]</span> <span style="color: #000000;">[</span>CONTAINER...<span style="color: #000000;">]</span>
+<pre class="src src-shell">docker stats <span style="color: #707183;">[</span>OPTIONS<span style="color: #707183;">]</span> <span style="color: #707183;">[</span>CONTAINER...<span style="color: #707183;">]</span>
 </pre>
 </div>
 
@@ -1053,9 +1073,19 @@ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' con
 </ul>
 </div>
 </div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://github.com/microsoft/WSL/issues/6655">https://github.com/microsoft/WSL/issues/6655</a>
+</p></div></div>
+
+
 </div>
+</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-08-20 17:45:11 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.3)</p>
+<p class="postamble">First created: 2018-08-20 17:45:11 <br />Last updated: 2022-07-22 Fri 18:10 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

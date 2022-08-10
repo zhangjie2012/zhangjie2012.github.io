@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-07-05 Tue 10:00 -->
+<!-- 2022-08-10 Wed 15:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>构建环境</title>
-<meta name="author" content="DESKTOP-FKSEO5E" />
+<meta name="author" content="DESKTOP-ZHJ" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -250,29 +250,16 @@
 <div class="org-src-container">
 <pre class="src src-shell">wget https://go.dev/dl/go1.18.3.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf go1.18.3.linux-amd64.tar.gz
-
 </pre>
 </div>
 
 <p>
-将 <code>/usr/local/go/bin</code> 添加到系统 <code>PATH</code> 环境变量，在 <code>/etc/profile</code> 或者 <code>$HOME/.profile</code> 中添加：
+将 <code>/usr/local/go/bin</code> 添加到系统 <code>PATH</code> 环境变量，另外，默认的工作目录是 <code>$HOME/go</code> ，如果是不同的目录需要 <a href="https://github.com/golang/go/wiki/SettingGOPATH">设置一下 GOPATH 环境变量</a>。
+<code>go get</code> 安装的二进制包会放到 <code>$HOME/go/bin</code> 下面。所以，汇总后 <code>.bashrc/.zshrc</code> 中添加路径：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell"><span style="color: #8f0075;">export</span> <span style="color: #00538b;">PATH</span>=$<span style="color: #00538b;">PATH</span>:/usr/local/go/bin
-</pre>
-</div>
-
-<p>
-默认的工作目录是 <code>$HOME/go</code> ，如果是不同的目录需要 <a href="https://github.com/golang/go/wiki/SettingGOPATH">设置一下 GOPATH 环境变量</a>。
-</p>
-
-<p>
-<code>go get</code> 安装的二进制包会放到 <code>$HOME/go/bin</code> 下面。所以，还要在 <code>.bashrc/.zshrc</code> 中添加路径：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-shell"><span style="color: #8f0075;">export</span> <span style="color: #00538b;">PATH</span>=$<span style="color: #00538b;">PATH</span>:$<span style="color: #000000;">(</span>go env GOPATH<span style="color: #000000;">)</span>/bin
+<pre class="src src-shell"><span style="color: #006FE0;">export</span> <span style="color: #BA36A5;">PATH</span>=$<span style="color: #BA36A5;">PATH</span>:/usr/local/go/bin:$<span style="color: #707183;">(</span>go env GOPATH<span style="color: #707183;">)</span>/bin
 </pre>
 </div>
 </div>
@@ -286,13 +273,13 @@ sudo tar -C /usr/local -xzf go1.18.3.linux-amd64.tar.gz
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">package</span> main
+<pre class="src src-go"><span style="color: #0000FF;">package</span> main
 
-<span style="color: #5317ac;">import</span> <span style="color: #2544bb;">"fmt"</span>
+<span style="color: #0000FF;">import</span> <span style="color: #008000;">"fmt"</span>
 
-<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-    fmt.<span style="color: #721045;">Printf</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"hello, world\n"</span><span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span>
+<span style="color: #0000FF;">func</span> <span style="color: #006699;">main</span><span style="color: #707183;">()</span> <span style="color: #707183;">{</span>
+    fmt.<span style="color: #006699;">Printf</span><span style="color: #7388D6;">(</span><span style="color: #008000;">"hello, world\n"</span><span style="color: #7388D6;">)</span>
+<span style="color: #707183;">}</span>
 </pre>
 </div>
 
@@ -354,7 +341,7 @@ sudo tar -C /usr/local -xzf go1.18.3.linux-amd64.tar.gz
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2017-12-07 09:41:24 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.3)</p>
+<p class="postamble">First created: 2017-12-07 09:41:24 <br />Last updated: 2022-07-23 Sat 10:29 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>
