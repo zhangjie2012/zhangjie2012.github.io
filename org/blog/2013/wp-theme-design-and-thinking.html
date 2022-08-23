@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2022-08-23 Tue 18:34 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WordPress主题开发总结（上）：设计与思考</title>
+<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">WordPress主题开发总结（上）：设计与思考</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#谈一谈musicsoul">1. 谈一谈MusicSoul</a></li>
+<li><a href="#重新设计">2. 重新设计</a></li>
+<li><a href="#org4a8306a">3. 思维的局限</a></li>
+<li><a href="#orgaec6e58">4. 牢笼</a></li>
+<li><a href="#orgde5541d">5. 权衡</a></li>
+</ul>
+</div>
+</div>
+<p>
+经过几天松松散散的开发，总算把主题开发完了。昨天换到<a href="http://www.yuehun.in">乐魂</a>上之后，遇到一些问题（浏览器的兼容性，屏幕分辨率），以及 <a href="http://www.cnblogs.com/sunny-pgy/">星星沙</a> 提的一些想法，
+晚上进行了一些修改，今天上午依旧在改 CSS ，现在终于问题不大了。
+</p>
+
+<p>
+结束了之后，打算写两篇文章，一篇用来做技巧性的总结，为什么不是技术总结，而是技巧总结？就技术来说，CSS，PHP，WordPress，我都了解的不太多，
+所谓技巧就是从这里摘一段，然后改改，实现了某个功能，相对技术这个冠名次而言业余一些吧。另外一篇用来总结一下网站设计和开发过程中，引发的一些思考。
+以下是上篇《设计与思考》。
+</p>
+
+<p>
+新事物产生的原因往往都是一样的，因为有人不满足，便有人去尝试，去探索，于是新的事物就出现了。同理，因为旧的主题（<a href="http://www.perfect-is-shit.com/2012/12/03/thinking-new-wp-theme-musicsoul/">MusicSoul</a>）不能满足我的需求，
+所以我决定开发一个新的主题。
+</p>
+
+<div id="outline-container-谈一谈musicsoul" class="outline-2">
+<h2 id="谈一谈musicsoul"><span class="section-number-2">1.</span> 谈一谈MusicSoul</h2>
+<div class="outline-text-2" id="text-谈一谈musicsoul">
+<p>
+MS(即MusicSoul，以下均简称为"MS")的开发本身，就是我的一次尝试，有人觉得挺不错，我只能说看似不错，
+觉得不错只是因为那几个图片的映衬产生一个华丽丽的表象。
+</p>
+
+<p>
+<i>图丢了</i>
+</p>
+
+<ul class="org-ul">
+<li>站在设计者的角度来说。首页（index.php）的突破性比较大，包括最近发布音乐和一个背景音乐播放器。首页的设计为这个主题的增加了一个亮点。
+乐魂的最大缺陷在于不能连续播放歌曲，一个音乐网站如果不能连续播放歌曲这将是多么大的一个败笔！加上一个音乐播放器之后，
+别人一打开网站不用任何操作就可以连续的听到歌曲。而与此同时，MS 的问题也出在首页上，要想听最近发布的歌曲的时候，需要进行页面的跳转，
+然后点击视频，这需要两次点击。就设计而言最大的问题在于，首页和其他页面找不到一个关联点，不知道你能否理解这种感觉，举个例子来说：
+就好像西服里面穿的是毛衣而不是衬衫领带一样。给我的感觉就是很别扭，在一个网站设计中首页和其他页面的设计理念完全不一样。
+首页的突破性和其他页面的平庸脱节太严重。还有一个问题是网站太"长"了，sidebar 和 index 两者时间的长度差距很大，整个网站很不协调。</li>
+<li>站在开发者的角度来说，MS 的问题在于细节做的很差，尤其是评论那一块，所以在上传到 WP 以后，我立刻使用了多说评论来替代。
+在因为网站的后台是 WordPress，每次更换首页歌曲都需要改 index.php 文件，这是很麻烦的一件事情。
+我们都知道很多开发者在开发过程中做的很多工作都是分离，耦合性越低越好。</li>
+<li>站在用户角度来说，网站提供的信息量不够和信息表现方式太杂乱。最重要的一点是：我要在最短的时间内可以听到最新发布的歌曲，其他音乐分类要有，
+音乐标签要有，热门音乐要有，搜索功能要有。网站的杂项表现方式仅仅在于一个侧边栏，因此导致侧边栏变的很长很长。</li>
+<li>站在乐魂的拥有者来说，我希望乐魂成为一个音乐网站，而不是音乐博客。是希望他成为一个听音乐的地方，而不是一个记录音乐的地方。
+首页做到了，而其他页面没有做到，到处充满了博客的气息。希望别人到了这个地方，觉得"哇，我找到了一个听歌的地方，里面好多好听的音乐"，
+而不是"哇，这个站长好喜欢音乐，写了好多关于音乐的博文"。这个观念的转变只有通过主题来体现，MS 没有做到。</li>
+</ul>
+
+<p>
+MS 成功的地方在于：
+</p>
+
+<ul class="org-ul">
+<li>主页的突破性设计。</li>
+<li>增加播放列表，实现了连续播放（尽管使用的是别人的播放器，但是这不重要）。</li>
+<li>配色的尝试。</li>
+<li>它的失败产生的思考。</li>
+<li>技术积累。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-重新设计" class="outline-2">
+<h2 id="重新设计"><span class="section-number-2">2.</span> 重新设计</h2>
+<div class="outline-text-2" id="text-重新设计">
+<p>
+我有重新设计的想法其实在开发完 MS 之后就有了，迟迟不做只是苦于没有灵感。前段时间翻了翻《CSS网站布局实录（第二版）》，里面有些网站的链接，
+我点进去看了看。把 MS 存在的问题想了想解决方案，以及我想乐魂成为什么样的产品。于是我有了以下想法。
+</p>
+
+<p>
+<b>功能需求类：</b>
+</p>
+
+<ol class="org-ol">
+<li>坚决不做博客记录形式的音乐网站，首页不能提供一堆的文章。那放多少呢？一篇，对，只放一篇最新歌曲即可。
+而且这应该占据网站的主要位置。还有一个观点支持我这个想法：我想来乐魂的用户中无非分成三类，第一类是一直关注的忠实粉丝，
+那么他/她关注点只在于新发布的文章；第二类是误打误撞进入网站，这类人只需要给他留下一个很好的印象即可，那么简洁，整洁是一个很好把握点；
+第三类是通过搜索引擎搜索而来的，那么他将停留在固定的文章页面。也用这个观点来回复星星沙的问题，她觉得在最近发布下面应该有一个翻页的按钮一直可以翻页。
+我觉得这个完全没有必要的，一个音乐网站有成百上千首音乐，通过翻页来实现是非常不明智的。取而代之的应该是良好的音乐归类，音乐标签和搜索功能。</li>
+<li>提供音乐搜索，并且音乐搜索一栏应该放到网站一个醒目的位置上。搜索功能对于一个大量数据的网站中，其作用是不言而喻的。</li>
+<li>良好的音乐分类，这也是一个很重要的点，和搜索的重要性等同。</li>
+<li>要有连续播放的播放器。</li>
+<li>文章要显示阅读次数和评论次数，阅读和评论次数可以说明一个文章的热度，也就对其中的音乐受欢迎度一种肯定。</li>
+<li>首页应有热点文章列表。</li>
+<li>首页应有热评文章列表。</li>
+<li>首页应有最新发布文章列表，并标明发布日期。这一来提供了一定的简便性，二来也可以告诉用户网站发布歌曲的频率。</li>
+<li>网站的数据统计，尤其是音乐的收录数量可以为网站增添不少充实性。</li>
+</ol>
+
+<p>
+<b>基本常识需求（也就一个网站必须有的部分）：</b>
+</p>
+
+<ol class="org-ol">
+<li>菜单栏（顶部），可能有人会说导航菜单应该是最重要的才对，但是对于乐魂来说，真正的导航应该是音乐分类。</li>
+<li>底部声明。</li>
+</ol>
+
+<p>
+按照模块的重要性进行排序：
+</p>
+
+<p>
+"最新音乐&gt;分类=搜索&gt;背景音乐播放器&gt;最新发布文章列表=热点文章=热评文章&gt;数据统计&gt;菜单栏=底部声明" 基于以上我进行了如下模块布局：
+</p>
+
+<pre class="example" id="orga13e905">
+&lt;div id="menu"&gt;
+&lt;/div&gt;
+&lt;div id="wrapper"&gt;
+    &lt;div id="content"&gt;
+        &lt;div id="newpost"&gt;
+        &lt;/div&gt;
+        &lt;div id="list"&gt;
+            &lt;div id="newpostlist"&gt;
+            &lt;/div&gt;
+            &lt;div id="hotclicklist"&gt;
+            &lt;/div&gt;
+            &lt;div id="hotcommentlist"&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div id="sidebar"&gt;
+        &lt;div id="searchbar"&gt;
+        &lt;/div&gt;
+        &lt;div id="subsidebar"&gt;
+            &lt;div id="category"&gt;
+            &lt;/div&gt;
+            &lt;div id="other"&gt;
+                &lt;div id="bgmusic"&gt;
+                &lt;/div&gt;
+                &lt;div id="siteinfo"&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div id="footer"&gt;
+&lt;/div&gt;
+</pre>
+
+<p>
+不上传图片了，因为现在网站的布局是经过的改动之后的，过程中并没有留下截图（我写东西的时候，不喜欢被打断，通常在完成之后再进行总结）。
+这次的布局我不打算采用居中对齐的方式，而是从左向右的流动。MS 其中一个问题是太"长"了，所以新主题固定了模块个数，采用了三栏的布局方式，
+希望达到不需要什么鼠标的操作，把所有想表现出来的信息映入眼帘。WYWG，所见即所得。
+</p>
+
+<p>
+颜色选择采用了 MS 的主题色（暗色），我想通过颜色表达出来的不是一个苍白无力的感觉，也不是绚丽夺目的感觉，而是那种清新、简洁、干净的感觉。
+所以色调偏暗，颜色不能太多，也不能单一，但是要统一并且通过颜色的不同突出模块。
+</p>
+
+<p>
+另外一个想法是希望在新主题上把 LOGO 体现出来， 我觉得做东西内部的耦合性越低越好（相对开发者而言），而表现出来的耦合性越高越好（相对设计者而言），
+达到的效果是不需要你多么的强调，而是别人下意识的觉得这两者是一体的。LOGO我想采用绝对定位，这是我模仿一个<a href="http://www.alistapart.com/">网站</a>做的。
+</p>
+
+<p>
+新主题的名字很难起，不得不说，起名字是一个很艰难的过程。后来思考了好久，决定命名为 "Shoo"，远离尘世的喧嚣纷杂，静静的听音乐。
+</p>
+
+<p>
+抱着以上的这些想法，我就开始编码了，编码的过程中遇到的技术问题，及其解决方案，我会在另外一篇《技巧》中整理。开发的过程中，我尽量把细节的部分做好，
+就这一方面 Shoo 要比 MS 强的多。
+</p>
+
+<p>
+（此处略去开发相关 N 多个字&#x2026;）
+</p>
+
+<p>
+就这样网站开发完毕了，上传 FTP，然后告诉 星星沙 这一喜讯（星星沙负责网站的内容，我负责网站的维护），没想到碰了一鼻子灰。当时我真是有点愤怒。
+当你觉得非常优秀的一个产品，告诉别人时，可是别人觉得一无是处或者感觉平平淡淡的时候。我能怎么办？愤怒之后是无奈，无奈之后呢？改代码呗，有什么办法
+。于是那一个晚上我都在亢奋中度过，乃至第二天早上我躺在床上都在思考如何解决问题。
+</p>
+
+<p>
+问题是这样的，她在她的PC上打开布局"失真"了，sidebar 跑到了 content 的下面，很凌乱。（后来我也在想为什么这个主题她不喜欢呢，
+现在我想答案是人的第一感觉不好，后面的感觉很难调整过来。）遇到这种情况，我第一反应是浏览器兼容性问题。她是 360，IE6。
+我就建议她下一个 firefox 试试，因为我这边使用 firefox，chrome，IE 9，我怕是兼容的问题，后来她下了一个 firefox 还是问题依旧。
+很快我想到了第二个问题，主题太宽了，如果屏幕分辨率低的话，可能会出问题。她的分辨率是1280，我的是1366，当时调成 1280 时，问题重现了。
+</p>
+
+<p>
+问题已经知道了，就是主题宽度的问题。可是我没法去修改，因为能调整的只有左边距之外，最近发布、热点文章、热评文章 的 200px 已是底线，
+也就是说 content 部分需要 600px ，而 sidebar 中音乐播放器的宽度 250px 是不能减少的，category 和 音乐播放器是并列的所以也需要 250px 。
+200px * 3 + 250px * 2 = 1100px。这仅是内容宽度，边界和间隔 180px 是不够的（不要忘了，最左侧还有一个LOGO）。
+改本身不需要多少技术难度，只是布局的背后藏着设计的理念，如果理念改了，整个的主题存在的意义就不大了。
+</p>
+
+<p>
+怎么办呢？我想到两种方案，要么横向紧缩，要么把纵向扩展。不管哪种方案，中间的 600px 位置是不能变的。
+</p>
+
+<p>
+<b>横向紧缩</b>
+</p>
+
+<ol class="org-ol">
+<li>缩小 LOGO 的大小，减少左侧的间距。</li>
+<li>音乐播放器的大小不能变，只能缩小 category 的大小。</li>
+</ol>
+
+<p>
+这个实现，很简单。她说多久能好，我说 2 分钟，2 分钟之后她刷新还是不行。我改屏幕分辨率之后，我这边是没有问题，她那边还是不行。
+问题出在哪里，我也不知道了。这个方案我很快就放弃了，我也没有去纠结为什么她那边不行（现在明白了是浏览器 cache 在作怪，已经证实），
+原因是我很不喜欢这么做。
+</p>
+
+<ol class="org-ol">
+<li>LOGO 缩小的太小，已经没有存在的意义了。</li>
+<li>音乐分类和音乐播放器并列，但是宽度相差太远，及其不协调。</li>
+</ol>
+
+<p>
+<b>纵向扩展</b>
+</p>
+
+<p>
+栏布局变两栏，把 搜索、分类、音乐播放器 和 siteinfo 放到一栏中。这样就节省了 250px+ 的宽度，但是这样一来的话，MS 存在的问题依旧在 Shoo 中存在：
+侧边栏太长了，光音乐分类一栏和 content 本身的长度相差无几，总体效果可想而知。
+</p>
+
+<p>
+这两种方案，都被我否决了。
+</p>
+
+<p>
+与此同时，星星沙反馈给我两外几个信息：
+</p>
+
+<ol class="org-ol">
+<li>左侧的 LOGO 感觉和整体不协调。</li>
+<li>没有 MS 简洁，她还是喜欢 MS 的主页面。</li>
+<li>以前的那个球怎么不用了？！（解释一下：她说的是很早以前的主题通过 WP Cumulus 这个插件实现的 3D标签云）。</li>
+<li>最近发布这一块，应该有一个翻页的东西。</li>
+</ol>
+
+<p>
+第二天我进行了一些思考，我需要一些权衡，做了以下决定：
+</p>
+
+<ol class="org-ol">
+<li>左侧的 LOGO 删除。</li>
+<li>音乐播放器模块删除，后补。</li>
+<li>siteinfo 模块删除，将站点信息放置于footer（网站底部）。</li>
+<li>网站居中，固定大小，而不是从左向右流动。</li>
+<li>增加音乐标签这一模块和音乐分类并列。</li>
+<li>在 footer 加上网站的测试环境和分辨率要求。</li>
+</ol>
+
+<p>
+由于没有了音乐播放器，sidebar部分减少了 100px，删除了 LOGO 部分，减少了 100+px。因为总体宽度的估计，我也可以明确的告诉别人网站需要的屏幕
+分辨率是多少了。把音乐播放器独立了出来，也就有了这个页面:<a href="http://www.yuehun.in/musictaste.html">http://www.yuehun.in/musictaste.html</a> 这也是无奈之举。
+</p>
+
+<p>
+<i>图丢了</i>
+</p>
+
+<p>
+在这之后，也就成了现在的 Shoo：
+</p>
+
+<p>
+<i>图丢了</i>
+</p>
+
+<p>
+以上就是WordPress主题 Shoo 中的设计和开发历程。下面说一说站在设计和开发之上产生的一些思考。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4a8306a" class="outline-2">
+<h2 id="org4a8306a"><span class="section-number-2">3.</span> 思维的局限</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+每次写东西（软件，文章等等），总感觉很陈旧，想突破却难以突破。
+</p>
+
+<p>
+是技术的问题？技术和人的思维是相互促进，相互阻碍的。有的时候，你会发现如此简单的问题，却想的如此之难；
+有的时候，觉得技术上的不可行，导致了思维上的不敢想。
+</p>
+
+<p>
+是视野的问题？视野太窄，坐井观天。突然的变通、视觉的冲击，觉得难以理解和接受。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaec6e58" class="outline-2">
+<h2 id="orgaec6e58"><span class="section-number-2">4.</span> 牢笼</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+我一个人去做一个产品，需求、设计者、开发、测试、维护，同时我还是用户。这几个人的角色同时强加一个人的时候，很难去驾驭这几个角色，
+在做需求的时候，总是牵扯到技术的实现点，可行度，而不是抛开一切，去想这个产品；在做开发的时候，设计总是随着略微的变动，并不是因为设计的需求而去，
+而去这么做，有的时候，是因为技术上我能做什么，不能做什么决定了去做什么，不去做什么。有点本末倒置，但又无可奈何。
+</p>
+
+<p>
+最难以驾驭的是用户这个角色，让我有这个感慨是当我让星星沙看网站之后，她的着眼点和我的着眼点完全不同，我首先看的是网站的功能实现，
+包含的信息量有多大，信息的表现形式，细节处理，两个主题的差别优劣势，而她不是。她突然提出"球"怎么没有了，让我突然不知所措，觉得她的问题很滑稽、
+很不可理喻的同时，我也在反思，我是不是陷入了自己的"牢笼"中。想让一个人切实的站在不同的角度去思考一个问题，我觉得是不全可行的，因为有"障"。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgde5541d" class="outline-2">
+<h2 id="orgde5541d"><span class="section-number-2">5.</span> 权衡</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+现在 Shoo 和我一开始中想象中的 Shoo 还是有一些差距的。后来，我想通了。我需要这种权衡来将理想变成现实，
+我不可能让所有人的浏览器分辨率都和我一样是 1366，也不能让所有都用IE9。整个的开发过程中，都面对着这样的问题，
+当可行性与理想遇见冲突时，需要两者都作出相应的退让，将理想模糊，同时通过技术，让理想变的可行。这种权衡并不是妥协，让步，
+而是用更好的策略、更好的技术，逐步像理想靠近。抛开技术，生活中，相信也是同样的道理。
+</p>
+
+<p>
+本文结束，感谢阅读。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2013-01-08 09:55:46 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+</div>
+</body>
+</html>

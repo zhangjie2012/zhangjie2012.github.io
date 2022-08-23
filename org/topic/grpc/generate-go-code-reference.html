@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2022-08-23 Tue 18:34 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>gPPC 生成 Go 代码参考文档</title>
+<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">gPPC 生成 Go 代码参考文档</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orge4bc75e">1. 命令行</a></li>
+<li><a href="#orge1433b6">2. 服务器接口生成的方法</a>
+<ul>
+<li><a href="#orgec3f2a6">2.1. 一元方法(Unary methods)</a></li>
+<li><a href="#org250c9bc">2.2. 服务器流方法(Server-streaming methods)</a></li>
+<li><a href="#org3b4f170">2.3. 客户端流方法(Client-streaming methods)</a></li>
+<li><a href="#orgbfdfe65">2.4. 双向流（Bidi-streaming methods）</a></li>
+</ul>
+</li>
+<li><a href="#orgb6fc3fd">3. 客户端接口生成的方法</a>
+<ul>
+<li><a href="#org4ad9895">3.1. 一元方法(Unary Methods)</a></li>
+<li><a href="#orgead59dd">3.2. 服务端流方法(Server-Streaming methods)</a></li>
+<li><a href="#org4802981">3.3. 客户端流方法(Client-Streaming methods)</a></li>
+<li><a href="#org8abaa26">3.4. 双向流方法(Bidi-Streaming methods)</a></li>
+</ul>
+</li>
+<li><a href="#orgb497941">4. 包和命名空间</a></li>
+</ul>
+</div>
+</div>
+<p>
+<a href="https://grpc.io/docs/reference/go/generated-code/">https://grpc.io/docs/reference/go/generated-code/</a>
+</p>
+
+<p>
+生成 Go 的 protobuf package 文件需要在使用 protoc 编译 <code>.proto</code> 文件时使用 <code>protoc-gen-go</code> 插件。
+</p>
+
+<div id="outline-container-orge4bc75e" class="outline-2">
+<h2 id="orge4bc75e"><span class="section-number-2">1.</span> 命令行</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+使用 protobuf 编译器：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">protoc -I=libproto --go_out=<span style="color: #00538b;">plugins</span>=grpc:libproto libproto/xxx.proto
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge1433b6" class="outline-2">
+<h2 id="orge1433b6"><span class="section-number-2">2.</span> 服务器接口生成的方法</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+在 Server 端， <code>.proto</code> 文件中的每一个 <code>service Bar</code> 都会生成如下的函数：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">RegisterBarServer</span><span style="color: #000000;">(</span><span style="color: #00538b;">s</span> *<span style="color: #005a5f;">grpc.Server</span>, <span style="color: #00538b;">svr</span> <span style="color: #005a5f;">BarServer</span><span style="color: #000000;">)</span>
+</pre>
+</div>
+
+<p>
+在服务器启动之前，应用程序要自己实现一个 <code>BarServer</code> 接口的具体实现，然后把它注册到 <code>grpc.Server</code> 实例中。
+</p>
+</div>
+
+<div id="outline-container-orgec3f2a6" class="outline-3">
+<h3 id="orgec3f2a6"><span class="section-number-3">2.1.</span> 一元方法(Unary methods)</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+这些方法在生成服务接口的时候有如下的签名：
+</p>
+
+<pre class="example">
+Foo(context.Context, *MsgA) (*MsgB, error)
+</pre>
+
+<p>
+<code>MsgA</code> 是客户端请求的 protobuf 消息， <code>MsgB</code> 是从服务器返回的 protobuf 消息。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org250c9bc" class="outline-3">
+<h3 id="org250c9bc"><span class="section-number-3">2.2.</span> 服务器流方法(Server-streaming methods)</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+这些方法在生成服务接口的时候有如下的签名：
+</p>
+
+<pre class="example">
+Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
+</pre>
+
+<p>
+<code>MsgA</code> 是来自客户端的单个请求， <code>&lt;ServiceName&gt;_FooServer</code> 表示 <code>MsgB</code> 的 server-to-client流。
+</p>
+
+<p>
+<code>&lt;ServiceName&gt;_FooServer</code> 是一个内嵌 <code>grpc.ServerStream</code> 的如下接口：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">type</span> &lt;ServiceName&gt;_FooServer <span style="color: #5317ac;">interface</span> <span style="color: #000000;">{</span>
+  <span style="color: #721045;">Send</span><span style="color: #a8007f;">(</span>*<span style="color: #005a5f;">MsgB</span><span style="color: #a8007f;">)</span> <span style="color: #005a5f;">error</span>
+  grpc.ServerStream
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+服务端的处理器通过 <code>Send</code> 方法向客户端不断的发送 protobuf 消息，流的结束以处理器的 <code>handler</code> 方法为准。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3b4f170" class="outline-3">
+<h3 id="org3b4f170"><span class="section-number-3">2.3.</span> 客户端流方法(Client-streaming methods)</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+这些方法在生成服务接口的时候有如下的签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #721045;">Foo</span><span style="color: #000000;">(</span>&lt;ServiceName&gt;_FooServer<span style="color: #000000;">)</span> <span style="color: #005a5f;">error</span>
+</pre>
+</div>
+
+<p>
+<code>&lt;ServiceName&gt;_FooServer</code> 既可以用来读取从客户端到服务器的消息流，也可以用来发送单个服务器的响应消息。
+</p>
+
+<p>
+<code>&lt;ServiceName&gt;_FooServer</code> 是一个内嵌 <code>grpc.ServerStream</code> 的如下接口：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">type</span> &lt;ServiceName&gt;_FooServer <span style="color: #5317ac;">interface</span> <span style="color: #000000;">{</span>
+    <span style="color: #721045;">SendAndClose</span><span style="color: #a8007f;">(</span>*<span style="color: #005a5f;">MsgA</span><span style="color: #a8007f;">)</span> <span style="color: #005a5f;">error</span>
+    <span style="color: #721045;">Recv</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">(</span>*<span style="color: #005a5f;">MsgB</span>, <span style="color: #005a5f;">error</span><span style="color: #a8007f;">)</span>
+    grpc.ServerStream
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+服务端可以重复的调用 <code>Recv</code> 来获取从客户端发送过来的全部消息。 <code>Recv</code> 一旦返回 <code>(nil, io.EOF)</code> 说明流结束了。
+服务端回复消息通过调用 <code>SendAndClose</code> 方法。注意 <code>SendAndClose</code> 只能被调用一次。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbfdfe65" class="outline-3">
+<h3 id="orgbfdfe65"><span class="section-number-3">2.4.</span> 双向流（Bidi-streaming methods）</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+这些方法在生成服务接口的时候有如下的签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #721045;">Foo</span><span style="color: #000000;">(</span>&lt;ServiceName&gt;_FooServer<span style="color: #000000;">)</span> <span style="color: #005a5f;">error</span>
+</pre>
+</div>
+
+<p>
+<code>&lt;ServiceName&gt;_FooServer</code> 既可以访问从客户端到服务器的流也可以访问从服务器到客户端的流。 <code>&lt;ServiceName&gt;_FooServer</code> 内嵌了
+<code>grpc.ServerSteam</code> 如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">type</span> &lt;ServiceName&gt;_FooServer <span style="color: #5317ac;">interface</span> <span style="color: #000000;">{</span>
+    <span style="color: #721045;">Send</span><span style="color: #a8007f;">(</span>*<span style="color: #005a5f;">MsgA</span><span style="color: #a8007f;">)</span> <span style="color: #005a5f;">error</span>
+    <span style="color: #721045;">Recv</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">(</span>*<span style="color: #005a5f;">MsgB</span>, <span style="color: #005a5f;">error</span><span style="color: #a8007f;">)</span>
+    grpc.ServerStream
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+服务器端的处理程序可以重复调用 <code>Recv</code> 获取从客户端发来的消息流。 <code>Recv</code> 返回 <code>(nil, io.EOF)</code> 表示客户端流结束了。
+回复的流通过重复调用 <code>Send</code> 方法来实现， <code>return</code> 表示发送结束。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb6fc3fd" class="outline-2">
+<h2 id="orgb6fc3fd"><span class="section-number-2">3.</span> 客户端接口生成的方法</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+在客户端测， <code>proto</code> 文件中的每一个 <code>service Bar</code> 也都会生成一个函数: <code>func BarClient(cc *grpc.ClientConn) BarClient</code> ，
+它会返回 <code>BarClient</code> 接口的具体实现（此接口实现也会存在于生成的 <code>.pb.go</code> 文件中）。
+</p>
+</div>
+
+<div id="outline-container-org4ad9895" class="outline-3">
+<h3 id="org4ad9895"><span class="section-number-3">3.1.</span> 一元方法(Unary Methods)</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+这些方法生成的客户端存根具有以下签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #000000;">(</span>ctx <span style="color: #005a5f;">context.Context</span>, in *<span style="color: #005a5f;">MsgA</span>, opts ...grpc.CallOption<span style="color: #000000;">)</span> <span style="color: #000000;">(</span>*<span style="color: #005a5f;">MsgB</span>, <span style="color: #005a5f;">error</span><span style="color: #000000;">)</span>
+</pre>
+</div>
+
+<p>
+<code>MsgA</code> 是客户端的请求， <code>MsgB</code> 是服务器的回包。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgead59dd" class="outline-3">
+<h3 id="orgead59dd"><span class="section-number-3">3.2.</span> 服务端流方法(Server-Streaming methods)</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+这些方法生成的客户端存根具有以下签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #721045;">Foo</span><span style="color: #000000;">(</span>ctx <span style="color: #005a5f;">context.Context</span>, in *<span style="color: #005a5f;">MsgA</span>, opts ...grpc.CallOption<span style="color: #000000;">)</span> <span style="color: #000000;">(</span>&lt;ServiceName&gt;_FooClient, <span style="color: #00538b;">error</span><span style="color: #000000;">)</span>
+</pre>
+</div>
+
+<p>
+<code>&lt;ServiceName&gt;_FooClient</code> 表示服务器到客户端的 <code>MsgB</code> 的消息流。该流是由内嵌一个 <code>gprc.ClientStream</code> 的接口：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">type</span> &lt;ServiceName&gt;_FooClient <span style="color: #5317ac;">interface</span> <span style="color: #000000;">{</span>
+    <span style="color: #721045;">Recv</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">(</span>*<span style="color: #005a5f;">MsgB</span>, <span style="color: #005a5f;">error</span><span style="color: #a8007f;">)</span>
+    grpc.ClientStream
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+客户端重复调用 <code>Recv</code> 方法来返回服务器回复的消息。当 <code>Recv</code> 接受到 <code>(nil, io.EOF)</code> 表示流结束。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4802981" class="outline-3">
+<h3 id="org4802981"><span class="section-number-3">3.3.</span> 客户端流方法(Client-Streaming methods)</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+这些方法生成的客户端存根具有以下签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #721045;">Foo</span><span style="color: #000000;">(</span>ctx <span style="color: #005a5f;">context.Context</span>, opts ...grpc.CallOption<span style="color: #000000;">)</span> <span style="color: #000000;">(</span>&lt;ServiceName&gt;_FooClient, <span style="color: #00538b;">error</span><span style="color: #000000;">)</span>
+</pre>
+</div>
+
+<p>
+<code>&lt;ServieName&gt;_FooClient</code> 表示客户端到服务器的 <code>MsgA</code> 消息流。
+</p>
+
+<p>
+<code>&lt;ServieName&gt;_FooClient</code> 是一个内嵌了 <code>grpc.ClientStream</code> 的如下接口：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">type</span> &lt;ServiceName&gt;_FooClient <span style="color: #5317ac;">interface</span> <span style="color: #000000;">{</span>
+    <span style="color: #721045;">Send</span><span style="color: #a8007f;">(</span>*<span style="color: #005a5f;">MsgA</span><span style="color: #a8007f;">)</span> <span style="color: #005a5f;">error</span>
+    <span style="color: #721045;">CloseAndRecv</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">(</span>*<span style="color: #005a5f;">MsgA</span>, <span style="color: #005a5f;">error</span><span style="color: #a8007f;">)</span>
+    grpc.ClientStream
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+客户端可以重复调用 <code>Send</code> 方法想服务器发送消息，最后调用 <code>CloseAndRecv()</code> 结束发送等待服务器回包。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8abaa26" class="outline-3">
+<h3 id="org8abaa26"><span class="section-number-3">3.4.</span> 双向流方法(Bidi-Streaming methods)</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+这些方法生成的客户端存根具有以下签名：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #721045;">Foo</span><span style="color: #000000;">(</span>ctx <span style="color: #005a5f;">context.Context</span>, opts ...grpc.CallOption<span style="color: #000000;">)</span> <span style="color: #000000;">(</span>&lt;ServiceName&gt;_FooClient, <span style="color: #00538b;">error</span><span style="color: #000000;">)</span>
+</pre>
+</div>
+
+<p>
+<code>&lt;ServiceName&gt;_FooClient</code> 表示客户端到服务器和服务器到客户端的双向流。它是内嵌了 <code>grpc.ClientStream</code> 的如下接口：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">type</span> &lt;ServiceName&gt;_FooClient <span style="color: #5317ac;">interface</span> <span style="color: #000000;">{</span>
+    <span style="color: #721045;">Send</span><span style="color: #a8007f;">(</span>*<span style="color: #005a5f;">MsgA</span><span style="color: #a8007f;">)</span> <span style="color: #005a5f;">error</span>
+    <span style="color: #721045;">Recv</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">(</span>*<span style="color: #005a5f;">MsgB</span>, <span style="color: #005a5f;">error</span><span style="color: #a8007f;">)</span>
+    grpc.ClientStream
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+客户端重复调用 <code>Send</code> 方法发送消息，同时可以重复调用 <code>Recv</code> 方法接受消息。
+</p>
+
+<p>
+服务器到客户端的流通过返回 <code>(nil, io.EOF)</code> 终结，客户端到服务器的流通过客户端调用 <code>CloseSend</code> 来结束。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb497941" class="outline-2">
+<h2 id="orgb497941"><span class="section-number-2">4.</span> 包和命名空间</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+当 <code>protoc</code> 编译器调用 <code>-go_out=plugins=grpc:</code>  时， <code>proto package</code> 会被转换成 Go 的包，跟 <code>protoc-gen-go</code> 插件不加 <code>grpc</code>
+效果相同。
+</p>
+
+<p>
+因此，如果 <code>foo.proto</code> 在 <code>package foo</code> 中声明，那么 <code>foo.pb.go</code> 生成的文件也会在 Go 的包 <code>foo</code> 包中。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-05-21 15:05:55 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+</div>
+</body>
+</html>

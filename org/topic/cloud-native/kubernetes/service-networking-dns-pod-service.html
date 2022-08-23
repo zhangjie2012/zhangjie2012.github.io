@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-08-23 Tue 18:34 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kubernetes - Services 和 Pods 的 DNS</title>
+<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Kubernetes - Services 和 Pods 的 DNS</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgbd2a649">1. 介绍</a>
+<ul>
+<li><a href="#orgbc38a9a">1.1. Services 的命名空间</a></li>
+<li><a href="#org7d1ef86">1.2. DNS 记录</a></li>
+</ul>
+</li>
+<li><a href="#orgd69ee7d">2. Services</a>
+<ul>
+<li><a href="#orge40c5dd">2.1. A/AAAA 记录</a></li>
+<li><a href="#orgfd3f73d">2.2. SRV 记录</a></li>
+</ul>
+</li>
+<li><a href="#org0347a27">3. Pods</a>
+<ul>
+<li><a href="#org8d54633">3.1. A/AAAA 记录</a></li>
+<li><a href="#org5b10d17">3.2. Pod 的主机名和子域字段</a></li>
+<li><a href="#orgeab227a">3.3. Pod 的 setHostnameAsFQDN 字段</a></li>
+<li><a href="#org950db2e">3.4. Pod 的 DNS 策略</a></li>
+<li><a href="#org0f77dfb">3.5. Pod 的 DNS 配置</a></li>
+<li><a href="#org770bdbc">3.6. 扩展 DNS 配置</a></li>
+<li><a href="#org8d45cb1">3.7. 功能可用性</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Kubernetes 会为 services 和 pods 创建 DNS 记录。你可以通过统一的 DNS 名字代替 IP 地访问 services。
+</p>
+
+<div id="outline-container-orgbd2a649" class="outline-2">
+<h2 id="orgbd2a649"><span class="section-number-2">1.</span> 介绍</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Kubernetes DNS 集群上的调度 DNS Pod 和 Service，并配置 kubelet 告诉各个容器使用 DNS 的服务 IP 来解析 DNS 名字。
+</p>
+
+<p>
+集群中定义的每一个 Service 都会赋予一个 DNS 名字。默认情况下，客户端 Pod 的 DNS 搜索列表包含 Pod 的命名空间和集群默认域。
+</p>
+</div>
+
+<div id="outline-container-orgbc38a9a" class="outline-3">
+<h3 id="orgbc38a9a"><span class="section-number-3">1.1.</span> Services 的命名空间</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+DNS 的查询结果可能因为 Pod 空间而返回不同。未指定命名空间的 DNS 查询仅限于 Pod 所在空间。在 DNS 查询中指定命名空间来访问其他空间的服务。
+</p>
+
+<p>
+比如说，一个 Pod 在 <code>test</code> 空间。 <code>data</code> service 在 <code>prod</code> 空间。查询 <code>data</code> 不会返回结果，因为他调用的是 <code>test</code> 空间的 Pod。
+</p>
+
+<p>
+改成 <code>data.prod</code> 会返回预期的结果。
+</p>
+
+<p>
+DNS 查询会在 Pod 的 <code>/etc/resolv.conf</code> 中扩展。kubelet 会为每一个 Pod 设置这个文件。比如，查询 <code>data</code> 会被扩展成 <code>data.test.cluster.local</code> 。
+<code>search</code> 选项的值用来扩展查询。学习更多的 DNS 查询，请查看 <a href="https://www.man7.org/linux/man-pages/man5/resolv.conf.5.html"><code>resolv.conf</code> 手册</a>。
+</p>
+
+<pre class="example">
+nameserver 10.32.0.10
+search &lt;namespace&gt;.svc.cluster.local svc.cluster.local cluster.local
+options ndots:5
+</pre>
+
+<p>
+总之， <i>test</i> 空间中的 Pod 可以使用 <code>data.prod</code> 或者 <code>data.prod.svc.cluster.local</code> 来成功解析。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7d1ef86" class="outline-3">
+<h3 id="org7d1ef86"><span class="section-number-3">1.2.</span> DNS 记录</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+哪些对象会获得 DNS 记录？
+</p>
+
+<ol class="org-ol">
+<li>Services</li>
+<li>Pods</li>
+</ol>
+
+<p>
+下面各节详细介绍了受支持的记录类型和布局。其它可行的布局、名字或者查询都视为实现细节，可能会在没有警告的情况下更改。有关最新的规范，查看 <a href="https://github.com/kubernetes/dns/blob/master/docs/specification.md">Kubernetes 基于 DNS 的服务发现</a>。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd69ee7d" class="outline-2">
+<h2 id="orgd69ee7d"><span class="section-number-2">2.</span> Services</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orge40c5dd" class="outline-3">
+<h3 id="orge40c5dd"><span class="section-number-3">2.1.</span> A/AAAA 记录</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+“正常的”（不是 headless）Service 会被分配一个 DNS A 或者 AAAA 记录，值取决于 service 的 IP 集合。名字的格式为：
+<code>my-svc.my-namespace.svc.cluster-domain.example</code> ，会被解析为 Service 的集群 IP。
+</p>
+
+<p>
+“Headless”（没有集群 IP ）Services 也会被分配一个 DNS A 或者 AAAA 记录，值取决于 service 的 IP 集合，名字格式为：
+<code>my-svc.my-namespace.svc.cluster-domain.example</code> ，与正常 Service 不同在于，他解析的结果是 Service 的 IP 集合。客户端要从负责从集合中选择 IP（可能使用轮询策略）。
+</p>
+
+<blockquote>
+<p>
+也就是说，正常 service DNS 解析的结果是一个 IP（由 service 的策略来控制如何从一堆的 endpoint 中选择一个），而 headless service 是把集合返回给客户端，客户端需要自己选择。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgfd3f73d" class="outline-3">
+<h3 id="orgfd3f73d"><span class="section-number-3">2.2.</span> SRV 记录</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+SRC 记录是为正常或者 headless service 一部分的命名端口创建的。为每一个命名端口，SRV 记录记录的格式为：
+<code>_my-port-name._my-port-protocol.my-svc.my-namespace.svc.cluster-domain.example</code> 。对于一个正常的 service，解析的端口号和域名： <code>my-svc.my-namespace.svc.cluster-domain.example</code> 。
+对于 headless service，会被解析成多个答案，每个支持的 service 都会有一个，并且包含端口号和 Pod 域名的格式为： <code>auto-generated-name.my-svc.my-namespace.svc.cluster-domain.example</code>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0347a27" class="outline-2">
+<h2 id="org0347a27"><span class="section-number-2">3.</span> Pods</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org8d54633" class="outline-3">
+<h3 id="org8d54633"><span class="section-number-3">3.1.</span> A/AAAA 记录</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+通常情况下一个 Pod 有如下的 DNS 解析： <code>pod-ip-address.my-namespace.pod.cluster-domain.example</code> 。
+</p>
+
+<p>
+比如，如果一个 pod 在 <code>default</code> 空间下， IP 地址是 172.17.0.3，集群域名为 <code>cluster.local</code> ，那么 Pod 的 DNS 名为 <code>172-17-0-3.default.pod.cluster.local</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5b10d17" class="outline-3">
+<h3 id="org5b10d17"><span class="section-number-3">3.2.</span> Pod 的主机名和子域字段</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+当 Pod 被创建的时候， <code>hostname</code> 由 Pod 的 <code>metadata.name</code> 的值来决定。
+</p>
+
+<p>
+Pod spec 中有一个可选的 <code>hostname</code> 字段，用于指定 Pod 的主机名。指定之后，他的优先级要比 Pod 的名字要高。
+</p>
+
+<p>
+Pod 还有一个可选的 <code>subdomain</code> 字段，用来指定他的子域。比如说， Pod <code>hostname</code> 是 <code>foo</code> ， <code>subdomain</code> 是 <code>bar</code> ，所在空间为 <code>my-namespace</code> ，他的 FQDN 为：
+<code>foo.bar.my-namespace.svc.cluster-domain.example</code> 。
+</p>
+
+<p>
+如果是 headless service，Pod 的域名会带上序号。比如 <code>busybox-1</code> <code>busybox-2</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgeab227a" class="outline-3">
+<h3 id="orgeab227a"><span class="section-number-3">3.3.</span> Pod 的 setHostnameAsFQDN 字段</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+<b><b>FEATURE STATE:</b></b> <code>Kubernetes v1.22 [stable]</code>
+</p>
+
+<p>
+TODO
+</p>
+</div>
+</div>
+
+<div id="outline-container-org950db2e" class="outline-3">
+<h3 id="org950db2e"><span class="section-number-3">3.4.</span> Pod 的 DNS 策略</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+可以对每一个 Pod 指定 DNS 策略。目前 Kubernetes 支持如下的 pod-specific DNS 策略。策略由 Pod 的 <code>dnsPolicy</code> 字段来指定。
+</p>
+
+<ul class="org-ul">
+<li><code>default</code> 从 Pod 运行节点继承解析配置，从 <a href="https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#inheriting-dns-from-the-node">关联的讨论</a> 查看更多；</li>
+<li><code>ClusterFirst</code> 与集群配置不匹配的 DNS 查询，比如 <code>www.kubernetes.io</code> 会转发到节点继承的上游 nameserver。集群管理员可能配置了额外的存根域和上游 DNS 服务器。
+关于 DNS 查询如何处理这些场景，查看 <a href="https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#effects-on-pods">相关讨论</a>；</li>
+<li><code>ClusterFirstWithHostNet</code> 对于使用 hostNetwork 的运行中 Pod，你需要显式的指定 DNS 策略为 <code>ClusterFirstWithHostNet</code> ；</li>
+<li><code>None</code> 他允许忽略从 Kubernetes 环境中的 DNS 设置。所有的 DNS 设置都应该使用 Pod Spec 中的 <code>dnsConfig</code> 来提供；</li>
+</ul>
+
+<p>
+举例：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #00538b;">apiVersion</span>: v1
+<span style="color: #00538b;">kind</span>: Service
+<span style="color: #00538b;">metadata</span>:
+  <span style="color: #00538b;">name</span>: default-subdomain
+<span style="color: #00538b;">spec</span>:
+  <span style="color: #00538b;">selector</span>:
+    <span style="color: #00538b;">name</span>: busybox
+  <span style="color: #00538b;">clusterIP</span>: None
+  <span style="color: #00538b;">ports</span>:
+  - <span style="color: #00538b;">name</span>: foo <span style="color: #505050;"># </span><span style="color: #505050;">Actually, no port is needed.</span>
+    <span style="color: #00538b;">port</span>: 1234
+    <span style="color: #00538b;">targetPort</span>: 1234
+<span style="color: #505050;">---</span>
+<span style="color: #00538b;">apiVersion</span>: v1
+<span style="color: #00538b;">kind</span>: Pod
+<span style="color: #00538b;">metadata</span>:
+  <span style="color: #00538b;">name</span>: busybox1
+  <span style="color: #00538b;">labels</span>:
+    <span style="color: #00538b;">name</span>: busybox
+<span style="color: #00538b;">spec</span>:
+  <span style="color: #00538b;">hostname</span>: busybox-1
+  <span style="color: #00538b;">subdomain</span>: default-subdomain
+  <span style="color: #00538b;">containers</span>:
+  - <span style="color: #00538b;">image</span>: busybox:1.28
+    <span style="color: #00538b;">command</span>:
+      - sleep
+      - <span style="color: #2544bb;">"3600"</span>
+    <span style="color: #00538b;">name</span>: busybox
+<span style="color: #505050;">---</span>
+<span style="color: #00538b;">apiVersion</span>: v1
+<span style="color: #00538b;">kind</span>: Pod
+<span style="color: #00538b;">metadata</span>:
+  <span style="color: #00538b;">name</span>: busybox2
+  <span style="color: #00538b;">labels</span>:
+    <span style="color: #00538b;">name</span>: busybox
+<span style="color: #00538b;">spec</span>:
+  <span style="color: #00538b;">hostname</span>: busybox-2
+  <span style="color: #00538b;">subdomain</span>: default-subdomain
+  <span style="color: #00538b;">containers</span>:
+  - <span style="color: #00538b;">image</span>: busybox:1.28
+    <span style="color: #00538b;">command</span>:
+      - sleep
+      - <span style="color: #2544bb;">"3600"</span>
+    <span style="color: #00538b;">name</span>: busybox
+</pre>
+</div>
+
+<p>
+如果在于 Pod 相同的命名空间中存在 headless 服务并且与子域具有相同的名称。集群的 DNS 服务器也为 Pod 的完全限定域名返回 A 或 AAAA 记录。比如说，给定的 Pod 的 hostname 设置
+成为 <code>busybox-1</code> 子域设置成为 <code>default-subdomain</code> ，相同的空间下 headless service 命名为 <code>default-subdomain</code> ，Pod 会看到自己的 FQDN 是 <code>busybox-1.default-subdomain.my-namespace.svc.cluster-domain.example</code>
+DNS 以该名称提供 A 或者 AAAA 记录，指向 Pod 的 IP。 <code>busybox1</code> 和 <code>busybox2</code> 有独立的 A 或者 AAAA 记录。
+</p>
+
+<p>
+Endpoints 对象可以制定任何 endpoint 地址的 <code>hostname</code> ，跟他的 IP 一起。
+</p>
+
+<blockquote>
+<p>
+<b>注意：</b> 由于 A 和 AAAA 不会为 Pod 名字创建， 所以在创建 A 或者 AAAA 记录时 <code>hostname</code> 是必要的。Pod 没有 <code>hostname</code> 但是有 <code>subdomain</code> 会只会为 headless service 创建 A 或者 AAAA 记录(
+<code>default-subdomain.my-namespace.svc.cluster-domain.example</code>)，指向 Pod 的 IP 地址。此外，除非在 Service 上设置了 <code>publishNotReadyAddresses=True</code> ，否则 Pod 需要就绪之后才能有记录。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org0f77dfb" class="outline-3">
+<h3 id="org0f77dfb"><span class="section-number-3">3.5.</span> Pod 的 DNS 配置</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+<b>FEATURE STATE:</b> <code>Kubernetes v1.14 [stable]</code>
+</p>
+
+<p>
+Pod 的 DNS 配置允许用户更多的控制 Pod 的 DNS 设置。
+</p>
+
+<p>
+<code>dnsConfig</code> 字段是可选的，他可以和任何的 <code>dnsPolicy</code> 设置。然而，当 Pod 的 <code>dnsPolicy</code> 被设置为 <code>None</code> ， <code>dnsConfig</code> 字段必须要指定。
+</p>
+
+<p>
+用户可以在 <code>dnsConfig</code> 字段上指定以下属性：
+</p>
+
+<ul class="org-ul">
+<li><code>nameservers</code> : Pod 使用的 DNS 服务器列表。最多可以指定 3 个 IP 地址。当 Pod 的 <code>dnsPolicy</code> 设置为 <code>None</code> ，至少需要指定一个 IP 地址，否则属性是可选的。
+列出的服务器将与从指定 DNS 策略生成的基本名称服务器合并，并删除重复地址；</li>
+<li><code>searches</code> : 用于在 Pod 中查找主机名的 DNS 搜索域列表。这个属性是可选的。当被指定时，提供的列表会被与基础的搜索域合并。重复的域名会被删除。Kubernetes 最多允许 6 个搜索域；</li>
+<li><code>options</code> : 一个可选的对象列表，其中每个对象可能有一个 <code>name</code> 属性（必需）和一个 <code>value</code> 属性（可选）。同样会跟已有的 option 合并，重复的会被移除；</li>
+</ul>
+
+<p>
+以下是有自定义 DNS 设置的 Pod 样例：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml" id="org872b2a4"><span style="color: #00538b;">apiVersion</span>: v1
+<span style="color: #00538b;">kind</span>: Pod
+<span style="color: #00538b;">metadata</span>:
+  <span style="color: #00538b;">namespace</span>: default
+  <span style="color: #00538b;">name</span>: dns-example
+<span style="color: #00538b;">spec</span>:
+  <span style="color: #00538b;">containers</span>:
+    - <span style="color: #00538b;">name</span>: test
+      <span style="color: #00538b;">image</span>: nginx
+  <span style="color: #00538b;">dnsPolicy</span>: <span style="color: #2544bb;">"None"</span>
+  <span style="color: #00538b;">dnsConfig</span>:
+    <span style="color: #00538b;">nameservers</span>:
+      - 1.2.3.4
+    <span style="color: #00538b;">searches</span>:
+      - ns1.svc.cluster-domain.example
+      - my.dns.search.suffix
+    <span style="color: #00538b;">options</span>:
+      - <span style="color: #00538b;">name</span>: ndots
+        <span style="color: #00538b;">value</span>: <span style="color: #2544bb;">"2"</span>
+      - <span style="color: #00538b;">name</span>: edns0
+</pre>
+</div>
+
+<p>
+当上面的 Pod 被创建时， <code>test</code> 容器的 <code>/etc/resolv.conf</code> 文件会得到下面的内容：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-conf">nameserver 1.2.3.4
+search ns1.svc.cluster-domain.example my.dns.search.suffix
+options ndots:2 edns0
+</pre>
+</div>
+
+<p>
+对于 IPv6 设置，搜索路径和 nameserver 可能会被设置为：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">kubectl exec -it dns-example -- cat /etc/resolv.conf
+</pre>
+</div>
+
+<p>
+输出类似：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-conf">nameserver fd00:79:30::a
+search default.svc.cluster-domain.example svc.cluster-domain.example cluster-domain.example
+options ndots:5
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org770bdbc" class="outline-3">
+<h3 id="org770bdbc"><span class="section-number-3">3.6.</span> 扩展 DNS 配置</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+<b>FEATURE STATE:</b> <code>Kubernetes 1.22 [alpha]</code>
+</p>
+
+<p>
+默认情况下，Pod 的 DNS 配置，Kubernetes 允许最多 6 个搜索域并且最多 256 个字符。
+</p>
+
+<p>
+如果为 kube-apiserver 和 kubelet 开启了 <code>ExpandedDNSConfig</code> 特性，它会允许最多 32 个搜索域和最多 2048 个字符。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8d45cb1" class="outline-3">
+<h3 id="org8d45cb1"><span class="section-number-3">3.7.</span> 功能可用性</h3>
+<div class="outline-text-3" id="text-3-7">
+<p>
+Pod 的 DNS 配置和 DNS 策略 <code>None</code> 可用性如下所示：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">K8s version</th>
+<th scope="col" class="org-left">功能支持</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1.14</td>
+<td class="org-left">Stable</td>
+</tr>
+
+<tr>
+<td class="org-right">1.10</td>
+<td class="org-left">Beta(on by default)</td>
+</tr>
+
+<tr>
+<td class="org-right">1.9</td>
+<td class="org-left">Alpha</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2021-02-09 16:50:29 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,988 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-08-23 Tue 18:34 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>云原生</title>
+<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">云原生</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgf96e1b7">1. 定义</a></li>
+<li><a href="#orgf793b68">2. 常见的术语</a></li>
+<li><a href="#org20b9f55">3. 服务可用性定义</a>
+<ul>
+<li><a href="#org2e5ba93">3.1. SLA(Service-Level Agreement)：服务级别协议</a></li>
+<li><a href="#orge3a831b">3.2. SLO(Service-Level Objective)：服务级别目标</a></li>
+<li><a href="#org50ab490">3.3. SLI (Service-Level Indicator)：服务级别指标</a></li>
+</ul>
+</li>
+<li><a href="#org03108e2">4. <span class="todo TODO">TODO</span> 容器</a></li>
+<li><a href="#org60954d7">5. <span class="todo TODO">TODO</span> Docker</a>
+<ul>
+<li><a href="#orgda73a92">5.1. Docker CLI 替代品：Container Tools（podman、buildah、skopeo）</a></li>
+</ul>
+</li>
+<li><a href="#org685281f">6. CI/CD 项目</a></li>
+<li><a href="#org51a6786">7. Kubernetes</a>
+<ul>
+<li><a href="#org2372184">7.1. 概念（Concepts）</a></li>
+<li><a href="#org2c92ba3">7.2. 搭建本地 Kubernetes</a></li>
+<li><a href="#org50cd295">7.3. 构建部署</a></li>
+<li><a href="#org2445b7d">7.4. kubectl CLI</a></li>
+<li><a href="#orgd589e51">7.5. 最佳实践</a></li>
+<li><a href="#org3fbd3d9">7.6. 监控告警</a></li>
+<li><a href="#org073400a">7.7. 管理平台</a></li>
+</ul>
+</li>
+<li><a href="#orgcfed9b3">8. 日志体系</a>
+<ul>
+<li><a href="#org72898e3">8.1. 数据收集 agent</a></li>
+</ul>
+</li>
+<li><a href="#org814af6c">9. Service Mash</a></li>
+<li><a href="#org37b7d30">10. Serverless</a></li>
+<li><a href="#orgcd5256f">11. Resources</a>
+<ul>
+<li><a href="#org2f574d1">11.1. 书籍</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf96e1b7" class="outline-2">
+<h2 id="orgf96e1b7"><span class="section-number-2">1.</span> 定义</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+2015 ~ 2018 年，CNCF 对于云原生的定义主要包含三个方面：
+</p>
+
+<ul class="org-ul">
+<li>面向微服务架构</li>
+<li>应用容器化部署</li>
+<li>基于容器的编排和调度（Kubernetes）</li>
+</ul>
+
+<p>
+2018 年后，CNCF 对于云原生的定义改为：
+</p>
+
+<blockquote>
+<p>
+云原生技术有利于各组织在公有云、私有云和混合云等新型动态环境中，构建和运行可弹性扩展的应用。云原生的代表技术包括容器、服务网格、微服务、不可变基础设施和声明式 API。
+</p>
+
+<p>
+这些技术能够构建容错性好、易于管理和便于观察的松耦合系统。结合可靠的自动化手段，云原生技术使工程师能够轻松地对系统作出频繁和可预测的重大变更。
+</p>
+
+<p>
+云原生计算基金会（CNCF）致力于培育和维护一个厂商中立的开源生态系统，来推广云原生技术。我们通过将最前沿的模式民主化，让这些创新为大众所用。
+</p>
+</blockquote>
+
+<p>
+来自 <a href="https://github.com/cncf/toc/blob/master/DEFINITION.md">https://github.com/cncf/toc/blob/master/DEFINITION.md</a>
+</p>
+
+<p>
+云原生代表技术：不可变的基础设施、声明式 API。容器、服务网格、微服务。
+</p>
+
+<p>
+<b>什么是不可变的基础设施？</b>
+</p>
+
+<p>
+<a href="https://segmentfault.com/a/1190000040449782">https://segmentfault.com/a/1190000040449782</a>
+</p>
+
+<blockquote>
+<ul class="org-ul">
+<li>在程序设计中，不可变变量（Immutable Variable）就是在完成赋值之后就不能发生更改，只能创建新的来整体替换旧的。</li>
+<li>对于基础设施的不可变性，最基本的就是指运行的服务器在完成部署后，就不再更改。</li>
+</ul>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgf793b68" class="outline-2">
+<h2 id="orgf793b68"><span class="section-number-2">2.</span> 常见的术语</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><a href="https://www.cncf.io/">CNCF</a> The Cloud Native Computing Foundation，云原生计算基金会。</li>
+<li><a href="https://opencontainers.org/">OCI</a> Open Container Initiative，开放容器标准。
+是一个轻量级的，开放的治理结构（项目），在 Linux 基金会的支持下成立，旨在围绕容器格式和运行时创建的开放行业标准。
+OCI 于 2015 年 6 月由 Docker，CoreOS 和其他容器行业领导者成立。当前包含两种规范：
+<ul class="org-ul">
+<li><a href="https://github.com/opencontainers/runtime-spec">runtime-spec</a> 运行时规范</li>
+<li><a href="https://github.com/opencontainers/image-spec">image-spec</a> 镜像规范</li>
+</ul></li>
+<li><a href="https://kubernetes.io/blog/2016/12/container-runtime-interface-cri-in-kubernetes/">CRI</a> Container Runtime Interface，由 protocol buffers 和 gRPC API 和一些库组成。
+是 Kubernetes 提出的给 kubelet 来管理节点的容器来用的。符合 CRI 的容器，Kubernetes 就可以直接使用。
+目前 CRI 的实现有 Containerd，CRI-O，Docker 不符合 CRI，所以 Kubernetes 写了 <a href="https://github.com/kubernetes/kubernetes/tree/release-1.5/pkg/kubelet/dockershim">dockershim</a> 来做协议转换
+（这也是 Kubernetes v1.20 之后废弃 Docker 的原因， <code>kubelet-&gt;dockershim-&gt;dockerd-&gt;containerd</code> 这个链路太长，
+废弃之后改成了 <code>kubelet-&gt;containerd</code> ）。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org20b9f55" class="outline-2">
+<h2 id="org20b9f55"><span class="section-number-2">3.</span> 服务可用性定义</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+谷歌 SRE 对服务的可用性进行了如下三个维度的定义。<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
+</p>
+</div>
+
+<div id="outline-container-org2e5ba93" class="outline-3">
+<h3 id="org2e5ba93"><span class="section-number-3">3.1.</span> SLA(Service-Level Agreement)：服务级别协议</h3>
+<div class="outline-text-3" id="text-3-1">
+<blockquote>
+<p>
+是服务提供商与客户之间定义的正式承诺，SLO 是 SLA 的基础。
+</p>
+</blockquote>
+
+<p>
+注意：是官方的承诺，是协议、合同。出了问题是要承担责任的。
+</p>
+
+<p>
+我们经常说的 N 个 9，对应的宕机容忍（计算器<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>）：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">x</th>
+<th scope="col" class="org-left">一年</th>
+<th scope="col" class="org-left">一月</th>
+<th scope="col" class="org-left">一周</th>
+<th scope="col" class="org-left">一日</th>
+<th scope="col" class="org-left">适用产品</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">99.9%</td>
+<td class="org-left">8h45m</td>
+<td class="org-left">43m</td>
+<td class="org-left">10m5s</td>
+<td class="org-left">1m26s</td>
+<td class="org-left">个人电脑或者服务器</td>
+</tr>
+
+<tr>
+<td class="org-right">99.99%</td>
+<td class="org-left">52m34s</td>
+<td class="org-left">4m19s</td>
+<td class="org-left">1m</td>
+<td class="org-left">9s</td>
+<td class="org-left">企业级设备</td>
+</tr>
+
+<tr>
+<td class="org-right">99.995%</td>
+<td class="org-left">26m17s</td>
+<td class="org-left">2m10s</td>
+<td class="org-left">30s</td>
+<td class="org-left">4s</td>
+<td class="org-left">数据库</td>
+</tr>
+
+<tr>
+<td class="org-right">99.999%</td>
+<td class="org-left">5m15s</td>
+<td class="org-left">26s</td>
+<td class="org-left">6s</td>
+<td class="org-left">不足 1s</td>
+<td class="org-left">电信级设备</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+阿里云、AWS 等主机的 SLA 是每月 99.95%，即超过 5 分钟主机不可用（可获得赔偿）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge3a831b" class="outline-3">
+<h3 id="orge3a831b"><span class="section-number-3">3.2.</span> SLO(Service-Level Objective)：服务级别目标</h3>
+<div class="outline-text-3" id="text-3-2">
+<blockquote>
+<p>
+指服务提供者向客户作出的服务保证的量化指标。
+</p>
+</blockquote>
+
+<p>
+注意：是可量化的目标，目标可以包含很多的 SLA。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org50ab490" class="outline-3">
+<h3 id="org50ab490"><span class="section-number-3">3.3.</span> SLI (Service-Level Indicator)：服务级别指标</h3>
+<div class="outline-text-3" id="text-3-3">
+<blockquote>
+<p>
+是对服务提供商提供给客户的服务级别的度量。是 SLO 的基础，通用性的度量指标，比如：延迟、吞吐量、可用性、错误率。
+</p>
+</blockquote>
+
+<p>
+延迟、吞吐量、可用性、错误率也是目前最常用来度量服务的四个维度（很多监控都是这四个维度的范畴和延伸）。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org03108e2" class="outline-2">
+<h2 id="org03108e2"><span class="section-number-2">4.</span> <span class="todo TODO">TODO</span> 容器</h2>
+</div>
+<div id="outline-container-org60954d7" class="outline-2">
+<h2 id="org60954d7"><span class="section-number-2">5.</span> <span class="todo TODO">TODO</span> Docker</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgda73a92" class="outline-3">
+<h3 id="orgda73a92"><span class="section-number-3">5.1.</span> Docker CLI 替代品：Container Tools（podman、buildah、skopeo）</h3>
+<div class="outline-text-3" id="text-5-1">
+<blockquote>
+<p>
+Docker CLI 真的越来越臃肿了（啥都不干，内存好几 G 没了），集合了 compose、swarm、Kubernetes。而且很明显现在整个云原生生态
+有种不带 Docker 玩的感觉（这也不能全怪 CNCF，毕竟曾经人家抛了橄榄枝，他非要自己玩），再加上国内网络原因，Docker 的每次升
+级慢的令人发指。
+</p>
+</blockquote>
+
+<p>
+容器官方提供了 <a href="https://github.com/containers">Container Tools</a>，工具集合，其中包含了覆盖 Docker 不同场景的工具。Docker CLI 被拆分成了 3 个工具：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">官网</th>
+<th scope="col" class="org-left">github</th>
+<th scope="col" class="org-left">说明</th>
+<th scope="col" class="org-left">笔记</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><a href="https://podman.io/">podman</a></td>
+<td class="org-left"><a href="https://github.com/containers/podman">https://github.com/containers/podman</a></td>
+<td class="org-left">OCI 容器和 Pod 管理工具</td>
+<td class="org-left"><a href="container-tools/podman.html">podman</a></td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/containers/buildah">buildah</a></td>
+<td class="org-left"><a href="https://github.com/containers/buildah">https://github.com/containers/buildah</a></td>
+<td class="org-left">构建 OCI 镜像工具</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/containers/skopeo">skopeo</a></td>
+<td class="org-left"><a href="https://github.com/containers/skopeo">https://github.com/containers/skopeo</a></td>
+<td class="org-left">镜像仓库工具</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+整个理念来说，打的是无守护进程，无需 root 的招牌，但实际上，这些东西我并不关心。拆分成 3 个工具，会加大学习成本，所以我只
+关注 podman 一个替代日常的 Docker CLI 操作。
+</p>
+
+<p>
+Mac 不是纯正的 Linux 系统，所以不管是 Docker 还是 podman 都需要引入一个中间层的 Linux 虚拟机。这块 Docker 做的还是不错的，
+但是 podman 不行（配置要进入虚拟机，而且主机目录挂载也是个问题）。
+</p>
+
+<p>
+结论是：听起来很好，Mac 下实际可行性较差。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org685281f" class="outline-2">
+<h2 id="org685281f"><span class="section-number-2">6.</span> CI/CD 项目</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li><a href="https://argoproj.github.io/">argo</a> Get More Done with Kubernetes</li>
+<li><a href="https://fluxcd.io/">flux</a> 云原生体系下的持续部署，GitOps</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org51a6786" class="outline-2">
+<h2 id="org51a6786"><span class="section-number-2">7.</span> Kubernetes</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Kubernetes 是开源的微服务或者容器化应用的编排工具，是谷歌开发的集群管理工具（前身是谷歌内部运行十几年的集群管理工具 Borg<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>，
+Kubernetes 吸取 Borg 的经验，然后针对社区定制的开源版本<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>），现已捐赠给 CNCF<sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>。
+</p>
+
+<p>
+Kubernetes 提供了服务发现和负载均衡、自动部署和回滚、弹性伸缩、健康检测和服务自愈等特性。它的主要目标是通过提供一组 REST APIS
+来隐藏管理容器的复杂性<sup><a id="fnr.6" class="footref" href="#fn.6" role="doc-backlink">6</a></sup>。
+</p>
+</div>
+
+<div id="outline-container-org2372184" class="outline-3">
+<h3 id="org2372184"><span class="section-number-3">7.1.</span> 概念（Concepts）</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+以下文档大都来自 Kubernetes 官方文档 <a href="https://kubernetes.io/docs/concepts/">Concepts</a>，加上自己的理解。
+</p>
+
+<ul class="org-ul">
+<li>概览
+<ul class="org-ul">
+<li><a href="kubernetes/what-is-kubernetes.html">什么是 Kubernetes?</a>:  Kubernetes 是一个用于管理容器化的工作负载和服务的可移植的、可扩展的、开源平台，便于声明式配置和自动化。
+它拥有庞大且快速增长的生态系统。Kubernetes 的服务，支持和工具广泛可用。</li>
+<li><a href="kubernetes/components.html">Kubernetes 组件</a>: Kubernetes 集群由代表控制平面（control pane）的组件和一组称之为节点的机器组成。</li>
+<li><a href="kubernetes/kubernetes-api.html">Kubernetes API</a>: Kubernetes API 允许你查询和操作 Kubernetes 集群中的对象状态。Kubernetes 控制平面的核心是它的
+API server 和它暴露的 HTTP API。用户和集群的不同组件以及外部组件都是通过 API server 进行通信。</li>
+<li>与 Kubernetes 对象一起工作: Kubernetes 对象是 Kubernetes 系统中的持久化实体。Kubernetes 使用这些实体来表示集群的状态。
+<ul class="org-ul">
+<li><a href="kubernetes/kubernetes-objects.html">理解 Kubernetes 对象</a></li>
+<li><a href="kubernetes/object-management.html">Kubernetes 对象管理</a></li>
+<li><a href="kubernetes/object-name-and-id.html">对象名称和 IDs</a></li>
+<li><a href="kubernetes/object-namespace.html">命名空间（Namespaces）</a></li>
+<li><a href="kubernetes/label-and-selector.html">Labels 和 Selectors</a></li>
+<li><a href="kubernetes/object-annotation.html">注解（Annotations）</a></li>
+<li><a href="kubernetes/object-field-selectors.html">字段选择器（Field Selectors）</a></li>
+<li><a href="kubernetes/object-common-label.html">推荐的 Labels</a></li>
+</ul></li>
+</ul></li>
+<li><a href="kubernetes/architecture.html">集群架构</a>: kubernetes 架构与组件概览
+<ul class="org-ul">
+<li><a href="kubernetes/architecture-nodes.html">节点</a></li>
+<li><a href="kubernetes/architecture-control-plane-node-communication.html">控制平面节点通信</a></li>
+<li><a href="kubernetes/architecture-controller.html">控制器</a></li>
+<li><a href="kubernetes/architecture-cloud-controller.html">云控制器管理器</a></li>
+</ul></li>
+<li><a href="kubernetes/container.html">容器</a>
+<ul class="org-ul">
+<li><a href="kubernetes/containers-images.html">镜像</a></li>
+<li><a href="kubernetes/containers-container-environment.html">容器环境</a></li>
+<li><a href="kubernetes/containers-runtime-class.html">运行时类</a> RuntimeClass</li>
+<li><a href="kubernetes/containers-container-lifycycle-hooks.html">容器生命周期 Hooks</a></li>
+</ul></li>
+<li><a href="kubernetes/workloads.html">工作负载（workloads）</a>
+<ul class="org-ul">
+<li><a href="kubernetes/workloads-pods.html">Pods</a> <code>[3/6]</code>
+<ul class="org-ul">
+<li class="on"><code>[X]</code> <a href="kubernetes/pod.html">Pod</a>: 概念、为什么需要 Pod、状态标识、健康检查、生命周期等</li>
+<li class="on"><code>[X]</code> <a href="kubernetes/workloads-pods-pod-lifecycle.html">Pod Lifecyle</a></li>
+<li class="on"><code>[X]</code> <a href="kubernetes/workloads-pods-init-containers.html">Init Containers</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/">Pod 拓扑扩展约束</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/workloads/pods/disruptions/">中断</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/">临时容器</a></li>
+</ul></li>
+<li>工作负载资源
+<ul class="org-ul">
+<li><a href="kubernetes/controller-deployments.html">Deployments</a>: 用于无状态服务部署，在 ReplicaSet 基础上提供了更新策略等</li>
+<li><a href="kubernetes/controller-replicaset.html">ReplicaSet</a>: 保证一组 Pod 副本在集群的正常运行</li>
+<li><a href="kubernetes/controller-statefulsets.html">StatefulSets</a>: 用于部署无状态应用（ZooKeeper，Kafka，Redis 等）</li>
+<li><a href="kubernetes/controller-daemonset.html">DaemonSet</a>: 每个节点上跑一个 Pod，用作类似日志收集、系统监控等功能</li>
+<li><a href="kubernetes/controller-job.html">Jobs</a> 一次性的任务</li>
+<li><a href="kubernetes/controller-ttlafterfinished.html">TTL Controller for Finished Resources</a>: 在对象执行完成后 TTL 秒，回收资源（目前仅用于 Job）</li>
+<li><a href="kubernetes/controller-cronjobs.html">CronJobs</a> 定时任务</li>
+<li><del>ReplicationController</del>: ReplicaSet 是下一代的 RC（支持新的基于集合的标签选择器），建议使用 RS</li>
+<li><a href="kubernetes/controller-gc.html">Garbage Collection</a>: 负责集群资源回收</li>
+</ul></li>
+</ul></li>
+<li><a href="kubernetes/services-networking.html">Services、负载均衡和集群网络</a> <code>[2/11]</code>
+<ul class="org-ul">
+<li class="on"><code>[X]</code> <a href="kubernetes/service.html">Service</a> 集群内部的服务暴露抽象，提供虚拟 IP，然后通过负载均衡策略，将流量转发到 Endpoints。
+底层实现是 kube-proxy，它支持三种模式（用户空间，iptables，IPVS），主流都是使用 IPVS</li>
+<li class="off"><code>[&#xa0;]</code> <a href="kubernetes/service-topology.html">服务拓扑</a> 实现基于 Service 的亲和性</li>
+<li class="on"><code>[X]</code> <a href="kubernetes/service-networking-dns-pod-service.html">Services 和 Pod 的 DNS</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/">使用 Services 连接应用</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/ingress/">Ingress</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/">Ingress Controllers</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/">EndpointSlices</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/service-traffic-policy/">Service 内部流量策略</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/topology-aware-hints/">拓扑感知提示</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/network-policies/">网络策略</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/services-networking/dual-stack/">IPv4/IPv6 双栈</a></li>
+</ul></li>
+<li>存储: Volumes, Persistent Volumes, Storage Class 等 <code>[1/11]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/volumes/">Volumes</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">持久化卷</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/volume-snapshots/">卷快照</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/">CSI 卷克隆</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">Storage Classes</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/">Volume Snapshot Classes</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/">Dynamic Volume Provisioning</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/storage-capacity/">Storage Capacity</a></li>
+<li class="on"><code>[X]</code> <a href="kubernetes/storage-ephemeral-volumes.html">临时卷</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/storage-limits/">Node-specific Volume Limits</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/storage/volume-health-monitoring/">Volume Health Monitoring</a></li>
+</ul></li>
+<li>配置 <code>[0/5]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/configuration/overview/">配置最佳实践</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/configuration/configmap/">ConfigMaps</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/configuration/secret/">Secrets</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/">为容器管理资源</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/">Organizing Cluster Access Using kubeconfig Files</a></li>
+</ul></li>
+<li>安全 <code>[0/3]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/security/overview/">云原生安全概览</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/security/pod-security-standards/">Pod 安全标准</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/security/controlling-access/">控制 Kubernetes API 访问</a></li>
+</ul></li>
+<li>策略（Policies） <code>[0/5]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/policy/limit-range/">Limit Ranges</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/policy/resource-quotas/">Resource Quotas</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/policy/pod-security-policy/">Pod 安全策略</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/policy/pid-limiting/">进程 ID 限制和保留</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/policy/node-resource-managers/">节点资源管理器</a></li>
+</ul></li>
+<li><a href="https://kubernetes.io/docs/concepts/scheduling-eviction/">调度，抢占（Preemption）和驱逐（Eviction）</a> <code>[0/10]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/">Kubernetes 调度器</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/">把 Pods 分配给节点</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/pod-overhead/">Pod 开销</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">污点和容忍</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/">Pod 优先级和抢占（Pod Priority and Preeemption）</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/">节点压力驱逐</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/api-eviction/">API 发起的驱逐</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/resource-bin-packing/">Resource Bin Packing for Extended Resources</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/scheduling-framework/">调度框架</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/scheduler-perf-tuning/">调度器性能调优</a></li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/">集群管理</a> <code>[0/9]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/certificates/">证书</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/">管理资源</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/networking/">集群网络</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/logging/">日志架构</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/system-metrics/">Kubernetes 系统组件指标</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/system-logs/">系统日志</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/proxies/">Kubernetes 中的代理</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/flow-control/">API Priority and Fairness</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/cluster-administration/addons/">安装插件</a></li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> 扩展 Kubernetes <code>[0/4]</code>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/">扩展 Kubernetes API</a>
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/">自定义资源</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/">Extending the Kubernetes API with the aggregation layer</a></li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> 计算，存储和网络扩展
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/">网络插件</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/">设备插件</a></li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/operator/">Operator 模式</a></li>
+<li class="off"><code>[&#xa0;]</code> <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/service-catalog/">Service Catalog</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2c92ba3" class="outline-3">
+<h3 id="org2c92ba3"><span class="section-number-3">7.2.</span> 搭建本地 Kubernetes</h3>
+<div class="outline-text-3" id="text-7-2">
+<p>
+一般用于 K8s 学习和应用程序开发人员。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://minikube.sigs.k8s.io/docs/">minikube</a></li>
+<li><a href="https://kind.sigs.k8s.io/">kind</a>：全称：”Kubernetes In Docker“，集群节点运行于 Docker 中，很快</li>
+<li><a href="https://k3s.io/">K3S</a>：轻量级的 K8s，旨在资源匮乏的位于边缘的物联网和边缘设备上运行 K8s，可以在 VMWare 和 VirtualBox 等虚拟机环境下运行
+简单、安全、优化的 K8s 环境</li>
+<li><a href="https://microk8s.io/">MicroK8s</a> 如其名，微小的 K8s</li>
+</ul>
+
+<p>
+minikube 和 kind 的定位是完全相同的：避免 K8s 安装复杂，用于开发人员本地学习，K3s 和 MicroK8s 也可以实现相同的效果，不过
+他们的定位是提供生产级别的 IoT 和边缘场景下的 K8s 需求。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org50cd295" class="outline-3">
+<h3 id="org50cd295"><span class="section-number-3">7.3.</span> 构建部署</h3>
+<div class="outline-text-3" id="text-7-3">
+<ul class="org-ul">
+<li><a href="https://helm.sh/zh/">Helm</a> Kubernetes 包管理器，用于项目的（含多个微服务，以及每个服务的依赖配置）打包、部署、回滚等生命周期管理</li>
+<li><a href="https://kubernetes.io/docs/concepts/extend-kubernetes/operator/">operator</a> CRD + Controller = Operator，可以认为 Operator 是自定义资源的控制器。Operator 用来对 K8s API 进行扩展，用来创建
+配置和管理复杂的应用（数据库、消息中间件、缓存等）。</li>
+</ul>
+
+<p>
+Helm 一般用于无状态应用的部署，类似中间件的服务也有开源的 charts，但是一般中间件的场景都需要更细粒度的控制，大厂都是用
+Operator 来做的。
+</p>
+
+<p>
+当然 Helm 要比 Operator 要简单多了，毕竟只是一个工具。好在官方提供了 <a href="https://github.com/kubernetes-sigs/kubebuilder">kubebuilder</a> 和 <a href="https://github.com/kubernetes/code-generator">code generator</a> 等工具可自动生成代码。
+</p>
+
+<p>
+目前社区已经开源了很多 helm charts 和 operators：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://artifacthub.io/">https://artifacthub.io/</a></li>
+<li><a href="https://operatorhub.io/">https://operatorhub.io/</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2445b7d" class="outline-3">
+<h3 id="org2445b7d"><span class="section-number-3">7.4.</span> kubectl CLI</h3>
+<div class="outline-text-3" id="text-7-4">
+<p>
+kubectl 是用来管理 Kubernetes 集群的命令行工具。
+</p>
+
+<ul class="org-ul">
+<li><a href="kubernetes/kubectl-official.html">官方说明</a></li>
+<li><a href="kubernetes/kubectl-common.html">常用命令集合</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd589e51" class="outline-3">
+<h3 id="orgd589e51"><span class="section-number-3">7.5.</span> 最佳实践</h3>
+<div class="outline-text-3" id="text-7-5">
+<p>
+大规模集群注意事项，Kubernetes 旨在适应满足一下标准的配置环境：
+</p>
+
+<ul class="org-ul">
+<li>单节点不超过 110 个 Pods</li>
+<li>单集群不超过 5000 个节点</li>
+<li>单集群总 Pods 数量不超过 15000 个</li>
+<li>单集群总容器不超过 30000 个</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3fbd3d9" class="outline-3">
+<h3 id="org3fbd3d9"><span class="section-number-3">7.6.</span> 监控告警</h3>
+<div class="outline-text-3" id="text-7-6">
+<ul class="org-ul">
+<li><a href="kubernetes/monitor.html">监控</a>: 通过 kube-state-metrics 和 cAdvisor 暴露指标</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org073400a" class="outline-3">
+<h3 id="org073400a"><span class="section-number-3">7.7.</span> 管理平台</h3>
+<div class="outline-text-3" id="text-7-7">
+<p>
+Kubernetes 管理平台一般是对 K8s 能力平台化，降低运维管理成本（标准化化、自动化，DevOps），覆盖应用研发迭代生命周期（CI、CD、告警、日志等）。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://www.okd.io/">OKR</a> OpenShift 的社区版本，红帽 OpenShift 应该是业内做的比较早的的企业级混合云（PaaS），算是行业标杆吧</li>
+<li><a href="https://docs.rancher.cn/">rancher</a> 2016 Rancher Labs 发布 1.0 rancher，2020年12月1日，公司被 <a href="https://www.suse.com/zh-cn/">suse</a> 收购</li>
+<li><a href="https://kubesphere.io/zh/">KubeSphere</a> 全栈的 Kubernetes 容器云 PaaS 解决方案，如他的描述。KubeSphere 适合作为小企业的私有云，常用的功能比较完备，开箱即用</li>
+<li><a href="https://github.com/portainer/portainer">portainer</a> 轻量级的 Docker、Docker swarm、Kubernetes 集群管理工具（可以算成一个界面化管理工具）</li>
+</ul>
+
+<p>
+如果没有一定的容器化、DevOps 人员储备不太敢用 K8s，即便开箱急用的管理平台在生产环境使用大家也不太敢用。那换过来，有人员储
+备之后，用原生的开源的各组件方案自研一套难度也不大（而且可以根据业务所需选择合适的技术体系，灵活性高，也易于接受）。所以，
+很多企业是不太会用类似的管理平台的（或者有一种场景，有强力的 K8s 运维能力，但是无平台研发能力可以选择）。另外，如果企业直
+接使用云服务，云厂商也都提供了简易的 UI 界面来操作 K8s。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcfed9b3" class="outline-2">
+<h2 id="orgcfed9b3"><span class="section-number-2">8.</span> 日志体系</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org72898e3" class="outline-3">
+<h3 id="org72898e3"><span class="section-number-3">8.1.</span> 数据收集 agent</h3>
+<div class="outline-text-3" id="text-8-1">
+<ul class="org-ul">
+<li><a href="https://www.fluentd.org/">fluentd</a>：开源的数据收集器，2011 年至今，2016.11.8 被 CNCF 所录取，2019 年成为毕业项目。
+<ul class="org-ul">
+<li>数据统一结构化为 JSON</li>
+<li>可插拔，支持多种上游数据源（data sources）和下游输出（data output）</li>
+<li>低资源消耗：使用 C，Ruby 混合编码</li>
+<li>数据可靠：支持内存和文件缓冲，防止数据丢失，还只是故障转移（高可用）；2000+ 数据驱动公司背书</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org814af6c" class="outline-2">
+<h2 id="org814af6c"><span class="section-number-2">9.</span> Service Mash</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+<b>Istio</b>
+</p>
+
+<p>
+2017年5月，Google、IBM 和 Lyft <a href="https://istio.io/latest/news/releases/0.x/announcing-0.1/">宣布</a> Istio 开源。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://cloudnative.to/blog/jimmy-service-mesh-talk/">都 2021 年了，对于服务网格，社区到底在讨论什么？</a> 2021年11月24日，“Istio 架构已经稳定，生产可用，生态正处于萌芽中”</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org37b7d30" class="outline-2">
+<h2 id="org37b7d30"><span class="section-number-2">10.</span> Serverless</h2>
+<div class="outline-text-2" id="text-10">
+<ul class="org-ul">
+<li><a href="https://knative.dev/docs/">Knative</a> “2018.07 首次发布 Knative，2021.11 发布 1.0 版本”</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcd5256f" class="outline-2">
+<h2 id="orgcd5256f"><span class="section-number-2">11.</span> Resources</h2>
+<div class="outline-text-2" id="text-11">
+<ul class="org-ul">
+<li><a href="../../blog/2018/an-overall-view-on-docker-ecosystem-containers-moby-swarm-linuxkit-containerd-kubernete.html">Docker 生态系统一览</a> 翻译的文章，较为详细的说明了 Docker 的前世今生</li>
+<li><a href="https://www.qikqiak.com/post/containerd-usage/">一文搞懂容器运行时 Containerd</a> <span class="timestamp-wrapper"><span class="timestamp">&lt;2021-08-12 Thu&gt; </span></span> 搞清楚 libcontainer, runc, containerd, CRI, OCI 之间的关系</li>
+<li><a href="../../blog/2021/kubernetes-vs-docker.html">Kubernetes vs Docker</a> 2021 翻译的文章，容器、Docker、Kubernetes 之间的关系，
+Kubernetes v1.20 开始废弃了 Dockershim 之后，对于研发人员、管理员以及 CI/CD 流程上会有哪些影响？</li>
+<li><a href="https://12factor.net/zh_cn/">12-Factor</a> 构建 SaaS 应用方法论</li>
+<li><a href="https://kubernetesreadme.com/">kubernetes README</a> Kubernetes 书籍、教程和其它资源列表</li>
+<li><a href="https://events19.linuxfoundation.org/wp-content/uploads/2017/11/How-Container-Runtime-Matters-in-Kubernetes_-OSS-Kunal-Kushwaha.pdf">How Container Runtimes matter in Kubernetes?</a> PPT，Kubernetes 中的运行时</li>
+<li><a href="https://object-storage-ca-ymq-1.vexxhost.net/swift/v1/6e4619c416ff4bd19e1c087f27a43eea/www-assets-prod/presentation-media/hyper-kata-frakti-cri2.pdf">Unified Kubernetes CRI runtimes based on Kata Containers</a> PPT，理解 Kubernetes 中的运行时</li>
+<li><a href="https://brennerm.github.io/posts/kubernetes-overview-diagrams.html">Kubernetes Overview Diagrams</a> Kubernetes 概述图（很帅），涵盖架构，工作负载，网络存储，RBAC，资源 requests 和 limits 等</li>
+<li><a href="kubernetes/gce-kubernetes-best-practive-series.html">GCE Kubernetes 最佳实践系列</a></li>
+<li><a href="https://jimmysong.io/kubernetes-handbook/concepts/pause-container.html">Pause 容器</a>，也称之为 Infra 容器，Pause 即暂停，但并不是停止状态，而是启动之后就会把自己阻塞住，什么都不干
+<ul class="org-ul">
+<li>目标是为了解决多个容器之间最高效的共享某些资源和数据（打破 Linux Namespace/cgroups 隔离），
+Pause 是为了解决网络问题（如何共享网络）；</li>
+<li>Pod 中的其他容器 Join namespace 的方式加入到 Pause 容器的 Network namespace。所以其他容器所看到的网络设备、IP 地址、
+Mac 地址等网络信息都是 Pause 容器的；</li>
+<li>Pause 容器为业务容器提供：
+<ol class="org-ol">
+<li>Linux namespace 的基础；</li>
+<li>启用 pid 命名空间，开启 init 进程。</li>
+</ol></li>
+</ul></li>
+<li><a href="kubernetes/minreadyseconds-and-readiness.html">minReadySeconds 与 Readiness Probe</a> 更好的理解 Pod 启动</li>
+<li><a href="https://stackoverflow.com/questions/53534553/kubernetes-cni-vs-kube-proxy">cni 和 kube-proxy 的区别</a>
+<ul class="org-ul">
+<li>CNI：保证每个 Pod 都有一个独立的 IP，而且他们之间可以相互通信，确保 Pod 可以向集群外部通讯</li>
+<li>kube-proxy：是 service 的实现，拥有一个虚拟的 IP，在下游的 endpoints 之间做负载均衡</li>
+</ul></li>
+<li><a href="https://lib.jimmysong.io/">云原生资料库</a></li>
+<li><a href="https://ossinsight.io/">OSSInsight</a> Github 项目洞察，某种程度可以看到开源趋势，但是社区毕竟是社区，只可以参考</li>
+<li><a href="kubernetes/kubernetes-best-practive.html">最佳实践系列</a> 别人家的最佳实践合集</li>
+</ul>
+</div>
+
+<div id="outline-container-org2f574d1" class="outline-3">
+<h3 id="org2f574d1"><span class="section-number-3">11.1.</span> 书籍</h3>
+<div class="outline-text-3" id="text-11-1">
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> Kubernetes: Up and Running</li>
+<li class="off"><code>[&#xa0;]</code> Kubernetes in Action</li>
+<li class="off"><code>[&#xa0;]</code> Kubernetes Patterns</li>
+<li class="off"><code>[&#xa0;]</code> Kubernetes Best Practices</li>
+<li class="off"><code>[&#xa0;]</code> Cloud Native Patterns</li>
+<li class="off"><code>[&#xa0;]</code> Kubernetes Patterns</li>
+<li class="off"><code>[&#xa0;]</code> The Kubernetes Book 这本书每年都会更新一次，以跟上最新的 Kubernetes 生态</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://cloud.google.com/blog/products/devops-sre/sre-fundamentals-slis-slas-and-slos">https://cloud.google.com/blog/products/devops-sre/sre-fundamentals-slis-slas-and-slos</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="http://www.slatools.com/sla-uptime-calculator">http://www.slatools.com/sla-uptime-calculator</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://research.google/pubs/pub44843/">Borg, Omega, and Kubernetes</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://kubernetes.io/blog/2015/04/borg-predecessor-to-kubernetes/">Borg: The Predecessor to Kubernetes</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://zh.wikipedia.org/wiki/Kubernetes">https://zh.wikipedia.org/wiki/Kubernetes</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6" role="doc-backlink">6</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://wiki.aquasec.com/display/containers/Kubernetes+Architecture+101">https://wiki.aquasec.com/display/containers/Kubernetes+Architecture+101</a>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+</div>
+</body>
+</html>

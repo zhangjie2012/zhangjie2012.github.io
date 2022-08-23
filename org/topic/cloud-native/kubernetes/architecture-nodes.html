@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-08-23 Tue 18:34 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kubernetes 架构：节点</title>
+<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Kubernetes 架构：节点</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org5dabe60">1. 管理</a>
+<ul>
+<li><a href="#orgaedba77">1.1. 节点名称唯一性</a></li>
+<li><a href="#orgca25877">1.2. 节点的自注册</a></li>
+<li><a href="#orgb0d6852">1.3. 手动管理节点</a></li>
+</ul>
+</li>
+<li><a href="#org9349dde">2. 节点状态</a>
+<ul>
+<li><a href="#orgc7607c1">2.1. 地址（Addresses）</a></li>
+<li><a href="#org41521e3">2.2. 状况（Conditions）</a></li>
+<li><a href="#org149ac8b">2.3. 容量和可分配（Capacity and Allocatable）</a></li>
+<li><a href="#org3f458d6">2.4. 信息（info）</a></li>
+<li><a href="#orgec3e357">2.5. 节点控制器</a>
+<ul>
+<li><a href="#orgbb1064d">2.5.1. 心跳</a></li>
+<li><a href="#org9a751a2">2.5.2. 可靠性</a></li>
+</ul>
+</li>
+<li><a href="#orgf398a14">2.6. 节点容量</a></li>
+</ul>
+</li>
+<li><a href="#orgee980e0">3. 节点拓扑结构</a></li>
+<li><a href="#org2bdc93e">4. 优雅关闭节点</a></li>
+</ul>
+</div>
+</div>
+<p>
+<a href="https://kubernetes.io/docs/concepts/architecture/nodes/">https://kubernetes.io/docs/concepts/architecture/nodes/</a>
+</p>
+
+<p>
+Kubernetes 在 <i>节点（nodes）</i> 上将容器放入 Pods 中运行你的工作负载。节点可能是一个虚拟或者物理的机器，依赖于你的集群。
+每个节点都会被控制平面管理，并且包含运行 Pods 所需要的服务。
+</p>
+
+<p>
+通常，一个集群中包含多个节点。在学习或者有限的资源环境中，您可能只有一个节点。
+</p>
+
+<p>
+节点上的 <a href="https://kubernetes.io/docs/concepts/overview/components/#node-components">组件</a> 包含：kubelet，容器运行时（container runtime）和 kube-proxy。
+</p>
+
+<div id="outline-container-org5dabe60" class="outline-2">
+<h2 id="org5dabe60"><span class="section-number-2">1.</span> 管理</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+将节点添加到 API server 主要有两种方法：
+</p>
+
+<ol class="org-ol">
+<li>节点上的 kubelet 自动注册到控制平面</li>
+<li>你（或者其他人）手动添加节点对象</li>
+</ol>
+
+<p>
+在你创建了节点对象之后，或者节点上的 kubelet 自注册，控制平面会检查新的节点是否有效。举个例子，如果你想用一下的 JSON 创建一个节点：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"kind"</span>: <span style="color: #2544bb;">"Node"</span>,
+    <span style="color: #2544bb;">"apiVersion"</span>: <span style="color: #2544bb;">"v1"</span>,
+    <span style="color: #2544bb;">"metadata"</span>: <span style="color: #a8007f;">{</span>
+        <span style="color: #2544bb;">"name"</span>: <span style="color: #2544bb;">"10.240.79.157"</span>,
+        <span style="color: #2544bb;">"labels"</span>: <span style="color: #005f88;">{</span>
+            <span style="color: #2544bb;">"name"</span>: <span style="color: #2544bb;">"my-first-k8s-node"</span>
+        <span style="color: #005f88;">}</span>
+    <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+Kubernetes 在内部创建一个节点对象，Kubernetes 会检查 kubelet 已注册到 API server 的与 <code>metadata.name</code> 字段是否匹配。
+如果节点健康（是否所有必要的服务都在运行），确定它是否有资格运行 Pod。否则的话，该节点对于任何的集群活动都会被忽略，直到它变得健康为止。
+</p>
+
+<blockquote>
+<p>
+<b>注意：</b> Kubernetes 将保留无效的节点，然后持续检查该节点是否健康。
+</p>
+
+<p>
+你，或者控制器，必须显式的删除节点对象才能停止该健康检测。
+</p>
+</blockquote>
+
+<p>
+节点对象的命名格式必须是一个有效的 <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names">DNS 子域格式</a>。
+</p>
+</div>
+
+<div id="outline-container-orgaedba77" class="outline-3">
+<h3 id="orgaedba77"><span class="section-number-3">1.1.</span> 节点名称唯一性</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+名字可以标识一个节点。两个节点不可能在同一个时间内有相同的名字。Kubernetes 假定具有相同名称的资源是相同的对象。对于节点，他隐式的假定相同名称的实例
+具有相同的状态（比如说：网络设置，根磁盘内容）。如果在不更改实例名称的情况下对其进行了修改，则可能导致不一致。如果需要大量更换或者更新的节点，现有的节点
+对象首先从 APIServer 中删除，并在更新后重新添加。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgca25877" class="outline-3">
+<h3 id="orgca25877"><span class="section-number-3">1.2.</span> 节点的自注册</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+如果 kubelet 的 <code>--register-node</code> 是 true（默认值），kubelet 会尝试注册自己到 API server。这是大多数发行版首选的模式。
+</p>
+
+<p>
+对于自注册的，kubelet 使用以下选项启动：
+</p>
+
+<ul class="org-ul">
+<li><code>--kubeconfig</code> - 向 API server 进行身份验证的证书路径；</li>
+<li><code>--cloud-provider</code> - 如何与云提供商交互以获取自身的元数据；</li>
+<li><code>--register-node</code> - 自动向 API server 注册；</li>
+<li><code>--register-with-taints</code> - 使用给定的污点列表（逗号分隔的 <code>&lt;key&gt;=&lt;value&gt;:&lt;effect&gt;</code> ）注册节点。
+如果 <code>register-node</code> 是 false 则什么都不操作；</li>
+<li><code>--node-ip</code> - 节点的 IP 地址；</li>
+<li><code>--node-labels</code> - 注册到集群之后添加的标签；</li>
+<li><code>--node-status-update-frequency</code> - 指定 kubelet 多久同步一次节点状态到主节点；</li>
+</ul>
+
+<p>
+当 <a href="https://kubernetes.io/docs/reference/access-authn-authz/node/">节点认证模式</a> 和 <a href="https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction">节点限制准入插件</a> 是开启状态，kubelet 仅被授权创建/修改自己的节点资源。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb0d6852" class="outline-3">
+<h3 id="orgb0d6852"><span class="section-number-3">1.3.</span> 手动管理节点</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+你可以使用 kubectl 创建或者修改节点对象。
+</p>
+
+<p>
+当需要手动创建节点对象时，给 kubelet 设置 <code>--register-node=false</code> 。
+</p>
+
+<p>
+无论 <code>--register-node</code> 是什么样的，你都可以修改节点对象。比如，你可以在现有的节点上设置标签，或者将他标记为不可调度。
+</p>
+
+<p>
+你可结合节点上的标签和 Pod 的节点选择器（node selector）来控制调度。比如，你可以约束 Pod 只有资格运行在一些可用节点的子集上。
+</p>
+
+<p>
+标记节点不可调度会阻止新的 Pods 调度到该节点上，但是不会影响节点上现有的 Pods。这作为重启或者维护之前的准备步骤很有效。
+</p>
+
+<p>
+标记一个节点不可调度，运行：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">kubectl cordon $<span style="color: #00538b;">NODENAME</span>
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>注意：</b> 作为 DaemonSet 的一部分 Pods 是可以运行在不可调度节点上的。DaemonSet 通常会提供本地节点服务，即使正在耗尽工作负载的应用程序，
+它也应该在节点上运行。
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9349dde" class="outline-2">
+<h2 id="org9349dde"><span class="section-number-2">2.</span> 节点状态</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+一个节点包含：<a href="https://kubernetes.io/docs/concepts/architecture/nodes/#addresses">地址</a>、<a href="https://kubernetes.io/docs/concepts/architecture/nodes/#condition">状况（conditions）</a>、<a href="https://kubernetes.io/docs/concepts/architecture/nodes/#capacity">容量和可分配</a>、<a href="https://kubernetes.io/docs/concepts/architecture/nodes/#info">信息</a>。可通过 <code>kubectl describe node &lt;node-name&gt;</code> 查看详细信息。
+</p>
+</div>
+
+<div id="outline-container-orgc7607c1" class="outline-3">
+<h3 id="orgc7607c1"><span class="section-number-3">2.1.</span> 地址（Addresses）</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+这些字段值的运用取决于你的云提供商或者裸机配置。
+</p>
+
+<ul class="org-ul">
+<li>HostName：由节点的内核指定。可以通过 kubelet 的 <code>--hostname-override</code> 参数覆盖；</li>
+<li>ExternalIP：外部路由的节点 IP 地址（从集群外可访问）；</li>
+<li>InternalIP：集群内部路由的节点 IP 地址；</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org41521e3" class="outline-3">
+<h3 id="org41521e3"><span class="section-number-3">2.2.</span> 状况（Conditions）</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+<code>conditions</code> 描述 <code>Running</code> 节点的状态。Conditions 的 Type 包括：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">条件</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>Ready</code></td>
+<td class="org-left">节点状态是否健康， <code>True</code> 健康状态可以接受新的 pods； <code>False</code> 不健康； <code>Unknown</code> 在最后的 <code>node-monitor-grace-period</code> 没有接受到节点控制器的信息（默认 40s）</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>DiskPressure</code></td>
+<td class="org-left"><code>True</code> 表示存在磁盘压力，即磁盘空间剩余较低，否则为 <code>False</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>MemoryPressure</code></td>
+<td class="org-left"><code>True</code> 表示内存存在压力，即节点剩余内存较低</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>PIDPressure</code></td>
+<td class="org-left"><code>True</code> 表示节点进程存在压力，即进程过多，否则为 <code>False</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>NetworkUnavailable</code></td>
+<td class="org-left"><code>True</code> 表示节点网络配置不正确</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>
+<b>注意：</b> 如果你使用 CLI 工具查看被 crodoned 的节点，Conditions 包括 <code>SchedulingDisabled</code> 。 <code>SchedulingDisabled</code> 不是 Kubernetes API
+的 Condition；而是由节点标记为「不可调度」。
+</p>
+</blockquote>
+
+<p>
+节点 condition 可以表示为一个 JSON 对象。比如，下面是一个健康节点的描述结构：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #2544bb;">"conditions"</span>: <span style="color: #000000;">[</span>
+  <span style="color: #a8007f;">{</span>
+    <span style="color: #2544bb;">"type"</span>: <span style="color: #2544bb;">"Ready"</span>,
+    <span style="color: #2544bb;">"status"</span>: <span style="color: #2544bb;">"True"</span>,
+    <span style="color: #2544bb;">"reason"</span>: <span style="color: #2544bb;">"KubeletReady"</span>,
+    <span style="color: #2544bb;">"message"</span>: <span style="color: #2544bb;">"kubelet is posting ready status"</span>,
+    <span style="color: #2544bb;">"lastHeartbeatTime"</span>: <span style="color: #2544bb;">"2019-06-05T18:38:35Z"</span>,
+    <span style="color: #2544bb;">"lastTransitionTime"</span>: <span style="color: #2544bb;">"2019-06-05T11:41:27Z"</span>
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">]</span>
+</pre>
+</div>
+
+<p>
+如果节点的 <code>Ready</code> 条件处于 <code>Unknown</code> 或者 <code>False</code> 超过了 <code>pod-eviction-timeout</code> （传递给 kube-controller-manager 的参数）时间，
+节点控制器上的 Pod 会被调度器从该节点上删除（迁移）。默认的驱逐超时时间为 <b>5 分钟</b> 。在某些情况下节点不可到达，API server 无法与节点上的
+kubelet 通信。删除 Pod 的决定无法传递给 kubelet 直到 kubelet 与 API server 重新建立连接为止。
+同时，计划删除的 Pod 可能会继续在分区节点上运行。
+</p>
+
+<p>
+在确认节点已停止在集群中运行之前，节点控制器不会强制删除。你可以看到 Pod 可能在不可到达的节点处于 <code>Terminating</code> 或者 <code>Unknown</code> 状态。
+如果 Kubernetes 无法从基础架构判断出某个节点永久离开集群的情况，集群管理员可能需要手动删除节点对象。从 Kubernetes 中删除该节点对象会导致
+该节点上上运行的所有 Pod 对象从 API server 中删除，并释放其名称。
+</p>
+
+<p>
+节点的生命周期控制器会自动创建代表 condition 的<a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">污点</a>。在将 Pod 分配给节点时，调度程序会考虑节点的污点。Pods 也可以具有容忍度，
+以使它们可以容忍节点的污点。
+</p>
+
+<p>
+查看<a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#taint-nodes-by-condition">按条件污染节点</a>获取更多的信息。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org149ac8b" class="outline-3">
+<h3 id="org149ac8b"><span class="section-number-3">2.3.</span> 容量和可分配（Capacity and Allocatable）</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+描述节点上的可用资源：CPU、内存和可以调度到该节点上的 Pods 最大数量。
+</p>
+
+<ul class="org-ul">
+<li><code>Capacity</code> 显示节点的资源总量</li>
+<li><code>Allocatable</code> 显示可提供给 Pod 消耗的资源总量</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3f458d6" class="outline-3">
+<h3 id="org3f458d6"><span class="section-number-3">2.4.</span> 信息（info）</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+节点的通用信息（System Info），包含：内核版本、系统、容器运行时以及 Kubernetes 版本信息等。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgec3e357" class="outline-3">
+<h3 id="orgec3e357"><span class="section-number-3">2.5.</span> 节点控制器</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+节点控制器是 Kubernetes 控制面板组件用来管理节点的各个方面。
+</p>
+
+<p>
+节点控制器在节点的生命周期中扮演多个角色。第一个是注册时将 CIDR 分配给该节点（如果 CIDR 分配已打开）。
+</p>
+
+<p>
+第二个是节点控制器的内部节点列表与云提供商的可用机器列表保持最新。在云环境中运行时，只要节点运行不健康。节点控制器就询问云提供商，该节点的 VM
+是否仍然可用。如果不可用，节点控制器将从其节点列表中删除该节点。
+</p>
+
+<p>
+第三是监控节点的运行状况。当节点不可到达时，节点控制器负责将 NodeStatus 的 NodeReady 条件更新为 ConditionUnknown
+（即，由于某些原因（例如节点关闭）节点控制器停止接收心跳），然后如果该节点继续无法访问，则从该节点驱逐（优雅终结）所有的 Pods
+（默认超时为 40 秒，开始上报 ConditionUnknown，只有5分钟，开始驱逐 Pods）。节点控制器每隔 <code>-node-monitor-period</code> 秒检查一次节点的状态。
+</p>
+</div>
+
+<div id="outline-container-orgbb1064d" class="outline-4">
+<h4 id="orgbb1064d"><span class="section-number-4">2.5.1.</span> 心跳</h4>
+<div class="outline-text-4" id="text-2-5-1">
+<p>
+心跳，由 Kubernetes 节点，帮助确定节点的可用性。
+</p>
+
+<p>
+两种形式的心跳， <code>NodeStatus</code> 的更新和<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#lease-v1-coordination-k8s-io">租赁对象</a>。每个节点在 <code>kube-node-lease</code> 命名空间中都有一个关联的租赁对象。
+租赁（lease）是一种轻量级的资源，随着集群扩展，这么做可以提高节点心跳的性能。
+</p>
+
+<p>
+kubelet 负责创建和更新 <code>NodeStatus</code> 和租赁对象。
+</p>
+
+<ul class="org-ul">
+<li>状态更改或在配置时间间隔内没有更新时，kubelet 会更新 <code>NodeStatus</code> 。默认的 <code>NodeStatus</code> 更新间隔是 5 分钟
+（比无法到达的节点的默认 40 秒超时判断要长的多）；</li>
+<li>每 10 秒（默认的更新间隔），kubelet 创建和更新他的租赁对象。租赁的更新与 <code>NodeStatus</code> 更新保持独立。
+如果租赁更新失败，kubelet 将从 200 毫秒开始以指数递增重试，上限为 7 秒；</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9a751a2" class="outline-4">
+<h4 id="org9a751a2"><span class="section-number-4">2.5.2.</span> 可靠性</h4>
+<div class="outline-text-4" id="text-2-5-2">
+<p>
+多数情况下，节点控制器将驱逐速率限制为每秒 <code>--node-eviction-rate</code> （默认为 0.1），表示每 10 秒不会从一个以上的节点上驱逐 Pod。
+</p>
+
+<p>
+当给定可用性区域中的节点不正常时，节点驱逐行为会更改。节点控制器从区域中检查同时有多少百分比的节点不正常（NodeReady 条件为 ConditionUnknown 或者 ConditionFalse）。
+如果不健康的节点的分数至少为 <code>--unhealth-zone-threshold</code> （默认为 0.55），则驱逐率会降低：如果集群较小驱逐会被终止（小于或者等于 <code>--large-cluster-size-threshold</code>
+默认 50），否则驱逐速率会被降低为 <code>--secondary-node-evicition-rate</code> （默认为 0.01）每秒。每个可用区都实施这些策略的原因是，一个可用区可能会与主分区分开，
+而其他可用区仍保持连接。如果您的集群没有跨越多个云提供商可用性区域，则只有一个可用性区域（整个集群）。
+</p>
+
+<p>
+将节点分布在各个可用区域上的一个关键原因是，当一个整个区域出现故障时，可以将工作负载转移到运行状况良好的区域。因此，如果区域中的所有节点都不正常，
+则节点控制器将以 <code>--node-eviction-rate</code> 的正常速率逐出。极端的情况是所有区域都完全不健康。在这种情况下，节点控制器会假定主连接存在问题，并停止所有逐出，
+直到恢复某些连接为止。
+</p>
+
+<p>
+节点控制器还负责驱逐在具有 <code>NoExecute</code> 污染的节点上运行的 Pod，除非那些 Pods 容忍那个污点。节点控制器还会添加与节点问题（例如，节点不可达或未就绪）相对应的污点。
+这意味着调度程序不会将 Pod 放置在不正常的节点上。
+</p>
+
+<blockquote>
+<p>
+<b>警告：</b> <code>kubectl cordon</code> 标记节点为「不可调度」，具有 service 控制器的副作用，该 service 控制器将从之前符合资格的任何 Loadbanlancer
+的目标列表中删除该节点，有效地从 cordoned 的节点中删除负载均衡器流量。
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf398a14" class="outline-3">
+<h3 id="orgf398a14"><span class="section-number-3">2.6.</span> 节点容量</h3>
+<div class="outline-text-3" id="text-2-6">
+<p>
+节点对象会跟踪节点资源的容量信息（比如：可用内存量和 CPU 数量）。自注册的节点在注册过程中报告其容量。如果你手动添加的节点，你需要在添加的时候设置节点的容量。
+</p>
+
+<p>
+Kubernetes 调度程序确保所有的 Pod 都有足够的资源。调度器检查节点上的容器请求总和不大于节点的容量。请求总数包括了 kubelet 管理的所有容器，但是不包含
+使用容器运行时直接启动的任何容器，也排除在 kubelet 组件之外的任何进程。
+</p>
+
+<blockquote>
+<p>
+<b>注意：</b> 如果你要为非 Pod 进程显式的保留资源，查看<a href="https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/#system-reserved">为系统后台进程预留资源</a>。
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgee980e0" class="outline-2">
+<h2 id="orgee980e0"><span class="section-number-2">3.</span> 节点拓扑结构</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+<b>FEATURE STATE:</b> <code>Kubernetes v1.16 [alpha]</code>
+</p>
+
+<p>
+如果你开启了 <code>TopologyManager</code> <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/">特性开关</a>，那么 kubelet 可以在做出资源分配决策时使用拓扑提示。查看<a href="https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/">控制节点上的拓扑管理策略</a>获取更多信息。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2bdc93e" class="outline-2">
+<h2 id="org2bdc93e"><span class="section-number-2">4.</span> 优雅关闭节点</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+如果你启动了 <code>GracefulNodeShutdown</code> 特性开关，kubelet 会尝试检测节点系统关闭并终止在节点上运行的 Pod。 kubelet 确保节点在关闭期间，容器遵循正常的
+<a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination">容器终止进程</a>。
+</p>
+
+<p>
+当 <code>GracefulNodeShutdown</code> 特性开关开启时，kubelet 使用 <a href="https://www.freedesktop.org/wiki/Software/systemd/inhibit/">systemd 抑制锁</a> 以给定的时间延迟节点关闭。在关闭期间，kubelet 分两个阶段终止 pod：
+</p>
+
+<ol class="org-ol">
+<li>终止在节点上运行的常规 Pod；</li>
+<li>终止在节点上运行的<a href="https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/#marking-pod-as-critical">关键 Pods</a>；</li>
+</ol>
+
+
+<p>
+优雅关闭节点特性由以下两个 <code>KubeletConfiguration</code> 选项配置：
+</p>
+
+<ul class="org-ul">
+<li><code>ShutdownGracePeriod</code>:
+<ul class="org-ul">
+<li>指定节点关闭延迟的总持续时间。这是常规 Pods 和 关键 Pods 的总时间；</li>
+</ul></li>
+<li><code>ShutdownGracePeriodCriticalPods</code>:
+<ul class="org-ul">
+<li>指定关键 Pods 终止的总时间。这个应该比 <code>ShutdownGracePeriod</code> 要短；</li>
+</ul></li>
+</ul>
+
+<p>
+举例，如果 <code>ShutdownGracePeriod=30s</code>, <code>ShutdownGracePeriodCriticalPods=10s</code> ，kubelet 会将节点关闭延迟 30s。在关机期间，
+前 20（30-10）秒将保留用于正常终止正常 Pod，而后 10 秒将保留用于终止关键 Pod。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2021-02-28 18:00:19 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+</div>
+</body>
+</html>

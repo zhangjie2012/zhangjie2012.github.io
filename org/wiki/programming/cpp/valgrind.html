@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-08-23 Tue 18:34 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Valgrind</title>
+<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Valgrind</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org74cab60">1. 什么是 Valgrind ?</a></li>
+<li><a href="#orgb087f29">2. Valgrind 的使用(参数)</a>
+<ul>
+<li><a href="#orge5d9464">2.1. Valgrind 命令格式</a></li>
+<li><a href="#orgbd78012">2.2. 控制输出</a></li>
+<li><a href="#orga79f444">2.3. 参数选项(Core Command-line Options)</a>
+<ul>
+<li><a href="#orgd9be830">2.3.1. 2.3.1 Tool-selection Option</a></li>
+<li><a href="#org179caee">2.3.2. 2.3.2 Basic Options</a></li>
+<li><a href="#orga0dd0f9">2.3.3. 2.3.3 Error-related Options</a></li>
+<li><a href="#orgdf16fa0">2.3.4. 2.3.4 malloc-related Option</a></li>
+<li><a href="#org0517653">2.3.5. 2.3.5 Uncommon Options</a></li>
+<li><a href="#org3da8605">2.3.6. 2.3.6 Debugging Options</a></li>
+<li><a href="#orgfe2397d">2.3.7. 2.3.7 设置默认的配置选项</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgb9a31ef">3. 功能简介</a>
+<ul>
+<li><a href="#org54c2fd7">3.1. Memcheck: 内存使用检测</a></li>
+</ul>
+</li>
+<li><a href="#org4e6eafd">4. 扩展知识</a>
+<ul>
+<li><a href="#org264c6ba">4.1. Visual Leak Detector</a></li>
+<li><a href="#orgea011af">4.2. Nvwa</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+本文档大部分内容均为摘抄，仅供技术学习, 误传播。主要介绍 Linux 下内存泄露检测工具: 内容基本来自 <a href="http://valgrind.org/docs/manual/manual.html">Valgrind 手册</a>。
+</p>
+
+<div id="outline-container-org74cab60" class="outline-2">
+<h2 id="org74cab60"><span class="section-number-2">1.</span> 什么是 Valgrind ?</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+[Valgrind](<a href="http://valgrind.org/">http://valgrind.org/</a>) is an <b>instrumentation framework</b> for building dynamic analysis tools.
+</p>
+
+<p>
+通俗来讲，Valgrind 是调试、性能优化等分析工具的集合，主要包括下面这些有用的工具：
+</p>
+
+<dl class="org-dl">
+<dt>Memcheck: 内存错误探测器</dt><dd>让你的C/C++代码运行的更正确。</dd>
+<dt>Cachegrind: 缓存和分支预测分析器</dt><dd>让你的程序跑的更快。</dd>
+<dt>Callgrind: 函数调用缓存分析器</dt><dd>相比 Callgrind，它能收集到更多的信息。</dd>
+<dt>Helgrind: 线程错误探测器</dt><dd>让你的多线程程序更加正确。</dd>
+<dt>DRD: 也是一个线程错误探测器</dt><dd>和 Helgrind 类似，不同点在于使用不同的分析技术可能找到不同的问题。</dd>
+<dt>Massif: 堆分析器</dt><dd>优化你的程序对内存的使用。</dd>
+<dt>DHAT: 不同类型的对分析器。</dt><dd>It helps you understand issues of block lifetimes, block utilisation, and layout inefficiencies.</dd>
+<dt>SGcheck: 实验工具。</dt><dd>可以用来修改栈和全局数组的内容。</dd>
+<dt>BBV: is an experimental SimPoint basic block vector generator. </dt><dd>It is useful to people doing computer architecture research and development.</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-orgb087f29" class="outline-2">
+<h2 id="orgb087f29"><span class="section-number-2">2.</span> Valgrind 的使用(参数)</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+生成可执行文件的编译选项建议:
+</p>
+
+<ol class="org-ol">
+<li>打开 debug 选项 <code>-g</code>;</li>
+<li>如果是 C++ 程序，~-fno-inline~ 可以帮助 Valgrind</li>
+</ol>
+<p>
+更好的找到函数调用关系链(function-call chain);
+</p>
+<ol class="org-ol">
+<li>如果打算做 Memcheck 分析，建议关掉编译器优化选项;</li>
+<li>打开 <code>-Wall</code>;</li>
+</ol>
+</div>
+
+<div id="outline-container-orge5d9464" class="outline-3">
+<h3 id="orge5d9464"><span class="section-number-3">2.1.</span> Valgrind 命令格式</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-shell">valgrind <span style="color: #000000;">[</span>valgrind-options<span style="color: #000000;">]</span> your-prog <span style="color: #000000;">[</span>your-prog-options<span style="color: #000000;">]</span>
+</pre>
+</div>
+
+<p>
+一般来说 <code>[valgrind-options]</code> 是 <code>--tool=xxx</code> ，在 Valgrind 不加参数时，直接使用 valgrind 等价于 <code>valgrind --tool=memcheck</code> ，也就是默认情况下， Valgrind 是做内存错误检测的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbd78012" class="outline-3">
+<h3 id="orgbd78012"><span class="section-number-3">2.2.</span> 控制输出</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+默认情况，Valgrind 工具之输出一些基本的信息，可以在运行的时候加上 <code>-v</code> 选项来使得输出更丰富的信息。
+</p>
+
+<p>
+下面三种不同的方法可以使分析结果输出到不同的位置:
+</p>
+
+<ol class="org-ol">
+<li>默认情况: 将分析结果输出到指定的文件描述符(file descriptor)中，默认情况是 2 (也就是 stderr 啦，在 Linux 中 stdin 为 0，stdout 为 1)。你可以使用 <code>--log-fd=xx</code> 去修改;</li>
+<li>输出到文件中: <code>--log-file=filename</code></li>
+<li>输出到网络 socket: socket 由 IP 地址和端口号来指定，比如: <code>--log-socket=192.168.0.1:12345</code> 。你也可以不指定端口号，这种情况下默认的端口号是 1500。具体请看手册，这里不再赘述。</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orga79f444" class="outline-3">
+<h3 id="orga79f444"><span class="section-number-3">2.3.</span> 参数选项(Core Command-line Options)</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+<b>选项的解释基本上只点一下功能，详细的使用方法看 man 手册。</b>
+</p>
+</div>
+
+<div id="outline-container-orgd9be830" class="outline-4">
+<h4 id="orgd9be830"><span class="section-number-4">2.3.1.</span> 2.3.1 Tool-selection Option</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<ul class="org-ul">
+<li><code>--tool=&lt;toolname&gt; [default: memcheck]</code> : 使用 <code>toolname</code> 工具，比如 MemCheck, Cachegrind.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org179caee" class="outline-4">
+<h4 id="org179caee"><span class="section-number-4">2.3.2.</span> 2.3.2 Basic Options</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<ul class="org-ul">
+<li><code>-h, --help</code></li>
+<li><code>--help-debug</code></li>
+<li><code>--version</code></li>
+<li><code>-q, --quit</code> : 静默运行，只输出错误信息。在回归测试或者其他自动化测试机器上使用会非常有用</li>
+<li><code>-v, --verbose</code> : 输出一些额外的信息</li>
+<li><code>--trace-children=&lt;yes|no&gt;[default: no]</code> : 打开以后，Valgrind 可以跟踪到子进程(通过 <code>exec</code> 系统调用)，在多进程程序中是很有用的</li>
+<li><code>--trace-children-skip=patt1, patt2, ...</code> : 这个参数只有在设置了 <code>--trace-children=yes</code> 时才有意义。它允许跳过某些子进程</li>
+<li><code>--trace-children-skip-by-arg=patt1, patt2, ...</code>: 和 <code>--trace-children-skip</code> 类似，with one difference: the decision as to whether to trace into a child process is made by examining the arguments to the child process, rather than the name of its executable</li>
+<li><code>--vgdb=&lt;no|yes|full&gt;[default: yes]</code>: 当设置为 <code>yes</code> 或者 <code>full</code> 的时候，Valgrind 提供 "gdbserver" 功能。这样可以调试在 Valgrind 下运行的程序</li>
+<li><code>--vgdb-error=&lt;number&gt; [defalult: 999999999]</code></li>
+<li><code>--trace-fds=&lt;yes|no&gt; [default: no]</code></li>
+<li><code>--time-stamp=&lt;yes|no&gt; [default: no]</code>: 打印时间戳</li>
+<li><code>--log-fd=&lt;number&gt; [default: 2, stderr]</code>: 上面讲过了</li>
+<li><code>--log-file=&lt;filename&gt;</code>: 上面讲过了</li>
+<li><code>--log-socket=&lt;ip-address:port-number&gt;</code>: 上面讲过了</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga0dd0f9" class="outline-4">
+<h4 id="orga0dd0f9"><span class="section-number-4">2.3.3.</span> 2.3.3 Error-related Options</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<p>
+选项用于工具错误上报，比如 MemCheck, 但不是 Cachegrind.
+</p>
+
+<ul class="org-ul">
+<li><code>--xml=&lt;yes|no&gt; [default: no]</code>: 打开以后输出成 XML 格式，而不是纯文本</li>
+<li><code>--xml-fd=&lt;number&gt; [default: -1, disabled]</code>: 含义同同 <code>--log-fd</code></li>
+<li><code>--xml-file=&lt;filename&gt;</code>: 含义同 <code>--log-file</code></li>
+<li><code>--xml-socket=&lt;ip-address:port-number&gt;</code>: 含义同 <code>--log-socket</code></li>
+<li><code>--xml-user-comment=&lt;string&gt;</code>: 在输出的XML报告开头加上用户信息，当 <code>--xml=yes</code> 时有效。</li>
+<li><code>--demangle=&lt;yes|no&gt;[default:yes]</code>:</li>
+<li><code>--num-callers=&lt;number&gt; [default: 12]</code>: 堆栈层数</li>
+<li><code>--unw-stack-scan-thresh=&lt;number&gt; [default: 0], --unw-stack-scan-frames=&lt;number&gt; [default: 5]</code></li>
+<li><code>--error-limit=&lt;yes|no&gt; [default: yes]</code>: 输出的错误数量限制</li>
+<li><code>--error-exitcode=&lt;number&gt; [defalut: 0]</code></li>
+<li><code>--sigill-diagnostics=&lt;yes|no&gt; [defalut:yes]</code>: 输出不合法的指令诊断，当设置~&#x2013;quiet~ 时，也会关闭此选项</li>
+<li><code>--show-below-main=&lt;yes|no&gt;[default: no]</code></li>
+<li><code>--fullpath-after=&lt;string&gt; [default: don't show source paths]</code>: 指定源代码路径</li>
+<li><code>--extra-debuginfo-path=&lt;path&gt; [default: undefined and unused]</code></li>
+<li><code>--debuginfo-server=ipaddr:port [default: undefined and unused]</code>: 3.9.0 以上版本才有此功能</li>
+<li><code>--db-attach=&lt;yes|no&gt; [default: no]</code>: 遇到错误时调试</li>
+<li><code>--db-command=&lt;command&gt; f [default: gdb -nw p]</code>: 设置 gdb 参数，和 <code>--db-attach</code> 搭配使用</li>
+<li><code>--input-fd=&lt;number&gt;[default: 0, stdin]</code></li>
+<li><code>--max-stackframe=&lt;number&gt; [default: 2000000]</code></li>
+<li><code>-stacksize=&lt;number&gt; [default: use current 'ulimit' value]</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgdf16fa0" class="outline-4">
+<h4 id="orgdf16fa0"><span class="section-number-4">2.3.4.</span> 2.3.4 malloc-related Option</h4>
+<div class="outline-text-4" id="text-2-3-4">
+<p>
+使用 Valgrind 时其实用的是自己的实现的 ~malloc~(比如, Memcheck, Massif, Helgrind, DRD)，可以使用下面的参数：
+</p>
+
+<ul class="org-ul">
+<li><code>--alignment=&lt;number&gt; [default: 8 or 16, depending on the platform]</code>: 设置对齐字节</li>
+<li><code>--redzone-size=&lt;number&gt; [default: depends on the tool]</code>: 填充大小</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0517653" class="outline-4">
+<h4 id="org0517653"><span class="section-number-4">2.3.5.</span> 2.3.5 Uncommon Options</h4>
+<div class="outline-text-4" id="text-2-3-5">
+<p>
+不常用的选项。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3da8605" class="outline-4">
+<h4 id="org3da8605"><span class="section-number-4">2.3.6.</span> 2.3.6 Debugging Options</h4>
+<div class="outline-text-4" id="text-2-3-6">
+<p>
+通过 <code>--help-debug</code> 来查看。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfe2397d" class="outline-4">
+<h4 id="orgfe2397d"><span class="section-number-4">2.3.7.</span> 2.3.7 设置默认的配置选项</h4>
+<div class="outline-text-4" id="text-2-3-7">
+<p>
+Vagrind 是从下面3个地方读取的配置：
+</p>
+
+<ol class="org-ol">
+<li>文件 <code>~/.valgrindrc</code></li>
+<li>环境变量 <code>$VALGRIND_OPTS</code></li>
+<li>文件 <code>./.valgrindrc</code></li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb9a31ef" class="outline-2">
+<h2 id="orgb9a31ef"><span class="section-number-2">3.</span> 功能简介</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org54c2fd7" class="outline-3">
+<h3 id="org54c2fd7"><span class="section-number-3">3.1.</span> Memcheck: 内存使用检测</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+格式: <code>valgrind --leak-check=yes myprog arg1 arg2</code>
+</p>
+
+<p>
+泄露的两种级别:
+</p>
+
+<ol class="org-ol">
+<li>"definitely lost" : 必须要修复的内存泄露.</li>
+<li>"probably lost" : your program is leaking memory, unless you're doing funny things with pointers (such as moving them to point to the middle of a heap block).</li>
+</ol>
+
+<p>
+<code>--num-callers</code>: 用来限制显示的堆栈层数
+</p>
+
+<p>
+使用 Memcheck 可发现常见的内存问题:
+</p>
+
+<ul class="org-ul">
+<li>使用未初始化的内存</li>
+<li>内存读写越界</li>
+<li>内存覆盖</li>
+<li>动态内存管理错误: <code>new/delete/malloc/free</code></li>
+<li>内存泄露</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4e6eafd" class="outline-2">
+<h2 id="org4e6eafd"><span class="section-number-2">4.</span> 扩展知识</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+以前在 Windows 下开发用过两款内存泄露检测工具，都是开源的，这里简单介绍一下，感兴趣可以自己研究研究。
+</p>
+</div>
+
+<div id="outline-container-org264c6ba" class="outline-3">
+<h3 id="org264c6ba"><span class="section-number-3">4.1.</span> Visual Leak Detector</h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li>主页: <a href="https://vld.codeplex.com/">https://vld.codeplex.com/</a></li>
+<li>原理: Windows Hook 技术(挂到 Windows 下申请/释放内存 API 上)</li>
+<li>评价: 因为用到了 Windows API，所以它不是跨平台的。泄露时可打印堆栈，泄露字节，有泄露报告，而且报告可定制，这方面做的很好。以前写过一篇文章简单介绍 vld 的使用: <a href="https://www.zhangjiee.com/blog/visual-leak-detector">C/C++ 内存泄漏检测工具 Visual Leak Detector</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgea011af" class="outline-3">
+<h3 id="orgea011af"><span class="section-number-3">4.2.</span> Nvwa</h3>
+<div class="outline-text-3" id="text-4-2">
+<ul class="org-ul">
+<li>下载: <a href="http://sourceforge.net/projects/nvwa/">http://sourceforge.net/projects/nvwa/</a></li>
+<li>原理:
+<ul class="org-ul">
+<li>重载 new/delete 运算符</li>
+<li>全局变量最后析构</li>
+</ul></li>
+<li>评价:
+<ul class="org-ul">
+<li>代码精简、易懂，觉得不爽的地方自己改一下就好了;</li>
+<li>跨平台;</li>
+<li>要在产品代码中添加头文件，这一点非常蛋疼;</li>
+<li>没有调用堆栈，不好定位泄露。</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2017-12-04 11:43:59 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+</div>
+</body>
+</html>

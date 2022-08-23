@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-08-23 Tue 18:34 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kubernetes 业内最佳实践合集</title>
+<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Kubernetes 业内最佳实践合集</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org3ea9c65">1. 基础知识</a>
+<ul>
+<li><a href="#org43902a9">1.1. 以图形化的方式了解 Kubernetes</a></li>
+</ul>
+</li>
+<li><a href="#orgdab43c2">2. DevOps</a>
+<ul>
+<li><a href="#orgfb29be7">2.1. Kubernetes 工程师必懂的 10 种 Ingress 控制器</a></li>
+</ul>
+</li>
+<li><a href="#org476c2db">3. 企业级实践</a>
+<ul>
+<li><a href="#orgcf7c8f7">3.1. 小米Redis的K8s容器化部署实践</a></li>
+<li><a href="#orged167d5">3.2. 爱奇艺在日志实时数据监控的探索与实践</a></li>
+<li><a href="#org0f6e319">3.3. 微博云原生技术的思考与实践</a></li>
+</ul>
+</li>
+<li><a href="#org4378aef">4. Service Mesh</a>
+<ul>
+<li><a href="#orge8694f2">4.1. Service Mesh 和 API Gateway 关系深度探讨</a></li>
+</ul>
+</li>
+<li><a href="#orgd9d67e9">5. 使用技巧</a>
+<ul>
+<li><a href="#org6488dcc">5.1. 使用 Kubernetes 最常犯的错误</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3ea9c65" class="outline-2">
+<h2 id="org3ea9c65"><span class="section-number-2">1.</span> 基础知识</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org43902a9" class="outline-3">
+<h3 id="org43902a9"><span class="section-number-3">1.1.</span> <a href="https://mp.weixin.qq.com/s?__biz=Mzg5Mjc3MjIyMA==&amp;mid=2247543827&amp;idx=1&amp;sn=ca6202812a8d51b557159957df1f6d8f">以图形化的方式了解 Kubernetes</a></h3>
+</div>
+</div>
+
+<div id="outline-container-orgdab43c2" class="outline-2">
+<h2 id="orgdab43c2"><span class="section-number-2">2.</span> DevOps</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgfb29be7" class="outline-3">
+<h3 id="orgfb29be7"><span class="section-number-3">2.1.</span> <a href="https://mp.weixin.qq.com/s?__biz=Mzg5Mjc3MjIyMA==&amp;mid=2247543771&amp;idx=1&amp;sn=24919d94af211e2ff70d1cc6b08f85b5">Kubernetes 工程师必懂的 10 种 Ingress 控制器</a></h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+涉及 Ingress 选型考虑的点，以及常见的 ingress-controller。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org476c2db" class="outline-2">
+<h2 id="org476c2db"><span class="section-number-2">3.</span> 企业级实践</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgcf7c8f7" class="outline-3">
+<h3 id="orgcf7c8f7"><span class="section-number-3">3.1.</span> <a href="https://mp.weixin.qq.com/s?__biz=MzUxMDQxMDMyNg==&amp;mid=2247486439&amp;idx=1&amp;sn=f905f5966bf25a8e8bac5ba4708908e6">小米Redis的K8s容器化部署实践</a></h3>
+</div>
+<div id="outline-container-orged167d5" class="outline-3">
+<h3 id="orged167d5"><span class="section-number-3">3.2.</span> <a href="https://mp.weixin.qq.com/s?__biz=MzI0MjczMjM2NA==&amp;mid=2247486371&amp;idx=1&amp;sn=3d5c15fb99c45c0eb1701090e1a0a6df">爱奇艺在日志实时数据监控的探索与实践</a></h3>
+</div>
+<div id="outline-container-org0f6e319" class="outline-3">
+<h3 id="org0f6e319"><span class="section-number-3">3.3.</span> <a href="https://mp.weixin.qq.com/s?__biz=Mzg5Mjc3MjIyMA==&amp;mid=2247543754&amp;idx=1&amp;sn=d86b264ef26e156213502dbb4941def7&amp;source=41#wechat_redirect">微博云原生技术的思考与实践</a></h3>
+</div>
+</div>
+
+<div id="outline-container-org4378aef" class="outline-2">
+<h2 id="org4378aef"><span class="section-number-2">4.</span> Service Mesh</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orge8694f2" class="outline-3">
+<h3 id="orge8694f2"><span class="section-number-3">4.1.</span> <a href="https://mp.weixin.qq.com/s?__biz=Mzg5Mjc3MjIyMA==&amp;mid=2247543964&amp;idx=1&amp;sn=dabe66cb77aff97373fc2a792ba04e4f&amp;source=41#wechat_redirect">Service Mesh 和 API Gateway 关系深度探讨</a></h3>
+</div>
+</div>
+
+<div id="outline-container-orgd9d67e9" class="outline-2">
+<h2 id="orgd9d67e9"><span class="section-number-2">5.</span> 使用技巧</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org6488dcc" class="outline-3">
+<h3 id="org6488dcc"><span class="section-number-3">5.1.</span> <a href="https://mp.weixin.qq.com/s?__biz=Mzg5Mjc3MjIyMA==&amp;mid=2247544008&amp;idx=1&amp;sn=0bbe00a46109e9dbd50903611d62174c">使用 Kubernetes 最常犯的错误</a></h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+1、Liveness 和 Readiness 探针：
+</p>
+
+<ol class="org-ol">
+<li>Liveness 探针失败，自动杀掉重新启动</li>
+<li>Readiness 探针失败，从负载均衡器的 endpoints 中移出</li>
+</ol>
+
+<p>
+慎用 Liveness，有时候 Pod 在处理任务 hang 住是比较正常的。Readiness 在一个服务包含多个 pods 时建议用起来。
+</p>
+
+<p>
+2、不要使用镜像的 <code>latest</code> 标签
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2022-07-15 14:22:11 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+</div>
+</body>
+</html>

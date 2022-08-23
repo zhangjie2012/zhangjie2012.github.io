@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-08-23 Tue 18:34 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linux 网络 I/O</title>
+<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Linux 网络 I/O</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org4a2b5de">1. 基本概念</a></li>
+<li><a href="#orgfe58af8">2. epoll 或者 kqueue 的原理是什么？</a></li>
+<li><a href="#orgdb22340">3. 一文看懂 IO 多路复用，Linux IO模式及 select、poll、epoll详解</a></li>
+<li><a href="#orgc157749">4. 一些补充</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4a2b5de" class="outline-2">
+<h2 id="org4a2b5de"><span class="section-number-2">1.</span> 基本概念</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+在 32 位 Linux 系统下，虚拟存储器最大的寻址是 2^32，即 4G。操作系统会留 1G 给内核，另外 3G 给用户进程。所以通常存在内核态和用户态。
+</p>
+
+<p>
+一次 IO 操作的流程，分两步：
+</p>
+
+<ol class="org-ol">
+<li>网卡到内核 buffer 的读写 =&gt; 等待数据，等待数据过程可能比较耗时，因为不一定有数据可读，不一定允许可写，所以一般需要阻塞；</li>
+<li>内核 buffer 到用户 buffer 的读写。所谓同步 IO 和异步 IO 都是针对这一步的；</li>
+</ol>
+
+<p>
+基于这两步，Linux 有 5 种 IO 模型：
+</p>
+
+<ol class="org-ol">
+<li>阻塞 IO：数据不返回，一直等待（过程啥也干不了），处理多个 fd，则需要多个线程或者进程；</li>
+<li>非阻塞 IO：请求没有数据，立刻返回。所以非阻塞一般伴随着忙轮询，效率太低；</li>
+<li>IO 多路复用：一个线程同时处理多个 fd，有数据返回，无数据阻塞；</li>
+<li>信号驱动 IO：所有事件都通过信号通知，性能低，一般不会出现网络编程中；</li>
+<li>异步 IO，不阻塞进程，而且第二步的数据拷贝也是异步的，等拷贝完了再通知用户程序；</li>
+</ol>
+
+<p>
+前 4 种 IO 模型都是同步 IO，只有最后一种是异步 IO。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfe58af8" class="outline-2">
+<h2 id="orgfe58af8"><span class="section-number-2">2.</span> <a href="https://www.zhihu.com/question/20122137">epoll 或者 kqueue 的原理是什么？</a></h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>阻塞 I/O 的缺点是：一个线程只能处理一个流的 I/O 事件，如果想要同时处理多个流，那么就需要多个线程（或者进程），效率太低。</li>
+<li>非阻塞 I/O 往往伴随着忙轮询，这种情况下，一个线程可以处理多个流了，但是需要不断的对所有的流进行询问，在所有流都没有数据的时候，空耗费 CPU。</li>
+<li>I/O 多路复用： select/poll-&gt;epoll，它可以同时监听多个流，在空闲的时候回把当前线程阻塞掉，当有一个或者多个 I/O 事件时，唤醒。
+本质上它也是轮询，但不过不是忙轮询，它轮询的时候表示一定有了数据。但问题在于，当有数据发生时，它并不知道哪些流有数据，所以：
+<ul class="org-ul">
+<li>select 无差别轮询，效率为 O(n)，它会把所有的流全部遍历一遍，所以随着流的变多，效率会越来越低</li>
+<li>epoll，event poll，即所谓事件驱动。它不同于忙轮询也不同于无差别轮询，它会把流发生的事件通知给我们，保证每一次对流的操作都是有意义的。
+也就是说，它可以一次性定位到哪些流的变更，而且告诉我们变更具体是什么（事件）。</li>
+<li>不管是 select 还是 epoll，它是如何监听多个流，知道流有没有数据呢？答案不是轮询，而是中断。网卡收到数据以后会给操作系统发出一个中断，
+然后操作系统再通知给内核（epoll），再然后才有了上面的轮询。 &#x2014; <i>这个说法是否准确有待考证</i></li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgdb22340" class="outline-2">
+<h2 id="orgdb22340"><span class="section-number-2">3.</span> <a href="https://ruby-china.org/topics/39644">一文看懂 IO 多路复用</a>，<a href="https://segmentfault.com/a/1190000003063859">Linux IO模式及 select、poll、epoll详解</a></h2>
+<div class="outline-text-2" id="text-3">
+<p>
+什么是 IO 多路复用？单线程或单进程同时监测若干个文件描述符是否可以执行 IO 操作的能力。
+</p>
+
+<p>
+epoll 的事件通知机制（epoll_wait）分为：LT 和 ET。
+</p>
+
+<ul class="org-ul">
+<li>LT：只要有数据可读，就会通知，应用程序可以不立即处理；</li>
+<li>ET：状态变化才会通知，一次没有读取完毕数据的情况下，再有数据写入是不会通知的；应用程序必须立刻处理。更加高效（并没有确切的考证）。</li>
+</ul>
+
+<p>
+LT 是默认值，LT 不易遗漏事件，不易产生 bug，ET 容易导致遗漏数据。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc157749" class="outline-2">
+<h2 id="orgc157749"><span class="section-number-2">4.</span> 一些补充</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+I/O 多路复用方案：
+</p>
+
+<ul class="org-ul">
+<li>Linux：select, poll，epoll</li>
+<li>MacOS/FreeBSD：kqueue</li>
+<li>Windows/Solaris：IOCP</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-04-27 14:47:25 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+</div>
+</body>
+</html>
