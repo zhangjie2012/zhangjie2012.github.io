@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-07-05 Tue 10:00 -->
+<!-- 2022-08-23 Tue 18:45 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 语言圣经学习笔记</title>
-<meta name="author" content="DESKTOP-FKSEO5E" />
+<meta name="author" content="DESKTOP-ZHJ" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -547,7 +547,7 @@ ASCII 字符的 UTF8 编码需要两个或者多个字节。
 直接按照索引来遍历得到的字节，所以遍历字符串需要借助 <code>range</code> 关键字。
 </p>
 
-<pre class="example" id="orgd1b0d25">
+<pre class="example" id="orgc7f77da">
 for i, r := range "Hello, 世界" {
     fmt.Printf("%d\t%q\t%d\n", i, r, r)
 }
@@ -557,7 +557,7 @@ for i, r := range "Hello, 世界" {
 统计字符串长度，也需要这样：
 </p>
 
-<pre class="example" id="org79b54cd">
+<pre class="example" id="org54eb136">
 n := 0
 for range s {
     n++
@@ -619,7 +619,7 @@ string 或者 数字。
 省略号，则表示数组的长度是根据初始化值的个数来计算的。
 </p>
 
-<pre class="example" id="org3e174bd">
+<pre class="example" id="org33c2983">
 q := [...]int{1, 2, 3}
 </pre>
 
@@ -628,7 +628,7 @@ q := [...]int{1, 2, 3}
 是数组索引，例如：
 </p>
 
-<pre class="example" id="orga5a0bb5">
+<pre class="example" id="orga1deed9">
 r := [...]int{99: -1}
 </pre>
 
@@ -703,7 +703,7 @@ slice
 可以想 Python 创建 dict 一样创建 Golang 中的 Map：
 </p>
 
-<pre class="example" id="orgfb55b09">
+<pre class="example" id="org3ade446">
 ages := map[string]int{
     "alice":   31,
     "charlie": 34,
@@ -717,7 +717,7 @@ ages := map[string]int{
 也可以正确的返回值，所以使用时一般需要对返回值进行判断:
 </p>
 
-<pre class="example" id="orgd6fe583">
+<pre class="example" id="orga914263">
 m := map[string]int
 m["cc"]  // 如果 cc 不存在将返回 0
 _, err := m["cc"] // 如果 cc 不存在，err = false
@@ -732,7 +732,7 @@ map 的元素并不是一个变量，不能对 map 的元素进行取址操作�
 遍历 map 使用 =range=，将得到对应的键/值对。
 </p>
 
-<pre class="example" id="org84ca7b0">
+<pre class="example" id="org121e27f">
 for name, age := range ages {
     fmt.Printf("%s\t%d\n", name, age)
 }
@@ -796,7 +796,7 @@ Go
 语言有个特性让我们只声明成员对应的数据类型，而不是指明成员的名字；这类成员就叫匿名成员。
 </p>
 
-<pre class="example" id="org04962ac">
+<pre class="example" id="org62f82c3">
 type Circle struct {
     Point
     Radius int
@@ -812,7 +812,7 @@ type Wheel struct {
 访问匿名成员可以直接跳过完整路径访问子成员：
 </p>
 
-<pre class="example" id="org04b0c4b">
+<pre class="example" id="org3e6dc20">
 var w Wheel
 w.X = 8            // equivalent to w.Circle.Point.X = 8
 w.Y = 8            // equivalent to w.Circle.Point.Y = 8
@@ -824,7 +824,7 @@ w.Spokes = 20
 但是结构体字面值，并不能这么简单的表示匿名成员，所以下面是错误的：
 </p>
 
-<pre class="example" id="orgc70bffd">
+<pre class="example" id="orgcbafd3f">
 w = Wheel{8, 8, 5, 20}                       // compile error: unknown fields
 w = Wheel{X: 8, Y: 8, Radius: 5, Spokes: 20} // compile error: unknown fields
 </pre>
@@ -833,7 +833,7 @@ w = Wheel{X: 8, Y: 8, Radius: 5, Spokes: 20} // compile error: unknown fields
 必须采用下面这两种语法，它们彼此是等价的：
 </p>
 
-<pre class="example" id="org909f1ac">
+<pre class="example" id="orgb2646eb">
 w = Wheel{Circle{Point{8, 8}, 5}, 20}
 
 w = Wheel{
@@ -883,7 +883,7 @@ w = Wheel{
 <div id="outline-container-函数声明" class="outline-3">
 <h3 id="函数声明"><span class="section-number-3">4.1.</span> 函数声明</h3>
 <div class="outline-text-3" id="text-函数声明">
-<pre class="example" id="org1f87f34">
+<pre class="example" id="orgd8c56a1">
 func name(parameter-list) (result-list) {
     body
 }
@@ -893,7 +893,7 @@ func name(parameter-list) (result-list) {
 与 C++ 等语言不同的是，Go 的函数返回值可以设置名称，比如：
 </p>
 
-<pre class="example" id="org7819314">
+<pre class="example" id="org2b05b22">
 func sub(x, y int) (z int)   { z = x - y; return}
 </pre>
 
@@ -987,7 +987,7 @@ Panic 和 Recover 是互相协作的一对机制，panic 会引发程序崩溃�
 在函数声明时，在其名字之前放上一个变量，即是一个方法。这个附加的参数会将函数附加到这种类型上，即相当于为这种类型定义了一个独占的方法。
 </p>
 
-<pre class="example" id="orga1d1092">
+<pre class="example" id="org8aeff7e">
 package geometry
 
 import "math"
@@ -1071,7 +1071,7 @@ Go 中的接口不像 Java 中的接口需要显式实现，也不像 C++
 的鸭子类型。它仅仅是一个约定。如下：
 </p>
 
-<pre class="example" id="org99f852e">
+<pre class="example" id="org20ab585">
 type Writer interface {
     Write(p []byte) (n int, err error)
 }
@@ -1082,7 +1082,7 @@ type Writer interface {
 =Write(p []byte) (n int, err error)</code> 的方法，便认为满足了约定：
 </p>
 
-<pre class="example" id="orgc46d026">
+<pre class="example" id="org7163af6">
 type ByteCounter int
 
 func (c *ByteCounter) Write(p []byte) (int, error) {
@@ -1107,7 +1107,7 @@ func (c *ByteCounter) Write(p []byte) (int, error) {
 接口可以组合 -&gt; 接口内嵌：
 </p>
 
-<pre class="example" id="org78b1f56">
+<pre class="example" id="orgd116380">
 package io
 type Reader interface {
     Read(p []byte) (n int, err error)
@@ -1160,7 +1160,7 @@ type ReadWriteCloser interface {
 对于接口类型和类型的表达式，语法如下：
 </p>
 
-<pre class="example" id="org3143366">
+<pre class="example" id="orge6c64b7">
 x.(T)
 </pre>
 
@@ -1183,7 +1183,7 @@ x。如果断言不成立，会引发一个运行时
 panic。换句话说，只有在运行时才能判断 x 的类型。
 </p>
 
-<pre class="example" id="orgf9e9358">
+<pre class="example" id="org7146f99">
 var x interface{} = 7          // x 的动态类型是 int 并且值为 7
 i := x.(int)                   // i 类型为 int 并且值为 7
 
@@ -1200,7 +1200,7 @@ func f(y I) {
 类型表达式用来赋值或者用个数的形式初始化：
 </p>
 
-<pre class="example" id="orgbbdb5fa">
+<pre class="example" id="orgc3ad144">
 v, ok = x.(T)
 v, ok := x.(T)
 var v, ok = x.(T)
@@ -1252,7 +1252,7 @@ channels 是 goroutine 之间的通信机制：一个 goroutine 通过它给另�
 goroutine 发送值信息。每个 channel 都有一个特殊的类型。
 </p>
 
-<pre class="example" id="org45b6fb2">
+<pre class="example" id="org414e068">
 ch := make(chan int) // ch has type 'chan int'
 </pre>
 
@@ -1261,7 +1261,7 @@ ch := make(chan int) // ch has type 'chan int'
 运算符，WTF? 还不如两个方法来的实在：
 </p>
 
-<pre class="example" id="org19583d3">
+<pre class="example" id="orgdd17cf0">
 ch &lt;- x  // a send statement
 x = &lt;-ch // a receive expression in an assignment statement
 &lt;-ch     // a receive statement; result is discarded
@@ -1310,7 +1310,7 @@ channel，只能发送不能接受；相反，类型 <code>&lt;-chan int</code> 
 channel，不能发送。
 </p>
 
-<pre class="example" id="org4550c9f">
+<pre class="example" id="org1bd6abf">
 chan T          // 能发送和接受 T 类型
 chan&lt;- float64  // 只能用来发送 float64
 &lt;-chan int      // 只能用来接受 int
@@ -1326,7 +1326,7 @@ chan&lt;- float64  // 只能用来发送 float64
 函数创建 channel 时通过第二个参数指定的。
 </p>
 
-<pre class="example" id="orgaad1a6b">
+<pre class="example" id="orgf0a5a0c">
 ch = make(chan string, 3)
 </pre>
 
@@ -1421,7 +1421,7 @@ Go 提供了互斥量 Mutex ，并且为之提供了 <code>Lock()</code> 和 <co
 包提供了专门的方案来解决一次性初始化的问题：=sync.Once=。
 </p>
 
-<pre class="example" id="org5a1e536">
+<pre class="example" id="org29ba665">
 var loadIconsOnce sync.Once
 var icons map[string]image.Image
 // Concurrency-safe.
@@ -1529,7 +1529,7 @@ Go 语言有超过 100 个标准包，可以通过 <a href="https://godoc.org/">
 包，那么导入声明必须要至少为一个同包指定一个新的包名以避免冲突，这称之为导入包的重命名：
 </p>
 
-<pre class="example" id="org5333bcc">
+<pre class="example" id="org65c092a">
 import (
     "crypto/rand"
     mrand "math/rand" // alternative name mrand avoids conflict
@@ -1550,7 +1550,7 @@ import (
 <code>init</code> 初始化函数。Go 提供了匿名导入方法。
 </p>
 
-<pre class="example" id="orgca3c54c">
+<pre class="example" id="orge2d1c6d">
 import _ "image/png" // register PNG decoder
 </pre>
 </div>
@@ -1573,7 +1573,7 @@ Go
 语言工具箱集合了一系列的功能命令集。可以看作是一个包管理器，用来做包的查询、计算的包依赖关系、从远程版本控制系统和下载它们等任务。它也是一个构建系统，计算文件的依赖关系，然后调用编译器、汇编器和连接器构建程序。
 </p>
 
-<pre class="example" id="orgc76543e">
+<pre class="example" id="org23fd7d6">
 Go is a tool for managing Go source code.
 
 Usage:
@@ -1695,7 +1695,7 @@ GOPATH 即可。
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2017-12-07 14:14:44 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2017-12-07 14:14:44 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-07-05 Tue 10:00 -->
+<!-- 2022-08-23 Tue 18:44 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>理解 Go 的 Array 和 slice</title>
-<meta name="author" content="DESKTOP-FKSEO5E" />
+<meta name="author" content="DESKTOP-ZHJ" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -234,7 +234,7 @@
 今早 <a href="https://blog.opskumu.com/">磊磊</a> 在 Twitter 上看到一条消息，大致意思是问下面代码的执行结果是什么：
 </p>
 
-<pre class="example" id="org47ff519">
+<pre class="example" id="orga43984b">
 package main
 
 import "fmt"
@@ -307,7 +307,7 @@ C++ 中的 vector 也是类似的实现，只不过它提供了拷贝构造函�
 再回到刚才之前的问题上，当把 s 传递给 four 的时候是一次浅拷贝，为了没有命名歧义，four 中的传入的 s 先叫成 sc。传参类似于做了 <code>sc = s</code> 的操作：
 </p>
 
-<pre class="example" id="org85a57d4">
+<pre class="example" id="org8534521">
 sc.buffer = s.buffer
 sc.len = s.len
 sc.cap = s.cap
@@ -329,7 +329,7 @@ len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改
 再看一段代码：
 </p>
 
-<pre class="example" id="org0c94594">
+<pre class="example" id="orgb81a09b">
 package main
 
 import "fmt"
@@ -360,7 +360,7 @@ func main() {
 两种办法可以验证这个想法，第一种是把内存的的数据打印出来：
 </p>
 
-<pre class="example" id="org3436db2">
+<pre class="example" id="org8fb0cc5">
 package main
 
 import (
@@ -402,7 +402,7 @@ func main() {
 但是，Go 的 slice 的 slice，真有个使用上的陷阱。比如对一个 slice 做 slice 操作：
 </p>
 
-<pre class="example" id="org03083bf">
+<pre class="example" id="org7bca131">
 s = []{1, 2, 3, 4, 5, 6}
 t := s[1:3]
 </pre>
@@ -420,7 +420,7 @@ Go <a href="https://blog.golang.org/go-slices-usage-and-internals">有篇官方�
 如果原有的 slice 很大，slice 之后的很小，因为小的 slice 一直占用内存，导致大的 buffer 一直无法释放，举个例子：
 </p>
 
-<pre class="example" id="orgd823d69">
+<pre class="example" id="orgaa2e3a6">
 var digitRegexp = regexp.MustCompile("[0-9]+")
 
 func FindDigits(filename string) []byte {
@@ -433,7 +433,7 @@ func FindDigits(filename string) []byte {
 这会导致 <code>FindDigits</code> 返回的 <code>[]byte</code> 一直占用整个文件内容相同大小的 buffer，直到 <code>[]byte</code> 的变量释放。为了解决这个问题，在返回时新建一个所需实际大小的 buffer，然后拷贝过去，再返回。类似这样：
 </p>
 
-<pre class="example" id="org07bab7f">
+<pre class="example" id="org95ebde8">
 func CopyDigits(filename string) []byte {
     b, _ := ioutil.ReadFile(filename)
     b = digitRegexp.Find(b)
@@ -490,7 +490,7 @@ func CopyDigits(filename string) []byte {
 今天遇到个问题，默认初始化的 slices 被 json 序列化之后，值竟然是 <code>nil</code> 而不是 <code>[]</code> ，但是正常输出是却为 <code>[]</code> 。
 </p>
 
-<pre class="example" id="orgcb0fb76">
+<pre class="example" id="org3e070bd">
 package main
 
 import (
@@ -515,7 +515,7 @@ func main() {
 输出结果为：
 </p>
 
-<pre class="example" id="org58154ed">
+<pre class="example" id="orgad405a6">
 {[]}
 {"xxx":null}
 </pre>
@@ -556,7 +556,7 @@ Go Slice 更蛋疼的一个地方是， 在执行 <code>append</code> 的时候�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2022-07-05 Tue 09:54 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
