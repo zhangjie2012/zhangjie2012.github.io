@@ -6,7 +6,7 @@
 <!-- 2022-08-25 Thu 17:07 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>WSL2</title>
+<title>Powershell 与 Windows Terminal</title>
 <meta name="author" content="DESKTOP-ZHJ" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
@@ -218,197 +218,168 @@
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">WSL2</h1>
+<h1 class="title">Powershell 与 Windows Terminal</h1>
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgbab0bcd">1. 简介</a></li>
-<li><a href="#org14e1464">2. 安装指引</a></li>
-<li><a href="#org815d23d">3. 命令</a></li>
-<li><a href="#org73fc504">4. 使用 SSH 连接</a></li>
-<li><a href="#orgc3d30f4">5. FAQ</a>
+<li><a href="#org4c4adf1">1. Powershell</a>
 <ul>
-<li><a href="#org3a4b1b8">5.1. 如何禁用光标闪烁</a></li>
-<li><a href="#orgc6ef484">5.2. 如何使用系统代理</a></li>
-<li><a href="#org00c4f65">5.3. 远程连接服务器，中文乱码</a></li>
-<li><a href="#orgf67b3b4">5.4. 系统如何使用 systemd？</a></li>
-<li><a href="#orgddf1fb8">5.5. Windows Dockers 开启 WSL2 还是在 WSL2 中安装 Docker？</a></li>
-<li><a href="#org3a7ca55">5.6. 如何设置启动目录</a></li>
-<li><a href="#org1391298">5.7. ssh-add 报错：Could not open a connection to your authentication agent</a></li>
-<li><a href="#orga635c13">5.8. 与宿主机文件系统互通</a></li>
+<li><a href="#org2574304">1.1. Commands Cheat Sheet</a></li>
+</ul>
+</li>
+<li><a href="#org686f785">2. Windows Terminal</a></li>
+<li><a href="#org7487b0e">3. FAQ</a>
+<ul>
+<li><a href="#org6e01859">3.1. Powershell cat 文件时，中文乱码</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbab0bcd" class="outline-2">
-<h2 id="orgbab0bcd"><span class="section-number-2">1.</span> 简介</h2>
+<div id="outline-container-org4c4adf1" class="outline-2">
+<h2 id="org4c4adf1"><span class="section-number-2">1.</span> Powershell</h2>
 <div class="outline-text-2" id="text-1">
-<p>
-WSL<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>，Windows Subsystem for Linux。允许开发人员在 Windows 下运行 GNU/Linux 环境。
-包括大多数命令行工具，实用程序和引用程序。
-</p>
+</div>
+<div id="outline-container-org2574304" class="outline-3">
+<h3 id="org2574304"><span class="section-number-3">1.1.</span> Commands Cheat Sheet</h3>
+<div class="outline-text-3" id="text-1-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
-<p>
-比较牛逼的一个点在于，安装一个 Linux 发行版跟安装普通软件一样，但却能拥有近乎原生的 Linux 系统
-（真正的 Linux 内核），而不需要安装虚拟机。
-</p>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">命令</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">=Remove-Item -Recurse -Force &lt;path&gt; =</td>
+<td class="org-left">强制删除</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
+</div>
 
-<div id="outline-container-org14e1464" class="outline-2">
-<h2 id="org14e1464"><span class="section-number-2">2.</span> 安装指引</h2>
+<div id="outline-container-org686f785" class="outline-2">
+<h2 id="org686f785"><span class="section-number-2">2.</span> Windows Terminal</h2>
 <div class="outline-text-2" id="text-2">
 <p>
-<a href="https://docs.microsoft.com/zh-cn/windows/wsl/install-win10">https://docs.microsoft.com/zh-cn/windows/wsl/install-win10</a>
+<a href="https://docs.microsoft.com/zh-cn/windows/terminal/get-started">https://docs.microsoft.com/zh-cn/windows/terminal/get-started</a> ，直接在商店搜索 Perviews 版本使用。
 </p>
 
 <p>
-安装报错<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>：
+Windows terminal 快捷键跟 Emacs 快捷键冲突很多，索性直接禁用掉：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">Installing, this may take a few minutes...
-WslRegisterDistribution failed with error: 0x800701bc
-Error: 0x800701bc WSL 2 ?????????????????? https://aka.ms/wsl2kernel
-
-Press any key to continue...
+<pre class="src src-js"><span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>: <span style="color: #2544bb;">"unbound"</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"ctrl+v"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>: <span style="color: #2544bb;">"unbound"</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"ctrl+c"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>: <span style="color: #2544bb;">"unbound"</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"ctrl+shift+f"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>: <span style="color: #2544bb;">"unbound"</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"alt+shift+d"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>: <span style="color: #2544bb;">"unbound"</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"ctrl+shift+space"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>: <span style="color: #2544bb;">"unbound"</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"ctrl+comma"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>: <span style="color: #2544bb;">"unbound"</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"ctrl+shift+comma"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>: <span style="color: #2544bb;">"unbound"</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"ctrl+alt+comma"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>: <span style="color: #2544bb;">"unbound"</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"alt+space"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>: <span style="color: #2544bb;">"unbound"</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"alt+enter"</span>
+<span style="color: #000000;">}</span>,
 </pre>
 </div>
 
 <p>
-<a href="https://docs.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package">下载 Linux 内核包</a>，安装即可解决。
+重新绑定页签切换快捷键：
 </p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>:
+    <span style="color: #a8007f;">{</span>
+        <span style="color: #2544bb;">"action"</span>: <span style="color: #2544bb;">"switchToTab"</span>,
+        <span style="color: #2544bb;">"index"</span>: 2
+    <span style="color: #a8007f;">}</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"alt+3"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>:
+    <span style="color: #a8007f;">{</span>
+        <span style="color: #2544bb;">"action"</span>: <span style="color: #2544bb;">"switchToTab"</span>,
+        <span style="color: #2544bb;">"index"</span>: 0
+    <span style="color: #a8007f;">}</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"alt+1"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>:
+    <span style="color: #a8007f;">{</span>
+        <span style="color: #2544bb;">"action"</span>: <span style="color: #2544bb;">"switchToTab"</span>,
+        <span style="color: #2544bb;">"index"</span>: 1
+    <span style="color: #a8007f;">}</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"alt+2"</span>
+<span style="color: #000000;">}</span>,
+<span style="color: #000000;">{</span>
+    <span style="color: #2544bb;">"command"</span>:
+    <span style="color: #a8007f;">{</span>
+        <span style="color: #2544bb;">"action"</span>: <span style="color: #2544bb;">"switchToTab"</span>,
+        <span style="color: #2544bb;">"index"</span>: 3
+    <span style="color: #a8007f;">}</span>,
+    <span style="color: #2544bb;">"keys"</span>: <span style="color: #2544bb;">"alt+4"</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
 
 <p>
-vmmem 进程很占内存，<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>
-</p>
-
-<ol class="org-ol">
-<li>关闭 wsl <code>wsl --shutdown</code></li>
-<li><p>
-修改配置文件 <code>notepad "$env:USERPROFILE/.wslconfig"</code> 设置
-</p>
-<pre class="example">
-[wsl2]
-guiApplications=false
-memory=4GB
-</pre></li>
-</ol>
-
-<p>
-<i>在 Windows 下使用 WSL 做开发，系统内存至少 16G，否则再怎么缩减内存也不够用。</i>
+<b>光标颜色</b> 在配置文件 <code>profiles -&gt; defaults</code> 下面添加 <code>"cursorColor": "#ec0"</code> 。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org815d23d" class="outline-2">
-<h2 id="org815d23d"><span class="section-number-2">3.</span> 命令</h2>
+<div id="outline-container-org7487b0e" class="outline-2">
+<h2 id="org7487b0e"><span class="section-number-2">3.</span> FAQ</h2>
 <div class="outline-text-2" id="text-3">
-<ul class="org-ul">
-<li><code>wsl -l -v</code> 查看当前运行的发行版</li>
-<li><code>wsl --shutdown</code> 关闭所有</li>
-</ul>
 </div>
-</div>
-
-<div id="outline-container-org73fc504" class="outline-2">
-<h2 id="org73fc504"><span class="section-number-2">4.</span> 使用 SSH 连接</h2>
-<div class="outline-text-2" id="text-4">
-<ol class="org-ol">
-<li><code>sudo apt autoremove --purge openssh-server -y &amp;&amp; sudo apt install openssh-server -y</code></li>
-<li>修改 sshd 配置 <code>/etc/ssh/sshd_config</code> ：
-<ul class="org-ul">
-<li>端口： <code>Port 2222</code></li>
-<li>密码登录： <code>PasswordAuthentication yes</code></li>
-</ul></li>
-<li><code>sudo service ssh --full-restart</code></li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-orgc3d30f4" class="outline-2">
-<h2 id="orgc3d30f4"><span class="section-number-2">5.</span> FAQ</h2>
-<div class="outline-text-2" id="text-5">
-</div>
-<div id="outline-container-org3a4b1b8" class="outline-3">
-<h3 id="org3a4b1b8"><span class="section-number-3">5.1.</span> 如何禁用光标闪烁</h3>
-<div class="outline-text-3" id="text-5-1">
+<div id="outline-container-org6e01859" class="outline-3">
+<h3 id="org6e01859"><span class="section-number-3">3.1.</span> Powershell cat 文件时，中文乱码</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
-配置没有办法直接禁用，只能在系统全局设置。 <code>控制面板 =&gt; 键盘 =&gt; 更改光标闪烁速率</code>
-</p>
-
-<p>
-<i>这个设定有点坑，估计后面会优化。</i>
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgc6ef484" class="outline-3">
-<h3 id="orgc6ef484"><span class="section-number-3">5.2.</span> 如何使用系统代理</h3>
-<div class="outline-text-3" id="text-5-2">
-<p>
-<a href="https://gitlab.com/JerryZhang2012/dotfiles">https://gitlab.com/JerryZhang2012/dotfiles</a>
-</p>
-
-<p>
-主机使用 ClashX 作为代理时，注意打开 <code>Allow LAN</code> 选项。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org00c4f65" class="outline-3">
-<h3 id="org00c4f65"><span class="section-number-3">5.3.</span> 远程连接服务器，中文乱码</h3>
-<div class="outline-text-3" id="text-5-3">
-<p>
-<code>/etc/default/locale</code> 中 LANG 改为 <code>zh_CN.UTF-8</code> 。
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgf67b3b4" class="outline-3">
-<h3 id="orgf67b3b4"><span class="section-number-3">5.4.</span> 系统如何使用 systemd？</h3>
-<div class="outline-text-3" id="text-5-4">
-<p>
-不支持 systemd，安装服务、自启动等使用 Docker。
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgddf1fb8" class="outline-3">
-<h3 id="orgddf1fb8"><span class="section-number-3">5.5.</span> Windows Dockers 开启 WSL2 还是在 WSL2 中安装 Docker？</h3>
-<div class="outline-text-3" id="text-5-5">
-<p>
-后者。所有带 GUI 的 Docker 都是垃圾（MacOS 和 Windows 下都一样）。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org3a7ca55" class="outline-3">
-<h3 id="org3a7ca55"><span class="section-number-3">5.6.</span> 如何设置启动目录</h3>
-<div class="outline-text-3" id="text-5-6">
-<p>
-<code>"startingDirectory" : "//wsl$/Ubuntu-18.04/home/&lt;Your Ubuntu Username&gt;"</code> <sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>
-</p>
-</div>
-</div>
-
-<div id="outline-container-org1391298" class="outline-3">
-<h3 id="org1391298"><span class="section-number-3">5.7.</span> ssh-add 报错：Could not open a connection to your authentication agent</h3>
-<div class="outline-text-3" id="text-5-7">
-<p>
-根源是 ssh-agent 没起来，使用： <code>eval $(ssh-agent -s)</code> 解决。
-</p>
-</div>
-</div>
-
-<div id="outline-container-orga635c13" class="outline-3">
-<h3 id="orga635c13"><span class="section-number-3">5.8.</span> 与宿主机文件系统互通</h3>
-<div class="outline-text-3" id="text-5-8">
-<p>
-Windows 系统目录被挂载在 Linux 的 <code>/mnt/</code> 目录下，拷贝文件超级方便。
+需要加上 <code>-Encoding UTF8</code> ，即 <code>cat .\xxx.txt -Encoding UTF8</code><sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
 </p>
 </div>
 </div>
@@ -418,26 +389,14 @@ Windows 系统目录被挂载在 Linux 的 <code>/mnt/</code> 目录下，拷贝
 <div id="text-footnotes">
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://docs.microsoft.com/en-us/windows/wsl/">https://docs.microsoft.com/en-us/windows/wsl/</a>
-</p></div></div>
-
-<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://github.com/microsoft/WSL/issues/5393">https://github.com/microsoft/WSL/issues/5393</a>
-</p></div></div>
-
-<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://superuser.com/questions/1559170/how-can-i-reduce-the-consumption-of-the-vmmem-process">https://superuser.com/questions/1559170/how-can-i-reduce-the-consumption-of-the-vmmem-process</a>
-</p></div></div>
-
-<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://docs.microsoft.com/en-us/windows/terminal/troubleshooting#set-your-wsl-distribution-to-start-in-the-home--directory-when-launched">https://docs.microsoft.com/en-us/windows/terminal/troubleshooting#set-your-wsl-distribution-to-start-in-the-home--directory-when-launched</a>
+<a href="https://answers.microsoft.com/zh-hans/windows/forum/all/windows-terminal/20f53f69-5893-4595-8b9f-f3695fe8a048">https://answers.microsoft.com/zh-hans/windows/forum/all/windows-terminal/20f53f69-5893-4595-8b9f-f3695fe8a048</a>
 </p></div></div>
 
 
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-11-21 11:40:19 <br />Last updated: 2022-08-25 Thu 14:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created:  <br />Last updated: 2022-08-25 Thu 17:06 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>
