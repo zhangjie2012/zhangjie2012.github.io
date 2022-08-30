@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-08-23 Tue 18:44 -->
+<!-- 2022-08-30 Tue 10:19 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Git</title>
@@ -298,7 +298,8 @@ git config --global alias.st status
 <li><code>git commit -m "commit message"</code>: 提交到本地。 <a href="../../../blog/2018/git-commit-message-style-guide.html">Git 提交信息规范指南</a></li>
 <li><code>git push [remote-name] [branch-name]</code> : 把本地的提交记录推送到远端分支</li>
 <li><code>git pull</code>: 更新仓库 <code>git pull = git fetch + git merge</code></li>
-<li><code>git pull --rebase</code>: 更新仓库 <code>git pull = git fetch + git rebase</code> ，You should use <code>git pull --rebase</code> when your changes do not deserve a separate branch <sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup></li>
+<li><code>git pull --rebase</code>: 更新仓库 <code>git pull = git fetch + git rebase</code> ，You should use <code>git pull --rebase</code> when your
+changes do not deserve a separate branch <sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup></li>
 <li><code>git checkout -- &lt;file&gt;</code> : 还原未暂存（staged）的文件</li>
 <li><code>git reset HEAD &lt;file&gt;...</code> : 取消暂存，那么还原一个暂存文件，应该是先 <code>reset</code> 后 <code>checkout</code></li>
 <li><code>git stash</code> : 隐藏本地提交记录, 恢复的时候 <code>git stash pop</code> 。这样可以在本地和远程有冲突的情况下，更新其他文件</li>
@@ -316,10 +317,11 @@ git config --global alias.st status
 </ul></li>
 <li><code>git shortlog -sn</code> 提交统计<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup></li>
 <li><code>git commit --amend</code> 修改最后一条提交</li>
+<li><code>git remote set-url origin new_repo_addr</code> 更换远端 repo 地址<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup></li>
 </ul>
 
 <p>
-git clone 提示<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>：
+git clone 提示<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>：
 </p>
 
 <blockquote>
@@ -363,7 +365,8 @@ Host git.xxx.com
 <li><code>-b &lt;branch-name&gt;</code> ：新建并切换分支</li>
 <li><code>-d &lt;branch -name&gt;</code> ：删除本地分支</li>
 <li><code>-b &lt;local-branch-name&gt; origin/&lt;origin-branch-name&gt;</code> : 基于某个远程分支新建一个分支开发</li>
-<li><code>--track origin/&lt;origin-branch-name&gt;</code> : 跟踪远程分支（创建跟踪远程分支，Git 在 <code>git push</code> 的时候不需要指定 <code>origin</code> 和 <code>branch-name</code> ，其实当我们 <code>clone</code> 一个 repo 到本地的时候， <code>master</code> 分支就是 origin/master 的跟踪分支，所以提交的时候直接 <code>git push</code> ）。</li>
+<li><code>--track origin/&lt;origin-branch-name&gt;</code> : 跟踪远程分支（创建跟踪远程分支，Git 在 <code>git push</code> 的时候不需要指定 <code>origin</code>
+和 <code>branch-name</code> ，其实当我们 <code>clone</code> 一个 repo 到本地的时候， <code>master</code> 分支就是 origin/master 的跟踪分支，所以提交的时候直接 <code>git push</code> ）。</li>
 </ul></li>
 <li><code>git push origin &lt;branch-name&gt;</code> : 推送本地分支</li>
 <li><code>git push origin :&lt;origin-branch-name&gt;</code> : 删除远程分支</li>
@@ -385,7 +388,7 @@ git pull
 </p>
 
 <p>
-<code>git remote prune origin</code> <sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>。
+<code>git remote prune origin</code> <sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>。
 </p>
 </div>
 </div>
@@ -486,7 +489,7 @@ git pull
 </p>
 
 <p>
-回退未纳入版本管理的文件和目录： <code>git clean -fd</code>, <code>f</code> 表示文件， <code>d</code> 表示目录<sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>。
+回退未纳入版本管理的文件和目录： <code>git clean -fd</code>, <code>f</code> 表示文件， <code>d</code> 表示目录<sup><a id="fnr.6" class="footref" href="#fn.6" role="doc-backlink">6</a></sup>。
 </p>
 </div>
 </div>
@@ -688,14 +691,18 @@ Git:
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://stackoverflow.com/questions/69875520/unable-to-negotiate-with-40-74-28-9-port-22-no-matching-host-key-type-found-th">https://stackoverflow.com/questions/69875520/unable-to-negotiate-with-40-74-28-9-port-22-no-matching-host-key-type-found-th</a>
+<a href="https://stackoverflow.com/questions/2432764/how-do-i-change-the-uri-url-for-a-remote-git-repository">https://stackoverflow.com/questions/2432764/how-do-i-change-the-uri-url-for-a-remote-git-repository</a>
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://stackoverflow.com/questions/5094293/git-remote-branch-deleted-but-still-appears-in-branch-a">https://stackoverflow.com/questions/5094293/git-remote-branch-deleted-but-still-appears-in-branch-a</a>
+<a href="https://stackoverflow.com/questions/69875520/unable-to-negotiate-with-40-74-28-9-port-22-no-matching-host-key-type-found-th">https://stackoverflow.com/questions/69875520/unable-to-negotiate-with-40-74-28-9-port-22-no-matching-host-key-type-found-th</a>
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://stackoverflow.com/questions/5094293/git-remote-branch-deleted-but-still-appears-in-branch-a">https://stackoverflow.com/questions/5094293/git-remote-branch-deleted-but-still-appears-in-branch-a</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6" role="doc-backlink">6</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://koukia.ca/how-to-remove-local-untracked-files-from-the-current-git-branch-571c6ce9b6b1">https://koukia.ca/how-to-remove-local-untracked-files-from-the-current-git-branch-571c6ce9b6b1</a>
 </p></div></div>
 
@@ -703,7 +710,7 @@ Git:
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2014-04-05 00:00 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2014-04-05 00:00 <br />Last updated: 2022-08-30 Tue 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>
