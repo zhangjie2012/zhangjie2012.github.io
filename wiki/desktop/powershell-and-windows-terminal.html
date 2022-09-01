@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-08-25 Thu 17:07 -->
+<!-- 2022-09-01 Thu 19:23 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Powershell 与 Windows Terminal</title>
@@ -225,7 +225,10 @@
 <ul>
 <li><a href="#org4c4adf1">1. Powershell</a>
 <ul>
-<li><a href="#org2574304">1.1. Commands Cheat Sheet</a></li>
+<li><a href="#org1c0dcc5">1.1. PSColor：目录、文件支持 color</a></li>
+<li><a href="#org142cdcd">1.2. PowerLine - Beautiful, Powerful, PowerShell prompts</a></li>
+<li><a href="#org234a3c4">1.3. posh-git：git 命令行增强</a></li>
+<li><a href="#org2574304">1.4. Commands Cheat Sheet</a></li>
 </ul>
 </li>
 <li><a href="#org686f785">2. Windows Terminal</a></li>
@@ -241,10 +244,67 @@
 <div id="outline-container-org4c4adf1" class="outline-2">
 <h2 id="org4c4adf1"><span class="section-number-2">1.</span> Powershell</h2>
 <div class="outline-text-2" id="text-1">
+<p>
+找到 Profile 位置<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>： <code>code $Home\Documents\PowerShell\Profile.ps1</code>
+</p>
 </div>
-<div id="outline-container-org2574304" class="outline-3">
-<h3 id="org2574304"><span class="section-number-3">1.1.</span> Commands Cheat Sheet</h3>
+
+<div id="outline-container-org1c0dcc5" class="outline-3">
+<h3 id="org1c0dcc5"><span class="section-number-3">1.1.</span> PSColor：目录、文件支持 color</h3>
 <div class="outline-text-3" id="text-1-1">
+<p>
+<a href="https://github.com/Davlind/PSColor">https://github.com/Davlind/PSColor</a>
+</p>
+
+<ol class="org-ol">
+<li>安装 <code>Install-Module PSColor -Proxy "http://127.0.0.1:7890"</code></li>
+<li>Profile 中添加 <code>Import-Module PSColor</code></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org142cdcd" class="outline-3">
+<h3 id="org142cdcd"><span class="section-number-3">1.2.</span> PowerLine - Beautiful, Powerful, PowerShell prompts</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+<a href="https://github.com/Jaykul/PowerLine">https://github.com/Jaykul/PowerLine</a>
+</p>
+
+<ol class="org-ol">
+<li><p>
+安装
+</p>
+<pre class="example">
+Install-Module PANSIES -AllowClobber -Proxy "http://127.0.0.1:7890"
+Install-Module PowerLine -Proxy "http://127.0.0.1:7890"
+</pre></li>
+<li>Profile 中添加 <code>Import-Module PowerLine</code></li>
+<li>首次执行使用 <code>Set-PowerLinePrompt -SetCurrentDirectory -RestoreVirtualTerminal -Newline -Timestamp -Colors "#FFDD00", "#FF6600"</code></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org234a3c4" class="outline-3">
+<h3 id="org234a3c4"><span class="section-number-3">1.3.</span> posh-git：git 命令行增强</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+<a href="https://github.com/dahlbyk/posh-git">https://github.com/dahlbyk/posh-git</a>
+</p>
+
+<ol class="org-ol">
+<li>安装 <code>Install-Module posh-git -Scope CurrentUser -Force -Proxy "http:/127.0.0.1:7890"</code></li>
+<li>Profile 中添加 <code>Import-Module posh-git</code></li>
+</ol>
+
+<p>
+<b>注意 posh-git 和 PowerLine 只能用一个。</b>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2574304" class="outline-3">
+<h3 id="org2574304"><span class="section-number-3">1.4.</span> Commands Cheat Sheet</h3>
+<div class="outline-text-3" id="text-1-4">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -379,7 +439,7 @@ Windows terminal 快捷键跟 Emacs 快捷键冲突很多，索性直接禁用�
 <h3 id="org6e01859"><span class="section-number-3">3.1.</span> Powershell cat 文件时，中文乱码</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
-需要加上 <code>-Encoding UTF8</code> ，即 <code>cat .\xxx.txt -Encoding UTF8</code><sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
+需要加上 <code>-Encoding UTF8</code> ，即 <code>cat .\xxx.txt -Encoding UTF8</code><sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>
 </p>
 </div>
 </div>
@@ -389,6 +449,10 @@ Windows terminal 快捷键跟 Emacs 快捷键冲突很多，索性直接禁用�
 <div id="text-footnotes">
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles">https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
 <a href="https://answers.microsoft.com/zh-hans/windows/forum/all/windows-terminal/20f53f69-5893-4595-8b9f-f3695fe8a048">https://answers.microsoft.com/zh-hans/windows/forum/all/windows-terminal/20f53f69-5893-4595-8b9f-f3695fe8a048</a>
 </p></div></div>
 
@@ -396,7 +460,7 @@ Windows terminal 快捷键跟 Emacs 快捷键冲突很多，索性直接禁用�
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created:  <br />Last updated: 2022-08-25 Thu 17:06 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created:  <br />Last updated: 2022-09-01 Thu 19:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>

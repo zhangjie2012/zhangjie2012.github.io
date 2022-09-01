@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-08-25 Thu 17:07 -->
+<!-- 2022-09-01 Thu 19:23 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>WSL2</title>
@@ -231,7 +231,7 @@
 <ul>
 <li><a href="#org3a4b1b8">5.1. 如何禁用光标闪烁</a></li>
 <li><a href="#orgc6ef484">5.2. 如何使用系统代理</a></li>
-<li><a href="#org00c4f65">5.3. 远程连接服务器，中文乱码</a></li>
+<li><a href="#org3083d1f">5.3. locale 设置为 en_US.UTF-8</a></li>
 <li><a href="#orgf67b3b4">5.4. 系统如何使用 systemd？</a></li>
 <li><a href="#orgddf1fb8">5.5. Windows Dockers 开启 WSL2 还是在 WSL2 中安装 Docker？</a></li>
 <li><a href="#org3a7ca55">5.6. 如何设置启动目录</a></li>
@@ -309,7 +309,14 @@ memory=4GB
 <div class="outline-text-2" id="text-3">
 <ul class="org-ul">
 <li><code>wsl -l -v</code> 查看当前运行的发行版</li>
-<li><code>wsl --shutdown</code> 关闭所有</li>
+<li><code>wsl --shutdown</code> 关闭所有，不可以在 WSL 中使用 <code>sudo reboot</code> 命令实现重启
+<ul class="org-ul">
+<li><code>wsl -t &lt;distro-name&gt;</code> 关闭指定发行版</li>
+</ul></li>
+<li><code>wsl</code> 启动所有
+<ul class="org-ul">
+<li><code>wsl -d &lt;distro-name&gt;</code> 启动指定发行版</li>
+</ul></li>
 </ul>
 </div>
 </div>
@@ -359,12 +366,22 @@ memory=4GB
 </div>
 </div>
 
-<div id="outline-container-org00c4f65" class="outline-3">
-<h3 id="org00c4f65"><span class="section-number-3">5.3.</span> 远程连接服务器，中文乱码</h3>
+<div id="outline-container-org3083d1f" class="outline-3">
+<h3 id="org3083d1f"><span class="section-number-3">5.3.</span> locale 设置为 en_US.UTF-8</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
-<code>/etc/default/locale</code> 中 LANG 改为 <code>zh_CN.UTF-8</code> 。
+很多种方法，大部分都是直接修改 <code>/etc/default/locale</code> 加上 <code>.bashrc</code> 比较麻烦。
 </p>
+
+<p>
+简单的方法：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">sudo locale-gen <span style="color: #2544bb;">"en_US.UTF-8"</span>
+sudo dpkg-reconfigure locales
+</pre>
+</div>
 </div>
 </div>
 
@@ -437,7 +454,7 @@ Windows 系统目录被挂载在 Linux 的 <code>/mnt/</code> 目录下，拷贝
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-11-21 11:40:19 <br />Last updated: 2022-08-25 Thu 14:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2020-11-21 11:40:19 <br />Last updated: 2022-09-01 Thu 19:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>
