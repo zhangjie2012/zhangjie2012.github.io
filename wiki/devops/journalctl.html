@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-08-23 Tue 18:44 -->
+<!-- 2022-10-08 Sat 11:03 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>journalctl</title>
@@ -223,17 +223,23 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org8ffb469">1. 常规操作</a></li>
-<li><a href="#org5c73a97">2. 过滤条件</a></li>
-<li><a href="#org17f7928">3. 输出格式</a></li>
-<li><a href="#org1a26ff9">4. 参考</a></li>
+<li><a href="#org76fd56d">1. 运维</a></li>
+<li><a href="#org8ffb469">2. 常规操作</a></li>
+<li><a href="#org5c73a97">3. 过滤条件</a></li>
+<li><a href="#org17f7928">4. 输出格式</a></li>
+<li><a href="#org1a26ff9">5. 参考</a></li>
 </ul>
 </div>
 </div>
 <p>
 systemd 拥有强大的处理与系统日志记录功能，不像其他工具，日志被分散在整套系统中。
-systemd 尝试提供一套集中化管理系统，统一处理内核及用户级的日志信息。
-而这一功能是有 systemd 的组件 journal 的守护进程 journald。
+</p>
+
+<p>
+systemd 尝试提供一套集中化管理系统，统一处理内核及用户级的日志信息。而这一功能是有 systemd 的组件 journal 的守护进程 journald。
+</p>
+
+<p>
 我们使用 journalctl 命令来查看守护进程收集到的日志。
 </p>
 
@@ -241,27 +247,36 @@ systemd 尝试提供一套集中化管理系统，统一处理内核及用户级
 单独执行 <code>journalctl</code> 可以查看系统中的所有日志，如果系统运行时间较长，systemd 的日志会变得很大。
 </p>
 
+<div id="outline-container-org76fd56d" class="outline-2">
+<h2 id="org76fd56d"><span class="section-number-2">1.</span> 运维</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 日志文件位置，基本配置: <code>/etc/systemd/journald.conf</code> ，调整文件： <code>/etc/logrotate.conf</code> 。
 </p>
 
-<div id="outline-container-org8ffb469" class="outline-2">
-<h2 id="org8ffb469"><span class="section-number-2">1.</span> 常规操作</h2>
-<div class="outline-text-2" id="text-1">
 <ul class="org-ul">
-<li><code>-n</code>: 显示最后几行；</li>
-<li><code>-f</code>: 显示最新信息，类似（ <code>tail -f</code> ）；</li>
-<li><code>-b</code>: 显示本次启动之后的所有日志，在加上数字可以显示上次启动的所有日志（ <code>-1</code> ），以此类推: <code>journalctl -b -2</code> 表示上上次启动的日志；</li>
-<li><code>_PID=1</code>: 显示指定进程；</li>
-<li><code>--disk-usage</code>: 查看日志所占磁盘空间；</li>
-<li><code>-r</code>: 逆序显示日志（排查问题时比较方便）；</li>
+<li><code>journalctl --disk-usage</code> 查看日志占用磁盘</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8ffb469" class="outline-2">
+<h2 id="org8ffb469"><span class="section-number-2">2.</span> 常规操作</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><code>-n</code>: 显示最后几行</li>
+<li><code>-f</code>: 显示最新信息，类似（ <code>tail -f</code> ）</li>
+<li><code>-b</code>: 显示本次启动之后的所有日志，在加上数字可以显示上次启动的所有日志（ <code>-1</code> ），以此类推: <code>journalctl -b -2</code> 表示上上次启动的日志</li>
+<li><code>_PID=1</code>: 显示指定进程</li>
+<li><code>--disk-usage</code>: 查看日志所占磁盘空间</li>
+<li><code>-r</code>: 逆序显示日志（排查问题时比较方便）</li>
 </ul>
 </div>
 </div>
 
 <div id="outline-container-org5c73a97" class="outline-2">
-<h2 id="org5c73a97"><span class="section-number-2">2.</span> 过滤条件</h2>
-<div class="outline-text-2" id="text-2">
+<h2 id="org5c73a97"><span class="section-number-2">3.</span> 过滤条件</h2>
+<div class="outline-text-2" id="text-3">
 <ul class="org-ul">
 <li>按照 unit 过滤: <code>journalctl -u nginx.service</code> ，可以指定多个 unit 合并查看日志</li>
 <li>按照时间过滤: <code>--since</code> 和 <code>--until</code> ，用来设置时间段，时间格式支持多种，比如: <code>YYYY-MM-DD HH:MM:SS</code></li>
@@ -270,8 +285,8 @@ systemd 尝试提供一套集中化管理系统，统一处理内核及用户级
 </div>
 
 <div id="outline-container-org17f7928" class="outline-2">
-<h2 id="org17f7928"><span class="section-number-2">3.</span> 输出格式</h2>
-<div class="outline-text-2" id="text-3">
+<h2 id="org17f7928"><span class="section-number-2">4.</span> 输出格式</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 可使用 <code>-o</code> 指定输出格式（只列出常用的），
 </p>
@@ -291,8 +306,8 @@ systemd 尝试提供一套集中化管理系统，统一处理内核及用户级
 </div>
 
 <div id="outline-container-org1a26ff9" class="outline-2">
-<h2 id="org1a26ff9"><span class="section-number-2">4.</span> 参考</h2>
-<div class="outline-text-2" id="text-4">
+<h2 id="org1a26ff9"><span class="section-number-2">5.</span> 参考</h2>
+<div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li><a href="https://www.digitalocean.com/community/tutorials/how-to-use-journalctl-to-view-and-manipulate-systemd-logs">https://www.digitalocean.com/community/tutorials/how-to-use-journalctl-to-view-and-manipulate-systemd-logs</a></li>
 </ul>
@@ -300,7 +315,7 @@ systemd 尝试提供一套集中化管理系统，统一处理内核及用户级
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-06-01 15:50:40 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2018-06-01 15:50:40 <br />Last updated: 2022-10-06 Thu 17:55 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
 </div>
 </body>
 </html>
