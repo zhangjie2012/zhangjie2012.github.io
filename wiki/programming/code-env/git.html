@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-08-30 Tue 10:19 -->
+<!-- 2022-10-12 Wed 16:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Git</title>
@@ -293,31 +293,37 @@ git config --global alias.st status
 <h3 id="org724523d"><span class="section-number-3">1.2.</span> 基本操作</h3>
 <div class="outline-text-3" id="text-1-2">
 <ul class="org-ul">
-<li><code>git init</code>: 初始化一个 git 仓库</li>
 <li><code>git add &lt;filename&gt;</code> : 添加一个文件到 git 仓库中</li>
-<li><code>git commit -m "commit message"</code>: 提交到本地。 <a href="../../../blog/2018/git-commit-message-style-guide.html">Git 提交信息规范指南</a></li>
-<li><code>git push [remote-name] [branch-name]</code> : 把本地的提交记录推送到远端分支</li>
-<li><code>git pull</code>: 更新仓库 <code>git pull = git fetch + git merge</code></li>
-<li><code>git pull --rebase</code>: 更新仓库 <code>git pull = git fetch + git rebase</code> ，You should use <code>git pull --rebase</code> when your
-changes do not deserve a separate branch <sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup></li>
 <li><code>git checkout -- &lt;file&gt;</code> : 还原未暂存（staged）的文件</li>
-<li><code>git reset HEAD &lt;file&gt;...</code> : 取消暂存，那么还原一个暂存文件，应该是先 <code>reset</code> 后 <code>checkout</code></li>
-<li><code>git stash</code> : 隐藏本地提交记录, 恢复的时候 <code>git stash pop</code> 。这样可以在本地和远程有冲突的情况下，更新其他文件</li>
-<li><code>git stash --list</code>: 查看储藏文件状态</li>
+<li><code>git commit --amend</code> 修改最后一条提交</li>
+<li><code>git commit -m "commit message"</code>: 提交到本地。 <a href="../../../blog/2018/git-commit-message-style-guide.html">Git 提交信息规范指南</a></li>
+<li><code>git init</code>: 初始化一个 git 仓库</li>
 <li><code>git log</code>: 查看提交日志
 <ul class="org-ul">
 <li><code>--stat</code> ：显示每次更新的文件修改统计信息</li>
 <li><code>--shortstat</code> ：只显示 &#x2013;stat 中最后的行数修改添加移除统计</li>
 <li><code>--name-status</code>: 查看改动文件</li>
-<li><code>--online</code> ：只显示一行， <code>--pretty=online</code> 的简写</li>
-<li><code>--pretty=format:"xxx"</code> ：设置日志输出格式</li>
+<li><code>--pretty=</code> ：设置日志输出格式
+<ul class="org-ul">
+<li><code>oneline</code> 只展示一行</li>
+<li><code>short</code> <code>medium</code> <code>full</code> <code>fuller</code> <code>email</code> 展示不同程度的信息（不太实用）</li>
+<li><code>raw</code> 原始日志数据</li>
+<li><code>format</code> 格式化，比如 <code>git log --pretty=format:"%h %ad | %s %d [%an]" --date=short</code></li>
+</ul></li>
 <li><code>-p</code>: 显示更多提交记录详情（类似 <code>git diff</code> ），~git log -p -2~ 显示最近两次</li>
 <li><code>--author</code> ：仅显示指定作者相关的提交</li>
 <li><code>--since, --after, --until, --before</code> ：仅显示指定时间之后、之前的提交</li>
+<li><code>--date=</code> 指定日期格式， <code>relative</code> 相对时间，更多参数命令行补全查看</li>
 </ul></li>
-<li><code>git shortlog -sn</code> 提交统计<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup></li>
-<li><code>git commit --amend</code> 修改最后一条提交</li>
-<li><code>git remote set-url origin new_repo_addr</code> 更换远端 repo 地址<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup></li>
+<li><code>git pull --rebase</code>: 更新仓库 <code>git pull = git fetch + git rebase</code> ，You should use <code>git pull --rebase</code> when your
+changes do not deserve a separate branch <sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup></li>
+<li><code>git pull</code>: 更新仓库 <code>git pull = git fetch + git merge</code></li>
+<li><code>git push [remote-name] [branch-name]</code> : 把本地的提交记录推送到远端分支</li>
+<li><code>git remote set-url origin new_repo_addr</code> 更换远端 repo 地址<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup></li>
+<li><code>git reset HEAD &lt;file&gt;...</code> : 取消暂存，那么还原一个暂存文件，应该是先 <code>reset</code> 后 <code>checkout</code></li>
+<li><code>git shortlog -sn</code> 提交统计<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup></li>
+<li><code>git stash</code> : 隐藏本地提交记录, 恢复的时候 <code>git stash pop</code> 。这样可以在本地和远程有冲突的情况下，更新其他文件</li>
+<li><code>git stash --list</code>: 查看储藏文件状态</li>
 </ul>
 
 <p>
@@ -687,11 +693,11 @@ Git:
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://github.blog/2020-04-09-github-protips-tips-tricks-hacks-and-secrets-from-lee-reilly/#9-a-numbers-game">https://github.blog/2020-04-09-github-protips-tips-tricks-hacks-and-secrets-from-lee-reilly/#9-a-numbers-game</a>
+<a href="https://stackoverflow.com/questions/2432764/how-do-i-change-the-uri-url-for-a-remote-git-repository">https://stackoverflow.com/questions/2432764/how-do-i-change-the-uri-url-for-a-remote-git-repository</a>
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://stackoverflow.com/questions/2432764/how-do-i-change-the-uri-url-for-a-remote-git-repository">https://stackoverflow.com/questions/2432764/how-do-i-change-the-uri-url-for-a-remote-git-repository</a>
+<a href="https://github.blog/2020-04-09-github-protips-tips-tricks-hacks-and-secrets-from-lee-reilly/#9-a-numbers-game">https://github.blog/2020-04-09-github-protips-tips-tricks-hacks-and-secrets-from-lee-reilly/#9-a-numbers-game</a>
 </p></div></div>
 
 <div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
@@ -710,7 +716,7 @@ Git:
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2014-04-05 00:00 <br />Last updated: 2022-08-30 Tue 10:18 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2014-04-05 00:00 <br />Last updated: 2022-10-12 Wed 16:31 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
 </div>
 </body>
 </html>

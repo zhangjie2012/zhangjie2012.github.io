@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-10-08 Sat 11:03 -->
+<!-- 2022-10-12 Wed 16:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go package 发布</title>
@@ -223,71 +223,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgefb2c2c">1. 发布到 go.dev</a></li>
-<li><a href="#org8334fd0">2. 优雅</a>
-<ul>
-<li><a href="#org8f12da6">2.1. 书写文档规范</a></li>
-<li><a href="#org1693ec8">2.2. 自动构建</a></li>
-<li><a href="#orgc925136">2.3. go.dev 的徽标</a></li>
-</ul>
-</li>
+<li><a href="#org3ba89ce">1. 发布到 pkg.go.dev </a></li>
+<li><a href="#orgf0bf184">2. 从 go.dev 移除</a></li>
+<li><a href="#org5efe33e">3. 文档</a></li>
+<li><a href="#orge3bede9">4. 最佳实践</a></li>
+<li><a href="#org1693ec8">5. 自动构建</a></li>
+<li><a href="#orgc925136">6. go.dev 的徽标</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgefb2c2c" class="outline-2">
-<h2 id="orgefb2c2c"><span class="section-number-2">1.</span> 发布到 go.dev</h2>
+<div id="outline-container-org3ba89ce" class="outline-2">
+<h2 id="org3ba89ce"><span class="section-number-2">1.</span> 发布到 pkg.go.dev <sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup></h2>
 <div class="outline-text-2" id="text-1">
 <p>
-以 <code>github.com/zhangjie2012/cbl-go</code> 为例，Go 项目使用了 module 是前提。
-</p>
-
-<p>
-在有一下两种情况下：
+pkg.go.dev 的数据是从 <a href="https://proxy.golang.org/">proxy.golang.org</a> 下载的，定期监控 <a href="https://index.golang.org/index">Go Module Index</a> 然后添加到 pkg.go.dev。
+如果没有更新，以 <code>github.com/zhangjie2012/yo-kit</code> 为例，以下三种方法均可，第一种更快：
 </p>
 
 <ol class="org-ol">
-<li>网站的数据是从 <a href="https://proxy.golang.org/">https://proxy.golang.org/</a> 下载的</li>
-<li>使用过 <code>go get github.com/zhangjie2012/cbl-go</code></li>
+<li>打开 <code>https://pkg.go.dev/github.com/zhangjie2012/yo-kit</code> 然后点击 <code>Request "github.com/zhangjie2012/yo-kit"</code> 按钮</li>
+<li>向 proxy.golang.org 发出模块版本请求，比如 <code>https://proxy.golang.org/github.com/zhangjie2012/yo-kit/@v/main.info</code></li>
+<li>通过命令行下载该 pacakge <code>GOPROXY=https://proxy.golang.org GO111MODULE=on go get github.com/zhangjie2012/yo-kit@main</code></li>
 </ol>
 
 <p>
-会自动将 package 收录到 <a href="https://pkg.go.dev/">pkg.go.dev</a> 中，比如 <code>cbl-go</code> 的地址为：<a href="https://pkg.go.dev/github.com/zhangjie2012/cbl-go">https://pkg.go.dev/github.com/zhangjie2012/cbl-go</a>
-</p>
-
-<p>
-如果你的项目没有添加 LICENSE，将不会自动生成文档内容。Github 项目有两种方式创建 LICENSE：
-</p>
-
-<ol class="org-ol">
-<li>初始化项目的时候，会提示你选择一个 LICENSE 文件；</li>
-<li>项目已经创建的情况下， <code>Add files</code> -&gt; <code>Create new file</code> 如果将文件名输入成 <code>LICENSE</code> 会自动出现选项 <code>Choose a license template</code> 按需选择一个即可；</li>
-</ol>
-
-<p>
-发布：
-</p>
-
-<ol class="org-ol">
-<li>新建 tag</li>
-<li>推送到 github</li>
-</ol>
-
-<p>
-pkg.go.dev 的更新机制是 <code>go get</code> 的时候，所以只有 <code>go get</code> 才会刷新（延迟一段时间）。
-</p>
-
-<p>
-<b>LICENSE 如何选择？</b>
-</p>
-
-<ol class="org-ol">
-<li><a href="https://docs.github.com/cn/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository">https://docs.github.com/cn/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository</a></li>
-<li><a href="https://www.ruanyifeng.com/blog/2011/05/how_to_choose_free_software_licenses.html">https://www.ruanyifeng.com/blog/2011/05/how_to_choose_free_software_licenses.html</a></li>
-</ol>
-
-<p>
-我一般选择 MIT 或者 Apache。
+然后就可以在 <a href="https://pkg.go.dev/github.com/zhangjie2012/yo-kit">https://pkg.go.dev/github.com/zhangjie2012/yo-kit</a> 中看到文档了。
 </p>
 
 <p>
@@ -310,56 +271,101 @@ Go 模块的全局镜像。当然国内有七牛的 <a href="https://goproxy.cn/
 </div>
 </div>
 
-<div id="outline-container-org8334fd0" class="outline-2">
-<h2 id="org8334fd0"><span class="section-number-2">2.</span> 优雅</h2>
+<div id="outline-container-orgf0bf184" class="outline-2">
+<h2 id="orgf0bf184"><span class="section-number-2">2.</span> 从 go.dev 移除</h2>
 <div class="outline-text-2" id="text-2">
-</div>
-<div id="outline-container-org8f12da6" class="outline-3">
-<h3 id="org8f12da6"><span class="section-number-3">2.1.</span> 书写文档规范</h3>
-<div class="outline-text-3" id="text-2-1">
-<p>
-<a href="https://blog.golang.org/godoc">https://blog.golang.org/godoc</a>
-</p>
+<ol class="org-ol">
+<li>在 go.mod 中添加 <code>retract</code> 指令，查看 <a href="https://go.dev/blog/go116-module-changes">https://go.dev/blog/go116-module-changes</a> 文档中的 <b>Module retraction</b> 小节</li>
+<li>向 Go 开发团队提出 <a href="https://go.dev/s/pkgsite-package-removal">request</a></li>
+</ol>
 
 <p>
-有一定的规范，但又没有明确的规范。有疑惑的地方，可以参考标准库。
+<i>两种方式其实都挺麻烦的。</i>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org1693ec8" class="outline-3">
-<h3 id="org1693ec8"><span class="section-number-3">2.2.</span> 自动构建</h3>
-<div class="outline-text-3" id="text-2-2">
+<div id="outline-container-org5efe33e" class="outline-2">
+<h2 id="org5efe33e"><span class="section-number-2">3.</span> 文档</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+pkg.go.dev 是根据代码中的文档（注释）自动生成的（godoc 工具自动提取），书写规范：<a href="https://go.dev/doc/comment">Go Doc Comments</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge3bede9" class="outline-2">
+<h2 id="orge3bede9"><span class="section-number-2">4.</span> 最佳实践</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li><b>拥有一个 <code>go.mod</code> 文件</b> Go 1.11 后引入了官方的模块管理工具 <code>go mod</code></li>
+<li><b>可分发 LICENSE</b> 使用少三方使用限制的开源协议，你的项目中根目录下需要有一个 <code>LICENSE</code> 文件</li>
+<li><b>Tagged 版本</b> 解析 package 时，优先使用 tag 标记的版本，如果没有 tag，则会寻找最新的提交记录（可读性差）
+<ul class="org-ul">
+<li>版本号定义规范：<a href="https://semver.org/">https://semver.org/</a></li>
+</ul></li>
+<li><b>Stable 版本</b> <code>v0</code> 是实验性版本，v1 或已上会被认为是个稳定版本，破坏性的更新会在大版本中；稳定版本之后的次要版本
+通常认为是兼容的。</li>
+</ul>
+
+<p>
+<b>LICENSE 如何选择？</b>
+</p>
+
+<ol class="org-ol">
+<li><a href="https://docs.github.com/cn/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository">https://docs.github.com/cn/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository</a></li>
+<li><a href="https://www.ruanyifeng.com/blog/2011/05/how_to_choose_free_software_licenses.html">https://www.ruanyifeng.com/blog/2011/05/how_to_choose_free_software_licenses.html</a></li>
+</ol>
+
+<p>
+我一般选择 MIT 或者 Apache。
+</p>
+
+<p>
+<b>对于版本管理？</b>
+</p>
+
+<p>
+我的理解是，如果是自己使用没太必要用 tag 来维护，比较麻烦，全部推 main 分支即可。但如果考虑开源或者存在不兼容的情况，
+是需要严格的版本管理机制的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1693ec8" class="outline-2">
+<h2 id="org1693ec8"><span class="section-number-2">5.</span> 自动构建</h2>
+<div class="outline-text-2" id="text-5">
 <p>
 Github Actions 中添加一个 workflow，其实是个 git hook，在每次提交的时候会触发自动构建。
 </p>
 
 <p>
-构建成功的会有一个徽标，你可以放到 readme 中，看起来酷酷的。
+构建成功的会有一个徽标，你可以放到 README.md 中，看起来酷酷的。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc925136" class="outline-3">
-<h3 id="orgc925136"><span class="section-number-3">2.3.</span> go.dev 的徽标</h3>
-<div class="outline-text-3" id="text-2-3">
+<div id="outline-container-orgc925136" class="outline-2">
+<h2 id="orgc925136"><span class="section-number-2">6.</span> go.dev 的徽标</h2>
+<div class="outline-text-2" id="text-6">
 <p>
-看讨论，<a href="https://github.com/golang/go/issues/36982">https://github.com/golang/go/issues/36982</a> 目前是不支持的。
+以前 <a href="https://github.com/golang/go/issues/36982">https://github.com/golang/go/issues/36982</a> 不支持，用第三方的 <a href="https://shields.io">https://shields.io</a> 来替代。目前已经支持了：<a href="https://pkg.go.dev/badge/">https://pkg.go.dev/badge/</a>
 </p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
 
-<p>
-可以用第三方的 <a href="https://shields.io">https://shields.io</a> 来替代：
-</p>
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://pkg.go.dev/about#adding-a-package">https://pkg.go.dev/about#adding-a-package</a>
+</p></div></div>
 
-<pre class="example">
-[![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&amp;logoColor=white&amp;style=flat-square)](https://pkg.go.dev/url/of/your-module)
-</pre>
+
 </div>
-</div>
-</div>
-</div>
+</div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-07-22 10:51:56 <br />Last updated: 2022-10-06 Thu 17:55 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2020-07-22 10:51:56 <br />Last updated: 2022-10-12 Wed 16:31 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
 </div>
 </body>
 </html>
