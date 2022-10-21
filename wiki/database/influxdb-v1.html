@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-08-23 Tue 18:44 -->
+<!-- 2022-10-21 Fri 16:50 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>InfluxDB v1.x</title>
@@ -223,65 +223,70 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org27622bc">1. InfluxQL</a>
+<li><a href="#orgce660a3">1. 运维</a></li>
+<li><a href="#orga4b777c">2. InfluxQL 使用</a>
 <ul>
-<li><a href="#org0a13f35">1.1. SELECT 语句</a></li>
-<li><a href="#org5254681">1.2. FROM 语句</a>
+<li><a href="#org0a13f35">2.1. SELECT 语句</a></li>
+<li><a href="#org5254681">2.2. FROM 语句</a>
 <ul>
-<li><a href="#orgc0b3ea3">1.2.1. 引号</a></li>
-<li><a href="#orgc292703">1.2.2. 范例</a></li>
+<li><a href="#orgc0b3ea3">2.2.1. 引号</a></li>
+<li><a href="#orgc292703">2.2.2. 范例</a></li>
 </ul>
 </li>
-<li><a href="#orgb1c4767">1.3. WHERE 语句</a>
+<li><a href="#orgb1c4767">2.3. WHERE 语句</a>
 <ul>
-<li><a href="#org8b3b5c6">1.3.1. Fields</a></li>
-<li><a href="#orga77436d">1.3.2. Tags</a></li>
-<li><a href="#orge106a57">1.3.3. Timestamps</a></li>
+<li><a href="#org8b3b5c6">2.3.1. Fields</a></li>
+<li><a href="#orga77436d">2.3.2. Tags</a></li>
+<li><a href="#orge106a57">2.3.3. Timestamps</a></li>
 </ul>
 </li>
-<li><a href="#orgb3a76fb">1.4. GROUP BY 语句</a>
+<li><a href="#orgb3a76fb">2.4. GROUP BY 语句</a>
 <ul>
-<li><a href="#org019f48d">1.4.1. GROUP BY tags</a></li>
-<li><a href="#orgf73dce7">1.4.2. GROUP BY time intervals</a>
+<li><a href="#org019f48d">2.4.1. GROUP BY tags</a></li>
+<li><a href="#orgf73dce7">2.4.2. GROUP BY time intervals</a>
 <ul>
-<li><a href="#org750e9d4">1.4.2.1. Basic GROUP BY time() syntax</a></li>
-<li><a href="#orgd44b76e">1.4.2.2. Advanced GROUP BY time() syntax</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgf6e716c">1.5. INTO 语法</a></li>
-<li><a href="#org79d5ff5">1.6. ORDER BY time DESC</a></li>
-<li><a href="#org300c0b6">1.7. LIMIT 和 SLIMIT 语句</a>
-<ul>
-<li><a href="#orgf98a8d5">1.7.1. LIMIT 语句</a></li>
-<li><a href="#org71aacbc">1.7.2. SLIMIT 语句</a></li>
-</ul>
-</li>
-<li><a href="#org982d3cd">1.8. OFFSET 和 SOFFSET 语句</a></li>
-<li><a href="#orgff164b4">1.9. 时区（time zone）语句</a></li>
-</ul>
-</li>
-<li><a href="#org840ee27">2. 监控</a>
-<ul>
-<li><a href="#org18ed738">2.1. InfluxDB _internal 1.x 表和字段</a>
-<ul>
-<li><a href="#org2c7a2b8">2.1.1. 在生产环境下禁用 _internal 库</a></li>
-<li><a href="#org296866b">2.1.2. 将内部指标存储在外部监控中</a></li>
-<li><a href="#org82df794">2.1.3. 那 InfluxDB 生产的实例到底怎么监控呢？</a></li>
+<li><a href="#org750e9d4">2.4.2.1. Basic GROUP BY time() syntax</a></li>
+<li><a href="#orgd44b76e">2.4.2.2. Advanced GROUP BY time() syntax</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org38df14b">3. FAQ</a>
+<li><a href="#orgf6e716c">2.5. INTO 语法</a></li>
+<li><a href="#org79d5ff5">2.6. ORDER BY time DESC</a></li>
+<li><a href="#org300c0b6">2.7. LIMIT 和 SLIMIT 语句</a>
 <ul>
-<li><a href="#org6cc19b5">3.1. InfluxDB 写入时，tag 和 field 的 values 不支持换行符。</a></li>
-<li><a href="#org7dc5a05">3.2. InfluxDB 如何处理重复的点？</a></li>
+<li><a href="#orgf98a8d5">2.7.1. LIMIT 语句</a></li>
+<li><a href="#org71aacbc">2.7.2. SLIMIT 语句</a></li>
+</ul>
+</li>
+<li><a href="#org982d3cd">2.8. OFFSET 和 SOFFSET 语句</a></li>
+<li><a href="#orgff164b4">2.9. 时区（time zone）语句</a></li>
+</ul>
+</li>
+<li><a href="#org840ee27">3. 监控</a>
+<ul>
+<li><a href="#org18ed738">3.1. InfluxDB _internal 1.x 表和字段</a>
+<ul>
+<li><a href="#org2c7a2b8">3.1.1. 在生产环境下禁用 _internal 库</a></li>
+<li><a href="#org296866b">3.1.2. 将内部指标存储在外部监控中</a></li>
+<li><a href="#org82df794">3.1.3. 那 InfluxDB 生产的实例到底怎么监控呢？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org38df14b">4. FAQ</a>
+<ul>
+<li><a href="#org6cc19b5">4.1. InfluxDB 写入时，tag 和 field 的 values 不支持换行符。</a></li>
+<li><a href="#org7dc5a05">4.2. InfluxDB 如何处理重复的点？</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
+
+<div id="outline-container-orgce660a3" class="outline-2">
+<h2 id="orgce660a3"><span class="section-number-2">1.</span> 运维</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 <b>Retention policy DURATION</b> 决定 InfluxDB 保留数据的时长。 <b>SHARD DURATION</b> 决定子语句确定分片组覆盖的时间范围。对应关系：
 </p>
@@ -294,12 +299,13 @@
 
 <col  class="org-left" />
 </colgroup>
-<tbody>
+<thead>
 <tr>
-<td class="org-left">Retention policy DURATION</td>
-<td class="org-left">Shard Group Duration</td>
+<th scope="col" class="org-left">Retention policy DURATION</th>
+<th scope="col" class="org-left">Shard Group Duration</th>
 </tr>
-
+</thead>
+<tbody>
 <tr>
 <td class="org-left">&lt; 2 days</td>
 <td class="org-left">1 hour</td>
@@ -313,18 +319,34 @@
 <tr>
 <td class="org-left">&gt; 6 months</td>
 <td class="org-left">7 day</td>
-<td class="org-left">&#xa0;</td>
 </tr>
 </tbody>
 </table>
 
-<div id="outline-container-org27622bc" class="outline-2">
-<h2 id="org27622bc"><span class="section-number-2">1.</span> InfluxQL</h2>
-<div class="outline-text-2" id="text-1">
+<p>
+1.8 版本 InfluxDB 占用内存较大解决方，启动时加上  <code>GODEBUG=madvdontneed=1</code> ，会在 Go 不需要内存的时候及时释放，
+这是一个 Go 的参数，并不是 InfluxDB 的，原因：
+</p>
+
+<ol class="org-ol">
+<li>Go 1.12 将 madvise 策略由 <code>MADV_DONTNEED</code> 改成了 <code>MADV_FREE</code> ，这会导致 runtime 提高效率，但是不会更新 RSS（只有系统
+压力较大时才更新），也就是说这是一种用“空间来换时间”的做法；</li>
+<li>后来遇到这个问题的人越来越多了，Go 1.16 之后又改回去了</li>
+</ol>
+
+<p>
+InfluxDB 1.8 版本用的是 Go 1.13 ，所以恰好在这个版本范围内。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga4b777c" class="outline-2">
+<h2 id="orga4b777c"><span class="section-number-2">2.</span> InfluxQL 使用</h2>
+<div class="outline-text-2" id="text-2">
 </div>
 <div id="outline-container-org0a13f35" class="outline-3">
-<h3 id="org0a13f35"><span class="section-number-3">1.1.</span> SELECT 语句</h3>
-<div class="outline-text-3" id="text-1-1">
+<h3 id="org0a13f35"><span class="section-number-3">2.1.</span> SELECT 语句</h3>
+<div class="outline-text-3" id="text-2-1">
 <pre class="example">
 SELECT &lt;field_key&gt;[,&lt;field_key&gt;,&lt;tag_key&gt;] FROM &lt;measurement_name&gt;[,&lt;measurement_name&gt;]
 </pre>
@@ -337,8 +359,8 @@ SELECT &lt;field_key&gt;[,&lt;field_key&gt;,&lt;tag_key&gt;] FROM &lt;measuremen
 </div>
 
 <div id="outline-container-org5254681" class="outline-3">
-<h3 id="org5254681"><span class="section-number-3">1.2.</span> FROM 语句</h3>
-<div class="outline-text-3" id="text-1-2">
+<h3 id="org5254681"><span class="section-number-3">2.2.</span> FROM 语句</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 <code>FROM</code> 语句支持一个或者多个 measurement(s)：
 </p>
@@ -352,8 +374,8 @@ SELECT &lt;field_key&gt;[,&lt;field_key&gt;,&lt;tag_key&gt;] FROM &lt;measuremen
 </div>
 
 <div id="outline-container-orgc0b3ea3" class="outline-4">
-<h4 id="orgc0b3ea3"><span class="section-number-4">1.2.1.</span> 引号</h4>
-<div class="outline-text-4" id="text-1-2-1">
+<h4 id="orgc0b3ea3"><span class="section-number-4">2.2.1.</span> 引号</h4>
+<div class="outline-text-4" id="text-2-2-1">
 <p>
 如果标识符包含除了 <code>[A-z,0-9,_]</code> 以外的字符、以数字开头或者是 InfluxQL 关键则，那么标识符必须用双引号引起来。
 虽然不总是必要，但是建议你使用双引号。
@@ -362,8 +384,8 @@ SELECT &lt;field_key&gt;[,&lt;field_key&gt;,&lt;tag_key&gt;] FROM &lt;measuremen
 </div>
 
 <div id="outline-container-orgc292703" class="outline-4">
-<h4 id="orgc292703"><span class="section-number-4">1.2.2.</span> 范例</h4>
-<div class="outline-text-4" id="text-1-2-2">
+<h4 id="orgc292703"><span class="section-number-4">2.2.2.</span> 范例</h4>
+<div class="outline-text-4" id="text-2-2-2">
 <p>
 查询所有的 fields <code>SELECT *::field</code> ，但是不能通过这个方法来查询所有的 tags。
 </p>
@@ -380,8 +402,8 @@ SELECT &lt;field_key&gt;[,&lt;field_key&gt;,&lt;tag_key&gt;] FROM &lt;measuremen
 </div>
 
 <div id="outline-container-orgb1c4767" class="outline-3">
-<h3 id="orgb1c4767"><span class="section-number-3">1.3.</span> WHERE 语句</h3>
-<div class="outline-text-3" id="text-1-3">
+<h3 id="orgb1c4767"><span class="section-number-3">2.3.</span> WHERE 语句</h3>
+<div class="outline-text-3" id="text-2-3">
 <p>
 <code>WHERE</code> 基于 fields，tags 和 timestamps 的过滤。
 </p>
@@ -400,8 +422,8 @@ SELECT_clause FROM_clause WHERE &lt;conditional_expression&gt; [(AND|OR) &lt;con
 </div>
 
 <div id="outline-container-org8b3b5c6" class="outline-4">
-<h4 id="org8b3b5c6"><span class="section-number-4">1.3.1.</span> Fields</h4>
-<div class="outline-text-4" id="text-1-3-1">
+<h4 id="org8b3b5c6"><span class="section-number-4">2.3.1.</span> Fields</h4>
+<div class="outline-text-4" id="text-2-3-1">
 <pre class="example">
 field_key &lt;operator&gt; ['string' | boolean | float | integer]
 </pre>
@@ -469,8 +491,8 @@ field 值支持字符串，布尔，浮点型和整型比较。 <code>WHERE</cod
 </div>
 
 <div id="outline-container-orga77436d" class="outline-4">
-<h4 id="orga77436d"><span class="section-number-4">1.3.2.</span> Tags</h4>
-<div class="outline-text-4" id="text-1-3-2">
+<h4 id="orga77436d"><span class="section-number-4">2.3.2.</span> Tags</h4>
+<div class="outline-text-4" id="text-2-3-2">
 <pre class="example">
 tag_key &lt;operator&gt; ['tag_value']
 </pre>
@@ -514,8 +536,8 @@ tags 的值要使用单引号。支持的运算符：
 </div>
 
 <div id="outline-container-orge106a57" class="outline-4">
-<h4 id="orge106a57"><span class="section-number-4">1.3.3.</span> Timestamps</h4>
-<div class="outline-text-4" id="text-1-3-3">
+<h4 id="orge106a57"><span class="section-number-4">2.3.3.</span> Timestamps</h4>
+<div class="outline-text-4" id="text-2-3-3">
 <p>
 对于大部分的 <code>SELECT</code> 语句，默认的时间范围是 <code>1677-09-21T00:12:43.145224194Z</code> 和 <code>2262-04-11T23:47:16.854775806Z</code> 之间。
 </p>
@@ -528,8 +550,8 @@ tags 的值要使用单引号。支持的运算符：
 </div>
 
 <div id="outline-container-orgb3a76fb" class="outline-3">
-<h3 id="orgb3a76fb"><span class="section-number-3">1.4.</span> GROUP BY 语句</h3>
-<div class="outline-text-3" id="text-1-4">
+<h3 id="orgb3a76fb"><span class="section-number-3">2.4.</span> GROUP BY 语句</h3>
+<div class="outline-text-3" id="text-2-4">
 <p>
 <code>GROUP BY</code> 对查询结果进行分组：
 </p>
@@ -545,8 +567,8 @@ tags 的值要使用单引号。支持的运算符：
 </div>
 
 <div id="outline-container-org019f48d" class="outline-4">
-<h4 id="org019f48d"><span class="section-number-4">1.4.1.</span> GROUP BY tags</h4>
-<div class="outline-text-4" id="text-1-4-1">
+<h4 id="org019f48d"><span class="section-number-4">2.4.1.</span> GROUP BY tags</h4>
+<div class="outline-text-4" id="text-2-4-1">
 <pre class="example">
 SELECT_clause FROM_clause [WHERE_clause] GROUP BY [* | &lt;tag_key&gt;[,&lt;tag_key]]
 </pre>
@@ -570,12 +592,12 @@ SELECT_clause FROM_clause [WHERE_clause] GROUP BY [* | &lt;tag_key&gt;[,&lt;tag_
 </div>
 
 <div id="outline-container-orgf73dce7" class="outline-4">
-<h4 id="orgf73dce7"><span class="section-number-4">1.4.2.</span> GROUP BY time intervals</h4>
-<div class="outline-text-4" id="text-1-4-2">
+<h4 id="orgf73dce7"><span class="section-number-4">2.4.2.</span> GROUP BY time intervals</h4>
+<div class="outline-text-4" id="text-2-4-2">
 </div>
 <div id="outline-container-org750e9d4" class="outline-5">
-<h5 id="org750e9d4"><span class="section-number-5">1.4.2.1.</span> Basic GROUP BY time() syntax</h5>
-<div class="outline-text-5" id="text-1-4-2-1">
+<h5 id="org750e9d4"><span class="section-number-5">2.4.2.1.</span> Basic GROUP BY time() syntax</h5>
+<div class="outline-text-5" id="text-2-4-2-1">
 <pre class="example">
 SELECT &lt;function&gt;(&lt;field_key&gt;) FROM_clause WHERE &lt;time_range&gt; GROUP BY time(&lt;time_interval&gt;),[tag_key] [fill(&lt;fill_option&gt;)]
 </pre>
@@ -588,8 +610,8 @@ SELECT &lt;function&gt;(&lt;field_key&gt;) FROM_clause WHERE &lt;time_range&gt; 
 </div>
 
 <div id="outline-container-orgd44b76e" class="outline-5">
-<h5 id="orgd44b76e"><span class="section-number-5">1.4.2.2.</span> Advanced GROUP BY time() syntax</h5>
-<div class="outline-text-5" id="text-1-4-2-2">
+<h5 id="orgd44b76e"><span class="section-number-5">2.4.2.2.</span> Advanced GROUP BY time() syntax</h5>
+<div class="outline-text-5" id="text-2-4-2-2">
 <pre class="example">
 SELECT &lt;function&gt;(&lt;field_key&gt;) FROM_clause WHERE &lt;time_range&gt; GROUP BY time(&lt;time_interval&gt;,&lt;offset_interval&gt;),[tag_key] [fill(&lt;fill_option&gt;)]
 </pre>
@@ -599,8 +621,8 @@ SELECT &lt;function&gt;(&lt;field_key&gt;) FROM_clause WHERE &lt;time_range&gt; 
 </div>
 
 <div id="outline-container-orgf6e716c" class="outline-3">
-<h3 id="orgf6e716c"><span class="section-number-3">1.5.</span> INTO 语法</h3>
-<div class="outline-text-3" id="text-1-5">
+<h3 id="orgf6e716c"><span class="section-number-3">2.5.</span> INTO 语法</h3>
+<div class="outline-text-3" id="text-2-5">
 <p>
 INTO 将查询结果写入到用户指定的 measurment。
 </p>
@@ -616,8 +638,8 @@ SELECT_clause INTO &lt;measurement_name&gt; FROM_clause [WHERE_clause] [GROUP_BY
 </div>
 
 <div id="outline-container-org79d5ff5" class="outline-3">
-<h3 id="org79d5ff5"><span class="section-number-3">1.6.</span> ORDER BY time DESC</h3>
-<div class="outline-text-3" id="text-1-6">
+<h3 id="org79d5ff5"><span class="section-number-3">2.6.</span> ORDER BY time DESC</h3>
+<div class="outline-text-3" id="text-2-6">
 <pre class="example">
 SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] ORDER BY time DESC
 </pre>
@@ -630,17 +652,16 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] ORDER B
 </div>
 
 <div id="outline-container-org300c0b6" class="outline-3">
-<h3 id="org300c0b6"><span class="section-number-3">1.7.</span> LIMIT 和 SLIMIT 语句</h3>
-<div class="outline-text-3" id="text-1-7">
+<h3 id="org300c0b6"><span class="section-number-3">2.7.</span> LIMIT 和 SLIMIT 语句</h3>
+<div class="outline-text-3" id="text-2-7">
 <p>
 <code>LIMIT</code> 和 <code>SLIMIT</code> 限制 points 和 series 查询的返回数量。
 </p>
 </div>
 
-
 <div id="outline-container-orgf98a8d5" class="outline-4">
-<h4 id="orgf98a8d5"><span class="section-number-4">1.7.1.</span> LIMIT 语句</h4>
-<div class="outline-text-4" id="text-1-7-1">
+<h4 id="orgf98a8d5"><span class="section-number-4">2.7.1.</span> LIMIT 语句</h4>
+<div class="outline-text-4" id="text-2-7-1">
 <pre class="example">
 SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_BY_clause] LIMIT &lt;N&gt;
 </pre>
@@ -652,8 +673,8 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_
 </div>
 
 <div id="outline-container-org71aacbc" class="outline-4">
-<h4 id="org71aacbc"><span class="section-number-4">1.7.2.</span> SLIMIT 语句</h4>
-<div class="outline-text-4" id="text-1-7-2">
+<h4 id="org71aacbc"><span class="section-number-4">2.7.2.</span> SLIMIT 语句</h4>
+<div class="outline-text-4" id="text-2-7-2">
 <pre class="example">
 SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] GROUP BY *[,time(&lt;time_interval&gt;)] [ORDER_BY_clause] SLIMIT &lt;N&gt;
 </pre>
@@ -662,8 +683,8 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] GROUP BY *[,time(&lt;time
 </div>
 
 <div id="outline-container-org982d3cd" class="outline-3">
-<h3 id="org982d3cd"><span class="section-number-3">1.8.</span> OFFSET 和 SOFFSET 语句</h3>
-<div class="outline-text-3" id="text-1-8">
+<h3 id="org982d3cd"><span class="section-number-3">2.8.</span> OFFSET 和 SOFFSET 语句</h3>
+<div class="outline-text-3" id="text-2-8">
 <p>
 <code>OFFSET &lt;N&gt;</code> 对查询结果进行 N points 的分页。
 </p>
@@ -679,8 +700,8 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_
 </div>
 
 <div id="outline-container-orgff164b4" class="outline-3">
-<h3 id="orgff164b4"><span class="section-number-3">1.9.</span> 时区（time zone）语句</h3>
-<div class="outline-text-3" id="text-1-9">
+<h3 id="orgff164b4"><span class="section-number-3">2.9.</span> 时区（time zone）语句</h3>
+<div class="outline-text-3" id="text-2-9">
 <p>
 <code>tz()</code> 语句指定时区<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>。
 </p>
@@ -697,12 +718,12 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_
 </div>
 
 <div id="outline-container-org840ee27" class="outline-2">
-<h2 id="org840ee27"><span class="section-number-2">2.</span> 监控</h2>
-<div class="outline-text-2" id="text-2">
+<h2 id="org840ee27"><span class="section-number-2">3.</span> 监控</h2>
+<div class="outline-text-2" id="text-3">
 </div>
 <div id="outline-container-org18ed738" class="outline-3">
-<h3 id="org18ed738"><span class="section-number-3">2.1.</span> InfluxDB _internal 1.x 表和字段</h3>
-<div class="outline-text-3" id="text-2-1">
+<h3 id="org18ed738"><span class="section-number-3">3.1.</span> InfluxDB _internal 1.x 表和字段</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
 <a href="https://docs.influxdata.com/platform/monitoring/influxdata-platform/tools/measurements-internal/">https://docs.influxdata.com/platform/monitoring/influxdata-platform/tools/measurements-internal/</a>
 </p>
@@ -713,8 +734,8 @@ SELECT_clause [INTO_clause] FROM_clause [WHERE_clause] [GROUP_BY_clause] [ORDER_
 </div>
 
 <div id="outline-container-org2c7a2b8" class="outline-4">
-<h4 id="org2c7a2b8"><span class="section-number-4">2.1.1.</span> 在生产环境下禁用 _internal 库</h4>
-<div class="outline-text-4" id="text-2-1-1">
+<h4 id="org2c7a2b8"><span class="section-number-4">3.1.1.</span> 在生产环境下禁用 _internal 库</h4>
+<div class="outline-text-4" id="text-3-1-1">
 <p>
 InfluxData 不推荐在生产集群中使用 <code>_internal</code> 。它带来了不必要的开销，特别是集群比较忙的情况下，会加重集群的复杂。
 _internal 数据库中存储的指标主要衡量工作负载性能，只能在非生产环境使用。
@@ -725,20 +746,20 @@ InfluxDB 配置文件将 <code>[monitor]</code> 下的 <code>store-enabled</code
 </p>
 
 <div class="org-src-container">
-<pre class="src src-text"># ...
+<pre class="src src-yaml"><span style="color: #505050;"># </span><span style="color: #505050;">...</span>
 [monitor]
-  # ...
-  # Whether to record statistics internally.
+  <span style="color: #505050;"># </span><span style="color: #505050;">...</span>
+  <span style="color: #505050;"># </span><span style="color: #505050;">Whether to record statistics internally.</span>
   store-enabled = false
-  #...
+  <span style="color: #505050;">#</span><span style="color: #505050;">...</span>
 </pre>
 </div>
 </div>
 </div>
 
 <div id="outline-container-org296866b" class="outline-4">
-<h4 id="org296866b"><span class="section-number-4">2.1.2.</span> 将内部指标存储在外部监控中</h4>
-<div class="outline-text-4" id="text-2-1-2">
+<h4 id="org296866b"><span class="section-number-4">3.1.2.</span> 将内部指标存储在外部监控中</h4>
+<div class="outline-text-4" id="text-3-1-2">
 <p>
 在生产的集群中 InfluxDB <code>_internal</code> 指标，使用 Telegraf 和 <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb">influxdb 输入插件</a> 来捕获 <code>/debug/vars</code> 端点下的指标然后存储在外部的 InfluxDB
 监控实例中。具体看：<a href="https://docs.influxdata.com/platform/monitoring/influxdata-platform/external-monitor-setup/">配置监控的监控</a>。
@@ -747,8 +768,8 @@ InfluxDB 配置文件将 <code>[monitor]</code> 下的 <code>store-enabled</code
 </div>
 
 <div id="outline-container-org82df794" class="outline-4">
-<h4 id="org82df794"><span class="section-number-4">2.1.3.</span> 那 InfluxDB 生产的实例到底怎么监控呢？</h4>
-<div class="outline-text-4" id="text-2-1-3">
+<h4 id="org82df794"><span class="section-number-4">3.1.3.</span> 那 InfluxDB 生产的实例到底怎么监控呢？</h4>
+<div class="outline-text-4" id="text-3-1-3">
 <ol class="org-ol">
 <li>InfluxDB 实例会暴露 <a href="http://localhost:8086/debug/vars">http://localhost:8086/debug/vars</a></li>
 <li>本机的 Telegraf 添加 InfluxDB Input 插件</li>
@@ -761,12 +782,12 @@ InfluxDB 配置文件将 <code>[monitor]</code> 下的 <code>store-enabled</code
 </div>
 
 <div id="outline-container-org38df14b" class="outline-2">
-<h2 id="org38df14b"><span class="section-number-2">3.</span> FAQ</h2>
-<div class="outline-text-2" id="text-3">
+<h2 id="org38df14b"><span class="section-number-2">4.</span> FAQ</h2>
+<div class="outline-text-2" id="text-4">
 </div>
 <div id="outline-container-org6cc19b5" class="outline-3">
-<h3 id="org6cc19b5"><span class="section-number-3">3.1.</span> InfluxDB 写入时，tag 和 field 的 values 不支持换行符。</h3>
-<div class="outline-text-3" id="text-3-1">
+<h3 id="org6cc19b5"><span class="section-number-3">4.1.</span> InfluxDB 写入时，tag 和 field 的 values 不支持换行符。</h3>
+<div class="outline-text-3" id="text-4-1">
 <p>
 <a href="https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_reference/">https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_reference/</a>
 </p>
@@ -791,8 +812,8 @@ Line protocol 对于 <code>\n</code> 和空格比较敏感：
 </div>
 
 <div id="outline-container-org7dc5a05" class="outline-3">
-<h3 id="org7dc5a05"><span class="section-number-3">3.2.</span> <a href="https://docs.influxdata.com/influxdb/v1.8/troubleshooting/frequently-asked-questions/#how-does-influxdb-handle-duplicate-points">InfluxDB 如何处理重复的点？</a></h3>
-<div class="outline-text-3" id="text-3-2">
+<h3 id="org7dc5a05"><span class="section-number-3">4.2.</span> <a href="https://docs.influxdata.com/influxdb/v1.8/troubleshooting/frequently-asked-questions/#how-does-influxdb-handle-duplicate-points">InfluxDB 如何处理重复的点？</a></h3>
+<div class="outline-text-3" id="text-4-2">
 <p>
 Point（点）由表名，tag 集合和时间戳唯一标识。如果你提交的一个 point 和现有的 point 有相同的标识，fields 集合会变成新的 field
 和老的 field 的合集，关联关系会指向新的 field 集合。这是预料中的事。
@@ -825,9 +846,8 @@ Point（点）由表名，tag 集合和时间戳唯一标识。如果你提交�
 </p>
 
 <ul class="org-ul">
-<li><p>
-引入一个任意的新标签来强制保持唯一
-</p>
+<li>引入一个任意的新标签来强制保持唯一</li>
+</ul>
 
 <p>
 Old point: <code>cpu_load,hostname=server02,az=us_west,uniq=1 val_1=24.5,val_2=7 1234567890000000</code>
@@ -848,13 +868,12 @@ New point: <code>cpu_load,hostname=server02,az=us_west,uniq=2 val_1=5.24 1234567
 <span style="color: #005a5f;">time</span>                      az        hostname   uniq   val_1   val_2
 1970-01-15T06:56:07.89Z   us_west   server02   1      24.5    7
 1970-01-15T06:56:07.89Z   us_west   server02   2      5.24
-
 </pre>
-</div></li>
+</div>
 
-<li><p>
-时间上增加一个纳秒
-</p>
+<ul class="org-ul">
+<li>时间上增加一个纳秒</li>
+</ul>
 
 <p>
 Old point: <code>cpu_load,hostname=server02,az=us_west,uniq=1 val_1=24.5,val_2=7 1234567890000000</code>
@@ -876,8 +895,7 @@ New point: <code>cpu_load,hostname=server02,az=us_west,uniq=2 val_1=5.24 1234567
 1970-01-15T06:56:07.89Z          us_west   server02   24.5    7
 1970-01-15T06:56:07.890000001Z   us_west   server02   5.24
 </pre>
-</div></li>
-</ul>
+</div>
 </div>
 </div>
 </div>
@@ -893,7 +911,7 @@ New point: <code>cpu_load,hostname=server02,az=us_west,uniq=2 val_1=5.24 1234567
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-23 14:02:41 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2021-04-23 14:02:41 <br />Last updated: 2022-10-21 Fri 16:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
 </div>
 </body>
 </html>
