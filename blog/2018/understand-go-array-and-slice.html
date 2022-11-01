@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-08-23 Tue 18:44 -->
+<!-- 2022-11-01 Tue 17:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>理解 Go 的 Array 和 slice</title>
@@ -234,7 +234,7 @@
 今早 <a href="https://blog.opskumu.com/">磊磊</a> 在 Twitter 上看到一条消息，大致意思是问下面代码的执行结果是什么：
 </p>
 
-<pre class="example" id="orga43984b">
+<pre class="example" id="org1ead648">
 package main
 
 import "fmt"
@@ -262,7 +262,7 @@ func main() {
 </ol>
 
 <p>
-乍一看结果是 =[1, 2, 3, 4]=，毕竟向 s 中添加了一个元素。我对 Go 的细节了解不多，所以是按照已有的 C 的 Array 和 C++ 的 vector 的知识来理解 Go 的 slice。
+乍一看结果是 <code>[1, 2, 3, 4]</code> ，毕竟向 s 中添加了一个元素。我对 Go 的细节了解不多，所以是按照已有的 C 的 Array 和 C++ 的 vector 的知识来理解 Go 的 slice。
 本以为像 Go这样一个比较「先进」的语言，自然会规避这种深浅拷贝的问题，但实际上并没有，所以对这道题有点迷糊。于是就花时间研究了一下 Go 中的 Array 和 Slice。
 </p>
 
@@ -290,7 +290,7 @@ slice 就是实现了「可变长度的 Array 」的抽象，类似 C++ 中的 v
 <ul class="org-ul">
 <li><code>buffer</code>: 指向实际存数据的 buffer，定长，可以用 Array 来实现</li>
 <li><code>len</code>: 当前以使用的 buffer 长度</li>
-<li><code>cap</code>: 当前 buffer 的容量，当 <code>len</code> 大于等于 =cap=时，即容量不足，则需要触发扩容：
+<li><code>cap</code>: 当前 buffer 的容量，当 <code>len</code> 大于等于 <code>cap</code> 时，即容量不足，则需要触发扩容：
 <ol class="org-ol">
 <li>重新声明一个足量的 buffer</li>
 <li>把现有的 buffer 内容拷贝过去</li>
@@ -307,11 +307,12 @@ C++ 中的 vector 也是类似的实现，只不过它提供了拷贝构造函�
 再回到刚才之前的问题上，当把 s 传递给 four 的时候是一次浅拷贝，为了没有命名歧义，four 中的传入的 s 先叫成 sc。传参类似于做了 <code>sc = s</code> 的操作：
 </p>
 
-<pre class="example" id="org8534521">
-sc.buffer = s.buffer
+<div class="org-src-container">
+<pre class="src src-go">sc.buffer = s.buffer
 sc.len = s.len
 sc.cap = s.cap
 </pre>
+</div>
 
 <p>
 len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改 sc 中的 len 和 cap 不会影响 s 的 len 和 cap，但是修改 buffer 的内容则会影响外部的 s。
@@ -329,24 +330,25 @@ len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改
 再看一段代码：
 </p>
 
-<pre class="example" id="orgb81a09b">
-package main
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">package</span> main
 
-import "fmt"
+<span style="color: #5317ac;">import</span> <span style="color: #2544bb;">"fmt"</span>
 
-func five(s []int) {
-    s = append(s, 5)
-}
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">five</span><span style="color: #000000;">(</span><span style="color: #00538b;">s</span> <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    s = <span style="color: #8f0075;">append</span><span style="color: #a8007f;">(</span>s, 5<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
 
-func main() {
-    s := []int{1, 2, 3}
-    s = append(s, 4)
-    fmt.Printf("cap=%d\n", cap(s))
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">s</span> := <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #a8007f;">{</span>1, 2, 3<span style="color: #a8007f;">}</span>
+    s = <span style="color: #8f0075;">append</span><span style="color: #a8007f;">(</span>s, 4<span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Printf</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"cap=%d\n"</span>, <span style="color: #8f0075;">cap</span><span style="color: #005f88;">(</span>s<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
 
-    five(s)
-    fmt.Println(s)
-}
+    <span style="color: #721045;">five</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Println</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
 </pre>
+</div>
 
 <p>
 输出的结果是: <code>[1 2 3 4]</code> 而不是 <code>[1 2 3 4 5]</code> 。那么问题来了，在容量充足的情况下，内部的 buffer 和外部的 buffer 相同，那么 <code>append</code> 的之后，s 怎么没有发生变化呢？
@@ -360,35 +362,36 @@ func main() {
 两种办法可以验证这个想法，第一种是把内存的的数据打印出来：
 </p>
 
-<pre class="example" id="org8fb0cc5">
-package main
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">package</span> main
 
-import (
-    "fmt"
-    "unsafe"
-)
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">(</span>
+    <span style="color: #2544bb;">"fmt"</span>
+    <span style="color: #2544bb;">"unsafe"</span>
+<span style="color: #000000;">)</span>
 
-func five(s []int) {
-    s = append(s, 5)
-}
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">five</span><span style="color: #000000;">(</span><span style="color: #00538b;">s</span> <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    s = <span style="color: #8f0075;">append</span><span style="color: #a8007f;">(</span>s, 5<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
 
-func main() {
-    s := []int{1, 2, 3}
-    s = append(s, 4)
-    fmt.Printf("cap=%d\n", cap(s))
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">s</span> := <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #a8007f;">{</span>1, 2, 3<span style="color: #a8007f;">}</span>
+    s = <span style="color: #8f0075;">append</span><span style="color: #a8007f;">(</span>s, 4<span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Printf</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"cap=%d\n"</span>, <span style="color: #8f0075;">cap</span><span style="color: #005f88;">(</span>s<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
 
-    five(s)
+    <span style="color: #721045;">five</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>
 
-    start := unsafe.Pointer(&amp;s[0])
-    size := unsafe.Sizeof(int(0))
-    s0 := *(*int)(unsafe.Pointer(uintptr(start)))
-    s1 := *(*int)(unsafe.Pointer(uintptr(start) + size*uintptr(1)))
-    s2 := *(*int)(unsafe.Pointer(uintptr(start) + size*uintptr(2)))
-    s3 := *(*int)(unsafe.Pointer(uintptr(start) + size*uintptr(3)))
-    s4 := *(*int)(unsafe.Pointer(uintptr(start) + size*uintptr(4)))
-    fmt.Printf("%d %d %d %d %d\n", s0, s1, s2, s3, s4)
-}
+    <span style="color: #00538b;">start</span> := unsafe.<span style="color: #721045;">Pointer</span><span style="color: #a8007f;">(</span>&amp;s<span style="color: #005f88;">[</span>0<span style="color: #005f88;">]</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">size</span> := unsafe.<span style="color: #721045;">Sizeof</span><span style="color: #a8007f;">(</span><span style="color: #721045;">int</span><span style="color: #005f88;">(</span>0<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">s0</span> := *<span style="color: #a8007f;">(</span>*int<span style="color: #a8007f;">)(</span>unsafe.<span style="color: #721045;">Pointer</span><span style="color: #005f88;">(</span><span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">s1</span> := *<span style="color: #a8007f;">(</span>*int<span style="color: #a8007f;">)(</span>unsafe.<span style="color: #721045;">Pointer</span><span style="color: #005f88;">(</span><span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span> + size*<span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>1<span style="color: #904200;">)</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">s2</span> := *<span style="color: #a8007f;">(</span>*int<span style="color: #a8007f;">)(</span>unsafe.<span style="color: #721045;">Pointer</span><span style="color: #005f88;">(</span><span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span> + size*<span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>2<span style="color: #904200;">)</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">s3</span> := *<span style="color: #a8007f;">(</span>*int<span style="color: #a8007f;">)(</span>unsafe.<span style="color: #721045;">Pointer</span><span style="color: #005f88;">(</span><span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span> + size*<span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>3<span style="color: #904200;">)</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">s4</span> := *<span style="color: #a8007f;">(</span>*int<span style="color: #a8007f;">)(</span>unsafe.<span style="color: #721045;">Pointer</span><span style="color: #005f88;">(</span><span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span> + size*<span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>4<span style="color: #904200;">)</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Printf</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"%d %d %d %d %d\n"</span>, s0, s1, s2, s3, s4<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
 </pre>
+</div>
 
 <p>
 通过指针偏移的方式（比 C 真的麻烦不知道多少倍），获取内存中的值，输出结果为 <code>1, 2, 3, 4, 5</code> 。第二种验证想法的方式是，在 <code>five</code> 中不要 =append=，直接修改 s 的值，就会发现外部也发生的变化。
@@ -402,10 +405,11 @@ func main() {
 但是，Go 的 slice 的 slice，真有个使用上的陷阱。比如对一个 slice 做 slice 操作：
 </p>
 
-<pre class="example" id="org7bca131">
-s = []{1, 2, 3, 4, 5, 6}
-t := s[1:3]
+<div class="org-src-container">
+<pre class="src src-go">s = <span style="color: #000000;">[]{</span>1, 2, 3, 4, 5, 6<span style="color: #000000;">}</span>
+<span style="color: #00538b;">t</span> := s<span style="color: #000000;">[</span>1:3<span style="color: #000000;">]</span>
 </pre>
+</div>
 
 <p>
 s 和 t 虽然是两个不同的对象，但是完全共享同一块内存（s 的 buffer 包含 t 的 buffer），只不过他们的首地址指向不同，len 和 cap 也有可能不同。
@@ -420,28 +424,30 @@ Go <a href="https://blog.golang.org/go-slices-usage-and-internals">有篇官方�
 如果原有的 slice 很大，slice 之后的很小，因为小的 slice 一直占用内存，导致大的 buffer 一直无法释放，举个例子：
 </p>
 
-<pre class="example" id="orgaa2e3a6">
-var digitRegexp = regexp.MustCompile("[0-9]+")
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">var</span> <span style="color: #00538b;">digitRegexp</span> = regexp.<span style="color: #721045;">MustCompile</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"[0-9]+"</span><span style="color: #000000;">)</span>
 
-func FindDigits(filename string) []byte {
-    b, _ := ioutil.ReadFile(filename)
-    return digitRegexp.Find(b)
-}
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">FindDigits</span><span style="color: #000000;">(</span><span style="color: #00538b;">filename</span> <span style="color: #005a5f;">string</span><span style="color: #000000;">)</span> <span style="color: #000000;">[]</span><span style="color: #005a5f;">byte</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">b</span>, <span style="color: #00538b;">_</span> := ioutil.<span style="color: #721045;">ReadFile</span><span style="color: #a8007f;">(</span>filename<span style="color: #a8007f;">)</span>
+    <span style="color: #5317ac;">return</span> digitRegexp.<span style="color: #721045;">Find</span><span style="color: #a8007f;">(</span>b<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
 </pre>
+</div>
 
 <p>
 这会导致 <code>FindDigits</code> 返回的 <code>[]byte</code> 一直占用整个文件内容相同大小的 buffer，直到 <code>[]byte</code> 的变量释放。为了解决这个问题，在返回时新建一个所需实际大小的 buffer，然后拷贝过去，再返回。类似这样：
 </p>
 
-<pre class="example" id="org95ebde8">
-func CopyDigits(filename string) []byte {
-    b, _ := ioutil.ReadFile(filename)
-    b = digitRegexp.Find(b)
-    c := make([]byte, len(b))
-    copy(c, b)
-    return c
-}
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">CopyDigits</span><span style="color: #000000;">(</span><span style="color: #00538b;">filename</span> <span style="color: #005a5f;">string</span><span style="color: #000000;">)</span> <span style="color: #000000;">[]</span><span style="color: #005a5f;">byte</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">b</span>, <span style="color: #00538b;">_</span> := ioutil.<span style="color: #721045;">ReadFile</span><span style="color: #a8007f;">(</span>filename<span style="color: #a8007f;">)</span>
+    b = digitRegexp.<span style="color: #721045;">Find</span><span style="color: #a8007f;">(</span>b<span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">c</span> := <span style="color: #8f0075;">make</span><span style="color: #a8007f;">(</span><span style="color: #005f88;">[]</span><span style="color: #005a5f;">byte</span>, <span style="color: #8f0075;">len</span><span style="color: #005f88;">(</span>b<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #8f0075;">copy</span><span style="color: #a8007f;">(</span>c, b<span style="color: #a8007f;">)</span>
+    <span style="color: #5317ac;">return</span> c
+<span style="color: #000000;">}</span>
 </pre>
+</div>
 
 <p>
 这也是浅拷贝的带来的问题，但是 Go 的这种设计是非常「糟糕」的。理论上来讲，完全可以在做 slice 的时候做一次深拷贝来规避这个问题，这也并不符合通常程序员对 slice 操作的预期。
@@ -453,7 +459,8 @@ func CopyDigits(filename string) []byte {
 <h2 id="org4c83978"><span class="section-number-2">3.</span> 总结</h2>
 <div class="outline-text-2" id="text-3">
 <p>
-本文从一个问题入手讨论了 Go 的 Array 和 Slice 的区别、Slice 的设计以及浅拷贝可能会带来的「陷阱」。Go 官方博客有两篇博客 <a href="https://blog.golang.org/go-slices-usage-and-internals">Go Slices: usage and internals</a> 和 <a href="https://blog.golang.org/slices">Arrays, slices (and strings): The mechanics of 'append'</a> 也对相关的实现和特性做了介绍，推荐阅读。
+本文从一个问题入手讨论了 Go 的 Array 和 Slice 的区别、Slice 的设计以及浅拷贝可能会带来的「陷阱」。
+Go 官方博客有两篇博客 <a href="https://blog.golang.org/go-slices-usage-and-internals">Go Slices: usage and internals</a> 和 <a href="https://blog.golang.org/slices">Arrays, slices (and strings): The mechanics of 'append'</a> 也对相关的实现和特性做了介绍，推荐阅读。
 </p>
 </div>
 </div>
@@ -472,15 +479,12 @@ func CopyDigits(filename string) []byte {
 <ul class="org-ul">
 <li>数组是值，赋值时会把所有的数据拷贝一份</li>
 <li>如果把数组传递给函数，函数拿到的是数组的 copy ，而不是指针</li>
-<li><p>
-数组的大小是类型的一部分。 <code>[10]int</code> 和 <code>[20]int</code> 是不同的
-</p>
+<li>数组的大小是类型的一部分。 <code>[10]int</code> 和 <code>[20]int</code> 是不同的</li>
+</ul>
 
 <p>
 其实，Go 不仅仅是 C-safe language，很多的实现细节都不同，也并不是一门简单的语言。
-</p></li>
-</ul>
-
+</p>
 
 <p>
 <b>2018-09-04 15:45:14 更新：</b>
@@ -490,32 +494,33 @@ func CopyDigits(filename string) []byte {
 今天遇到个问题，默认初始化的 slices 被 json 序列化之后，值竟然是 <code>nil</code> 而不是 <code>[]</code> ，但是正常输出是却为 <code>[]</code> 。
 </p>
 
-<pre class="example" id="org3e070bd">
-package main
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">package</span> main
 
-import (
-    "encoding/json"
-    "fmt"
-)
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">(</span>
+    <span style="color: #2544bb;">"encoding/json"</span>
+    <span style="color: #2544bb;">"fmt"</span>
+<span style="color: #000000;">)</span>
 
-type T struct {
-    Xxx []int `json:"xxx"`
-}
+<span style="color: #5317ac;">type</span> <span style="color: #005a5f;">T</span> <span style="color: #5317ac;">struct</span> <span style="color: #000000;">{</span>
+    Xxx <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span> <span style="color: #2544bb;">`json:"xxx"`</span>
+<span style="color: #000000;">}</span>
 
-func main() {
-    var t T
-    fmt.Printf("%v\n", t)
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">var</span> <span style="color: #00538b;">t</span> <span style="color: #005a5f;">T</span>
+    fmt.<span style="color: #721045;">Printf</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"%v\n"</span>, t<span style="color: #a8007f;">)</span>
 
-    x, _ := json.Marshal(t)
-    fmt.Println(string(x))
-}
+    <span style="color: #00538b;">x</span>, <span style="color: #00538b;">_</span> := json.<span style="color: #721045;">Marshal</span><span style="color: #a8007f;">(</span>t<span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Println</span><span style="color: #a8007f;">(</span><span style="color: #721045;">string</span><span style="color: #005f88;">(</span>x<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
 </pre>
+</div>
 
 <p>
 输出结果为：
 </p>
 
-<pre class="example" id="orgad405a6">
+<pre class="example">
 {[]}
 {"xxx":null}
 </pre>
@@ -545,7 +550,7 @@ func main() {
 </p>
 
 <p>
-Go Slice 更蛋疼的一个地方是， 在执行 <code>append</code> 的时候，一个 <code>nil</code> 的 slice 依旧可以被 <code>append</code> ，会自动扩容。
+Go Slice 更蛋疼的一个地方是，在执行 <code>append</code> 的时候，一个 <code>nil</code> 的 slice 依旧可以被 <code>append</code> ，会自动扩容。
 但是当你对一个 <code>nil</code> 的 map 赋值直接就 crash 了，告诉你 <code>nil</code> map 不可以直接使用。WTF ？？
 </p>
 
@@ -556,7 +561,7 @@ Go Slice 更蛋疼的一个地方是， 在执行 <code>append</code> 的时候�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2022-11-01 Tue 17:48 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
