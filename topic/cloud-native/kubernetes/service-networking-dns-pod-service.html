@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-08-23 Tue 18:44 -->
+<!-- 2022-11-24 Thu 16:33 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Services 和 Pods 的 DNS</title>
@@ -231,19 +231,24 @@
 </li>
 <li><a href="#orgd69ee7d">2. Services</a>
 <ul>
-<li><a href="#org8d54633">2.1. A/AAAA 记录</a></li>
+<li><a href="#orga3bfe24">2.1. A/AAAA 记录</a></li>
 <li><a href="#orgfd3f73d">2.2. SRV 记录</a></li>
 </ul>
 </li>
 <li><a href="#org0347a27">3. Pods</a>
 <ul>
-<li><a href="#orga3bfe24">3.1. A/AAAA 记录</a></li>
+<li><a href="#org2612901">3.1. A/AAAA 记录</a></li>
 <li><a href="#org5b10d17">3.2. Pod 的主机名和子域字段</a></li>
 <li><a href="#orgeab227a">3.3. Pod 的 setHostnameAsFQDN 字段</a></li>
 <li><a href="#org950db2e">3.4. Pod 的 DNS 策略</a></li>
 <li><a href="#org0f77dfb">3.5. Pod 的 DNS 配置</a></li>
 <li><a href="#org770bdbc">3.6. 扩展 DNS 配置</a></li>
 <li><a href="#org8d45cb1">3.7. 功能可用性</a></li>
+</ul>
+</li>
+<li><a href="#org3a98845">4. 实践</a>
+<ul>
+<li><a href="#org8c4f0b4">4.1. <code>/etc/resolv.conf</code> 中的 ndots</a></li>
 </ul>
 </li>
 </ul>
@@ -282,7 +287,7 @@ DNS 的查询结果可能因为 Pod 空间而返回不同。未指定命名空�
 
 <p>
 DNS 查询会在 Pod 的 <code>/etc/resolv.conf</code> 中扩展。kubelet 会为每一个 Pod 设置这个文件。比如，查询 <code>data</code> 会被扩展成 <code>data.test.cluster.local</code> 。
-<code>search</code> 选项的值用来扩展查询。学习更多的 DNS 查询，请查看 <a href="https://www.man7.org/linux/man-pages/man5/resolv.conf.5.html"><code>resolv.conf</code> 手册</a>。
+<code>search</code> 选项的值用来扩展查询。学习更多的 DNS 查询，请查看 <a href="https://www.man7.org/linux/man-pages/man5/resolv.conf.5.html">resolv.conf 手册</a>。
 </p>
 
 <pre class="example">
@@ -292,7 +297,7 @@ options ndots:5
 </pre>
 
 <p>
-总之， <i>test</i> 空间中的 Pod 可以使用 <code>data.prod</code> 或者 <code>data.prod.svc.cluster.local</code> 来成功解析。
+总之， <code>test</code> 空间中的 Pod 可以使用 <code>data.prod</code> 或者 <code>data.prod.svc.cluster.local</code> 来成功解析。
 </p>
 </div>
 </div>
@@ -310,7 +315,8 @@ options ndots:5
 </ol>
 
 <p>
-下面各节详细介绍了受支持的记录类型和布局。其它可行的布局、名字或者查询都视为实现细节，可能会在没有警告的情况下更改。有关最新的规范，查看 <a href="https://github.com/kubernetes/dns/blob/master/docs/specification.md">Kubernetes 基于 DNS 的服务发现</a>。
+下面各节详细介绍了受支持的记录类型和布局。其它可行的布局、名字或者查询都视为实现细节，可能会在没有警告的情况下更改。
+有关最新的规范，查看 <a href="https://github.com/kubernetes/dns/blob/master/docs/specification.md">Kubernetes 基于 DNS 的服务发现</a>。
 </p>
 </div>
 </div>
@@ -320,8 +326,8 @@ options ndots:5
 <h2 id="orgd69ee7d"><span class="section-number-2">2.</span> Services</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org8d54633" class="outline-3">
-<h3 id="org8d54633"><span class="section-number-3">2.1.</span> A/AAAA 记录</h3>
+<div id="outline-container-orga3bfe24" class="outline-3">
+<h3 id="orga3bfe24"><span class="section-number-3">2.1.</span> A/AAAA 记录</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 “正常的”（不是 headless）Service 会被分配一个 DNS A 或者 AAAA 记录，值取决于 service 的 IP 集合。名字的格式为：
@@ -330,12 +336,14 @@ options ndots:5
 
 <p>
 “Headless”（没有集群 IP ）Services 也会被分配一个 DNS A 或者 AAAA 记录，值取决于 service 的 IP 集合，名字格式为：
-<code>my-svc.my-namespace.svc.cluster-domain.example</code> ，与正常 Service 不同在于，他解析的结果是 Service 的 IP 集合。客户端要从负责从集合中选择 IP（可能使用轮询策略）。
+<code>my-svc.my-namespace.svc.cluster-domain.example</code> ，与正常 Service 不同在于，他解析的结果是 Service 的 IP 集合。
+客户端要从负责从集合中选择 IP（可能使用轮询策略）。
 </p>
 
 <blockquote>
 <p>
-也就是说，正常 service DNS 解析的结果是一个 IP（由 service 的策略来控制如何从一堆的 endpoint 中选择一个），而 headless service 是把集合返回给客户端，客户端需要自己选择。
+也就是说，正常 service DNS 解析的结果是一个 IP（由 service 的策略来控制如何从一堆的 endpoint 中选择一个），而 headless
+service 是把集合返回给客户端，客户端需要自己选择。
 </p>
 </blockquote>
 </div>
@@ -346,8 +354,13 @@ options ndots:5
 <div class="outline-text-3" id="text-2-2">
 <p>
 SRC 记录是为正常或者 headless service 一部分的命名端口创建的。为每一个命名端口，SRV 记录记录的格式为：
-<code>_my-port-name._my-port-protocol.my-svc.my-namespace.svc.cluster-domain.example</code> 。对于一个正常的 service，解析的端口号和域名： <code>my-svc.my-namespace.svc.cluster-domain.example</code> 。
-对于 headless service，会被解析成多个答案，每个支持的 service 都会有一个，并且包含端口号和 Pod 域名的格式为： <code>auto-generated-name.my-svc.my-namespace.svc.cluster-domain.example</code>
+<code>my-port-name.my-port-protocol.my-svc.my-namespace.svc.cluster-domain.example</code> 。对于一个正常的 service，解析的端口号和域名：
+<code>my-svc.my-namespace.svc.cluster-domain.example</code> 。
+</p>
+
+<p>
+对于 headless service，会被解析成多个答案，每个支持的 service 都会有一个，并且包含端口号和 Pod 域名的格式为：
+<code>auto-generated-name.my-svc.my-namespace.svc.cluster-domain.example</code>
 </p>
 </div>
 </div>
@@ -357,15 +370,16 @@ SRC 记录是为正常或者 headless service 一部分的命名端口创建的�
 <h2 id="org0347a27"><span class="section-number-2">3.</span> Pods</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orga3bfe24" class="outline-3">
-<h3 id="orga3bfe24"><span class="section-number-3">3.1.</span> A/AAAA 记录</h3>
+<div id="outline-container-org2612901" class="outline-3">
+<h3 id="org2612901"><span class="section-number-3">3.1.</span> A/AAAA 记录</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 通常情况下一个 Pod 有如下的 DNS 解析： <code>pod-ip-address.my-namespace.pod.cluster-domain.example</code> 。
 </p>
 
 <p>
-比如，如果一个 pod 在 <code>default</code> 空间下， IP 地址是 172.17.0.3，集群域名为 <code>cluster.local</code> ，那么 Pod 的 DNS 名为 <code>172-17-0-3.default.pod.cluster.local</code> 。
+比如，如果一个 pod 在 <code>default</code> 空间下， IP 地址是 172.17.0.3，集群域名为 <code>cluster.local</code> ，那么 Pod 的 DNS 名为
+<code>172-17-0-3.default.pod.cluster.local</code> 。
 </p>
 </div>
 </div>
@@ -382,8 +396,8 @@ Pod spec 中有一个可选的 <code>hostname</code> 字段，用于指定 Pod �
 </p>
 
 <p>
-Pod 还有一个可选的 <code>subdomain</code> 字段，用来指定他的子域。比如说， Pod <code>hostname</code> 是 <code>foo</code> ， <code>subdomain</code> 是 <code>bar</code> ，所在空间为 <code>my-namespace</code> ，他的 FQDN 为：
-<code>foo.bar.my-namespace.svc.cluster-domain.example</code> 。
+Pod 还有一个可选的 <code>subdomain</code> 字段，用来指定他的子域。比如说， Pod <code>hostname</code> 是 <code>foo</code> ， <code>subdomain</code> 是 <code>bar</code> ，
+所在空间为 <code>my-namespace</code> ，他的 FQDN 为： <code>foo.bar.my-namespace.svc.cluster-domain.example</code> 。
 </p>
 
 <p>
@@ -414,8 +428,8 @@ TODO
 
 <ul class="org-ul">
 <li><code>default</code> 从 Pod 运行节点继承解析配置，从 <a href="https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#inheriting-dns-from-the-node">关联的讨论</a> 查看更多；</li>
-<li><code>ClusterFirst</code> 与集群配置不匹配的 DNS 查询，比如 <code>www.kubernetes.io</code> 会转发到节点继承的上游 nameserver。集群管理员可能配置了额外的存根域和上游 DNS 服务器。
-关于 DNS 查询如何处理这些场景，查看 <a href="https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#effects-on-pods">相关讨论</a>；</li>
+<li><code>ClusterFirst</code> 与集群配置不匹配的 DNS 查询，比如 <code>www.kubernetes.io</code> 会转发到节点继承的上游 nameserver。
+集群管理员可能配置了额外的存根域和上游 DNS 服务器。关于 DNS 查询如何处理这些场景，查看 <a href="https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#effects-on-pods">相关讨论</a>；</li>
 <li><code>ClusterFirstWithHostNet</code> 对于使用 hostNetwork 的运行中 Pod，你需要显式的指定 DNS 策略为 <code>ClusterFirstWithHostNet</code> ；</li>
 <li><code>None</code> 他允许忽略从 Kubernetes 环境中的 DNS 设置。所有的 DNS 设置都应该使用 Pod Spec 中的 <code>dnsConfig</code> 来提供；</li>
 </ul>
@@ -473,8 +487,9 @@ TODO
 </div>
 
 <p>
-如果在于 Pod 相同的命名空间中存在 headless 服务并且与子域具有相同的名称。集群的 DNS 服务器也为 Pod 的完全限定域名返回 A 或 AAAA 记录。比如说，给定的 Pod 的 hostname 设置
-成为 <code>busybox-1</code> 子域设置成为 <code>default-subdomain</code> ，相同的空间下 headless service 命名为 <code>default-subdomain</code> ，Pod 会看到自己的 FQDN 是 <code>busybox-1.default-subdomain.my-namespace.svc.cluster-domain.example</code>
+如果在于 Pod 相同的命名空间中存在 headless 服务并且与子域具有相同的名称。集群的 DNS 服务器也为 Pod 的完全限定域名返回 A
+或 AAAA 记录。比如说，给定的 Pod 的 hostname 设置成为 <code>busybox-1</code> 子域设置成为 <code>default-subdomain</code> ，相同的空间下 headless
+service 命名为 <code>default-subdomain</code> ，Pod 会看到自己的 FQDN 是 <code>busybox-1.default-subdomain.my-namespace.svc.cluster-domain.example</code>
 DNS 以该名称提供 A 或者 AAAA 记录，指向 Pod 的 IP。 <code>busybox1</code> 和 <code>busybox2</code> 有独立的 A 或者 AAAA 记录。
 </p>
 
@@ -484,8 +499,9 @@ Endpoints 对象可以制定任何 endpoint 地址的 <code>hostname</code> ，�
 
 <blockquote>
 <p>
-<b>注意：</b> 由于 A 和 AAAA 不会为 Pod 名字创建， 所以在创建 A 或者 AAAA 记录时 <code>hostname</code> 是必要的。Pod 没有 <code>hostname</code> 但是有 <code>subdomain</code> 会只会为 headless service 创建 A 或者 AAAA 记录(
-<code>default-subdomain.my-namespace.svc.cluster-domain.example</code>)，指向 Pod 的 IP 地址。此外，除非在 Service 上设置了 <code>publishNotReadyAddresses=True</code> ，否则 Pod 需要就绪之后才能有记录。
+<b>注意：</b> 由于 A 和 AAAA 不会为 Pod 名字创建， 所以在创建 A 或者 AAAA 记录时 <code>hostname</code> 是必要的。Pod 没有 <code>hostname</code>
+但是有 <code>subdomain</code> 会只会为 headless service 创建 A 或者 AAAA 记录(<code>default-subdomain.my-namespace.svc.cluster-domain.example</code>)，
+指向 Pod 的 IP 地址。此外，除非在 Service 上设置了 <code>publishNotReadyAddresses=True</code> ，否则 Pod 需要就绪之后才能有记录。
 </p>
 </blockquote>
 </div>
@@ -571,8 +587,7 @@ options ndots:2 edns0
 
 <div class="org-src-container">
 <pre class="src src-conf">nameserver fd00:79:30::a
-search default.svc.cluster-domain.example svc.cluster-domain.example cluster-domain.example
-options ndots:5
+search default.svc.cluster-domain.example svc.cluster-domain.example cluster-domain.exampleoptions ndots:5
 </pre>
 </div>
 </div>
@@ -636,9 +651,77 @@ Pod 的 DNS 配置和 DNS 策略 <code>None</code> 可用性如下所示：
 </div>
 </div>
 </div>
+
+<div id="outline-container-org3a98845" class="outline-2">
+<h2 id="org3a98845"><span class="section-number-2">4.</span> 实践</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org8c4f0b4" class="outline-3">
+<h3 id="org8c4f0b4"><span class="section-number-3">4.1.</span> <code>/etc/resolv.conf</code> 中的 ndots</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+如上，每个集群中 Pod 的 <code>/etc/resolv.conf</code> 中的内容大概为
+</p>
+
+<pre class="example">
+nameserver 10.32.0.10
+search &lt;namespace&gt;.svc.cluster.local svc.cluster.local cluster.local
+options ndots:5
+</pre>
+
+<p>
+其中 nameserver 和 search 分别表示 DNS 地址和搜索域。
+</p>
+
+<p>
+比较关键的是 <code>ndots</code> 的含义。他表示请求域名的中的 <code>.</code> 的数量，当域名的 <code>.</code> 数量小于 <code>5</code> 时，会从 search 从依次填充后
+缀再从 DNS 服务器中查找。当大于等于 5 时，会直接对域名本身进行解析，然后再在搜索域列表中搜索。什么意思呢？
+</p>
+
+<p>
+假设你要访问 <code>api.github.com</code> ，点数小于 5， 那他的查找顺序为
+</p>
+
+<ol class="org-ol">
+<li><code>api.github.com.&lt;namespace&gt;.svc.cluster.local</code></li>
+<li><code>api.github.com.svc.cluster.local</code></li>
+<li><code>api.github.com.cluster.local</code></li>
+<li><code>api.github.com</code></li>
+</ol>
+
+<p>
+在这种情况下，访问外部域名会有大量的无效查询导致 dnslookup 变慢，也会增加 CoreDNS 的压力。
+</p>
+
+<p>
+优化的办法是改小 ndots 的值， <code>ndots:2</code> 可能是一个好的选择。为什么呢？search 域在 K8s 集群中是为了做服务发现，上面文章内
+容里有说明原理。在实际使用集群时，会用到的基本就两种情况：
+</p>
+
+<ul class="org-ul">
+<li>本空间短域名访问 <code>svc:port</code></li>
+<li>跨空间短域名访问 <code>svc.namespace:port</code></li>
+</ul>
+
+<p>
+所以 ndots 为 2 时，足够覆盖这两种场景。如何实现自动修改呢？
+</p>
+
+<ol class="org-ol">
+<li>pod 的 yaml 中 <code>dnsConfig</code> 可以修改 resolv 的内容；</li>
+<li>K8s 提供了 adminssion controller，用于在 Pod 的创建中做一些额外的事情。可以利用 adminession controller 的机制，
+来自动化完成 dns 的注入。具体可见 <a href="https://blog.opskumu.com/kubernetes-mutating-webhook.html">自定义 Kubernetes 准入控制器</a>。</li>
+</ol>
+
+<p>
+更多：<a href="https://pracucci.com/kubernetes-dns-resolution-ndots-options-and-why-it-may-affect-application-performances.html">https://pracucci.com/kubernetes-dns-resolution-ndots-options-and-why-it-may-affect-application-performances.html</a>
+</p>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-02-09 16:50:29 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2021-02-09 16:50:29 <br />Last updated: 2022-11-24 Thu 16:33 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
 </div>
 </body>
 </html>
