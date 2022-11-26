@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-11-24 Thu 16:33 -->
+<!-- 2022-11-26 Sat 16:33 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Rate Limiting</title>
@@ -234,8 +234,9 @@
 </ul>
 </li>
 <li><a href="#org7f625e3">3. 算法的开源实现</a></li>
-<li><a href="#orgde3b7ad">4. 总评</a></li>
-<li><a href="#orge6cb32d">5. 扩展资料</a></li>
+<li><a href="#orgf3f61bb">4. 我自己的实现</a></li>
+<li><a href="#orgde3b7ad">5. 总评</a></li>
+<li><a href="#orge6cb32d">6. 扩展资料</a></li>
 </ul>
 </div>
 </div>
@@ -294,7 +295,7 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </p>
 
 
-<div id="org81d4dec" class="figure">
+<div id="org84ba1b0" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2022/token_bucket.png" alt="token_bucket.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>image via <a href="https://dev.to/satrobit/rate-limiting-using-the-token-bucket-algorithm-3cjh">https://dev.to/satrobit/rate-limiting-using-the-token-bucket-algorithm-3cjh</a></p>
@@ -319,14 +320,14 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 <h3 id="org28fa190"><span class="section-number-3">2.2.</span> 漏桶法（Leaky bucket）</h3>
 <div class="outline-text-3" id="text-2-2">
 
-<div id="orga7774f9" class="figure">
+<div id="orgc64feb3" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2022/leaky_bucket.png" alt="leaky_bucket.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>image via <a href="https://betterprogramming.pub/4-rate-limit-algorithms-every-developer-should-know-7472cb482f48">https://betterprogramming.pub/4-rate-limit-algorithms-every-developer-should-know-7472cb482f48</a></p>
 </div>
 
 <p>
-想想有一个桶，桶中放着所有要处理的请求。水滴的速度用来控制请求什么时候被处理。
+想象有一个桶，桶中放着所有要处理的请求。水滴的速度用来控制请求什么时候被处理。
 </p>
 
 <ol class="org-ol">
@@ -345,7 +346,7 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </p>
 
 
-<div id="org4e1afaa" class="figure">
+<div id="org05b4234" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2022/fixed_window.png" alt="fixed_window.png" />
 </p>
 <p><span class="figure-number">Figure 3: </span>image via <a href="https://dev.to/satrobit/rate-limiting-using-the-fixed-window-algorithm-2hgm">https://dev.to/satrobit/rate-limiting-using-the-fixed-window-algorithm-2hgm</a></p>
@@ -361,7 +362,7 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 <h3 id="org9d79596"><span class="section-number-3">2.4.</span> 滑动日志（Sliding log）</h3>
 <div class="outline-text-3" id="text-2-4">
 
-<div id="org859eaba" class="figure">
+<div id="org8e2d952" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2022/sliding_log.png" alt="sliding_log.png" />
 </p>
 <p><span class="figure-number">Figure 4: </span>image via <a href="https://www.quinbay.com/blog/rate-limiter-implementation-sliding-log-algorithm">https://www.quinbay.com/blog/rate-limiter-implementation-sliding-log-algorithm</a></p>
@@ -377,10 +378,10 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 <h3 id="org0265061"><span class="section-number-3">2.5.</span> 滑动窗口（Sliding Window）</h3>
 <div class="outline-text-3" id="text-2-5">
 
-<div id="org8cc63e5" class="figure">
+<div id="orge09b270" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2022/sliding_window.png" alt="sliding_window.png" />
 </p>
-<p><span class="figure-number">Figure 5: </span>image via <img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2022/sliding_window.png" alt="sliding_window.png" /></p>
+<p><span class="figure-number">Figure 5: </span>image via <a href="https://dev.to/satrobit/rate-limiting-using-the-sliding-window-algorithm-5fjn">https://dev.to/satrobit/rate-limiting-using-the-sliding-window-algorithm-5fjn</a></p>
 </div>
 
 <p>
@@ -392,7 +393,7 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </p>
 
 <p>
-如上图，假设一分钟总的限制是 50，当前时间为 <code>01:20</code> ，已经计数了 20 。
+如上图，假设一分钟消耗为 50，当前时间为 <code>01:20</code> ，已经计数了 20 。
 </p>
 
 <ol class="org-ol">
@@ -420,9 +421,23 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 
-<div id="outline-container-orgde3b7ad" class="outline-2">
-<h2 id="orgde3b7ad"><span class="section-number-2">4.</span> 总评</h2>
+<div id="outline-container-orgf3f61bb" class="outline-2">
+<h2 id="orgf3f61bb"><span class="section-number-2">4.</span> 我自己的实现</h2>
 <div class="outline-text-2" id="text-4">
+<p>
+<a href="https://github.com/zhangjie2012/yo-ratelimit">https://github.com/zhangjie2012/yo-ratelimit</a>
+</p>
+
+<p>
+分别实现了 token-bucket 和 sliding-window 两种算法。我的场景是需要针对单个 IP 或者用户请求进行限流，
+所以额外加了一个 <code>RateLimitPool</code> 的实现。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgde3b7ad" class="outline-2">
+<h2 id="orgde3b7ad"><span class="section-number-2">5.</span> 总评</h2>
+<div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>漏桶的好处是任何时候流量都是非常均匀的，问题是无法处理流量不均匀或者突发（burst）情况（会被阻塞），特定场景才会使用；</li>
 <li>令牌桶解决了漏桶无法处理突发流量的问题，能够处理上游的不均匀流量；</li>
@@ -438,8 +453,8 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 
 <div id="outline-container-orge6cb32d" class="outline-2">
-<h2 id="orge6cb32d"><span class="section-number-2">5.</span> 扩展资料</h2>
-<div class="outline-text-2" id="text-5">
+<h2 id="orge6cb32d"><span class="section-number-2">6.</span> 扩展资料</h2>
+<div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li><a href="https://hechao.li/2018/06/25/Rate-Limiter-Part1/">Rate limiting Part 1</a>，<a href="https://hechao.li/2018/06/27/Rate-Limiter-Part2/">Rate limiting Part 2</a> 推荐这两篇文章</li>
 <li><a href="https://builtin.com/software-engineering-perspectives/pre-emptive-client-side-rate-limiting">Effectively Managing Rate Limiting APIs</a> 推荐</li>
@@ -452,7 +467,7 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2022-11-22 14:17:55 <br />Last updated: 2022-11-24 Thu 16:33 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2022-11-22 14:17:55 <br />Last updated: 2022-11-26 Sat 16:33 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
