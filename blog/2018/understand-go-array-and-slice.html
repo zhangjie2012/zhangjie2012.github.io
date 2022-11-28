@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-11-01 Tue 17:48 -->
+<!-- 2022-11-28 Mon 20:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>理解 Go 的 Array 和 slice</title>
-<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,10 +223,10 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org223ddcc">1. Array</a></li>
-<li><a href="#orgd4f7397">2. Slice</a></li>
-<li><a href="#org4c83978">3. 总结</a></li>
-<li><a href="#org071abc2">4. 更新记录</a></li>
+<li><a href="#org1b8f3d3">1. Array</a></li>
+<li><a href="#org091c623">2. Slice</a></li>
+<li><a href="#orgb4d5e23">3. 总结</a></li>
+<li><a href="#org98cc689">4. 更新记录</a></li>
 </ul>
 </div>
 </div>
@@ -234,53 +234,56 @@
 今早 <a href="https://blog.opskumu.com/">磊磊</a> 在 Twitter 上看到一条消息，大致意思是问下面代码的执行结果是什么：
 </p>
 
-<pre class="example" id="org1ead648">
-package main
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">package</span> main
 
-import "fmt"
+<span style="color: #5317ac;">import</span> <span style="color: #2544bb;">"fmt"</span>
 
-func four(s []int) {
-    s = append(s, 4)
-}
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">four</span><span style="color: #000000;">(</span><span style="color: #00538b;">s</span> <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    s = <span style="color: #8f0075;">append</span><span style="color: #a8007f;">(</span>s, 4<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
 
-func main() {
-    s := []int{1, 2, 3}
-    four(s)
-    fmt.Println(s)
-}
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">s</span> := <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #a8007f;">{</span>1, 2, 3<span style="color: #a8007f;">}</span>
+    <span style="color: #721045;">four</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Println</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
 </pre>
+</div>
 
 <p>
 可选的结果是：
 </p>
 
 <ol class="org-ol">
-<li>[1, 2, 3, 4]</li>
-<li>[4]</li>
-<li>[1, 2, 3]</li>
+<li><code>[1, 2, 3, 4]</code></li>
+<li><code>[4]</code></li>
+<li><code>[1, 2, 3]</code></li>
 <li>compile error</li>
 </ol>
 
 <p>
-乍一看结果是 <code>[1, 2, 3, 4]</code> ，毕竟向 s 中添加了一个元素。我对 Go 的细节了解不多，所以是按照已有的 C 的 Array 和 C++ 的 vector 的知识来理解 Go 的 slice。
-本以为像 Go这样一个比较「先进」的语言，自然会规避这种深浅拷贝的问题，但实际上并没有，所以对这道题有点迷糊。于是就花时间研究了一下 Go 中的 Array 和 Slice。
+乍一看结果是 <code>[1, 2, 3, 4]</code> ，毕竟向 s 中添加了一个元素。我对 Go 的细节了解不多，所以是按照已有的 C 的 Array 和 C++ 的
+vector 的知识来理解 Go 的 slice。本以为像 Go 这样一个比较「先进」的语言，自然会规避这种深浅拷贝的问题，但实际上并没有，
+所以对这道题有点迷糊。于是就花时间研究了一下 Go 中的 Array 和 Slice。
 </p>
 
-<div id="outline-container-org223ddcc" class="outline-2">
-<h2 id="org223ddcc"><span class="section-number-2">1.</span> Array</h2>
+<div id="outline-container-org1b8f3d3" class="outline-2">
+<h2 id="org1b8f3d3"><span class="section-number-2">1.</span> Array</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-Go 中的 Array 是通过 <code>[n]int</code> 这种样式来声明的，一如数据结构学到的那样，Array 必须是固定长度的。Go 的 Array（我一直拿 C 的 Array 类比）可以理解成一个像 int 一样的内置类型，是一块连续的内存结构，比较好理解。
+Go 中的 Array 是通过 <code>[n]int</code> 这种样式来声明的，一如数据结构学到的那样，Array 必须是固定长度的。Go 的 Array（我一直拿 C
+的 Array 类比）可以理解成一个像 int 一样的内置类型，是一块连续的内存结构，比较好理解。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd4f7397" class="outline-2">
-<h2 id="orgd4f7397"><span class="section-number-2">2.</span> Slice</h2>
+<div id="outline-container-org091c623" class="outline-2">
+<h2 id="org091c623"><span class="section-number-2">2.</span> Slice</h2>
 <div class="outline-text-2" id="text-2">
 <p>
-实际编码过程中， Array 逐渐满足不了需求，比如一个解析 HTTP 请求的 body 体或者从文件读入内容，不好提前知道内容的长度，所以大部分时候都需要变长的 Array 。
-slice 就是实现了「可变长度的 Array 」的抽象，类似 C++ 中的 vector。
+实际编码过程中， Array 逐渐满足不了需求，比如一个解析 HTTP 请求的 body 体或者从文件读入内容，不好提前知道内容的长度，
+所以大部分时候都需要变长的 Array 。 slice 就是实现了“可变长度的 Array”的抽象，类似 C++ 中的 vector。
 </p>
 
 <p>
@@ -304,7 +307,8 @@ C++ 中的 vector 也是类似的实现，只不过它提供了拷贝构造函�
 </p>
 
 <p>
-再回到刚才之前的问题上，当把 s 传递给 four 的时候是一次浅拷贝，为了没有命名歧义，four 中的传入的 s 先叫成 sc。传参类似于做了 <code>sc = s</code> 的操作：
+再回到刚才之前的问题上，当把 s 传递给 four 的时候是一次浅拷贝，为了没有命名歧义，four 中的传入的 s 先叫成 sc。传参类似于
+做了 <code>sc = s</code> 的操作：
 </p>
 
 <div class="org-src-container">
@@ -315,15 +319,18 @@ sc.cap = s.cap
 </div>
 
 <p>
-len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改 sc 中的 len 和 cap 不会影响 s 的 len 和 cap，但是修改 buffer 的内容则会影响外部的 s。
+len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改 sc 中的 len 和 cap 不会影响 s 的 len 和 cap，但是修改 buffer
+的内容则会影响外部的 s。
 </p>
 
 <p>
-当执行 <code>append(s, 4)</code> 的时候， <code>sc.buffer</code> 容量不足，触发了扩容操作，扩容结束之后 <code>sc.buffer</code> 则指向了一个新的内容空间，自此 sc 和 s 就再无瓜葛了。
+当执行 <code>append(s, 4)</code> 的时候， <code>sc.buffer</code> 容量不足，触发了扩容操作，扩容结束之后 <code>sc.buffer</code> 则指向了一个新的内容空间，
+自此 sc 和 s 就再无瓜葛了。
 </p>
 
 <p>
-所以说，广义上这道题的答案是函数内部修改是否会影响外部，取决于 buffer 的容量是否足够，是否引起 slice 的扩容操作，狭义上的答案是 <code>[1, 2, 3]</code> 。
+所以说，广义上这道题的答案是函数内部修改是否会影响外部，取决于 buffer 的容量是否足够，是否引起 slice 的扩容操作，狭义上
+的答案是 <code>[1, 2, 3]</code> 。
 </p>
 
 <p>
@@ -351,11 +358,13 @@ len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改
 </div>
 
 <p>
-输出的结果是: <code>[1 2 3 4]</code> 而不是 <code>[1 2 3 4 5]</code> 。那么问题来了，在容量充足的情况下，内部的 buffer 和外部的 buffer 相同，那么 <code>append</code> 的之后，s 怎么没有发生变化呢？
+输出的结果是: <code>[1 2 3 4]</code> 而不是 <code>[1 2 3 4 5]</code> 。那么问题来了，在容量充足的情况下，内部的 buffer 和外部的 buffer 相同，
+那么 <code>append</code> 的之后，s 怎么没有发生变化呢？
 </p>
 
 <p>
-答案很简单，因为扩展长度之后 five 外部的 s 的 <code>len</code> 并没有发生变化，只是内存中的 buffer 修改了值而已，外部 s 输出的时候，会按照 len 做限制。
+答案很简单，因为扩展长度之后 five 外部的 s 的 <code>len</code> 并没有发生变化，只是内存中的 buffer 修改了值而已，外部 s 输出的时候，
+会按照 len 做限制。
 </p>
 
 <p>
@@ -394,7 +403,8 @@ len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改
 </div>
 
 <p>
-通过指针偏移的方式（比 C 真的麻烦不知道多少倍），获取内存中的值，输出结果为 <code>1, 2, 3, 4, 5</code> 。第二种验证想法的方式是，在 <code>five</code> 中不要 =append=，直接修改 s 的值，就会发现外部也发生的变化。
+通过指针偏移的方式（比 C 真的麻烦不知道多少倍），获取内存中的值，输出结果为 <code>1, 2, 3, 4, 5</code> 。第二种验证想法的方式是，在
+ <code>five</code> 中不要 <code>append</code> ，直接修改 s 的值，就会发现外部也发生的变化。
 </p>
 
 <p>
@@ -412,7 +422,8 @@ len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改
 </div>
 
 <p>
-s 和 t 虽然是两个不同的对象，但是完全共享同一块内存（s 的 buffer 包含 t 的 buffer），只不过他们的首地址指向不同，len 和 cap 也有可能不同。
+s 和 t 虽然是两个不同的对象，但是完全共享同一块内存（s 的 buffer 包含 t 的 buffer），只不过他们的首地址指向不同，len 和
+cap 也有可能不同。
 </p>
 
 <p>
@@ -420,8 +431,9 @@ s 和 t 虽然是两个不同的对象，但是完全共享同一块内存（s �
 </p>
 
 <p>
-Go <a href="https://blog.golang.org/go-slices-usage-and-internals">有篇官方博客</a> 中的 A possible "gotcha"，说：因为这种设计，可能会导致内存的浪费。众所周知，Go 的有垃圾回收机制的，但是当做 slice 的 slice 时，
-如果原有的 slice 很大，slice 之后的很小，因为小的 slice 一直占用内存，导致大的 buffer 一直无法释放，举个例子：
+Go <a href="https://blog.golang.org/go-slices-usage-and-internals">有篇官方博客</a> 中的 A possible "gotcha"，说：因为这种设计，可能会导致内存的浪费。众所周知，Go 的有垃圾回收机制的，但是
+当做 slice 的 slice 时，如果原有的 slice 很大，slice 之后的很小，因为小的 slice 一直占用内存，导致大的 buffer 一直无法释
+放，举个例子：
 </p>
 
 <div class="org-src-container">
@@ -435,7 +447,8 @@ Go <a href="https://blog.golang.org/go-slices-usage-and-internals">有篇官方�
 </div>
 
 <p>
-这会导致 <code>FindDigits</code> 返回的 <code>[]byte</code> 一直占用整个文件内容相同大小的 buffer，直到 <code>[]byte</code> 的变量释放。为了解决这个问题，在返回时新建一个所需实际大小的 buffer，然后拷贝过去，再返回。类似这样：
+这会导致 <code>FindDigits</code> 返回的 <code>[]byte</code> 一直占用整个文件内容相同大小的 buffer，直到 <code>[]byte</code> 的变量释放。为了解决这个问题，
+在返回时新建一个所需实际大小的 buffer，然后拷贝过去，再返回。类似这样：
 </p>
 
 <div class="org-src-container">
@@ -450,23 +463,28 @@ Go <a href="https://blog.golang.org/go-slices-usage-and-internals">有篇官方�
 </div>
 
 <p>
-这也是浅拷贝的带来的问题，但是 Go 的这种设计是非常「糟糕」的。理论上来讲，完全可以在做 slice 的时候做一次深拷贝来规避这个问题，这也并不符合通常程序员对 slice 操作的预期。
+这也是浅拷贝的带来的问题，但是 Go 的这种设计是非常「糟糕」的。理论上来讲，完全可以在做 slice 的时候做一次深拷贝来规避这
+个问题，这也并不符合通常程序员对 slice 操作的预期。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org4c83978" class="outline-2">
-<h2 id="org4c83978"><span class="section-number-2">3.</span> 总结</h2>
+<div id="outline-container-orgb4d5e23" class="outline-2">
+<h2 id="orgb4d5e23"><span class="section-number-2">3.</span> 总结</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 本文从一个问题入手讨论了 Go 的 Array 和 Slice 的区别、Slice 的设计以及浅拷贝可能会带来的「陷阱」。
-Go 官方博客有两篇博客 <a href="https://blog.golang.org/go-slices-usage-and-internals">Go Slices: usage and internals</a> 和 <a href="https://blog.golang.org/slices">Arrays, slices (and strings): The mechanics of 'append'</a> 也对相关的实现和特性做了介绍，推荐阅读。
+</p>
+
+<p>
+Go 官方博客有两篇博客 <a href="https://blog.golang.org/go-slices-usage-and-internals">Go Slices: usage and internals</a> 和 <a href="https://blog.golang.org/slices">Arrays, slices (and strings): The mechanics of 'append'</a> 也对相关
+的实现和特性做了介绍，推荐阅读。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org071abc2" class="outline-2">
-<h2 id="org071abc2"><span class="section-number-2">4.</span> 更新记录</h2>
+<div id="outline-container-org98cc689" class="outline-2">
+<h2 id="org98cc689"><span class="section-number-2">4.</span> 更新记录</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 <b>2018-07-24 16:55:03 更新：</b>
@@ -526,7 +544,8 @@ Go 官方博客有两篇博客 <a href="https://blog.golang.org/go-slices-usage-
 </pre>
 
 <p>
-这个行为真的很奇怪，按说一个结果的输出结果和他 json 序列化的值应该是保持一致的。网上对这个讨论也比较多，比如这个 <a href="https://github.com/golang/go/issues/2278">#issue</a>，之前是 <code>[]</code> ，后来改成了 null，具体可以看这次 <a href="https://github.com/golang/go/commit/48c75c5f9c8e97b87fbd8f24dffa73d6b2148691">提交记录</a>。
+这个行为真的很奇怪，按说一个结果的输出结果和他 json 序列化的值应该是保持一致的。网上对这个讨论也比较多，比如这个 <a href="https://github.com/golang/go/issues/2278">#issue</a>，
+之前是 <code>[]</code> ，后来改成了 null，具体可以看这次 <a href="https://github.com/golang/go/commit/48c75c5f9c8e97b87fbd8f24dffa73d6b2148691">提交记录</a>。
 </p>
 
 <p>
@@ -561,7 +580,7 @@ Go Slice 更蛋疼的一个地方是，在执行 <code>append</code> 的时候�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2022-11-01 Tue 17:48 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2022-11-28 Mon 19:52 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-11-01 Tue 17:48 -->
+<!-- 2022-11-28 Mon 20:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ingress-nginx 工作原理（下）：服务启动、运行和停止</title>
-<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,10 +223,10 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgfd8db5b">1. 服务启动</a></li>
-<li><a href="#org9d66f40">2. 服务运行</a></li>
-<li><a href="#orga58161a">3. 服务终止</a></li>
-<li><a href="#org36bfa56">4. syncIngress</a></li>
+<li><a href="#org6e10edf">1. 服务启动</a></li>
+<li><a href="#org81ef007">2. 服务运行</a></li>
+<li><a href="#orgd756f9c">3. 服务终止</a></li>
+<li><a href="#orgf67951a">4. syncIngress</a></li>
 </ul>
 </div>
 </div>
@@ -234,8 +234,8 @@
 <a href="ingress-nginx-code-analysis-1.html">接上文。</a>
 </p>
 
-<div id="outline-container-orgfd8db5b" class="outline-2">
-<h2 id="orgfd8db5b"><span class="section-number-2">1.</span> 服务启动</h2>
+<div id="outline-container-org6e10edf" class="outline-2">
+<h2 id="org6e10edf"><span class="section-number-2">1.</span> 服务启动</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 在 <code>main</code> 中 <code>ngx.Start()</code> 将启动服务。
@@ -322,8 +322,8 @@
 </div>
 </div>
 
-<div id="outline-container-org9d66f40" class="outline-2">
-<h2 id="org9d66f40"><span class="section-number-2">2.</span> 服务运行</h2>
+<div id="outline-container-org81ef007" class="outline-2">
+<h2 id="org81ef007"><span class="section-number-2">2.</span> 服务运行</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 服务正常运行是不断从 K8s 接受资源变更事件，然后转换成 nginx 新配置，进而 reload nginx 的过程。
@@ -348,8 +348,8 @@
 </div>
 </div>
 
-<div id="outline-container-orga58161a" class="outline-2">
-<h2 id="orga58161a"><span class="section-number-2">3.</span> 服务终止</h2>
+<div id="outline-container-orgd756f9c" class="outline-2">
+<h2 id="orgd756f9c"><span class="section-number-2">3.</span> 服务终止</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 上面的 <code>for ... select</code> 中的 <code>case &lt;-n.stopCh</code> ，等 <code>stopCh</code> 有数据时，for 循环 break，服务正常结束。
@@ -434,8 +434,8 @@
 </div>
 </div>
 
-<div id="outline-container-org36bfa56" class="outline-2">
-<h2 id="org36bfa56"><span class="section-number-2">4.</span> syncIngress</h2>
+<div id="outline-container-orgf67951a" class="outline-2">
+<h2 id="orgf67951a"><span class="section-number-2">4.</span> syncIngress</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-go"><span style="color: #505050;">// </span><span style="color: #505050;">ingress/controller/controller.go</span>
@@ -547,7 +547,7 @@ store.<span style="color: #721045;">syncSecrets</span><span style="color: #00000
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2022-11-01 Tue 17:48 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

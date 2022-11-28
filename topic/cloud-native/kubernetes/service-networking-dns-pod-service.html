@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-11-24 Thu 16:33 -->
+<!-- 2022-11-28 Mon 20:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Services 和 Pods 的 DNS</title>
-<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,32 +223,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgbd2a649">1. 介绍</a>
+<li><a href="#org2741f02">1. 介绍</a>
 <ul>
-<li><a href="#orgbc38a9a">1.1. Services 的命名空间</a></li>
-<li><a href="#org7d1ef86">1.2. DNS 记录</a></li>
+<li><a href="#org85f9b81">1.1. Services 的命名空间</a></li>
+<li><a href="#org5eacd39">1.2. DNS 记录</a></li>
 </ul>
 </li>
-<li><a href="#orgd69ee7d">2. Services</a>
+<li><a href="#org0408a5e">2. Services</a>
 <ul>
-<li><a href="#orga3bfe24">2.1. A/AAAA 记录</a></li>
-<li><a href="#orgfd3f73d">2.2. SRV 记录</a></li>
+<li><a href="#orgdd57107">2.1. A/AAAA 记录</a></li>
+<li><a href="#org9cdb4b7">2.2. SRV 记录</a></li>
 </ul>
 </li>
-<li><a href="#org0347a27">3. Pods</a>
+<li><a href="#org1d1de97">3. Pods</a>
 <ul>
-<li><a href="#org2612901">3.1. A/AAAA 记录</a></li>
-<li><a href="#org5b10d17">3.2. Pod 的主机名和子域字段</a></li>
-<li><a href="#orgeab227a">3.3. Pod 的 setHostnameAsFQDN 字段</a></li>
-<li><a href="#org950db2e">3.4. Pod 的 DNS 策略</a></li>
-<li><a href="#org0f77dfb">3.5. Pod 的 DNS 配置</a></li>
-<li><a href="#org770bdbc">3.6. 扩展 DNS 配置</a></li>
-<li><a href="#org8d45cb1">3.7. 功能可用性</a></li>
+<li><a href="#org3e52035">3.1. A/AAAA 记录</a></li>
+<li><a href="#org47f3965">3.2. Pod 的主机名和子域字段</a></li>
+<li><a href="#org1502f6d">3.3. Pod 的 setHostnameAsFQDN 字段</a></li>
+<li><a href="#org6022f28">3.4. Pod 的 DNS 策略</a></li>
+<li><a href="#org57c49e5">3.5. Pod 的 DNS 配置</a></li>
+<li><a href="#org82d363e">3.6. 扩展 DNS 配置</a></li>
+<li><a href="#org0431184">3.7. 功能可用性</a></li>
 </ul>
 </li>
-<li><a href="#org3a98845">4. 实践</a>
+<li><a href="#orgdf02510">4. 实践</a>
 <ul>
-<li><a href="#org8c4f0b4">4.1. <code>/etc/resolv.conf</code> 中的 ndots</a></li>
+<li><a href="#orgf6607ae">4.1. <code>/etc/resolv.conf</code> 中的 ndots</a></li>
 </ul>
 </li>
 </ul>
@@ -258,8 +258,8 @@
 Kubernetes 会为 services 和 pods 创建 DNS 记录。你可以通过统一的 DNS 名字代替 IP 地访问 services。
 </p>
 
-<div id="outline-container-orgbd2a649" class="outline-2">
-<h2 id="orgbd2a649"><span class="section-number-2">1.</span> 介绍</h2>
+<div id="outline-container-org2741f02" class="outline-2">
+<h2 id="org2741f02"><span class="section-number-2">1.</span> 介绍</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Kubernetes DNS 集群上的调度 DNS Pod 和 Service，并配置 kubelet 告诉各个容器使用 DNS 的服务 IP 来解析 DNS 名字。
@@ -270,8 +270,8 @@ Kubernetes DNS 集群上的调度 DNS Pod 和 Service，并配置 kubelet 告诉
 </p>
 </div>
 
-<div id="outline-container-orgbc38a9a" class="outline-3">
-<h3 id="orgbc38a9a"><span class="section-number-3">1.1.</span> Services 的命名空间</h3>
+<div id="outline-container-org85f9b81" class="outline-3">
+<h3 id="org85f9b81"><span class="section-number-3">1.1.</span> Services 的命名空间</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 DNS 的查询结果可能因为 Pod 空间而返回不同。未指定命名空间的 DNS 查询仅限于 Pod 所在空间。在 DNS 查询中指定命名空间来访问其他空间的服务。
@@ -302,8 +302,8 @@ options ndots:5
 </div>
 </div>
 
-<div id="outline-container-org7d1ef86" class="outline-3">
-<h3 id="org7d1ef86"><span class="section-number-3">1.2.</span> DNS 记录</h3>
+<div id="outline-container-org5eacd39" class="outline-3">
+<h3 id="org5eacd39"><span class="section-number-3">1.2.</span> DNS 记录</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 哪些对象会获得 DNS 记录？
@@ -322,12 +322,12 @@ options ndots:5
 </div>
 </div>
 
-<div id="outline-container-orgd69ee7d" class="outline-2">
-<h2 id="orgd69ee7d"><span class="section-number-2">2.</span> Services</h2>
+<div id="outline-container-org0408a5e" class="outline-2">
+<h2 id="org0408a5e"><span class="section-number-2">2.</span> Services</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orga3bfe24" class="outline-3">
-<h3 id="orga3bfe24"><span class="section-number-3">2.1.</span> A/AAAA 记录</h3>
+<div id="outline-container-orgdd57107" class="outline-3">
+<h3 id="orgdd57107"><span class="section-number-3">2.1.</span> A/AAAA 记录</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 “正常的”（不是 headless）Service 会被分配一个 DNS A 或者 AAAA 记录，值取决于 service 的 IP 集合。名字的格式为：
@@ -349,8 +349,8 @@ service 是把集合返回给客户端，客户端需要自己选择。
 </div>
 </div>
 
-<div id="outline-container-orgfd3f73d" class="outline-3">
-<h3 id="orgfd3f73d"><span class="section-number-3">2.2.</span> SRV 记录</h3>
+<div id="outline-container-org9cdb4b7" class="outline-3">
+<h3 id="org9cdb4b7"><span class="section-number-3">2.2.</span> SRV 记录</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 SRC 记录是为正常或者 headless service 一部分的命名端口创建的。为每一个命名端口，SRV 记录记录的格式为：
@@ -366,12 +366,12 @@ SRC 记录是为正常或者 headless service 一部分的命名端口创建的�
 </div>
 </div>
 
-<div id="outline-container-org0347a27" class="outline-2">
-<h2 id="org0347a27"><span class="section-number-2">3.</span> Pods</h2>
+<div id="outline-container-org1d1de97" class="outline-2">
+<h2 id="org1d1de97"><span class="section-number-2">3.</span> Pods</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org2612901" class="outline-3">
-<h3 id="org2612901"><span class="section-number-3">3.1.</span> A/AAAA 记录</h3>
+<div id="outline-container-org3e52035" class="outline-3">
+<h3 id="org3e52035"><span class="section-number-3">3.1.</span> A/AAAA 记录</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 通常情况下一个 Pod 有如下的 DNS 解析： <code>pod-ip-address.my-namespace.pod.cluster-domain.example</code> 。
@@ -384,8 +384,8 @@ SRC 记录是为正常或者 headless service 一部分的命名端口创建的�
 </div>
 </div>
 
-<div id="outline-container-org5b10d17" class="outline-3">
-<h3 id="org5b10d17"><span class="section-number-3">3.2.</span> Pod 的主机名和子域字段</h3>
+<div id="outline-container-org47f3965" class="outline-3">
+<h3 id="org47f3965"><span class="section-number-3">3.2.</span> Pod 的主机名和子域字段</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 当 Pod 被创建的时候， <code>hostname</code> 由 Pod 的 <code>metadata.name</code> 的值来决定。
@@ -406,8 +406,8 @@ Pod 还有一个可选的 <code>subdomain</code> 字段，用来指定他的子�
 </div>
 </div>
 
-<div id="outline-container-orgeab227a" class="outline-3">
-<h3 id="orgeab227a"><span class="section-number-3">3.3.</span> Pod 的 setHostnameAsFQDN 字段</h3>
+<div id="outline-container-org1502f6d" class="outline-3">
+<h3 id="org1502f6d"><span class="section-number-3">3.3.</span> Pod 的 setHostnameAsFQDN 字段</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 <b><b>FEATURE STATE:</b></b> <code>Kubernetes v1.22 [stable]</code>
@@ -419,8 +419,8 @@ TODO
 </div>
 </div>
 
-<div id="outline-container-org950db2e" class="outline-3">
-<h3 id="org950db2e"><span class="section-number-3">3.4.</span> Pod 的 DNS 策略</h3>
+<div id="outline-container-org6022f28" class="outline-3">
+<h3 id="org6022f28"><span class="section-number-3">3.4.</span> Pod 的 DNS 策略</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 可以对每一个 Pod 指定 DNS 策略。目前 Kubernetes 支持如下的 pod-specific DNS 策略。策略由 Pod 的 <code>dnsPolicy</code> 字段来指定。
@@ -507,8 +507,8 @@ Endpoints 对象可以制定任何 endpoint 地址的 <code>hostname</code> ，�
 </div>
 </div>
 
-<div id="outline-container-org0f77dfb" class="outline-3">
-<h3 id="org0f77dfb"><span class="section-number-3">3.5.</span> Pod 的 DNS 配置</h3>
+<div id="outline-container-org57c49e5" class="outline-3">
+<h3 id="org57c49e5"><span class="section-number-3">3.5.</span> Pod 的 DNS 配置</h3>
 <div class="outline-text-3" id="text-3-5">
 <p>
 <b>FEATURE STATE:</b> <code>Kubernetes v1.14 [stable]</code>
@@ -538,7 +538,7 @@ Pod 的 DNS 配置允许用户更多的控制 Pod 的 DNS 设置。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml" id="org872b2a4"><span style="color: #00538b;">apiVersion</span>: v1
+<pre class="src src-yaml" id="orgd761c5e"><span style="color: #00538b;">apiVersion</span>: v1
 <span style="color: #00538b;">kind</span>: Pod
 <span style="color: #00538b;">metadata</span>:
   <span style="color: #00538b;">namespace</span>: default
@@ -593,8 +593,8 @@ search default.svc.cluster-domain.example svc.cluster-domain.example cluster-dom
 </div>
 </div>
 
-<div id="outline-container-org770bdbc" class="outline-3">
-<h3 id="org770bdbc"><span class="section-number-3">3.6.</span> 扩展 DNS 配置</h3>
+<div id="outline-container-org82d363e" class="outline-3">
+<h3 id="org82d363e"><span class="section-number-3">3.6.</span> 扩展 DNS 配置</h3>
 <div class="outline-text-3" id="text-3-6">
 <p>
 <b>FEATURE STATE:</b> <code>Kubernetes 1.22 [alpha]</code>
@@ -610,8 +610,8 @@ search default.svc.cluster-domain.example svc.cluster-domain.example cluster-dom
 </div>
 </div>
 
-<div id="outline-container-org8d45cb1" class="outline-3">
-<h3 id="org8d45cb1"><span class="section-number-3">3.7.</span> 功能可用性</h3>
+<div id="outline-container-org0431184" class="outline-3">
+<h3 id="org0431184"><span class="section-number-3">3.7.</span> 功能可用性</h3>
 <div class="outline-text-3" id="text-3-7">
 <p>
 Pod 的 DNS 配置和 DNS 策略 <code>None</code> 可用性如下所示：
@@ -652,12 +652,12 @@ Pod 的 DNS 配置和 DNS 策略 <code>None</code> 可用性如下所示：
 </div>
 </div>
 
-<div id="outline-container-org3a98845" class="outline-2">
-<h2 id="org3a98845"><span class="section-number-2">4.</span> 实践</h2>
+<div id="outline-container-orgdf02510" class="outline-2">
+<h2 id="orgdf02510"><span class="section-number-2">4.</span> 实践</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org8c4f0b4" class="outline-3">
-<h3 id="org8c4f0b4"><span class="section-number-3">4.1.</span> <code>/etc/resolv.conf</code> 中的 ndots</h3>
+<div id="outline-container-orgf6607ae" class="outline-3">
+<h3 id="orgf6607ae"><span class="section-number-3">4.1.</span> <code>/etc/resolv.conf</code> 中的 ndots</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 如上，每个集群中 Pod 的 <code>/etc/resolv.conf</code> 中的内容大概为
@@ -721,7 +721,7 @@ options ndots:5
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-02-09 16:50:29 <br />Last updated: 2022-11-24 Thu 16:33 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+<p class="postamble">First created: 2021-02-09 16:50:29 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
 </div>
 </body>
 </html>

@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-10-08 Sat 11:03 -->
+<!-- 2022-11-28 Mon 20:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>MySQL</title>
-<meta name="author" content="DESKTOP-ZHJ" />
+<meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,43 +223,43 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgab4844a">1. 安装</a>
+<li><a href="#org60b1855">1. 安装</a>
 <ul>
-<li><a href="#org02333d0">1.1. Docker</a></li>
+<li><a href="#org0adcb2c">1.1. Docker</a></li>
 </ul>
 </li>
-<li><a href="#orgbaea05c">2. Command</a>
+<li><a href="#org789c6ae">2. Command</a>
 <ul>
-<li><a href="#org37e3d12">2.1. Database</a></li>
-<li><a href="#orgb8f0ee0">2.2. Table</a></li>
-<li><a href="#orgbde5db2">2.3. Grant</a></li>
-<li><a href="#orgf41d6af">2.4. Backup</a></li>
-<li><a href="#org5aef409">2.5. Restore</a></li>
+<li><a href="#orgfb86e41">2.1. Database</a></li>
+<li><a href="#orgbd8d040">2.2. Table</a></li>
+<li><a href="#org5d0534a">2.3. Grant</a></li>
+<li><a href="#org24eb6a6">2.4. Backup</a></li>
+<li><a href="#orgdbc1912">2.5. Restore</a></li>
 </ul>
 </li>
-<li><a href="#org472e322">3. Data Type</a>
+<li><a href="#org292927e">3. Data Type</a>
 <ul>
-<li><a href="#org3dc3969">3.1. BLOB 和 TEXT</a></li>
+<li><a href="#orgdcf3564">3.1. BLOB 和 TEXT</a></li>
 </ul>
 </li>
-<li><a href="#orgfb81776">4. Configure</a>
+<li><a href="#orga17a11e">4. Configure</a>
 <ul>
-<li><a href="#orgf3ef0fe">4.1. 某公司的 my.cnf 样例</a></li>
-<li><a href="#org6342332">4.2. 慢查询</a></li>
+<li><a href="#orgbdd063e">4.1. 某公司的 my.cnf 样例</a></li>
+<li><a href="#org2731b66">4.2. 慢查询</a></li>
 </ul>
 </li>
-<li><a href="#orga5acffc">5. Best Practices</a></li>
-<li><a href="#org2e1da70">6. Resource</a></li>
+<li><a href="#orgfdcbd3b">5. Best Practices</a></li>
+<li><a href="#org71d9558">6. Resource</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgab4844a" class="outline-2">
-<h2 id="orgab4844a"><span class="section-number-2">1.</span> 安装</h2>
+<div id="outline-container-org60b1855" class="outline-2">
+<h2 id="org60b1855"><span class="section-number-2">1.</span> 安装</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org02333d0" class="outline-3">
-<h3 id="org02333d0"><span class="section-number-3">1.1.</span> Docker</h3>
+<div id="outline-container-org0adcb2c" class="outline-3">
+<h3 id="org0adcb2c"><span class="section-number-3">1.1.</span> Docker</h3>
 <div class="outline-text-3" id="text-1-1">
 <ol class="org-ol">
 <li><code>docker pull mysql:5.7</code></li>
@@ -279,7 +279,7 @@ docker MySQL 连接终端不能输入中文，指定 <code>LANG</code> 登录 <c
 <a href="https://hub.docker.com/_/mysql/">https://hub.docker.com/_/mysql/</a>
 </p>
 
-<pre class="example" id="orgce583b7">
+<pre class="example" id="org43b3167">
 docker run -it -d --name xxx --restart=always --network qwerty -e MYSQL_ROOT_PASSWORD=xxx  -p 3306:3306 mysql:5.7 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 </pre>
 
@@ -316,12 +316,12 @@ default-character-set=utf8mb4
 </div>
 </div>
 
-<div id="outline-container-orgbaea05c" class="outline-2">
-<h2 id="orgbaea05c"><span class="section-number-2">2.</span> Command</h2>
+<div id="outline-container-org789c6ae" class="outline-2">
+<h2 id="org789c6ae"><span class="section-number-2">2.</span> Command</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org37e3d12" class="outline-3">
-<h3 id="org37e3d12"><span class="section-number-3">2.1.</span> Database</h3>
+<div id="outline-container-orgfb86e41" class="outline-3">
+<h3 id="orgfb86e41"><span class="section-number-3">2.1.</span> Database</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>建库: <code>CREATE DATABASE db_name charset="utf8mb4"</code></li>
@@ -331,8 +331,8 @@ default-character-set=utf8mb4
 </div>
 </div>
 
-<div id="outline-container-orgb8f0ee0" class="outline-3">
-<h3 id="orgb8f0ee0"><span class="section-number-3">2.2.</span> Table</h3>
+<div id="outline-container-orgbd8d040" class="outline-3">
+<h3 id="orgbd8d040"><span class="section-number-3">2.2.</span> Table</h3>
 <div class="outline-text-3" id="text-2-2">
 <ul class="org-ul">
 <li>建表: <code>CREATE TABLE tbl_name (&lt;col_name_1&gt; &lt;TYPE1&gt;2 [,..&lt;col_name_n&gt; &lt;TYPEn&gt;])</code></li>
@@ -437,8 +437,8 @@ default-character-set=utf8mb4
 </div>
 </div>
 
-<div id="outline-container-orgbde5db2" class="outline-3">
-<h3 id="orgbde5db2"><span class="section-number-3">2.3.</span> Grant</h3>
+<div id="outline-container-org5d0534a" class="outline-3">
+<h3 id="org5d0534a"><span class="section-number-3">2.3.</span> Grant</h3>
 <div class="outline-text-3" id="text-2-3">
 <ul class="org-ul">
 <li>查询所有用户: <code>select User from mysql.user</code></li>
@@ -453,8 +453,8 @@ default-character-set=utf8mb4
 </div>
 </div>
 
-<div id="outline-container-orgf41d6af" class="outline-3">
-<h3 id="orgf41d6af"><span class="section-number-3">2.4.</span> Backup</h3>
+<div id="outline-container-org24eb6a6" class="outline-3">
+<h3 id="org24eb6a6"><span class="section-number-3">2.4.</span> Backup</h3>
 <div class="outline-text-3" id="text-2-4">
 <div class="org-src-container">
 <pre class="src src-sh">mysqldump -h$<span style="color: #000000;">{</span><span style="color: #00538b;">hostname</span><span style="color: #000000;">}</span> -u$<span style="color: #000000;">{</span><span style="color: #00538b;">username</span><span style="color: #000000;">}</span> -p$<span style="color: #000000;">{</span><span style="color: #00538b;">password</span><span style="color: #000000;">}</span>  --add-drop-table --databases $<span style="color: #000000;">{</span><span style="color: #00538b;">db_name</span><span style="color: #000000;">}</span> &gt; backupfile.sql
@@ -475,8 +475,8 @@ default-character-set=utf8mb4
 </div>
 </div>
 
-<div id="outline-container-org5aef409" class="outline-3">
-<h3 id="org5aef409"><span class="section-number-3">2.5.</span> Restore</h3>
+<div id="outline-container-orgdbc1912" class="outline-3">
+<h3 id="orgdbc1912"><span class="section-number-3">2.5.</span> Restore</h3>
 <div class="outline-text-3" id="text-2-5">
 <div class="org-src-container">
 <pre class="src src-sh">mysql -h$<span style="color: #000000;">{</span><span style="color: #00538b;">hostname</span><span style="color: #000000;">}</span> -u$<span style="color: #000000;">{</span><span style="color: #00538b;">username</span><span style="color: #000000;">}</span> -p$<span style="color: #000000;">{</span><span style="color: #00538b;">password</span><span style="color: #000000;">}</span> &lt; backupfile.sql
@@ -490,12 +490,12 @@ default-character-set=utf8mb4
 </div>
 </div>
 
-<div id="outline-container-org472e322" class="outline-2">
-<h2 id="org472e322"><span class="section-number-2">3.</span> Data Type</h2>
+<div id="outline-container-org292927e" class="outline-2">
+<h2 id="org292927e"><span class="section-number-2">3.</span> Data Type</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org3dc3969" class="outline-3">
-<h3 id="org3dc3969"><span class="section-number-3">3.1.</span> BLOB 和 TEXT</h3>
+<div id="outline-container-orgdcf3564" class="outline-3">
+<h3 id="orgdcf3564"><span class="section-number-3">3.1.</span> BLOB 和 TEXT</h3>
 <div class="outline-text-3" id="text-3-1">
 <ul class="org-ul">
 <li>BLOB 四种类型: <code>TINYBLOB</code>, <code>BLOB</code>, <code>MEDIUMBLOB</code>, <code>LONGBLOB</code></li>
@@ -524,18 +524,18 @@ default-character-set=utf8mb4
 </div>
 </div>
 
-<div id="outline-container-orgfb81776" class="outline-2">
-<h2 id="orgfb81776"><span class="section-number-2">4.</span> Configure</h2>
+<div id="outline-container-orga17a11e" class="outline-2">
+<h2 id="orga17a11e"><span class="section-number-2">4.</span> Configure</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 在线 my.cnf 生成器: <a href="http://imysql.com/my_cnf_generator">http://imysql.com/my_cnf_generator</a>
 </p>
 </div>
 
-<div id="outline-container-orgf3ef0fe" class="outline-3">
-<h3 id="orgf3ef0fe"><span class="section-number-3">4.1.</span> 某公司的 my.cnf 样例</h3>
+<div id="outline-container-orgbdd063e" class="outline-3">
+<h3 id="orgbdd063e"><span class="section-number-3">4.1.</span> 某公司的 my.cnf 样例</h3>
 <div class="outline-text-3" id="text-4-1">
-<pre class="example" id="org0888321">
+<pre class="example" id="org5084117">
 # my.cnf
 [client]
 port            = 3306
@@ -652,14 +652,14 @@ open-files-limit = 65535
 </div>
 </div>
 
-<div id="outline-container-org6342332" class="outline-3">
-<h3 id="org6342332"><span class="section-number-3">4.2.</span> 慢查询</h3>
+<div id="outline-container-org2731b66" class="outline-3">
+<h3 id="org2731b66"><span class="section-number-3">4.2.</span> 慢查询</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 开启:
 </p>
 
-<pre class="example" id="org2dfdced">
+<pre class="example" id="org6c12696">
 slow_query_log = 1
 slow_query_log_file = /data/log/mysql/mysql-slow.log
 long_query_time = 0.01
@@ -691,8 +691,8 @@ log-queries-not-using-indexes
 </div>
 </div>
 
-<div id="outline-container-orga5acffc" class="outline-2">
-<h2 id="orga5acffc"><span class="section-number-2">5.</span> Best Practices</h2>
+<div id="outline-container-orgfdcbd3b" class="outline-2">
+<h2 id="orgfdcbd3b"><span class="section-number-2">5.</span> Best Practices</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>在控制台执行一条 SQL 语句: <code>mysql -h127.0.0.1 -uuser -ppassword db_name -e "select xxx from xxx" &gt; aa.txt</code></li>
@@ -703,7 +703,7 @@ log-queries-not-using-indexes
 <li><p>
 MySQL 5.6 占内存解决方法:
 </p>
-<pre class="example" id="org14cac63">
+<pre class="example" id="orge86ea63">
 performance_schema_max_table_instances=400
 table_definition_cache=400
 table_open_cache=256
@@ -713,7 +713,7 @@ table_open_cache=256
 <li><p>
 数据库中每一个表的大小:
 </p>
-<pre class="example" id="orgc6119c1">
+<pre class="example" id="org77208a4">
 SELECT
   TABLE_NAME AS `Table`,
   ROUND((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024) AS `Size (MB)`
@@ -728,7 +728,7 @@ DESC;
 <li><p>
 数据库中某一个表的大小(扩展: <a href="https://chartio.com/resources/tutorials/how-to-get-the-size-of-a-table-in-mysql">https://chartio.com/resources/tutorials/how-to-get-the-size-of-a-table-in-mysql</a>):
 </p>
-<pre class="example" id="orgd7900b0">
+<pre class="example" id="org2d0ef72">
 SELECT
 TABLE_NAME AS `Table`,
 ROUND((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024) AS `Size (MB)`
@@ -764,8 +764,8 @@ DESC;
 </div>
 </div>
 
-<div id="outline-container-org2e1da70" class="outline-2">
-<h2 id="org2e1da70"><span class="section-number-2">6.</span> Resource</h2>
+<div id="outline-container-org71d9558" class="outline-2">
+<h2 id="org71d9558"><span class="section-number-2">6.</span> Resource</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li><a href="https://www.pureweber.com/article/myisam-vs-innodb/">MyISAM vs InnoDB</a></li>
@@ -792,7 +792,7 @@ DESC;
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2017-12-04 10:54:25 <br />Last updated: 2022-10-06 Thu 17:55 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.4)</p>
+<p class="postamble">First created: 2017-12-04 10:54:25 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
 </div>
 </body>
 </html>

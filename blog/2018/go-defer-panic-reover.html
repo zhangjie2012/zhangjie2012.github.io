@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-08-23 Tue 18:45 -->
+<!-- 2022-11-28 Mon 20:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Go 的异常处理：defer, panic, recover</title>
-<meta name="author" content="DESKTOP-ZHJ" />
+<title>Go 的异常处理：defer，panic，recover</title>
+<meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -218,10 +218,10 @@
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">Go 的异常处理：defer, panic, recover</h1>
+<h1 class="title">Go 的异常处理：defer，panic，recover</h1>
 <p>
-Go 语言没有提供传统的 <code>try-catch</code> 这样的异常处理机制，所有的错误基本上都是靠程序返回值判断，
-但是写程序难免会遇到类似忘记判断返回值越界访问，进而程序崩溃。
+Go 语言没有提供传统的 <code>try-catch</code> 这样的异常处理机制，所有的错误基本上都是靠程序返回值判断，但是写程序难免会遇到类似忘记
+判断返回值越界访问，进而程序崩溃。
 </p>
 
 <p>
@@ -234,14 +234,17 @@ Go 语言没有提供传统的 <code>try-catch</code> 这样的异常处理机�
 </p>
 
 <p>
-这是一个非常实用的功能，试想一个 Web 服务器的某一条 HTTP 处理崩溃了，导致了整个服务器崩溃显然不是我们想要的，我们希望一个 API
-请求失败丝毫不影响整个 Web 服务器。
-当然也可以在服务器外部定时检查服务器进程是否存在，发现不存在的时候自动重启。但是像游戏服务器某个协议的处理 Bug（升级装备、领取奖励）导致崩溃进而引发内存中的数据没有及时回写到存储
-DB 中，而且即便是外部进程实时拉起服务器进程，服务初始化可能也有会耗时。
+这是一个非常实用的功能，试想一个 Web 服务器的某一条 HTTP 处理崩溃了，导致了整个服务器崩溃显然不是我们想要的，我们当然不希
+望一个 API 请求执行 crash 影响整个 Web 服务器。
 </p>
 
 <p>
-Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go 的 <code>net/http</code> 库中已经加上了 =panic=：
+当然也可以在服务器外部定时检查服务器进程是否存在，发现不存在的时候自动重启。但是像游戏服务器某个协议的处理 Bug（升级装备、
+领取奖励）导致崩溃进而引发内存中的数据没有及时回写到存储 DB 中，而且即便是外部进程实时拉起服务器进程，服务初始化可能也有会耗时。
+</p>
+
+<p>
+Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go 的 <code>net/http</code> 库中已经加上了 <code>panic</code> ：
 </p>
 
 <div class="org-src-container">
@@ -280,8 +283,8 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
 <li>未被 <code>recover</code> 捕捉，一直会抛出到 <code>main</code> 函数，然后进程 crash；</li>
 </ul></li>
 <li><code>panic</code> <span class="underline"><span class="underline">仅限于</span></span> 当前协程（routine），子协程抛出 <code>panic</code> ，父协程无法捕获；</li>
-<li>虽然子协程 <code>panic</code> 父协程无法捕获，但子协程的 <code>panic</code> 会导致父协程 crash（所以子协程最好捕获 <code>panic</code> ），想要父协程获取子协程的 <code>panic</code>
-信息，可以在子协程 <code>recover</code> 之后用 channel 传递出去；</li>
+<li>虽然子协程 <code>panic</code> 父协程无法捕获，但子协程的 <code>panic</code> 会导致父协程 crash（所以子协程最好捕获 <code>panic</code> ），想要父协程获
+取子协程的 <code>panic</code> 信息，可以在子协程 <code>recover</code> 之后用 channel 传递出去；</li>
 </ul>
 
 <hr />
@@ -319,7 +322,7 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
 </ol>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-03-01 17:50:00 <br />Last updated: 2022-08-23 Tue 18:22 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-03-01 17:50:00 <br />Last updated: 2022-11-28 Mon 19:52 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
