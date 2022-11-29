@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-11-28 Mon 20:13 -->
+<!-- 2022-11-29 Tue 21:57 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Go 设计模式</title>
+<title>Go 时间格式化与解析</title>
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
@@ -194,7 +194,7 @@
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { }
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
      function CodeHighlightOn(elem, id)
@@ -218,14 +218,126 @@
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">Go 设计模式</h1>
-<ul class="org-ul">
-<li>单例模式 <a href="https://github.com/tmrts/go-patterns/blob/master/creational/singleton.md">https://github.com/tmrts/go-patterns/blob/master/creational/singleton.md</a> 使用 <a href="https://golang.org/pkg/sync/#Once.Do">Once.Do</a> 实现。</li>
-<li>Functional Options <a href="https://github.com/tmrts/go-patterns/blob/master/idiom/functional-options.md">https://github.com/tmrts/go-patterns/blob/master/idiom/functional-options.md</a> WithOption 依赖注入</li>
+<h1 class="title">Go 时间格式化与解析</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org8120a32">1. 所有的时间和日期选项</a></li>
+<li><a href="#orgb519f7b">2. 常用的时间和日期格式</a></li>
+<li><a href="#org19ad5e4">3. 预定义的日期和时间戳 layouts</a></li>
 </ul>
 </div>
+</div>
+<p>
+跟其他语言的设计不同（Python 等），Go 时间的格式化与解析都是通过 <code>layout</code> 参数来实现的。类似： <code>Mon Jan 2 15:04:05 MST 2006</code> 。
+</p>
+
+<p>
+用 <code>01/02 03:04:05PM '06 -0700</code> 可以帮助记忆，某个字段使用某个值，是一种 <span class="underline">约定</span> 。两个函数：
+</p>
+
+<ul class="org-ul">
+<li>Parse 将字符串解析成日期 <code>func Parse(layout, value string) (Time, error)</code></li>
+<li>Format 将日期格式化成字符串 <code>func (t Time) Format(layout string) string</code></li>
+</ul>
+
+<div id="outline-container-org8120a32" class="outline-2">
+<h2 id="org8120a32"><span class="section-number-2">1.</span> 所有的时间和日期选项</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+（用来书写 <code>layout</code> ）
+</p>
+
+<pre class="example">
+Type	 =&gt; Option
+--------------------------------------------------------------------
+Year     =&gt; 06   2006
+Month    =&gt; 01   1   Jan   January
+Day	     =&gt; 02   2   _2   (width two, right justified)
+Weekday	 =&gt; Mon   Monday
+Hours    =&gt; 03   3   15
+Minutes  =&gt; 04   4
+Seconds  =&gt; 05   5
+ms μs ns =&gt; .000   .000000   .000000000
+ms μs ns =&gt; .999   .999999   .999999999   (trailing zeros removed)
+am/pm    =&gt; PM   pm
+Timezone =&gt; MST
+Offset   =&gt; -0700   -07   -07:00   Z0700   Z07:00
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgb519f7b" class="outline-2">
+<h2 id="orgb519f7b"><span class="section-number-2">2.</span> 常用的时间和日期格式</h2>
+<div class="outline-text-2" id="text-2">
+<pre class="example">
+Layout	                   =&gt; Note
+------------------------------------------------------
+January 2 2006	           =&gt; Date
+01/02/06
+Jan-02-06
+------------------------------------------------------
+15:04:05	               =&gt; Time
+3:04:05 PM
+------------------------------------------------------
+Jan _2 15:04:05	           =&gt; Timestamp
+Jan _2 15:04:05.000000	      with microseconds
+------------------------------------------------------
+2006-01-02T15:04:05-0700   =&gt; ISO 8601
+2006-01-02
+15:04:05
+------------------------------------------------------
+02 Jan 06 15:04 MST	       =&gt; RFC 822
+02 Jan 06 15:04 -0700	      with numeric zone
+------------------------------------------------------
+Mon, 02 Jan 2006 15:04:05 MST	=&gt; RFC 1123
+Mon, 02 Jan 2006 15:04:05 -0700	   with numeric zone
+------------------------------------------------------
+</pre>
+
+<p>
+（这里可以理解成为大家的约定）
+</p>
+</div>
+</div>
+
+<div id="outline-container-org19ad5e4" class="outline-2">
+<h2 id="org19ad5e4"><span class="section-number-2">3.</span> 预定义的日期和时间戳 layouts</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+预定义的格式常量，可以直接拿来用（ <code>time</code> 库中）。
+</p>
+
+<pre class="example">
+ANSIC       = "Mon Jan _2 15:04:05 2006"
+UnixDate    = "Mon Jan _2 15:04:05 MST 2006"
+RubyDate    = "Mon Jan 02 15:04:05 -0700 2006"
+RFC822      = "02 Jan 06 15:04 MST"
+RFC822Z     = "02 Jan 06 15:04 -0700"
+RFC850      = "Monday, 02-Jan-06 15:04:05 MST"
+RFC1123     = "Mon, 02 Jan 2006 15:04:05 MST"
+RFC1123Z    = "Mon, 02 Jan 2006 15:04:05 -0700"
+RFC3339     = "2006-01-02T15:04:05Z07:00"
+RFC3339Nano = "2006-01-02T15:04:05.999999999Z07:00"
+Kitchen     = "3:04PM"
+// Handy time stamps.
+Stamp      = "Jan _2 15:04:05"
+StampMilli = "Jan _2 15:04:05.000"
+StampMicro = "Jan _2 15:04:05.000000"
+StampNano  = "Jan _2 15:04:05.000000000"
+</pre>
+
+<hr />
+
+<p>
+总体来看，Go 的这种做法，反倒比 Python，JavaScript 等统一一些。
+</p>
+</div>
+</div>
+</div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-10-04 08:48:18 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+<p class="postamble">First created: 2019-01-18 11:07 <br />Last updated: 2022-11-29 Tue 21:53 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

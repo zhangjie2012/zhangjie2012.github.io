@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-11-28 Mon 20:12 -->
+<!-- 2022-11-29 Tue 21:57 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Go 测试用例</title>
+<title>Go redis client</title>
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
@@ -218,143 +218,31 @@
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">Go 测试用例</h1>
-<div id="table-of-contents" role="doc-toc">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents" role="doc-toc">
-<ul>
-<li><a href="#org230eb3a">1. 基础</a></li>
-<li><a href="#orgbae9e19">2. 常用命令</a></li>
-</ul>
-</div>
-</div>
+<h1 class="title">Go redis client</h1>
 <p>
-<code>go help test</code> 查看说明，更多: <a href="https://golang.org/pkg/testing/">https://golang.org/pkg/testing/</a>， 结果判定可使用 <a href="https://github.com/stretchr/testify">Testify</a>。
+redis go clients: <a href="https://redis.io/clients#go">https://redis.io/clients#go</a>
 </p>
 
-<div id="outline-container-org230eb3a" class="outline-2">
-<h2 id="org230eb3a"><span class="section-number-2">1.</span> 基础</h2>
-<div class="outline-text-2" id="text-1">
+<p>
+推荐两个：
+</p>
+
 <ul class="org-ul">
-<li><code>go test</code> 命令会自动执行带有 <code>func TestXxx(*testing.T)</code> 格式的函数。</li>
-<li>以 <code>_test.go</code> 结尾的文件会被认为是测试用例文件，其中包含 TestXxx 这样的测试用例。</li>
-<li><code>*_test</code> 的包在执行 test 的时候会重新编译，每个 package 都是会生成单独的二进制不会干扰。以 "_" 或者 "." 开始的文件会被自动忽略。
-包括 "_test.go" 。</li>
-<li>go 工具会自动忽略 "testdata" 文件夹，可用来放置一些测试所需要的辅助数据。</li>
-<li>测试文件和要被测试的文件放在同一个包中，比如 <code>redis.go</code> 和 <code>redis_test.go</code></li>
+<li><a href="https://github.com/go-redis/redis">go-redis/redis</a>：对 Redis 命令进行了封装，易用性也好，支持集群</li>
+<li><a href="https://github.com/gomodule/redigo">gomodule/redigo</a>：不支持集群，更接近原生的 Redis 的使用方法（Print-like API），并且提供了常用基本类型的转换方法，统一的结果处理方法。用习惯了觉得非常简单</li>
 </ul>
 
 <p>
-Go test 的两种运行模式：
+各有优劣势，看个人喜好和业务场景：
 </p>
 
 <ol class="org-ol">
-<li>针对本地目录 <code>go test</code> 或者 <code>go test -v</code> ，这种情况下只会运行当前目录下的测试；</li>
-<li>针对包列表，设置包参数 <code>go test math</code> 或者 <code>go test ./..</code> 甚至是 <code>go test .</code> ，这种情况下它会编译命令行指定的每一个包，全部执行测试</li>
+<li>轻度依赖缓存，量也不是很大的情况下，推荐使用 redigo，感觉上比 go-redis 要方便一些</li>
+<li>重度依赖缓存，量很大，使用 go-redis，特性支持的好，主要对 Cluster 方便容量扩展</li>
 </ol>
-
-<p>
-在第二种情况下，go test 会缓存成成功执行的包的测试结果避免重复执行测试用例，输出结果会以 '(cached)' 标识。
-但是在指定了测试参数，比如 <code>-cpu</code>, <code>-list</code>, <code>-parallel</code>, <code>-run</code>, <code>-short</code>, <code>-v</code> 等将不会被缓存。管用的一种显式禁用缓存的方法是使用 <code>-count=1</code> 参数。
-</p>
-
-<p>
-<b>Benchmarks(基准测试)</b>
-</p>
-
-<ul class="org-ul">
-<li>在 "go test" 命令指定了 bench 标识的情况下，会运行 <code>func BenchmarkXxx(*testing.B)</code> 格式的函数。基准测试是按照顺序执行的。</li>
-<li>基准测试会单单独输出测试结果（执行 b.N 次）。</li>
-</ul>
-
-<p>
-<b>Examples</b>
-</p>
-
-<p>
-Example 函数包含一个总结行，以 "Output:" 开始，会比较实际输出的结果是否一致。Example 函数以 <code>Example</code> 开始。没有输出注释 <code>// Output:</code> 的 Example 函数不会被执行。
-</p>
-
-<p>
-Example 函数也有自己的命名约定，函数是 F，类型是 T，类型上的方法是 <code>T_M</code> .
-</p>
-
-<p>
-<b>Skipping</b>
-</p>
-
-<p>
-通过调用 <code>*T</code> 或者 <code>*B</code> 的 <code>Skip</code> 方法可以跳过测试。
-</p>
-
-<p>
-<b>子测试和子基准测试</b>
-</p>
-
-<p>
-对于需要有资源安装和清理的测试用例，子测试很有用。
-</p>
-
-<div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">TestFoo</span><span style="color: #000000;">(</span><span style="color: #00538b;">t</span> *<span style="color: #005a5f;">testing.T</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-    <span style="color: #505050;">// </span><span style="color: #505050;">&lt;setup code&gt;</span>
-    t.<span style="color: #721045;">Run</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"A=1"</span>, <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span><span style="color: #00538b;">t</span> *<span style="color: #005a5f;">testing.T</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span> ... <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
-    t.<span style="color: #721045;">Run</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"A=2"</span>, <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span><span style="color: #00538b;">t</span> *<span style="color: #005a5f;">testing.T</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span> ... <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
-    t.<span style="color: #721045;">Run</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"B=1"</span>, <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span><span style="color: #00538b;">t</span> *<span style="color: #005a5f;">testing.T</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span> ... <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
-    <span style="color: #505050;">// </span><span style="color: #505050;">&lt;tear-down code&gt;</span>
-<span style="color: #000000;">}</span>
-</pre>
-</div>
-
-<ul class="org-ul">
-<li>每个子测试或者子基准测试，都有一个唯一的名字。可以在执行测试的时候通过名字筛选测试。比如 <code>go test -run Foo/A=</code></li>
-</ul>
-
-<p>
-<b>Main</b>
-</p>
-
-<p>
-很多时候在测试程序开始和结束有额外的安装和卸载。
-</p>
-
-<div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">TestMain</span><span style="color: #000000;">(</span><span style="color: #00538b;">m</span> *<span style="color: #005a5f;">testing.M</span><span style="color: #000000;">)</span>
-</pre>
-</div>
-
-<p>
-那么会在执行测试时先调用 <code>TestMain(m)</code> 而不是其它的测试用例。所有的测试用例会在 <code>m.Run()</code> 中执行，那么在它之前你可以做一些初始化，之后做清理工作。
-最简单的 TestMain：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">TestMain</span><span style="color: #000000;">(</span><span style="color: #00538b;">m</span> *<span style="color: #005a5f;">testing.M</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-    <span style="color: #505050;">// </span><span style="color: #505050;">call flag.Parse() here if TestMain uses flags</span>
-    os.<span style="color: #721045;">Exit</span><span style="color: #a8007f;">(</span>m.<span style="color: #721045;">Run</span><span style="color: #005f88;">()</span><span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span>
-</pre>
-</div>
-
-<p>
-<i>在每一个 test 文件中都可以有一个 TestMain，看起来更适合做初始化和销毁工作。</i>
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgbae9e19" class="outline-2">
-<h2 id="orgbae9e19"><span class="section-number-2">2.</span> 常用命令</h2>
-<div class="outline-text-2" id="text-2">
-<ul class="org-ul">
-<li>运行所有测试用例： <code>go test -count=1 -v ./...</code></li>
-<li>运行单个模块： <code>go test -count=1 -v module_name</code></li>
-<li>运行单个模块的单个 case： <code>go test -count=1 -v module_name -test.run funcName</code></li>
-</ul>
-</div>
-</div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-15 11:05:17 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+<p class="postamble">First created: 2019-03-14 17:50:00 <br />Last updated: 2022-11-29 Tue 21:53 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
 </div>
 </body>
 </html>

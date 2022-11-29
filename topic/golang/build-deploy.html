@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-11-28 Mon 20:13 -->
+<!-- 2022-11-29 Tue 21:57 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Go package 发布</title>
+<title>构建和部署</title>
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
@@ -218,154 +218,172 @@
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">Go package 发布</h1>
+<h1 class="title">构建和部署</h1>
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgbfe2b14">1. 发布到 pkg.go.dev </a></li>
-<li><a href="#org3da864a">2. 从 go.dev 移除</a></li>
-<li><a href="#orgb5aaf73">3. 文档</a></li>
-<li><a href="#orgb315e8c">4. 最佳实践</a></li>
-<li><a href="#orgd40802e">5. 自动构建</a></li>
-<li><a href="#orgdd53512">6. go.dev 的徽标</a></li>
+<li><a href="#orgb4a6712">1. 打包</a></li>
+<li><a href="#org606a3ad">2. 部署</a>
+<ul>
+<li><a href="#org9d4fa51">2.1. 直接部署到主机上</a></li>
+<li><a href="#org6733784">2.2. 部署到容器环境下</a></li>
+<li><a href="#org421b2b8">2.3. 版本号</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbfe2b14" class="outline-2">
-<h2 id="orgbfe2b14"><span class="section-number-2">1.</span> 发布到 pkg.go.dev <sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup></h2>
+<div id="outline-container-orgb4a6712" class="outline-2">
+<h2 id="orgb4a6712"><span class="section-number-2">1.</span> 打包</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-pkg.go.dev 的数据是从 <a href="https://proxy.golang.org/">proxy.golang.org</a> 下载的，定期监控 <a href="https://index.golang.org/index">Go Module Index</a> 然后添加到 pkg.go.dev。
-如果没有更新，以 <code>github.com/zhangjie2012/yo-kit</code> 为例，以下三种方法均可，第一种更快：
+Go 支持跨平台编译，这里假定服务名称为： <code>hello</code> ，构建 Docker 镜像：
 </p>
 
-<ol class="org-ol">
-<li>打开 <code>https://pkg.go.dev/github.com/zhangjie2012/yo-kit</code> 然后点击 <code>Request "github.com/zhangjie2012/yo-kit"</code> 按钮</li>
-<li>向 proxy.golang.org 发出模块版本请求，比如 <code>https://proxy.golang.org/github.com/zhangjie2012/yo-kit/@v/main.info</code></li>
-<li>通过命令行下载该 package <code>GOPROXY=https://proxy.golang.org GO111MODULE=on go get github.com/zhangjie2012/yo-kit@main</code></li>
-</ol>
+<div class="org-src-container">
+<pre class="src src-dockerfile"><span style="color: #5317ac;">FROM</span> <span style="color: #005a5f; font-weight: bold;">Ubuntu:18.04</span>
 
-<p>
-然后就可以在 <a href="https://pkg.go.dev/github.com/zhangjie2012/yo-kit">https://pkg.go.dev/github.com/zhangjie2012/yo-kit</a> 中看到文档了。
-</p>
+<span style="color: #5317ac;">COPY</span> hello /hello
+<span style="color: #5317ac;">COPY</span> config.yaml /etc/hello/config.yaml
 
-<p>
-<b>proxy.golang.org 的说明</b>
-</p>
+<span style="color: #5317ac;">EXPOSE</span> 8080
 
-<p>
-Go 模块的全局镜像。当然国内有七牛的 <a href="https://goproxy.cn/">https://goproxy.cn/</a> 官方的 <a href="https://goproxy.io/zh/">https://goproxy.io/zh/</a> 可用，是不是直接把 proxy.golang.org 作为上游镜像，我不太确定。
-</p>
-
-<p>
-为什么提交了新的改动，但是 <code>go get -u</code> 或者 <code>go list -m --version</code> 中没有出现呢？
-</p>
-
-<ol class="org-ol">
-<li>有缓存，正常情况 30 分钟左右后生效</li>
-<li>如果想要快速生效（1分钟左右），需要做一个版本发布（新建一个语义化的版本号，然后在 get 后面指定）</li>
-<li>如果不想使用 GOPROXY，package 本身是公开的，则可以通过设置 <code>GOPROXY=direct</code> 来跳过 PROXY，直接从 repo 拉取</li>
-</ol>
-</div>
+<span style="color: #5317ac;">CMD</span> <span style="color: #000000;">[</span><span style="color: #2544bb;">"/hello"</span>, <span style="color: #2544bb;">"-config-file"</span>, <span style="color: #2544bb;">"/etc/hello/config.yaml"</span><span style="color: #000000;">]</span>
+</pre>
 </div>
 
-<div id="outline-container-org3da864a" class="outline-2">
-<h2 id="org3da864a"><span class="section-number-2">2.</span> 从 go.dev 移除</h2>
+<p>
+一个简单的 Makefile：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #00538b;">OUTPUT</span>=hello
+<span style="color: #00538b;">TAG</span>=<span style="color: #2544bb;">`git rev-parse --short HEAD`</span>
+
+<span style="color: #721045;">build</span>:
+go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
+
+<span style="color: #721045;">build-linux</span>:
+<span style="color: #00538b;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
+
+<span style="color: #721045;">build-docker</span>:
+<span style="color: #00538b;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
+<span style="color: #721045;">docker build -t &lt;your docker registry addr&gt;/$</span><span style="color: #000000;">{</span><span style="color: #721045;">OUTPUT</span><span style="color: #000000;">}</span>:$<span style="color: #000000;">{</span><span style="color: #00538b;">TAG</span><span style="color: #000000;">}</span> .
+
+<span style="color: #721045;">push-docker</span>:
+<span style="color: #721045;">docker push &lt;your docker registry addr&gt;/$</span><span style="color: #000000;">{</span><span style="color: #721045;">OUTPUT</span><span style="color: #000000;">}</span>:$<span style="color: #000000;">{</span><span style="color: #00538b;">TAG</span><span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org606a3ad" class="outline-2">
+<h2 id="org606a3ad"><span class="section-number-2">2.</span> 部署</h2>
 <div class="outline-text-2" id="text-2">
-<ol class="org-ol">
-<li>在 go.mod 中添加 <code>retract</code> 指令，查看 <a href="https://go.dev/blog/go116-module-changes">https://go.dev/blog/go116-module-changes</a> 文档中的 <b>Module retraction</b> 小节</li>
-<li>向 Go 开发团队提出 <a href="https://go.dev/s/pkgsite-package-removal">request</a></li>
-</ol>
+</div>
+<div id="outline-container-org9d4fa51" class="outline-3">
+<h3 id="org9d4fa51"><span class="section-number-3">2.1.</span> 直接部署到主机上</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+构建对应平台的二进制包，Ubuntu 15.04 之后，以及 CentOS7 之后都使用 <a href="https://wiki.archlinux.org/index.php/Systemd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">systemd</a> 作为默认的系统和服务管理器了。
+他提供了一些的工具集合，使用起来比 <a href="http://supervisord.org/">Supervisor</a> 这种工具爽多了。
+</p>
 
 <p>
-<i>两种方式其实都挺麻烦的。</i>
+配置比较简单，使用 systemd 管理的进程，都会在 <code>/usr/lib/systemd/system</code> 目录下有一个 service 文件，用来编排你的应用。
+</p>
+
+<p>
+比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" id="org82ac71e">[Unit]
+Description=Command Scheduler
+After=auditd.service systemd-user-sessions.service time-sync.target
+
+[Service]
+EnvironmentFile=/etc/sysconfig/crond
+ExecStart=/usr/sbin/crond -n $CRONDARGS
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+</pre>
+</div>
+
+<p>
+这是 crond 的配置文件，里面囊括了服务的描述、依赖、启动命令、配置文件等。
+</p>
+
+<p>
+使用 systemd 工具集，可以轻松的查看服务状态、查看日志、设置重启策略，开机启动等。具体可以看我之前梳理的文档：
+<a href="wiki/devops/systemd.html">systemd</a>、<a href="wiki/devops/journalctl.html">journalctl</a>。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgb5aaf73" class="outline-2">
-<h2 id="orgb5aaf73"><span class="section-number-2">3.</span> 文档</h2>
-<div class="outline-text-2" id="text-3">
+<div id="outline-container-org6733784" class="outline-3">
+<h3 id="org6733784"><span class="section-number-3">2.2.</span> 部署到容器环境下</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
-pkg.go.dev 是根据代码中的文档（注释）自动生成的（godoc 工具自动提取），书写规范：<a href="https://go.dev/doc/comment">Go Doc Comments</a>。
+在有容器运行时的情况下，建议使用容器部署。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgb315e8c" class="outline-2">
-<h2 id="orgb315e8c"><span class="section-number-2">4.</span> 最佳实践</h2>
-<div class="outline-text-2" id="text-4">
-<ul class="org-ul">
-<li><b>拥有一个 <code>go.mod</code> 文件</b> Go 1.11 后引入了官方的模块管理工具 <code>go mod</code></li>
-<li><b>可分发 LICENSE</b> 使用少三方使用限制的开源协议，你的项目中根目录下需要有一个 <code>LICENSE</code> 文件</li>
-<li><b>Tagged 版本</b> 解析 package 时，优先使用 tag 标记的版本，如果没有 tag，则会寻找最新的提交记录（可读性差）
-<ul class="org-ul">
-<li>版本号定义规范：<a href="https://semver.org/">https://semver.org/</a></li>
-</ul></li>
-<li><b>Stable 版本</b> <code>v0</code> 是实验性版本，v1 或已上会被认为是个稳定版本，破坏性的更新会在大版本中；稳定版本之后的次要版本
-通常认为是兼容的。</li>
-</ul>
-
+<div id="outline-container-org421b2b8" class="outline-3">
+<h3 id="org421b2b8"><span class="section-number-3">2.3.</span> 版本号</h3>
+<div class="outline-text-3" id="text-2-3">
 <p>
-<b>LICENSE 如何选择？</b>
-</p>
-
-<ol class="org-ol">
-<li><a href="https://docs.github.com/cn/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository">https://docs.github.com/cn/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository</a></li>
-<li><a href="https://www.ruanyifeng.com/blog/2011/05/how_to_choose_free_software_licenses.html">https://www.ruanyifeng.com/blog/2011/05/how_to_choose_free_software_licenses.html</a></li>
-</ol>
-
-<p>
-我一般选择 MIT 或者 Apache。
+如果使用 Docker 部署时，版本号通常放到 docker tag 中。如果使用二进制文件直接部署的话，把版本号放在二进制名称上是一种办法，
+但是很不优雅，这样每次发布都需要修改 systemd unit 的内容。最好的办法就是把版本信息打到二进制包中，通过执行某个参数时自动打印。
 </p>
 
 <p>
-<b>对于版本管理？</b>
+Go build <code>-ldflags</code> 支持注入变量，比如：
 </p>
 
 <p>
-我的理解是，如果是自己使用没太必要用 tag 来维护，比较麻烦，全部推 main 分支即可。但如果考虑开源或者存在不兼容的情况，
-是需要严格的版本管理机制的。
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgd40802e" class="outline-2">
-<h2 id="orgd40802e"><span class="section-number-2">5.</span> 自动构建</h2>
-<div class="outline-text-2" id="text-5">
-<p>
-Github Actions 中添加一个 workflow，其实是个 git hook，在每次提交的时候会触发自动构建。
+<code>go build -ldflags -X main.Version=1.0.0 -X main.BuildTime=2020-06-29 15:29:45</code>
 </p>
 
 <p>
-构建成功的会有一个徽标，你可以放到 README.md 中，看起来酷酷的。
+将在模块 <code>main</code> 中寻找变量 <code>Version</code> 和 <code>BuildTime</code> ，然后动态赋值。可以这样写 makefile：
 </p>
-</div>
+
+<div class="org-src-container">
+<pre class="src src-text">VERSION=`git rev-parse HEAD`
+BUILD_TIME=`date +'%Y-%m-%d %H:%M:%S'`
+LDFLAGS=-ldflags "-X 'main.Version=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}'"
+
+build:
+    go build ${LDFLAGS} -o xxx *.go
+</pre>
 </div>
 
-<div id="outline-container-orgdd53512" class="outline-2">
-<h2 id="orgdd53512"><span class="section-number-2">6.</span> go.dev 的徽标</h2>
-<div class="outline-text-2" id="text-6">
 <p>
-以前 <a href="https://github.com/golang/go/issues/36982">https://github.com/golang/go/issues/36982</a> 不支持，用第三方的 <a href="https://shields.io">https://shields.io</a> 来替代。目前已经支持了：<a href="https://pkg.go.dev/badge/">https://pkg.go.dev/badge/</a>
+然后在 <code>main</code> 中声明变量:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">Version   <span style="color: #005a5f;">string</span> = <span style="color: #2544bb;">""</span>
+BuildTime <span style="color: #005a5f;">string</span> = <span style="color: #2544bb;">""</span>
+</pre>
+</div>
+
+<p>
+程序开始打印变量即可。
 </p>
 </div>
 </div>
-<div id="footnotes">
-<h2 class="footnotes">Footnotes: </h2>
-<div id="text-footnotes">
-
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
-<a href="https://pkg.go.dev/about#adding-a-package">https://pkg.go.dev/about#adding-a-package</a>
-</p></div></div>
-
-
 </div>
-</div></div>
+</div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-07-22 10:51:56 <br />Last updated: 2022-11-27 Sun 18:31 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2022-11-29 Tue 21:53 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
 </div>
 </body>
 </html>

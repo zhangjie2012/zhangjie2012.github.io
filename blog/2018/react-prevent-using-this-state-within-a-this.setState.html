@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-11-28 Mon 20:12 -->
+<!-- 2022-11-29 Tue 21:57 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>[React] 不要在 this.setState 中使用 this.state</title>
@@ -235,7 +235,7 @@ eslint 报错： <code>error Use callback in setState when referencing the previ
 一个经典的例子就是自增运算：
 </p>
 
-<pre class="example" id="orgcc5a01d">
+<pre class="example" id="org5a8f877">
 function increment() {
     this.setState({value: this.state.value + 1});
 }
@@ -245,7 +245,7 @@ function increment() {
 如果有两个 <code>setState</code> 操作同时执行时，可能出现下面这种情况：
 </p>
 
-<pre class="example" id="org64ee889">
+<pre class="example" id="org6c4a3cb">
 setState({value: 1 + 1})
 setState({value: 1 + 1})
 </pre>
@@ -258,7 +258,7 @@ setState({value: 1 + 1})
 为了避免这个问题，需要使用前一个 state 作为第一个参数：
 </p>
 
-<pre class="example" id="org9e6a696">
+<pre class="example" id="org926eca0">
 function increment() {
     this.setState(prevState =&gt; ({value: prevState.value + 1}));
 }

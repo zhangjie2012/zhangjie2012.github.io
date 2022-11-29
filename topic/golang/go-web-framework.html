@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-11-28 Mon 20:12 -->
+<!-- 2022-11-29 Tue 21:57 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>构建和部署</title>
+<title>Go Web 框架</title>
 <meta name="author" content="JerryZhang" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
@@ -218,171 +218,125 @@
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">构建和部署</h1>
+<h1 class="title">Go Web 框架</h1>
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org3fe3a50">1. 打包</a></li>
-<li><a href="#org2be4934">2. 部署</a>
-<ul>
-<li><a href="#orgc28ebe9">2.1. 直接部署到主机上</a></li>
-<li><a href="#org4e5c755">2.2. 部署到容器环境下</a></li>
-<li><a href="#orgf06d082">2.3. 版本号</a></li>
-</ul>
-</li>
+<li><a href="#orge8f328a">1. 原生</a></li>
+<li><a href="#orge22ba19">2. gin</a></li>
+<li><a href="#orgf252a25">3. 结论</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org3fe3a50" class="outline-2">
-<h2 id="org3fe3a50"><span class="section-number-2">1.</span> 打包</h2>
+<div id="outline-container-orge8f328a" class="outline-2">
+<h2 id="orge8f328a"><span class="section-number-2">1.</span> 原生</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-Go 支持跨平台编译，这里假定服务名称为： <code>hello</code> ，构建 Docker 镜像：
+Go 的 <code>net/http</code> 库比较丰富，借助 <a href="https://github.com/gorilla/mux">mux</a> 即可自己完成一个 server 基本需求。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-dockerfile"><span style="color: #5317ac;">FROM</span> <span style="color: #005a5f; font-weight: bold;">Ubuntu:18.04</span>
+<pre class="src src-go"><span style="color: #00538b;">router</span> := mux.<span style="color: #721045;">NewRouter</span><span style="color: #000000;">()</span>
+router.<span style="color: #721045;">HandleFunc</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"/"</span>, <span style="color: #5317ac;">func</span><span style="color: #a8007f;">(</span><span style="color: #00538b;">resp</span> <span style="color: #005a5f;">http.ResponseWriter</span>, <span style="color: #00538b;">req</span> *<span style="color: #005a5f;">http.Request</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
+    resp.<span style="color: #721045;">Write</span><span style="color: #005f88;">(</span><span style="color: #904200;">[]</span><span style="color: #721045;">byte</span><span style="color: #904200;">(</span><span style="color: #2544bb;">"ok"</span><span style="color: #904200;">)</span><span style="color: #005f88;">)</span>
+<span style="color: #a8007f;">}</span><span style="color: #000000;">)</span>
 
-<span style="color: #5317ac;">COPY</span> hello /hello
-<span style="color: #5317ac;">COPY</span> config.yaml /etc/hello/config.yaml
+<span style="color: #00538b;">httpServer</span> := &amp;<span style="color: #005a5f;">http.Server</span><span style="color: #000000;">{</span>
+    <span style="color: #0000c0;">Addr</span>:    <span style="color: #2544bb;">":8080"</span>,
+    <span style="color: #0000c0;">Handler</span>: router,
+<span style="color: #000000;">}</span>
 
-<span style="color: #5317ac;">EXPOSE</span> 8080
-
-<span style="color: #5317ac;">CMD</span> <span style="color: #000000;">[</span><span style="color: #2544bb;">"/hello"</span>, <span style="color: #2544bb;">"-config-file"</span>, <span style="color: #2544bb;">"/etc/hello/config.yaml"</span><span style="color: #000000;">]</span>
-</pre>
-</div>
-
-<p>
-一个简单的 Makefile：
-</p>
-
-<div class="org-src-container">
-<pre class="src src-makefile"><span style="color: #00538b;">OUTPUT</span>=hello
-<span style="color: #00538b;">TAG</span>=<span style="color: #2544bb;">`git rev-parse --short HEAD`</span>
-
-<span style="color: #721045;">build</span>:
-go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
-
-<span style="color: #721045;">build-linux</span>:
-<span style="color: #00538b;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
-
-<span style="color: #721045;">build-docker</span>:
-<span style="color: #00538b;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
-<span style="color: #721045;">docker build -t &lt;your docker registry addr&gt;/$</span><span style="color: #000000;">{</span><span style="color: #721045;">OUTPUT</span><span style="color: #000000;">}</span>:$<span style="color: #000000;">{</span><span style="color: #00538b;">TAG</span><span style="color: #000000;">}</span> .
-
-<span style="color: #721045;">push-docker</span>:
-<span style="color: #721045;">docker push &lt;your docker registry addr&gt;/$</span><span style="color: #000000;">{</span><span style="color: #721045;">OUTPUT</span><span style="color: #000000;">}</span>:$<span style="color: #000000;">{</span><span style="color: #00538b;">TAG</span><span style="color: #000000;">}</span>
+<span style="color: #5317ac;">go</span> <span style="color: #5317ac;">func</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">if</span> <span style="color: #00538b;">err</span> := s.HTTPServer.<span style="color: #721045;">ListenAndServe</span><span style="color: #a8007f;">()</span>; err != <span style="color: #0000c0;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a8007f;">{</span>
+        log.<span style="color: #721045;">Fatalf</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"server error, %s\n"</span>, err<span style="color: #005f88;">)</span>
+    <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}()</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org2be4934" class="outline-2">
-<h2 id="org2be4934"><span class="section-number-2">2.</span> 部署</h2>
+<div id="outline-container-orge22ba19" class="outline-2">
+<h2 id="orge22ba19"><span class="section-number-2">2.</span> gin</h2>
 <div class="outline-text-2" id="text-2">
-</div>
-<div id="outline-container-orgc28ebe9" class="outline-3">
-<h3 id="orgc28ebe9"><span class="section-number-3">2.1.</span> 直接部署到主机上</h3>
-<div class="outline-text-3" id="text-2-1">
 <p>
-构建对应平台的二进制包，Ubuntu 15.04 之后，以及 CentOS7 之后都使用 <a href="https://wiki.archlinux.org/index.php/Systemd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">systemd</a> 作为默认的系统和服务管理器了。
-他提供了一些的工具集合，使用起来比 <a href="http://supervisord.org/">Supervisor</a> 这种工具爽多了。
-</p>
-
-<p>
-配置比较简单，使用 systemd 管理的进程，都会在 <code>/usr/lib/systemd/system</code> 目录下有一个 service 文件，用来编排你的应用。
-</p>
-
-<p>
-比如：
+<a href="https://github.com/gin-gonic/gin">gin</a> 是一个 Go 的 Web 框架，当然很多的其它框架。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-text" id="orgd4c4b87">[Unit]
-Description=Command Scheduler
-After=auditd.service systemd-user-sessions.service time-sync.target
+<pre class="src src-go"><span style="color: #00538b;">router</span> := gin.<span style="color: #721045;">New</span><span style="color: #000000;">()</span>
 
-[Service]
-EnvironmentFile=/etc/sysconfig/crond
-ExecStart=/usr/sbin/crond -n $CRONDARGS
-ExecReload=/bin/kill -HUP $MAINPID
-KillMode=process
+router.<span style="color: #721045;">GET</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"/"</span>, <span style="color: #5317ac;">func</span><span style="color: #a8007f;">(</span><span style="color: #00538b;">c</span> *<span style="color: #005a5f;">gin.Context</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
+    c.<span style="color: #721045;">String</span><span style="color: #005f88;">(</span>http.StatusOK, <span style="color: #2544bb;">"ok"</span><span style="color: #005f88;">)</span>
+<span style="color: #a8007f;">}</span><span style="color: #000000;">)</span>
 
-[Install]
-WantedBy=multi-user.target
+<span style="color: #00538b;">srv</span> := &amp;<span style="color: #005a5f;">http.Server</span><span style="color: #000000;">{</span>
+    <span style="color: #0000c0;">Addr</span>:    <span style="color: #2544bb;">":8080"</span>,
+    <span style="color: #0000c0;">Handler</span>: router,
+<span style="color: #000000;">}</span>
+
+<span style="color: #5317ac;">go</span> <span style="color: #5317ac;">func</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">if</span> <span style="color: #00538b;">err</span> := server.HttpServer.<span style="color: #721045;">ListenAndServe</span><span style="color: #a8007f;">()</span>; err != <span style="color: #0000c0;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a8007f;">{</span>
+        log.<span style="color: #721045;">Fatalf</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"server failure : %s\n"</span>, err<span style="color: #005f88;">)</span>
+    <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}()</span>
+
 </pre>
 </div>
 
 <p>
-这是 crond 的配置文件，里面囊括了服务的描述、依赖、启动命令、配置文件等。
+有没发现，gin 的定位类似 mux，也是在解决路由问题。
 </p>
 
 <p>
-使用 systemd 工具集，可以轻松的查看服务状态、查看日志、设置重启策略，开机启动等。具体可以看我之前梳理的文档：
-<a href="wiki/devops/systemd.html">systemd</a>、<a href="wiki/devops/journalctl.html">journalctl</a>。
-</p>
-</div>
-</div>
-
-<div id="outline-container-org4e5c755" class="outline-3">
-<h3 id="org4e5c755"><span class="section-number-3">2.2.</span> 部署到容器环境下</h3>
-<div class="outline-text-3" id="text-2-2">
-<p>
-在有容器运行时的情况下，建议使用容器部署。
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgf06d082" class="outline-3">
-<h3 id="orgf06d082"><span class="section-number-3">2.3.</span> 版本号</h3>
-<div class="outline-text-3" id="text-2-3">
-<p>
-如果使用 Docker 部署时，版本号通常放到 docker tag 中。如果使用二进制文件直接部署的话，把版本号放在二进制名称上是一种办法，
-但是很不优雅，这样每次发布都需要修改 systemd unit 的内容。最好的办法就是把版本信息打到二进制包中，通过执行某个参数时自动打印。
-</p>
-
-<p>
-Go build <code>-ldflags</code> 支持注入变量，比如：
-</p>
-
-<p>
-<code>go build -ldflags -X main.Version=1.0.0 -X main.BuildTime=2020-06-29 15:29:45</code>
-</p>
-
-<p>
-将在模块 <code>main</code> 中寻找变量 <code>Version</code> 和 <code>BuildTime</code> ，然后动态赋值。可以这样写 makefile：
+当然，gin 除了提供 router 之外，还提供了 middleware 的功能，middleware 对于一个 Web Server 来讲是至关重要的，比如你可以：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-text">VERSION=`git rev-parse HEAD`
-BUILD_TIME=`date +'%Y-%m-%d %H:%M:%S'`
-LDFLAGS=-ldflags "-X 'main.Version=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}'"
+<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">AuthRequired</span><span style="color: #000000;">()</span> <span style="color: #005a5f;">gin.HandlerFunc</span> <span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">return</span> <span style="color: #5317ac;">func</span><span style="color: #a8007f;">(</span><span style="color: #00538b;">c</span> *<span style="color: #005a5f;">gin.Context</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
+        <span style="color: #00538b;">token</span> := c.Request.Header.<span style="color: #721045;">Get</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"X-Login-Token"</span><span style="color: #005f88;">)</span>
+        <span style="color: #5317ac;">if</span> token != <span style="color: #2544bb;">"xxx"</span> <span style="color: #005f88;">{</span>
+            c.<span style="color: #721045;">String</span><span style="color: #904200;">(</span>http.StatusUnauthorized, <span style="color: #2544bb;">"login required"</span><span style="color: #904200;">)</span>
+            c.<span style="color: #721045;">Abort</span><span style="color: #904200;">()</span> <span style="color: #505050;">// </span><span style="color: #505050;">must abort to next handler</span>
+            <span style="color: #5317ac;">return</span>
+        <span style="color: #005f88;">}</span>
 
-build:
-    go build ${LDFLAGS} -o xxx *.go
+        c.<span style="color: #721045;">Set</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"username"</span>, <span style="color: #2544bb;">"xxx"</span><span style="color: #005f88;">)</span>
+
+        c.<span style="color: #721045;">Next</span><span style="color: #005f88;">()</span>
+    <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+
+<span style="color: #00538b;">apiv1</span> := r.<span style="color: #721045;">Group</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"/api/v1"</span><span style="color: #000000;">)</span>
+apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</span><span style="color: #721045;">AuthRequired</span><span style="color: #a8007f;">()</span><span style="color: #000000;">)</span>
 </pre>
 </div>
-
-<p>
-然后在 <code>main</code> 中声明变量:
-</p>
-
-<pre class="example">
-Version   string = ""
-BuildTime string = ""
-</pre>
-
-<p>
-程序开始打印变量即可。
-</p>
 </div>
+</div>
+
+<div id="outline-container-orgf252a25" class="outline-2">
+<h2 id="orgf252a25"><span class="section-number-2">3.</span> 结论</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+使用原生的库还是框架，我的思路是：
+</p>
+
+<ul class="org-ul">
+<li>如果服务侧重于 agent/proxy 对外暴露的 API 比较单一，比如用于收集机器 metric 的 exporter，建议使用原生</li>
+<li>如果服务侧重于业务，对外暴露的 API 很多，需要分组和鉴权相关，建议用框架</li>
+</ul>
+
+<p>
+<i>本文档的示例用的都是 gin，其实区别不大的。</i>
+</p>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2022-11-29 Tue 21:53 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
 </div>
 </body>
 </html>

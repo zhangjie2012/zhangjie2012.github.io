@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-11-28 Mon 20:12 -->
+<!-- 2022-11-29 Tue 21:57 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C++ 深入探究 while(cin)</title>
@@ -223,7 +223,7 @@
 今天看到这个帖子："<a href="http://www.cppleyuan.com/viewthread.php?tid=10415">C++中字符串的结束字符是什么？</a>"，代码是：
 </p>
 
-<pre class="example" id="org27f0799">
+<pre class="example" id="org6ce56e2">
 while(cin &gt;&gt; str)
     ivec.push_back(str);
 </pre>
@@ -246,7 +246,7 @@ while(cin &gt;&gt; str)
 看他回复另外一个朋友的源码是：
 </p>
 
-<pre class="example" id="orgbd403d1">
+<pre class="example" id="org584c1d5">
 #include &lt;iostream&gt;
 #include &lt;vector&gt;
 #include &lt;string&gt;
@@ -291,7 +291,7 @@ cin 是一个全局变量，变量类型是 istream。我开始想着把 cin &gt
 找 <code>istream &gt;&gt;</code> 的声明：
 </p>
 
-<pre class="example" id="org801d144">
+<pre class="example" id="org2d7fd7a">
 basic_istream&lt;_CharT, _Traits&gt;&amp; operator&gt;&gt;(short&amp; __n)
 {
     // _GLIBCXX_RESOLVE_LIB_DEFECTS
@@ -313,7 +313,7 @@ basic_istream&lt;_CharT, _Traits&gt;&amp; operator&gt;&gt;(short&amp; __n)
 想必有很多重载，拿一个就够分析了。假如有如下代码:
 </p>
 
-<pre class="example" id="org0b0daec">
+<pre class="example" id="orgbf4efb9">
 short s;
 
 cin &gt;&gt; s;
@@ -327,7 +327,7 @@ cin &gt;&gt; s;
 找 <code>_M_extract</code> 实现：
 </p>
 
-<pre class="example" id="org773cb9f">
+<pre class="example" id="orgc36e56c">
 basic_istream&lt;_CharT, _Traits&gt;&amp; _M_extract(_ValueT &amp; __v)
 {
     sentry __cerb(*this, false);
@@ -365,7 +365,7 @@ basic_istream&lt;_CharT, _Traits&gt;&amp; _M_extract(_ValueT &amp; __v)
 找到它的源码：
 </p>
 
-<pre class="example" id="orge937bb7">
+<pre class="example" id="org09dbb61">
 bool fail() const
 {
     return (this-&gt;rdstate() &amp; (badbit | failbit)) != 0;
@@ -376,7 +376,7 @@ bool fail() const
 继续找 rdstate 的源码：
 </p>
 
-<pre class="example" id="org79fffc4">
+<pre class="example" id="org74630ed">
 iostate rdstate() const
 {
     return _M_streambuf_state;
@@ -393,7 +393,7 @@ badbit，failbit， <code>_M_streambuf_state</code> 是什么含义对我们来�
 就在我迷茫之时看到了这么一行代码：
 </p>
 
-<pre class="example" id="orgdaeb091">
+<pre class="example" id="orgc050cee">
 /**
  *  @brief  The quick-and-easy status check.
  *
@@ -409,7 +409,7 @@ operator void*() const
 现在的问题在于，什么情况下会调用这个函数？在执行 <code>while (cin &gt;&gt; str)</code> 时进行了 <code>(void*)</code> 这个转换吗，要验证很简单，看下面这个例子：
 </p>
 
-<pre class="example" id="orgeca24f0">
+<pre class="example" id="org1208e78">
 #include &lt;iostream&gt;
 
 class my_istream
@@ -439,7 +439,7 @@ int main ()
 假如将 <code>operator void * () const</code> 去掉编译器会提示如下错误：
 </p>
 
-<pre class="example" id="org297cc26">
+<pre class="example" id="org3594b6d">
 E:\TEMP_FILE\test_volatile\main.cpp||In function 'int main()':|
 
 E:\TEMP_FILE\test_volatile\main.cpp|18|error: could not convert 'mi_ref' to 'bool'|
@@ -451,7 +451,7 @@ E:\TEMP_FILE\test_volatile\main.cpp|18|error: could not convert 'mi_ref' to 'boo
 Ok，总结：
 </p>
 
-<pre class="example" id="orga0ad8be">
+<pre class="example" id="org5f4f295">
 while(cin &gt;&gt; str)
     ivec.push_back(str);
 </pre>

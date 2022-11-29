@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-11-28 Mon 20:12 -->
+<!-- 2022-11-29 Tue 21:57 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>WordPress主题开发总结（下）：技巧</title>
@@ -244,7 +244,7 @@
 <div id="outline-container-获取发布文章" class="outline-2">
 <h2 id="获取发布文章"><span class="section-number-2">1.</span> 获取发布文章</h2>
 <div class="outline-text-2" id="text-获取发布文章">
-<pre class="example" id="org4c1b64f">
+<pre class="example" id="org15893b3">
 &lt;?php
     $args = array( 'numberposts' =&gt; 12, 'orderby' =&gt; 'pubdate' );
     $rand_posts = get_posts( $args );
@@ -271,7 +271,7 @@ numberposts 指的是文章数量。orderby 值为 pubdate 表示最近发布，
 首先要实现文章浏览量，就这个功能而言，把下面的两个函数添加到 functions.php 中。
 </p>
 
-<pre class="example" id="org76c1e5c">
+<pre class="example" id="orgab2b698">
 function getPostViews($postID) {
     $count_key = 'post_views_count';
     $count = get_post_meta ( $postID, $count_key, true );
@@ -301,7 +301,7 @@ function setPostViews($postID) {
 在主循环中添加如下代码，应该都能看懂，第一个是在浏览的时候记录，第二是显示浏览次数。
 </p>
 
-<pre class="example" id="org3f9abfd">
+<pre class="example" id="orgda47b24">
 &lt;?php setPostViews(get_the_ID()); ?&gt;
 &lt;?php echo getPostViews(get_the_ID()); ?&gt;[/php]
 </pre>
@@ -310,7 +310,7 @@ function setPostViews($postID) {
 但是，如果要把热门点击文章按列表显示，上面这个方法就不行了，我用的是插件（WP-PostViews）。在需要显示该文章浏览次数处，调用 the_views 方法：
 </p>
 
-<pre class="example" id="org3a10b82">
+<pre class="example" id="org768f2d5">
 &lt;?php if(function_exists('the_views')) { the_views(); } ?&gt;
 </pre>
 
@@ -318,7 +318,7 @@ function setPostViews($postID) {
 在想要显示列表的调用 <code>get_most_viewed</code> 方法：
 </p>
 
-<pre class="example" id="org9a5cff5">
+<pre class="example" id="org5f74a85">
 &lt;?php if (function_exists('get_most_viewed')): ?&gt;
    &lt;ul&gt;
    &lt;?php get_most_viewed('both', 12);?&gt;
@@ -340,7 +340,7 @@ function setPostViews($postID) {
 否则显示出来的只是热评文章的标题。你在使用的时候，建议手动修改一下。
 </p>
 
-<pre class="example" id="org0439def">
+<pre class="example" id="org75fde0e">
 /*
 $termId:分类目录 ID,为 0 时是检索所有分类目录
 $posts_num:显示热评文章的数量
@@ -388,7 +388,7 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 在需要显示热评列表的地方，调用 <code>simple_get_most_review</code> （参数含义请看函数声明）。
 </p>
 
-<pre class="example" id="orgc2e4da9">
+<pre class="example" id="org0867f4d">
 &lt;ul&gt;
 &lt;?php if (function_exists('simple_get_most_review')) {simple_get_most_review(0,12,36500); }  ?&gt;
 &lt;/ul&gt;
@@ -399,7 +399,7 @@ function simple_get_most_review($termId=0,$posts_num=12, $days=30)
 <div id="outline-container-显示-siteinfo" class="outline-2">
 <h2 id="显示-siteinfo"><span class="section-number-2">4.</span> 显示 SITEINFO</h2>
 <div class="outline-text-2" id="text-显示-siteinfo">
-<pre class="example" id="orgf90aed2">
+<pre class="example" id="org512dbf1">
 文章数量：&lt;?php $count_posts = wp_count_posts();echo $published_posts = $count_posts-&gt;publish;?&gt;
 分类数量：&lt;?php echo $count_categories =wp_count_terms('category'); ?&gt;
 标签数量：&lt;?php echo $count_tags =wp_count_terms('post_tag'); ?&gt;
