@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-11-30 Wed 16:14 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MongoDB</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">MongoDB</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgeff13b3">1. 安装</a></li>
+<li><a href="#org8951c7b">2. 常用命令</a>
+<ul>
+<li><a href="#orge670549">2.1. 库级别命令</a></li>
+<li><a href="#orge2e6003">2.2. 表级别命令</a></li>
+<li><a href="#org3e793ac">2.3. 其它</a></li>
+</ul>
+</li>
+<li><a href="#orge9c0033">3. 备份与恢复</a></li>
+<li><a href="#org5e9b4fe">4. FAQ</a>
+<ul>
+<li><a href="#org8f351f3">4.1. Q: 如何查询嵌套内容？</a></li>
+<li><a href="#orgfe9281f">4.2. Q: <code>db.stats()</code> 中 <code>dataSize</code> 为什么比 <code>storageSize</code> 要大？</a></li>
+</ul>
+</li>
+<li><a href="#org2eaf444">5. Resource</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgeff13b3" class="outline-2">
+<h2 id="orgeff13b3"><span class="section-number-2">1.</span> 安装</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>设置清华大学提供的镜像源：<a href="https://mirror.tuna.tsinghua.edu.cn/help/mongodb/">https://mirror.tuna.tsinghua.edu.cn/help/mongodb/</a>，然后通过包管理工具（yum、apt 等）安装</li>
+<li>也可以使用 Docker 的方式启动，<a href="https://hub.docker.com/_/mongo">这里</a></li>
+</ul>
+
+<p>
+推荐使用 Docker，挂载存储到本地。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8951c7b" class="outline-2">
+<h2 id="org8951c7b"><span class="section-number-2">2.</span> 常用命令</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orge670549" class="outline-3">
+<h3 id="orge670549"><span class="section-number-3">2.1.</span> 库级别命令</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li><code>user ${db}</code>: 切换数据库</li>
+<li><code>show dbs</code>: 查看所有数据库</li>
+<li><code>show users</code>: 显示用户</li>
+<li><code>db.dropDatabase()</code>: 删除当前数据库</li>
+<li><code>db.getName()</code>: 查看当前数据库（名称）</li>
+<li><code>db.version()</code>: 查看当前 DB 版本</li>
+<li><code>db.stats()</code>: 查看库表状态（表、对象数量，对象大小，数据大小，存储大小，索引数量，索引大小等），默认的单位是 byte，可以指定参数。如 <code>db.stats(1024)</code> 则返回的是 KB。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge2e6003" class="outline-3">
+<h3 id="orge2e6003"><span class="section-number-3">2.2.</span> 表级别命令</h3>
+<div class="outline-text-3" id="text-2-2">
+<ul class="org-ul">
+<li><code>show collections</code>: 查看所有的 collections</li>
+<li><code>db.${collection}.stat()</code>: 查看当前表的状态（大小、数量、索引等）</li>
+<li><code>db.${collection}.count()</code>: 表行数量</li>
+<li><code>db.${collection}.find()</code>: 不设置条件时，查询所有的数据，查询条件为JSON 结构，调用 <code>limit</code> 函数可限制记录条数</li>
+<li><code>db.${collection}.getIndexes()</code>: 查看当前表的所有索引</li>
+<li><code>db.${collection}.dropIndex("${idx_name}")</code>: 删除索引， <code>dropIndexes()</code> 删除所有索引</li>
+<li><code>db.${collection}.distinct(field, query, options)</code>: 字段去重，具体请看 <a href="https://docs.mongodb.com/manual/reference/method/db.collection.distinct/">db.collection.distinct()</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3e793ac" class="outline-3">
+<h3 id="org3e793ac"><span class="section-number-3">2.3.</span> 其它</h3>
+<div class="outline-text-3" id="text-2-3">
+<ul class="org-ul">
+<li><code>help</code>: 万能的帮助命令，可针对库，表等分别调用，用好了基本上不需要查阅手册</li>
+<li><code>pretty()</code>: 友好的显示结果，可与各种查询命令一起使用</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge9c0033" class="outline-2">
+<h2 id="orge9c0033"><span class="section-number-2">3.</span> 备份与恢复</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+MongoDB 中常使用 <code>mongodump</code> 来备份数据，使用 <code>mongorestore</code> 来恢复数据。
+</p>
+
+<ul class="org-ul">
+<li>mongodump: <code>mongodump -h &lt;hostname&gt;&lt;:port&gt; -d dbname -o dbdirectory</code></li>
+<li>mongorestore: <code>mongorestore -h &lt;hostname&gt;&lt;:port&gt; -d dbname &lt;path&gt;</code></li>
+</ul>
+
+<p>
+<b>注意</b>: 这两个命令特别坑的地方在于，如果不指定路径会自动选择当前目录下文件，一般命令不加任何参数会自动提示 <code>help</code> ，而这两个命令不会。
+所以备份和恢复两个命令一定不能搞混了，有一次我备份数据的时候使用了 mongorestore 导致旧的数据恢复了。
+</p>
+
+<p>
+mongorestore 报错：
+</p>
+
+<pre class="example">
+error connecting to host: could not connect to server: connection() : auth error: sasl conversation error:
+ unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.=
+</pre>
+
+<p>
+加上 <code>--authenticationDatabase=admin</code> 就可以了，具体原因还未知。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5e9b4fe" class="outline-2">
+<h2 id="org5e9b4fe"><span class="section-number-2">4.</span> FAQ</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org8f351f3" class="outline-3">
+<h3 id="org8f351f3"><span class="section-number-3">4.1.</span> Q: 如何查询嵌套内容？</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+A: 使用 <code>.</code> 语法，比如 <code>db.xxx.find({"aa.bb": "cc"})</code> 将会查询 <code>xxx</code> 表中 <code>aa</code> 结构中的 <code>bb = cc</code> 的条目。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfe9281f" class="outline-3">
+<h3 id="orgfe9281f"><span class="section-number-3">4.2.</span> Q: <code>db.stats()</code> 中 <code>dataSize</code> 为什么比 <code>storageSize</code> 要大？</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+A: <code>storageSize</code> 是实际数据库所有占用大小的总和，不做压缩的情况下，要比 <code>dataSize</code> 要大，因为它还包含未使用的空间。但是如果你使用 <code>WiredTiger</code> 存储引擎，数据在磁盘是上压缩过的，所以比 <code>dataSize</code> 看起来要小。看 <a href="https://stackoverflow.com/questions/34054780/how-can-mongodb-datasize-be-larger-than-storagesize">这里</a>。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2eaf444" class="outline-2">
+<h2 id="org2eaf444"><span class="section-number-2">5.</span> Resource</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li><a href="https://ruby-china.org/topics/27659">数据库 MongoDB 与 MySQL 深入对比</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2018-07-09 12:02:46 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+</div>
+</body>
+</html>

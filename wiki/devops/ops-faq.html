@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-11-30 Wed 16:14 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>运维 FAQ</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">运维 FAQ</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org0f5f0ff">1. Shell</a>
+<ul>
+<li><a href="#org79467fb">1.1. 登录读取配置的流程</a>
+<ul>
+<li><a href="#orgd7ee5a4">1.1.1. login shell</a></li>
+<li><a href="#org8509b37">1.1.2. non-login shell</a></li>
+</ul>
+</li>
+<li><a href="#org0043ee1">1.2. <code>~/.profile</code> 和 <code>~/.bashrc</code> 的区别</a></li>
+<li><a href="#org34ccbac">1.3. <code>/etc/bashrc</code> 做了哪些事？</a></li>
+<li><a href="#org2d54d08">1.4. <code>~/.bash_history</code> 是干嘛的？</a></li>
+<li><a href="#org28525db">1.5. <code>~/.bash_logout</code> 是干嘛的？</a></li>
+<li><a href="#org7e58e9d">1.6. 查看当前 shell</a></li>
+</ul>
+</li>
+<li><a href="#orgead4ae2">2. 如何矫正系统时间</a></li>
+<li><a href="#orgfef10d8">3. 如何查看机器基本信息（发行版本，CPU，内存等）</a></li>
+<li><a href="#orga2dfea3">4. apt-get update 和 apt-get upgrade 的区别</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0f5f0ff" class="outline-2">
+<h2 id="org0f5f0ff"><span class="section-number-2">1.</span> Shell</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org79467fb" class="outline-3">
+<h3 id="org79467fb"><span class="section-number-3">1.1.</span> 登录读取配置的流程</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+广义的 shell 分两种，一种为 login shell（通过终端登录），另外一种为 non-login shell（通过图形界面登录）。
+</p>
+
+<p>
+所有 shell 都会走的流程：
+</p>
+
+<ol class="org-ol">
+<li><code>/etc/profile</code>: 系统整体的设置，不建议修改</li>
+<li><code>/etc/inputrc</code>: 设置终端热键，声音等</li>
+<li><code>/etc/profile.d/*sh</code>: 设置 bash 操作接口的颜色、语系、ll 与 ls 命令的别名、vi 命令的别名，which 的命令的别名等</li>
+<li><code>/etc/profile.d/i18n.sh</code>: 设置语言，CentOS 7 是 <code>lang.sh</code> 脚本</li>
+</ol>
+</div>
+
+<div id="outline-container-orgd7ee5a4" class="outline-4">
+<h4 id="orgd7ee5a4"><span class="section-number-4">1.1.1.</span> login shell</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<ol class="org-ol">
+<li><code>~/.bash_profile</code></li>
+<li><code>~/.bash_login</code></li>
+<li><code>~/.profile</code></li>
+</ol>
+
+<p>
+bash 的 login shell 只会读取上面三个文件中的一个，而读取的顺序则是按照上面的顺序。而一般情况下 <code>~/.bash_profile</code> 中会有这样一块代码:
+</p>
+
+<pre class="example" id="org9df760b">
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+</pre>
+
+<p>
+如果存在 <code>~/.bashrc</code> 则使用它，而 <code>~/.bashrc</code> 中又会包含这样一段代码:
+</p>
+
+<pre class="example" id="org1ed15ae">
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+</pre>
+
+<p>
+触发加载 <code>/etc/bashrc</code> 的内容。整理下来 login shell 的读取流程是: <code>~/.bash_profile =&gt; ~/.bashrc =&gt; /etc/bashrc</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8509b37" class="outline-4">
+<h4 id="org8509b37"><span class="section-number-4">1.1.2.</span> non-login shell</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+仅仅会读 <code>~/.bashrc</code> <code>&gt; =/etc/bashrc</code>
+</p>
+
+<p>
+扩展: <a href="http://www.linuxfromscratch.org/blfs/view/svn/postlfs/profile.html">TheBash Shell Startup Files</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0043ee1" class="outline-3">
+<h3 id="org0043ee1"><span class="section-number-3">1.2.</span> <code>~/.profile</code> 和 <code>~/.bashrc</code> 的区别</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li>这两者都具有个性化定制功能</li>
+<li><code>~/.profile</code> 可以设定本用户专有的路径、环境变量等等，它只能登入的时候执行一次</li>
+<li><code>~/.bashrc</code> 也是某用户专有设定文档，可以设定路径，命令别名，每次 shell script 的执行都会使用它一次</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org34ccbac" class="outline-3">
+<h3 id="org34ccbac"><span class="section-number-3">1.3.</span> <code>/etc/bashrc</code> 做了哪些事？</h3>
+<div class="outline-text-3" id="text-1-3">
+<ol class="org-ol">
+<li>依据不同的 UID 规定 umask 的值</li>
+<li>依据不同的 UID 规定提示符（PS1变量）</li>
+<li>调用 <code>/etc/profile.d/*.sh</code> 的设置</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org2d54d08" class="outline-3">
+<h3 id="org2d54d08"><span class="section-number-3">1.4.</span> <code>~/.bash_history</code> 是干嘛的？</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+历史命令记录，登录之后读入内存。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org28525db" class="outline-3">
+<h3 id="org28525db"><span class="section-number-3">1.5.</span> <code>~/.bash_logout</code> 是干嘛的？</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+记录了当我注销 bash 后系统再帮我做完指定的操作才能离开。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7e58e9d" class="outline-3">
+<h3 id="org7e58e9d"><span class="section-number-3">1.6.</span> 查看当前 shell</h3>
+<div class="outline-text-3" id="text-1-6">
+<ul class="org-ul">
+<li>所有的系统Shell: <code>cat /etc/shells</code></li>
+<li>查看用户对应的 shell: <code>cat /etc/passwd</code> 或者 <code>echo $SHELL</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgead4ae2" class="outline-2">
+<h2 id="orgead4ae2"><span class="section-number-2">2.</span> 如何矫正系统时间</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>修改时区: <code>sudo cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</code></li>
+<li>时间同步: <code>sudo ntpdate time.windows.com</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfef10d8" class="outline-2">
+<h2 id="orgfef10d8"><span class="section-number-2">3.</span> 如何查看机器基本信息（发行版本，CPU，内存等）</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><code>cat /etc/os-release</code>: 发行版本</li>
+<li><code>cat /etc/issue</code>: 操作系统版本</li>
+<li><code>cat /etc/inittab</code>: 查看启动项，使用 systemd 的系统，已经不再需要这个文件</li>
+<li><code>cat /etc/passwd</code>: 查看所有用户的列表</li>
+<li><code>cat /etc/group</code>: 查看用户组</li>
+<li><code>cat /proc/version</code>: Linux 版本号，相当于 <code>uname -r=，=uname-a</code> 查看更多信息</li>
+<li><code>cat /proc/cpuinfo</code>: CPU 信息</li>
+<li><code>cat /proc/meminfo</code>: 内存信息(i.e. mem used, free, swap size)</li>
+<li><code>cat /proc/partitions</code>: 所有设备的所有分区</li>
+<li><code>cat /proc/swasps</code>: 所有 swap 分区的信息</li>
+<li><code>df -h</code>: 查看硬盘大小</li>
+<li><code>du -sh</code>: 查看当前文件夹大小</li>
+<li><code>free</code>: 查看系统可用内存，可选参数 <code>-m</code> <code>-h</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga2dfea3" class="outline-2">
+<h2 id="orga2dfea3"><span class="section-number-2">4.</span> apt-get update 和 apt-get upgrade 的区别</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+先运行 <code>update</code> ，然后再运行 <code>upgrade</code> 。它们两个没有包含对方的功能，各自做的事情不同。
+</p>
+
+<ul class="org-ul">
+<li><code>apt-get update</code> 更新可用包列表和他们的版本，但是不安装和升级任何版本</li>
+<li><code>apt-get upgrade</code> 升级你已有包的到最新版本，更新列表之后，程序包管理器将会了解你已经安装的软件的可用更新。
+这就是为什么首先你需要 <code>update</code></li>
+</ul>
+
+<p>
+还有一个命令是 <code>dist-upgrade</code> ，它跟 <code>upgrade</code> 的区别：
+</p>
+
+<ul class="org-ul">
+<li><code>upgrade</code> 是对当前已经安装的包升级到最新版本（你首先要 <code>update</code> ），升级的规则是：在任何情况下安装的软件包都不会被删除，或者未安装的包被检索和安装。如果更新对你很重要，要使用 <code>upgrade</code></li>
+<li><code>dist-upgrade</code> 除了执行 <code>upgrade</code> 之外，还会智能的处理包的依赖关系，所以说 <code>dist-upgrade</code> 可能会移除一些包。如果你想事情「正常工作」，可能要使用 <code>dist-upgrade</code> 来确保解决依赖关系</li>
+</ul>
+
+<p>
+来自：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://askubuntu.com/questions/94102/what-is-the-difference-between-apt-get-update-and-upgrade">https://askubuntu.com/questions/94102/what-is-the-difference-between-apt-get-update-and-upgrade</a></li>
+<li><a href="https://askubuntu.com/questions/194651/why-use-apt-get-upgrade-instead-of-apt-get-dist-upgrade">https://askubuntu.com/questions/194651/why-use-apt-get-upgrade-instead-of-apt-get-dist-upgrade</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2018-09-11 15:29:32 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kubernetes 容器 - 运行时类</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Kubernetes 容器 - 运行时类</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orge892fbe">1. 动机</a></li>
+<li><a href="#orgaaf85df">2. 设置（Setup）</a>
+<ul>
+<li><a href="#org2098796">2.1. 1. 节点上配置 CRI 实现</a></li>
+<li><a href="#org11dbc71">2.2. 2. 创建对应的 RuntimeClass 资源</a></li>
+</ul>
+</li>
+<li><a href="#org24e4cb2">3. 使用（Usage）</a>
+<ul>
+<li><a href="#org63e9dc9">3.1. CRI 配置</a>
+<ul>
+<li><a href="#orge205efd">3.1.1. dockershim</a></li>
+<li><a href="#org6d1679c">3.1.2. containerd</a></li>
+<li><a href="#org3f6186f">3.1.3. CRI-O</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgb34f2a9">4. 调度（Scheduling）</a>
+<ul>
+<li><a href="#org2b74d68">4.1. Pod Overhead</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+<a href="https://kubernetes.io/docs/concepts/containers/runtime-class/">https://kubernetes.io/docs/concepts/containers/runtime-class/</a>
+</p>
+
+<p>
+*FEATURE STATE: <code>Kubernetes v1.20[stable]</code> *
+</p>
+
+<p>
+本页面描述 RuntimeClass 资源和运行时选择机制。
+</p>
+
+<p>
+RuntimeClass 是用于选择容器运行时配置的功能。容器的运行时配置用于运行 Pod 的容器。
+</p>
+
+<div id="outline-container-orge892fbe" class="outline-2">
+<h2 id="orge892fbe"><span class="section-number-2">1.</span> 动机</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+你可以在不同的 Pod 之间设置不同的 RuntimeClass，以实现安全和性能之间的平衡。比如，如果你的部分工作负载需要高级别的信息安全保障，你可能选择性的调度
+这些 Pods，以便它们在使用硬件虚拟化的容器运行时中运行。然后，好处是收到的额外运行时隔离，但同时要付出一些额外的开销。
+</p>
+
+<p>
+你还可以使用 RuntimeClass 在相同的容器运行时但使用不同的设置来运行不同的 Pod。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaaf85df" class="outline-2">
+<h2 id="orgaaf85df"><span class="section-number-2">2.</span> 设置（Setup）</h2>
+<div class="outline-text-2" id="text-2">
+<ol class="org-ol">
+<li>在节点上配置 CRI 实现（运行时依赖）；</li>
+<li>创建对应的 RuntimeClass 资源实现；</li>
+</ol>
+</div>
+
+<div id="outline-container-org2098796" class="outline-3">
+<h3 id="org2098796"><span class="section-number-3">2.1.</span> 1. 节点上配置 CRI 实现</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+RuntimeClass 可用的配置取决于运行时接口（CRI）的实现。有关如何配置的信息，请查看 CRI 实现的相应文档（<a href="https://kubernetes.io/docs/concepts/containers/runtime-class/#cri-configuration">如下</a>）。
+</p>
+
+<blockquote>
+<p>
+<b>注意：</b> RuntimeClass 假设默认情况下整个集群采用同构节点配置（也就是说，关于容器运行时，所有节点的配置方式都相同）。
+要支持异构的节点配置，查看下面的调度。
+</p>
+</blockquote>
+
+<p>
+这些配置有相应的 <code>handler</code> 名称，由 RuntimeClass 引用。这些处理器必须是一个有效的 DNS 1123 标签（字母数字 + <code>-</code> 符号）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org11dbc71" class="outline-3">
+<h3 id="org11dbc71"><span class="section-number-3">2.2.</span> 2. 创建对应的 RuntimeClass 资源</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+在步骤 1 中配置设置应该有一个关联的 <code>handler</code> 名称，作为配置标识。每个 handler，创建一个对应的 RuntimeClass 对象。
+</p>
+
+<p>
+RuntimeClass 资源当前只有 2 个重要的字段：RuntimeClass 名称 <code>metadata.name</code> 和处理器 <code>handler</code> 。对象定义类似：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #00538b;">apiVersion</span>: node.k8s.io/v1  <span style="color: #505050;"># </span><span style="color: #505050;">RuntimeClass is defined in the node.k8s.io API group</span>
+<span style="color: #00538b;">kind</span>: RuntimeClass
+<span style="color: #00538b;">metadata</span>:
+  <span style="color: #00538b;">name</span>: myclass  <span style="color: #505050;"># </span><span style="color: #505050;">The name the RuntimeClass will be referenced by</span>
+  <span style="color: #505050;"># </span><span style="color: #505050;">RuntimeClass is a non-namespaced resource</span>
+<span style="color: #00538b;">handler</span>: myconfiguration  <span style="color: #505050;"># </span><span style="color: #505050;">The name of the corresponding CRI configuration</span>
+</pre>
+</div>
+
+<p>
+RuntimeClass 对象必须是一个有效的 <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names">DNS 子域名</a> 格式。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org24e4cb2" class="outline-2">
+<h2 id="org24e4cb2"><span class="section-number-2">3.</span> 使用（Usage）</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+一旦 RuntimeClasses 配置到集群上，用起来就非常简单了。在 Pod spec 中指定 <code>runtimeClassName</code> 即可。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #00538b;">apiVersion</span>: v1
+<span style="color: #00538b;">kind</span>: Pod
+<span style="color: #00538b;">metadata</span>:
+  <span style="color: #00538b;">name</span>: mypod
+<span style="color: #00538b;">spec</span>:
+  <span style="color: #00538b;">runtimeClassName</span>: myclass
+  <span style="color: #505050;"># </span><span style="color: #505050;">...</span>
+</pre>
+</div>
+
+<p>
+这会告诉 kubelet 使用 RuntimeClass 命名的来运行此 Pod。如果命名的 RuntimeClass 不存在，CRI 无法处理响应的 handler 程序，Pod 会进去
+<code>Failed</code> 阶段（phase）。从响应的 <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application-introspection/">事件</a> 中获取错误信息。
+</p>
+
+<p>
+如果没有 <code>runtimeClassName</code> 指定，会使用默认的 RuntimeHandler，其行为等价于 RuntimeClass 特性被关闭了。
+</p>
+</div>
+
+<div id="outline-container-org63e9dc9" class="outline-3">
+<h3 id="org63e9dc9"><span class="section-number-3">3.1.</span> CRI 配置</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+有关设置 CRI 运行时的更多信息，查看 <a href="https://kubernetes.io/docs/setup/production-environment/container-runtimes/">CRI 安装</a>。
+</p>
+</div>
+
+<div id="outline-container-orge205efd" class="outline-4">
+<h4 id="orge205efd"><span class="section-number-4">3.1.1.</span> dockershim</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+带有 dockershim 的 RuntimeClasses 必须将运行时处理程序设置为 <code>docker</code> 。Dockershim 不支持自定义 runtime 处理器的配置。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6d1679c" class="outline-4">
+<h4 id="org6d1679c"><span class="section-number-4">3.1.2.</span> containerd</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+通过 containerd 配置的 Runtime 处理器在 <code>/etc/containerd/config.toml</code> 中。有效的处理器在 runtime 小结配置：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">[plugins.cri.containerd.runtimes.${HANDLER_NAME}]
+</pre>
+</div>
+
+<p>
+更多配置：<a href="https://github.com/containerd/cri/blob/master/docs/config.md">https://github.com/containerd/cri/blob/master/docs/config.md</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3f6186f" class="outline-4">
+<h4 id="org3f6186f"><span class="section-number-4">3.1.3.</span> CRI-O</h4>
+<div class="outline-text-4" id="text-3-1-3">
+<p>
+CRI-O 的 Runtime 处理器在 <code>/etc/crio/crio.conf</code> 中配置。配置在 <a href="https://github.com/cri-o/cri-o/blob/master/docs/crio.conf.5.md#crioruntime-table">crio.runtime.table</a> 中：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">[crio.runtime.runtimes.${HANDLER_NAME}]
+runtime_path = "${PATH_TO_BINARY}"
+</pre>
+</div>
+
+<p>
+查看配置文档：<a href="https://raw.githubusercontent.com/cri-o/cri-o/9f11d1d/docs/crio.conf.5.md">https://raw.githubusercontent.com/cri-o/cri-o/9f11d1d/docs/crio.conf.5.md</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb34f2a9" class="outline-2">
+<h2 id="orgb34f2a9"><span class="section-number-2">4.</span> 调度（Scheduling）</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+*FEATURE STATE: <code>Kubernetes v1.16 [beta]</code> *
+</p>
+
+<p>
+通过指定 RuntimeClass 的 <code>scheduling</code> 字段，你可以设置约束以保证将此 RuntimeClass 一起运行的 Pod 调度到支持该 Pod 的节点上。
+如果 <code>scheduling</code> 没设置，RuntimeClass 认为所有的节点都支持。
+</p>
+
+<p>
+为确保 Pod 运行在在支持特定 RuntimeClass 的节点上，节点应该包含一个公共标签，然后由 <code>runtimeclass.scheduling.nodeSelector</code> 来选择该标签。
+RuntimeClass 的 nodeSelector 会跟 Pod 的 nodeSelector 合并，有效的获取每个节点选择的节点集合的交集。如果存在冲突，pod 会被拒绝。
+</p>
+
+<p>
+如果对选择的节点进行了污点（tainted）以防止其他 RuntimeClass 容器在该节点上运行，你可以给 RuntimeClass 添加 <code>tolerations</code> 。
+与 <code>nodeSelector</code> 一样，容忍也会被 pod 的容忍进行合并，有效的考虑每个节点可容忍的节点集的并集。
+</p>
+
+<p>
+了解更多的节点选择和容忍的信息，查看 <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/">将 Pod 赋值给节点</a>。
+</p>
+</div>
+
+<div id="outline-container-org2b74d68" class="outline-3">
+<h3 id="org2b74d68"><span class="section-number-3">4.1.</span> Pod Overhead</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+*FEATURE STATE: <code>Kubernetes v1.18 [beta]</code> *
+</p>
+
+<p>
+你可以指定与运行 Pod 相关的 <i>overhead</i> 资源。声明 overhead 允许集群（包括调度器），在做出有关 Pod 和资源决策时要考虑这一点。
+使用 Pod overhead，你必须开启 PodOverhead <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/">feature gate</a> （默认是开启的）。
+</p>
+
+<p>
+Pod overhead 定义在 RuntimeClass 的 <code>overhead</code> 字段上。通过使用这些字段，你可以使用此 RuntimeClass 指定运行 Pod 的开销，并确保在
+Kubernetes 中考虑了这些开销。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2021-04-17 09:38:52 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WordPress主题开发总结（下）：技巧</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">WordPress主题开发总结（下）：技巧</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#获取发布文章">1. 获取发布文章</a></li>
+<li><a href="#显示热点文章列表">2. 显示热"点"文章列表</a></li>
+<li><a href="#显示热评文章列表">3. 显示热"评"文章列表</a></li>
+<li><a href="#显示-siteinfo">4. 显示 SITEINFO</a></li>
+<li><a href="#无插件实现-pagenav">5. 无插件实现 PageNav</a></li>
+<li><a href="#杂项">6. 杂项</a></li>
+<li><a href="#参考文章">7. 参考文章</a></li>
+</ul>
+</div>
+</div>
+<p>
+本文主要包括在 WordPress 开发中会遇到的一些问题（随机文章，记录文章浏览量，热评文章，SITEINFO，PageNav）及解决方案。
+</p>
+
+<p>
+注意：看这些技巧之前，首先一定要了解基本的 WordPress 主题结构。
+</p>
+
+<div id="outline-container-获取发布文章" class="outline-2">
+<h2 id="获取发布文章"><span class="section-number-2">1.</span> 获取发布文章</h2>
+<div class="outline-text-2" id="text-获取发布文章">
+<pre class="example" id="org11e19d4">
+&lt;?php
+    $args = array( 'numberposts' =&gt; 12, 'orderby' =&gt; 'pubdate' );
+    $rand_posts = get_posts( $args );
+    foreach( $rand_posts as $post ) : ?&gt;
+    &lt;div class="post"&gt;
+        &lt;p class="title"&gt;&lt;a href="&lt;?php the_permalink(); ?&gt;"&gt;&lt;?php the_title(); ?&gt;&lt;/a&gt;&lt;/p&gt;
+        &lt;p class="postmetadata"&gt;
+            分类:&lt;?php the_category(', ') ?&gt;   &lt;?php the_tags('Tags: ', ', ' , ''); ?&gt; &lt;?php edit_post_link('编辑', ' &amp;#124; ', ''); ?&gt;
+        &lt;/p&gt;
+    &lt;/div&gt;
+&lt;?php endforeach; ?&gt;
+</pre>
+
+<p>
+numberposts 指的是文章数量。orderby 值为 pubdate 表示最近发布，当值为 rand 时，表示随机，也就是随机获取文章。
+</p>
+</div>
+</div>
+
+<div id="outline-container-显示热点文章列表" class="outline-2">
+<h2 id="显示热点文章列表"><span class="section-number-2">2.</span> 显示热"点"文章列表</h2>
+<div class="outline-text-2" id="text-显示热点文章列表">
+<p>
+首先要实现文章浏览量，就这个功能而言，把下面的两个函数添加到 functions.php 中。
+</p>
+
+<pre class="example" id="org28a979d">
+function getPostViews($postID) {
+    $count_key = 'post_views_count';
+    $count = get_post_meta ( $postID, $count_key, true );
+    if ($count == '') {
+        delete_post_meta ( $postID, $count_key );
+        add_post_meta ( $postID, $count_key, '0' );
+        return "0 View";
+    }
+    return $count . ' Views';
+}
+
+function setPostViews($postID) {
+    $count_key = 'post_views_count';
+    $count = get_post_meta ( $postID, $count_key, true );
+    if ($count == '') {
+        $count = 0;
+        delete_post_meta ( $postID, $count_key );
+        add_post_meta ( $postID, $count_key, '0' );
+    } else {
+        $count ++;
+        update_post_meta ( $postID, $count_key, $count );
+    }
+}
+</pre>
+
+<p>
+在主循环中添加如下代码，应该都能看懂，第一个是在浏览的时候记录，第二是显示浏览次数。
+</p>
+
+<pre class="example" id="org2de316b">
+&lt;?php setPostViews(get_the_ID()); ?&gt;
+&lt;?php echo getPostViews(get_the_ID()); ?&gt;[/php]
+</pre>
+
+<p>
+但是，如果要把热门点击文章按列表显示，上面这个方法就不行了，我用的是插件（WP-PostViews）。在需要显示该文章浏览次数处，调用 the_views 方法：
+</p>
+
+<pre class="example" id="org9dacd14">
+&lt;?php if(function_exists('the_views')) { the_views(); } ?&gt;
+</pre>
+
+<p>
+在想要显示列表的调用 <code>get_most_viewed</code> 方法：
+</p>
+
+<pre class="example" id="orgf368c6d">
+&lt;?php if (function_exists('get_most_viewed')): ?&gt;
+   &lt;ul&gt;
+   &lt;?php get_most_viewed('both', 12);?&gt;
+   &lt;/ul&gt;
+&lt;?php endif; ?&gt;[/php]
+</pre>
+
+<p>
+至于显示的效果需要你的 css 和 WP-PostViews 后台设置相配合。
+</p>
+</div>
+</div>
+
+<div id="outline-container-显示热评文章列表" class="outline-2">
+<h2 id="显示热评文章列表"><span class="section-number-2">3.</span> 显示热"评"文章列表</h2>
+<div class="outline-text-2" id="text-显示热评文章列表">
+<p>
+在 functions.php 中添加如下 simple_get_most_review，这个函数我是从网上拷贝的，foreach 中添加了显示文章评论个数的代码，
+否则显示出来的只是热评文章的标题。你在使用的时候，建议手动修改一下。
+</p>
+
+<pre class="example" id="org48b209a">
+/*
+$termId:分类目录 ID,为 0 时是检索所有分类目录
+$posts_num:显示热评文章的数量
+$days:检索多少天内的热评文章
+*/
+function simple_get_most_review($termId=0,$posts_num=12, $days=30)
+{
+    global $wpdb;
+    if($termId==0){
+        $sql = "SELECT `ID` , `post_title` , `comment_count` FROM $wpdb-&gt;posts
+        WHERE `post_type` = 'post'
+        AND TO_DAYS( now( ) ) - TO_DAYS( `post_date` ) &lt; $days
+        AND (`wp_posts`.`post_status` = 'publish' OR `wp_posts`.`post_status` = 'inherit')
+        ORDER BY `comment_count` DESC LIMIT 0 , $posts_num ";
+    }
+    else {
+        $sql="SELECT `ID` , `post_title` , `comment_count`  FROM `wp_posts`
+        INNER JOIN `wp_term_relationships` ON (`wp_posts`.`ID` = `wp_term_relationships`.`object_id`)
+        INNER JOIN `wp_term_taxonomy` ON (`wp_term_relationships`.`term_taxonomy_id` =  `wp_term_taxonomy`.`term_taxonomy_id`)
+        WHERE   1=1
+        AND `wp_term_taxonomy`.`taxonomy` = 'category'
+        AND `wp_term_taxonomy`.`term_id` = $termId
+        AND `wp_posts`.`post_type` = 'post'
+        AND (`wp_posts`.`post_status` = 'publish' OR `wp_posts`.`post_status` = 'inherit')
+        GROUP BY `wp_posts`.`ID`
+        ORDER BY `comment_count` DESC LIMIT 0 , 10  ";
+    }
+    $posts = $wpdb-&gt;get_results($sql);
+    $output = "";
+    foreach ($posts as $post){
+        $overPost=$post-&gt;post_title;
+        $comment = get_post($post-&gt;ID)-&gt;comment_count;
+        $output .= "\n&lt;li&gt; &lt;div class=\"key\"&gt;
+            &lt;a href= \"".get_permalink($post-&gt;ID)."\" rel=\"bookmark\" title=\"".$post-&gt;post_title."\" &gt;".$overPost."&lt;/a&gt;
+            &lt;/div&gt;
+            &lt;div class=\"value\"&gt;
+                $comment
+            &lt;/div&gt;&lt;/li&gt;";
+    }
+    echo $output;
+}
+</pre>
+
+<p>
+在需要显示热评列表的地方，调用 <code>simple_get_most_review</code> （参数含义请看函数声明）。
+</p>
+
+<pre class="example" id="org6ad0126">
+&lt;ul&gt;
+&lt;?php if (function_exists('simple_get_most_review')) {simple_get_most_review(0,12,36500); }  ?&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-显示-siteinfo" class="outline-2">
+<h2 id="显示-siteinfo"><span class="section-number-2">4.</span> 显示 SITEINFO</h2>
+<div class="outline-text-2" id="text-显示-siteinfo">
+<pre class="example" id="org5b33020">
+文章数量：&lt;?php $count_posts = wp_count_posts();echo $published_posts = $count_posts-&gt;publish;?&gt;
+分类数量：&lt;?php echo $count_categories =wp_count_terms('category'); ?&gt;
+标签数量：&lt;?php echo $count_tags =wp_count_terms('post_tag'); ?&gt;
+评论数量：&lt;?php $count_comments =get_comment_count();echo $count_comments['approved'];?&gt;
+页面总数：&lt;?php $count_pages = wp_count_posts('page'); echo $page_posts = $count_pages-&gt;publish; ?&gt;
+链接总数：&lt;?php $link = $wpdb-&gt;get_var("SELECT COUNT(*) FROM $wpdb-&gt;links WHERE link_visible = 'Y'"); echo $link; ?&gt;
+网站已运行：&lt;?php echo floor((time()-strtotime("2010-7-10"))/86400); ?&gt;
+最后更新：&lt;?php $last = $wpdb-&gt;get_results("SELECT MAX(post_modified) AS MAX_m FROM $wpdb-&gt;posts WHERE (post_type = 'post' OR post_type = 'page') AND (post_status = 'publish' OR post_status = 'private’)");$last = date('Y-n-j', strtotime($last[0]-&gt;MAX_m));echo $last; ?&gt;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-无插件实现-pagenav" class="outline-2">
+<h2 id="无插件实现-pagenav"><span class="section-number-2">5.</span> 无插件实现 PageNav</h2>
+<div class="outline-text-2" id="text-无插件实现-pagenav">
+<p>
+<a href="http://blog.wpjam.com/m/native-pagenavi/">WordPress 技巧：不用插件实现 Pagenavi 功能</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-杂项" class="outline-2">
+<h2 id="杂项"><span class="section-number-2">6.</span> 杂项</h2>
+<div class="outline-text-2" id="text-杂项">
+<ul class="org-ul">
+<li><code>&lt;?php bloginfo('stylesheet_url'); ?&gt;</code> 获取 style.css 文件所在路径</li>
+<li><code>&lt;?php bloginfo('name'); ?&gt;</code> 获取博客标题</li>
+<li><code>&lt;?php bloginfo('url'); ?&gt;</code> 获取博客链接</li>
+<li><code>&lt;?php bloginfo('description'); ?&gt;</code> 获取博客描述</li>
+<li><code>&lt;?php bloginfo('template_url'); ?&gt;</code> 用户主目录</li>
+<li><code>TEMPLATEPATH</code> 主题文件夹的位置</li>
+<li><code>the_title()</code> 日志标题</li>
+<li><code>the_permalink()</code> 日志标题链接</li>
+<li><code>the_category(',')</code> 日志所在分类（用','分隔开）</li>
+<li><code>the_author()</code> 当前日志作者名</li>
+<li><code>comments_popup_link('No Comments &amp;#187;', '1 Comment &amp;#187;', '% Comments &amp;#187;');</code>
+当弹出留言的功能激活的话，=comment_popup_link()=
+调用一个弹出的留言窗口，如果没有激活，=comment_popup_link()=
+则只是简单的显示留言列表。=No Comments &amp;#187=
+是在没有留言的时候显示的。 <code>1 Comment &amp;#187;</code> 是用于当刚好只有 1
+条留言的时候。=% Comments &amp;187;= 显示多余 1 条留言的时候。</li>
+<li><code>edit_post_link('Edit', '|', '')</code>
+显示一个可以用来编辑当前日志的编辑链接。第一个参数用来确定显示的文字，第二个参数是显示在文字前面的字符，第三个参数是显示在文字后面的字符。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-参考文章" class="outline-2">
+<h2 id="参考文章"><span class="section-number-2">7.</span> 参考文章</h2>
+<div class="outline-text-2" id="text-参考文章">
+<ul class="org-ul">
+<li><a href="http://www.32133.com/labrary/450.html">http://www.32133.com/labrary/450.html</a></li>
+<li><a href="http://tzqmiracle.diandian.com/post/2012-02-24/17853923">http://tzqmiracle.diandian.com/post/2012-02-24/17853923</a></li>
+<li><a href="http://blog.wpjam.com/m/native-pagenavi/">http://blog.wpjam.com/m/native-pagenavi/</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2013-01-17 15:46:33 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>K8s Ingress</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">K8s Ingress</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgee011e8">1. 什么是 Ingress ？</a></li>
+<li><a href="#org4fcaf54">2. 先决条件</a></li>
+<li><a href="#org1ff763d">3. Ingress 资源</a></li>
+<li><a href="#org194dda3">4. Ingress controllers</a></li>
+<li><a href="#org56d86d6">5. 开始之前</a></li>
+<li><a href="#org0791369">6. Ingress 类型</a>
+<ul>
+<li><a href="#org34ccd98">6.1. 单个服务</a></li>
+<li><a href="#orgb9c0008">6.2. 简单的扇出（fanout）</a></li>
+<li><a href="#org26b96a2">6.3. 基于名称的 vhost</a></li>
+<li><a href="#org8987898">6.4. TLS</a></li>
+<li><a href="#orga3b8d79">6.5. 负载均衡</a></li>
+</ul>
+</li>
+<li><a href="#orgcb40a42">7. 更新 Ingress</a></li>
+<li><a href="#orgf713795">8. 跨可用区域失败</a></li>
+<li><a href="#orgdf25b69">9. 未来的工作</a>
+<ul>
+<li><a href="#org5f05f3c">9.1. 备选方案</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Ingress 是管理访问集群外部服务的 API 对象，一般指 HTTP。
+</p>
+
+<p>
+Ingress 可以提供负载均衡，SSL 终端和基于名称的虚拟主机（name-based virtual hosting）。
+</p>
+
+<p>
+_tips_：Vhosts 分为两种情况，一种是基于 IP 的（IP-based virtual hosting），一台机器上运行多个网站，不同的网站有不同的 IP 地址；
+另外一种是基于名称的，即多个网站有相同的 IP 地址，用名称来隔离 <sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>。
+</p>
+
+<p>
+<b>术语</b>
+</p>
+
+<ul class="org-ul">
+<li>节点：在 K8s 集群中的一个虚拟主机或者物理主机</li>
+<li>集群：网络中的一群节点（firewalled，被防火墙的），也是 K8s 要管理的主要资源</li>
+<li>边缘路由器：集群中需要强制执行的防火墙策略，可能是由云提供商或者物理硬件管理的网关</li>
+<li>集群网络：一组链接，逻辑的或者物理的，根据 K8s 网络模型用来协助集群内部通信，集群网络的实例包含 Overlays 比如 <a href="https://github.com/coreos/flannel">flannel</a> 或者 SDNs 比如 <a href="https://www.openvswitch.org/">OVS</a></li>
+<li>服务：K8s 中的服务等价于使用了 label 选择器的 pods 集合。除非另有说明，否则服务被当做成拥有虚拟 IPs 只能在集群内部网络路由</li>
+</ul>
+
+<div id="outline-container-orgee011e8" class="outline-2">
+<h2 id="orgee011e8"><span class="section-number-2">1.</span> 什么是 Ingress ？</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+通常，服务和 pods 拥有的 IPs 只能在集群网络路由。所有的在边缘路由器结束的流量会被丢弃或者转发到别的地方。就像下面这样：
+</p>
+
+<pre class="example">
+  internet
+      |
+------------
+[ Services ]
+</pre>
+
+
+<p>
+Ingress 提供了一系列的规则允许入站连接到达集群服务。
+</p>
+
+<pre class="example">
+ internet
+     |
+[ Ingress ]
+--|-----|--
+[ Services ]
+</pre>
+
+<p>
+它可以配置为提供外部服务的 URLs，流量负载均衡，SSL 终止，提供具名虚拟主机等等。用户使用时向 ingress API 服务器提交 POST 请求，由 Ingress controller 完成这一工作，通常用作负载均衡，尽管它也可以配置你的边缘路由或者处理流量高可用。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4fcaf54" class="outline-2">
+<h2 id="org4fcaf54"><span class="section-number-2">2.</span> 先决条件</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+在你使用 Ingress 资源之前，你需要了解一些事情。Ingress 是一个 beta 资源，在任何 K8s 发布 1.1 之前都是不可用的。你需要一个 Ingress 控制器来满足 Ingress，简单的创建资源将不起作用。
+</p>
+
+<p>
+GCE/谷歌 K8s 引擎在 master 上部署了一个 ingress 控制器。你可以在 pod 上部署任意数量的自定义 ingress 控制器。你必须在每个 ingress 添加适合的注解，类似 <a href="https://github.com/kubernetes/ingress-nginx">这里</a> 和 <a href="https://github.com/kubernetes/ingress-gce/blob/master/BETA_LIMITATIONS.md#disabling-glbc">这里</a>。
+</p>
+
+<p>
+确保你阅读过这个控制器的 <a href="https://github.com/kubernetes/ingress-gce/blob/master/BETA_LIMITATIONS.md#glbc-beta-limitations">beta limitation</a>，在 GCE/谷歌 K8s 引擎之外的环境中，你需要部署一个控制器。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1ff763d" class="outline-2">
+<h2 id="org1ff763d"><span class="section-number-2">3.</span> Ingress 资源</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+一个最小的 Ingress 像这样：
+</p>
+
+<div class="org-src-container">
+<pre class="src src--n">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /testpath
+        backend:
+          serviceName: test
+          servicePort: 80
+</pre>
+</div>
+
+<p>
+如果你没有配置 Ingress 控制器的话，请求这个 API 没用。
+</p>
+
+<p>
+<span class="underline">1-6 行</span> ：和其他 K8s 的配置一样，Ingress 需要 <code>apiVersion~，~kind</code> 和 <code>metadata</code> 字段。
+</p>
+
+<p>
+<span class="underline">7-9 行</span> ：Ingress <a href="https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status">spec</a> 包含了配置负载均衡或者代理服务的所有信息。最重要的是，它包含了所有传入请求匹配的规则列表。目前 Ingress 资源只支持 HTTP 规则。
+</p>
+
+<p>
+<span class="underline">10-11 行</span> ：每个 http 规则包含下面这些信息：一个域名（比如：foo.bar.com，在这个例子中默认是 *），关联后端的路径列表（一对一，这个例子中是 <code>/testpath</code> 映射到 <code>test:80</code> ）。
+</p>
+
+<p>
+<span class="underline">12-14 行</span> ：后端服务和端口组合在 <a href="https://kubernetes.io/docs/concepts/services-networking/service/">服务文档</a> 中有描述，Ingress 流量通常会直接发送到匹配的后端。
+</p>
+
+<p>
+<span class="underline">全局参数</span> ：为了演示一个精简的例子所有没有设置全局参数，查看 <a href="https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/api/extensions/v1beta1/types.go">API文档</a> 查看完整的定义。可以指定一个全局默认的后端，在请求规则不匹配的情况下，会默认发送到 default 后端。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org194dda3" class="outline-2">
+<h2 id="org194dda3"><span class="section-number-2">4.</span> Ingress controllers</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+为了使 ingress 资源生效，集群必须有一个 Ingress controller 运行。这和其他类型的控制器不用，通常作为 <code>kube-controller-manager</code>  二进制的一部分来运行，跟随集群一直启动。选择一个合适你集群的 ingress controller 实现，或者你自己实现一个。
+</p>
+
+<ul class="org-ul">
+<li>K8s 当前支持和维护 <a href="https://github.com/kubernetes/ingress-gce/blob/master/README.md">GCE</a> 和 <a href="https://github.com/kubernetes/ingress-nginx/blob/master/README.md">nginx</a></li>
+<li>F5 网络为 <a href="http://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/v1.5/">F5 BIG-IP Controller for Kubernetes</a> 提供支持和维护</li>
+<li><a href="https://konghq.com/">Kong</a> 为 <a href="https://konghq.com/blog/kubernetes-ingress-controller-for-kong/">Kong Ingress Controller for Kubernetes</a> 提供了 <a href="https://discuss.konghq.com/c/kubernetes">社区</a> 和 <a href="https://konghq.com/api-customer-success/">commercial</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org56d86d6" class="outline-2">
+<h2 id="org56d86d6"><span class="section-number-2">5.</span> 开始之前</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+以下文档介绍了一套 Ingress 资源跨平台资源暴露的特性，在理想情况下，所有的 Ingress 控制器应该满足这个规范，但是我们还没有实现。
+我们当前支持和维护了 GCE 和 nginx 控制器。如果你使用了 F5 BIG-IP 控制器，查看 <a href="http://clouddocs.f5.com/containers/v2/kubernetes/kctlr-k8s-ingress-ctlr.html">使用 BIG-IP 控制器作为 K8s Ingress 控制器</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0791369" class="outline-2">
+<h2 id="org0791369"><span class="section-number-2">6.</span> Ingress 类型</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org34ccd98" class="outline-3">
+<h3 id="org34ccd98"><span class="section-number-3">6.1.</span> 单个服务</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+现有的 K8s 概念允许你暴露单个服务（查看<a href="https://kubernetes.io/docs/concepts/services-networking/ingress/#alternatives">备选方案</a>），不过你也可以通过 Ingress 来实现，通过指定一个没有规则的默认后端服务。
+</p>
+
+<pre class="example">
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+spec:
+  backend:
+    serviceName: testsvc
+    servicePort: 80
+</pre>
+
+<p>
+如果你使用 <code>kubectl create -f</code> 创建的，你可以看到：
+</p>
+
+<pre class="example">
+$ kubectl get ing
+NAME                RULE          BACKEND        ADDRESS
+test-ingress        -             testsvc:80     107.178.254.228
+</pre>
+
+<p>
+<code>107.178.254.228</code> 是 Ingress 控制器分配的 IP，~RULE~ 列表示了所有的流量都直接发送到 <code>BACKEND</code> 列表下的 K8s 服务。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb9c0008" class="outline-3">
+<h3 id="orgb9c0008"><span class="section-number-3">6.2.</span> 简单的扇出（fanout）</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+如前所述，在 K8s 中的 pods 的 IPs 只能在集群内部访问，所以我们需要在边缘获取流量并且代理到正确的端点。这个组件通常用来做高可用负载均衡。Ingress 允许你将负载均衡的量降到最低，比如像下面的设置:
+</p>
+
+<pre class="example">
+foo.bar.com -&gt; 178.91.123.132 -&gt; / foo    s1:80
+                                 / bar    s2:80
+</pre>
+
+<p>
+需要像这样的 Ingress ：
+</p>
+
+<pre class="example">
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /foo
+        backend:
+          serviceName: s1
+          servicePort: 80
+      - path: /bar
+        backend:
+          serviceName: s2
+          servicePort: 80
+</pre>
+
+<p>
+当你使用 <code>kubectl create -f</code> 创建 Ingress 时：
+</p>
+
+<pre class="example">
+$ kubectl get ing
+NAME      RULE          BACKEND   ADDRESS
+test      -
+          foo.bar.com
+          /foo          s1:80
+          /bar          s2:80
+</pre>
+
+<p>
+只要服务（s1，s2）存在，Ingress 控制器会提供满足 Ingress 的特定负载均衡器。当它这样做时，在最后一列，你会看到均衡器的地址。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org26b96a2" class="outline-3">
+<h3 id="org26b96a2"><span class="section-number-3">6.3.</span> 基于名称的 vhost</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+基于名称的 vhosts 为相同的 IP 地址提供不同的 host 名称。
+</p>
+
+<pre class="example">
+foo.bar.com --|                 |-&gt; foo.bar.com s1:80
+              | 178.91.123.132  |
+bar.foo.com --|                 |-&gt; bar.foo.com s2:80
+</pre>
+
+<p>
+下面的 Ingress 告诉备用均衡器基于 <a href="https://tools.ietf.org/html/rfc7230#section-5.4">Host header</a> 路由请求。
+</p>
+
+<pre class="example">
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - backend:
+          serviceName: s1
+          servicePort: 80
+  - host: bar.foo.com
+    http:
+      paths:
+      - backend:
+          serviceName: s2
+          servicePort: 80
+</pre>
+
+<p>
+<b>默认后端</b> ：Ingress 不设置规则，想前一个小节显示的那样，发送所有的流量到一个单一后端服务。你可以通过指定一个默认的后端应用告诉负载均衡器找到你网站的 404 页面。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8987898" class="outline-3">
+<h3 id="org8987898"><span class="section-number-3">6.4.</span> TLS</h3>
+<div class="outline-text-3" id="text-6-4">
+<p>
+通过指定包含 TLS 私有 key 和证书的 secret 可以提高 Ingress 的安全。当前 Ingress 只支持单一的 TLS 端口，443，并假定 TLS termination。如果 TLS 配置小节指定了不同的 hosts，
+它们将根据通过 SNI TLS 扩展指定的主机名在同一端口进行多路复用（前提是 Ingress 控制器支持 SNI）。TLS 秘钥必须包含名为 <code>tls.crt</code> 和 <code>tls.key</code> 的秘钥，其中包含用于 TLS 的整数和私钥。比如：
+</p>
+
+<pre class="example">
+apiVersion: v1
+data:
+  tls.crt: base64 encoded cert
+  tls.key: base64 encoded key
+kind: Secret
+metadata:
+  name: testsecret
+  namespace: default
+type: Opaque
+</pre>
+
+<p>
+在 Ingress 中引用这个密钥将告诉 Ingress 使用 TLS 从客户端保护负载均衡器：
+</p>
+
+<pre class="example">
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: no-rules-map
+spec:
+  tls:
+  - secretName: testsecret
+  backend:
+    serviceName: s1
+    servicePort: 80
+</pre>
+
+<p>
+要注意在不同的 Ingress 控制器支持的 TLS 功能之间的差距。请查看 nginx，GCE 和其他平台特定的 Ingress 控制器文档，以便更好的理解 TLS 在你的环境中是如何生效的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga3b8d79" class="outline-3">
+<h3 id="orga3b8d79"><span class="section-number-3">6.5.</span> 负载均衡</h3>
+<div class="outline-text-3" id="text-6-5">
+<p>
+一个 Ingress 控制器是一些负载均衡策略设置的引导，可以应用到所有的 Ingress 上，比如负载均衡算法，后端权重方案，等等。更多的高级负载均衡概念（比如：回话保持、动态权重等），还没有通过 Ingress 暴露。
+你仍旧可以通过 <a href="https://github.com/kubernetes/ingress-nginx/blob/master/docs/ingress-controller-catalog.md">service loadbalancer</a> 得到这些特性。随着时间的漂移，我们会逐渐的将这些适用于跨平台的负载均衡提取到 Ingress 资源中。
+</p>
+
+<p>
+值得注意的是健康监测即便不通过 Ingress 暴露出来，K8s 已经存在的并行的概念例如 <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/">readiness 探针</a> 也能达到相同的效果。请查看控制器具体的文档去查看他们是怎么处理健康监测的（nginx，GCE）。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcb40a42" class="outline-2">
+<h2 id="orgcb40a42"><span class="section-number-2">7.</span> 更新 Ingress</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+你已经添加了一个 Ingress，现在你可以编辑它：
+</p>
+
+<pre class="example">
+$ kubectl get ing
+NAME      RULE          BACKEND   ADDRESS
+test      -                       178.91.123.132
+          foo.bar.com
+          /foo          s1:80
+$ kubectl edit ing test
+</pre>
+
+<p>
+这会弹出一个编辑器，用来编辑已经存在的 yaml 文件，修改他让他包含一个新的 Host：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #00538b;">spec</span>:
+  <span style="color: #00538b;">rules</span>:
+  - <span style="color: #00538b;">host</span>: foo.bar.com
+    <span style="color: #00538b;">http</span>:
+      <span style="color: #00538b;">paths</span>:
+      - <span style="color: #00538b;">backend</span>:
+          <span style="color: #00538b;">serviceName</span>: s1
+          <span style="color: #00538b;">servicePort</span>: 80
+        <span style="color: #00538b;">path</span>: /foo
+  - <span style="color: #00538b;">host</span>: bar.baz.com
+    <span style="color: #00538b;">http</span>:
+      <span style="color: #00538b;">paths</span>:
+      - <span style="color: #00538b;">backend</span>:
+          <span style="color: #00538b;">serviceName</span>: s2
+          <span style="color: #00538b;">servicePort</span>: 80
+        <span style="color: #00538b;">path</span>: /foo
+..
+</pre>
+</div>
+
+<p>
+保存 yaml 文件会向 API 服务器更新资源，将会告诉 Ingress 控制器重新配置负载均衡器。
+</p>
+
+<pre class="example">
+$ kubectl get ing
+NAME      RULE          BACKEND   ADDRESS
+test      -                       178.91.123.132
+          foo.bar.com
+          /foo          s1:80
+          bar.baz.com
+          /foo          s2:80
+</pre>
+
+<p>
+调用 <code>kubectl replace -f</code> 在一个修改好的 Ingress yaml 文件上也可以达到相同的效果。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf713795" class="outline-2">
+<h2 id="orgf713795"><span class="section-number-2">8.</span> 跨可用区域失败</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+云服务提供商之间的跨故障域传播流量的技术不同，请详细查询 Ingress 控制器的文档，有关在联合群集中部署 Ingress 的详细信息，请参阅 <a href="https://kubernetes.io/docs/concepts/cluster-administration/federation/">联合文档</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdf25b69" class="outline-2">
+<h2 id="orgdf25b69"><span class="section-number-2">9.</span> 未来的工作</h2>
+<div class="outline-text-2" id="text-9">
+<ul class="org-ul">
+<li>支持各种 HTTPS/TLS 模式</li>
+<li>通过 claims 请求 IP 或者主机名</li>
+<li>合并 L4 和 L7 Ingress</li>
+<li>更多的 Ingress 控制器</li>
+</ul>
+</div>
+
+<div id="outline-container-org5f05f3c" class="outline-3">
+<h3 id="org5f05f3c"><span class="section-number-3">9.1.</span> 备选方案</h3>
+<div class="outline-text-3" id="text-9-1">
+<p>
+不直接涉及 Ingress 资源你可以有多重方式暴露服务：
+</p>
+
+<ul class="org-ul">
+<li>使用 <a href="https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer">Service.Type=LoadBalancer</a></li>
+<li>使用 <a href="https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport">Service.Type=NodePort</a></li>
+<li>使用 <a href="https://github.com/kubernetes/contrib/tree/master/for-demos/proxy-to-service">Port Proxy</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="http://www.aboutlinux.info/2005/09/apache-name-based-vs-ip-based-virtual.html">http://www.aboutlinux.info/2005/09/apache-name-based-vs-ip-based-virtual.html</a>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2018-06-04 11:28:27 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+</div>
+</body>
+</html>

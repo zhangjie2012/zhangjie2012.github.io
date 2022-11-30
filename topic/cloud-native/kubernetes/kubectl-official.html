@@ -1,0 +1,1482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>kubectl 官方版本</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">kubectl 官方版本</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org5d155de">1. 概览</a>
+<ul>
+<li><a href="#org5784972">1.1. 操作</a></li>
+<li><a href="#orgc385fd4">1.2. 资源类型</a></li>
+<li><a href="#org3cafbdf">1.3. 输出选项</a>
+<ul>
+<li><a href="#org88f24ec">1.3.1. 格式化输出</a>
+<ul>
+<li><a href="#org87f0708">1.3.1.1. 自定义列</a></li>
+<li><a href="#orgc8dfdda">1.3.1.2. 服务端（Server-side）的列</a></li>
+</ul>
+</li>
+<li><a href="#org19e0f86">1.3.2. 对象排序</a></li>
+</ul>
+</li>
+<li><a href="#org3dac23e">1.4. 实例：常用操作</a></li>
+</ul>
+</li>
+<li><a href="#org637173d">2. 备忘单（Cheat Sheet）</a>
+<ul>
+<li><a href="#org7a10e46">2.1. Kubectl 自动补全</a>
+<ul>
+<li><a href="#org9aed18f">2.1.1. BASH</a></li>
+<li><a href="#orgc8715e8">2.1.2. ZSH</a></li>
+</ul>
+</li>
+<li><a href="#org394b35d">2.2. Kubectl 上下文和配置</a></li>
+<li><a href="#org8a84518">2.3. 创建对象</a></li>
+<li><a href="#查看查找资源">2.4. 查看，查找资源</a></li>
+<li><a href="#更新资源">2.5. 更新资源</a></li>
+<li><a href="#修补资源patching-resources">2.6. 修补资源（Patching Resources）</a></li>
+<li><a href="#orgb5bad89">2.7. 编辑资源</a></li>
+<li><a href="#扩展资源scaling-resources">2.8. 扩展资源（Scaling Resources）</a></li>
+<li><a href="#orgb44bb87">2.9. 删除资源（Delete Resources）</a></li>
+<li><a href="#orge20d99e">2.10. 与正在运行的 Pods 交互</a></li>
+<li><a href="#org17522bc">2.11. 与节点和集群交互</a></li>
+<li><a href="#org0d1b10b">2.12. 格式化输出</a></li>
+</ul>
+</li>
+<li><a href="#orgaa28a45">3. 针对 Docker 用户</a>
+<ul>
+<li><a href="#org8ae77b6">3.1. docker run</a></li>
+<li><a href="#orgf47ef65">3.2. docker ps</a></li>
+<li><a href="#orgd114096">3.3. docker attach</a></li>
+<li><a href="#docker-exec">3.4. docker exec</a></li>
+<li><a href="#docker-logs">3.5. docker logs</a></li>
+<li><a href="#orge4ddba8">3.6. docker stop 和 docker rm</a></li>
+<li><a href="#org099a282">3.7. docker login</a></li>
+<li><a href="#docker-version">3.8. docker version</a></li>
+<li><a href="#docker-info">3.9. docker info</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+<a href="https://kubernetes.io/docs/reference/kubectl/overview/">https://kubernetes.io/docs/reference/kubectl/overview/</a>
+</p>
+
+<div id="outline-container-org5d155de" class="outline-2">
+<h2 id="org5d155de"><span class="section-number-2">1.</span> 概览</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<code>kubectl</code> 是 K8s 集群操作的命令行接口。基本语法： <code>kubectl [command] [TYPE] [NAME] [flags]</code> ，
+</p>
+
+<ul class="org-ul">
+<li><code>command</code> ：指定对一个或者多个资源需要执行的操作，比如 <code>create=，=get=，=describe=，=delete</code></li>
+<li><p>
+<code>TYPE</code> ：指定资源类型（ <code>configmaps</code>, <code>events</code>, <code>ingresses</code>, <code>pods</code> 等），资源类型是大小写不敏感的，你可以使用单数、复数、简写的形式来指定，比如下面的命令有相同的输出：
+</p>
+<pre class="example" id="org5974189">
+$ kubectl get pod pod1
+$ kubectl get pods pod1
+$ kubectl get po pod1
+</pre></li>
+<li><code>NAME</code> ：指定资源名字，名字是大小写敏感的，如果名字为空，则显示所有资源列表的详情。比如： <code>kubectl get pods</code></li>
+</ul>
+
+<p>
+当操作多个资源时，你可以指定每个资源的类型和名称或者指定一个或者多个文件。
+</p>
+
+<p>
+按照类型或者名称指定资源：
+</p>
+
+<ul class="org-ul">
+<li>相同的类型，不同的资源组: <code>TYPE1 name1 name2 name&lt;#&gt;</code> ，比如 <code>kubectl get pod example-pod1 example-pod2</code></li>
+<li>逐个的为多个资源指定类型: <code>TYPE1/name1 type1/name2 TYPE3/name3 TYPE&lt;#&gt;/name&lt;#&gt;</code> ，比如: <code>kubectl get pod/example-pod1 replicationcontroller/example-rc1</code></li>
+<li>通过一个或者多个文件来指定资源: <code>-f file1 -f file2 -f file&lt;#&gt;</code> ，比如: <code>kubectl get pod -f ./pod.yaml</code></li>
+<li><code>flags</code>: 指定可选的 flags，比如，你可以使用 <code>-s</code> 或者 <code>--server</code> flag 用指定 Kubernetes API 服务器，设置之后会覆盖默认值和任何环境变量</li>
+</ul>
+</div>
+
+<div id="outline-container-org5784972" class="outline-3">
+<h3 id="org5784972"><span class="section-number-3">1.1.</span> 操作</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+下面是 <code>kubectl</code> 所支持的操作：
+</p>
+
+<ul class="org-ul">
+<li><code>annotate</code>, <code>kubectl annotate (-f FILENAME \| TYPE NAME \| TYPE/NAME) KEY_1=VAL_1 ... KEY_N=VAL_N [--overwrite] [--all] [--resource-version=version] [flags]</code>: 添加或者更新一个或多个资源的注解</li>
+<li><code>api-versions</code>, <code>kubectl api-version [flag]</code>: 列出可以用的 API 版本</li>
+<li><code>apply</code>, <code>kubectl apply -f FILENAME [flags]</code>: 使修改资源的配置生效（从文件或者标准输入中）</li>
+<li><code>attach</code>, <code>kubectl attach POD -c CONTAINER [-i] [-t] [flags]</code>: attach 到容器上</li>
+<li><code>autoscale</code>, <code>kubectl autoscale (-f FILENAME \| TYPE NAME \| TYPE/NAME) [--min=MINPODS] --max=MAXPODS [--cpu-percent=CPU] [flags]</code>: 自动缩放由 replication controller 管理的 pod 集合</li>
+<li><code>cluster-info</code>, <code>kubectl cluster-info [flags]</code>: 显示有关集群中主服务器和服务的端点信息</li>
+<li><code>config</code>, <code>kubectl config SUBCOMMAND [flags]</code>: 修改 kubeconfig 文件, 通过子命令查看细节</li>
+<li><code>create</code>, <code>kubectl create -f FILENAME [flags]</code>: 创建一个或者多个资源（从文件或者标准输入中）</li>
+<li><code>delete</code>, <code>kubectl delete (-f FILENAME \| TYPE [NAME \| /NAME \| -l label \| --all]) [flags]</code>: 删除资源, 通过文件、标准输入、或者指定的标签选择器, 或者资源</li>
+<li><code>describe</code>, <code>kubectl describe (-f FILENAME \| TYPE [NAME_PREFIX \| /NAME \| -l label]) [flags]</code>: 显示一个或者多个资源的详细状态</li>
+<li><code>edit</code>, <code>kubectl edit (-f FILENAME \| TYPE NAME \| TYPE/NAME) [flags]</code>: 编辑更新服务上的资源定义（使用默认的编辑器）</li>
+<li><code>exec</code>, <code>kubectl exec POD [-c CONTAINER] [-i] [-t] [flags] [-- COMMAND [args...]]</code>: 与 pod 中的容器交互</li>
+<li><code>explain</code>, <code>kubectl explain [--include-extended-apis=true] [--recursive=false] [flags]</code>: 获取资源的各种文档</li>
+<li><code>expose</code>, <code>kubectl expose (-f FILENAME \| TYPE NAME \| TYPE/NAME) [--port=port] [--protocol=TCP\|UDP] [--target-port=number-or-name] [--name=name] [----external-ip=external-ip-of-service] [--type=type] [flags]</code>: Expose a replication controller, service, or pod as a new Kubernetes service</li>
+<li><code>get</code>, <code>kubectl get (-f FILENAME \| TYPE [NAME \| /NAME \| -l label]) [--watch] [--sort-by=FIELD] [[-o \| --output]=OUTPUT_FORMAT] [flags]</code>: 查看资源</li>
+<li><code>label</code>, <code>kubectl label (-f FILENAME \| TYPE NAME \| TYPE/NAME) KEY_1=VAL_1 ... KEY_N=VAL_N [--overwrite] [--all] [--resource-version=version] [flags]</code>: 添加或更新资源的标签</li>
+<li><code>logs</code>, <code>kubectl logs POD [-c CONTAINER] [--follow] [flags]</code>: 为 pod 中容器的日志</li>
+<li><code>patch</code>, <code>kubectl patch (-f FILENAME \| TYPE NAME \| TYPE/NAME) --patch PATCH [flags]</code>: Update one or more fields of a resource by using the strategic merge patch process.</li>
+<li><code>port-forward</code>, <code>kubectl port-forward POD [LOCAL_PORT:]REMOTE_PORT [...[LOCAL_PORT_N:]REMOTE_PORT_N] [flags]</code>: 转发一个或者多个本地端口到 pod</li>
+<li><code>proxy</code>, <code>kubectl proxy [--port=PORT] [--www=static-dir] [--www-prefix=prefix] [--api-prefix=prefix] [flags]</code>: 运行代理到 Kubernetes API 服务器</li>
+<li><code>replace</code>, <code>kubectl replace -f FILENAME</code>: 从文件或标准输入中替换资源</li>
+<li><code>rolling-update</code>, <code>kubectl rolling-update OLD_CONTROLLER_NAME ([NEW_CONTROLLER_NAME] --image=NEW_CONTAINER_IMAGE \| -f NEW_CONTROLLER_SPEC) [flags]</code>: 滚动更新</li>
+<li><code>run</code>, <code>kubectl run NAME --image=image [--env="key=value"] [--port=port] [--replicas=replicas] [--dry-run=bool] [--overrides=inline-json] [flags]</code>: 在集群中运行一个指定镜像</li>
+<li><code>scale</code>, <code>kubectl scale (-f FILENAME \| TYPE NAME \| TYPE/NAME) --replicas=COUNT [--resource-version=version] [--current-replicas=count] [flags]</code>: 更新指定的 replication controller 的大小</li>
+<li><code>version</code>, <code>kubectl version [--client] [flags]</code>: 显示运行在客户端和服务器的Kubernetes 版本</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc385fd4" class="outline-3">
+<h3 id="orgc385fd4"><span class="section-number-3">1.2.</span> 资源类型</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+下面是 <code>kubectl</code> 做支持的资源类型和他们的简写：
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">资源类型</th>
+<th scope="col" class="org-left">简写</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">apiservices</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">certificatesigningrequests</td>
+<td class="org-left">csr</td>
+</tr>
+
+<tr>
+<td class="org-left">clusters</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">clusterrolebindings</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">clusterroles</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">componentstatuses</td>
+<td class="org-left">cs</td>
+</tr>
+
+<tr>
+<td class="org-left">configmaps</td>
+<td class="org-left">cm</td>
+</tr>
+
+<tr>
+<td class="org-left">controllerrevisions</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">cronjobs</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">customresourcedefinition</td>
+<td class="org-left">crd</td>
+</tr>
+
+<tr>
+<td class="org-left">daemonsets</td>
+<td class="org-left">ds</td>
+</tr>
+
+<tr>
+<td class="org-left">deployments</td>
+<td class="org-left">deploy</td>
+</tr>
+
+<tr>
+<td class="org-left">endpoints</td>
+<td class="org-left">ep</td>
+</tr>
+
+<tr>
+<td class="org-left">events</td>
+<td class="org-left">ev</td>
+</tr>
+
+<tr>
+<td class="org-left">horizontalpodautoscalers</td>
+<td class="org-left">hpa</td>
+</tr>
+
+<tr>
+<td class="org-left">ingresses</td>
+<td class="org-left">ing</td>
+</tr>
+
+<tr>
+<td class="org-left">jobs</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">limitranges</td>
+<td class="org-left">limits</td>
+</tr>
+
+<tr>
+<td class="org-left">namespaces</td>
+<td class="org-left">ns</td>
+</tr>
+
+<tr>
+<td class="org-left">networkpolicies</td>
+<td class="org-left">netpol</td>
+</tr>
+
+<tr>
+<td class="org-left">nodes</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left">persistentvolumeclaims</td>
+<td class="org-left">pvc</td>
+</tr>
+
+<tr>
+<td class="org-left">persistentvolumes</td>
+<td class="org-left">pv</td>
+</tr>
+
+<tr>
+<td class="org-left">poddisruptionbudget</td>
+<td class="org-left">pdb</td>
+</tr>
+
+<tr>
+<td class="org-left">podpreset</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">pods</td>
+<td class="org-left">po</td>
+</tr>
+
+<tr>
+<td class="org-left">podsecuritypolicies</td>
+<td class="org-left">psp</td>
+</tr>
+
+<tr>
+<td class="org-left">podtemplates</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">replicasets</td>
+<td class="org-left">rs</td>
+</tr>
+
+<tr>
+<td class="org-left">replicationcontrollers</td>
+<td class="org-left">rc</td>
+</tr>
+
+<tr>
+<td class="org-left">resourcequotas</td>
+<td class="org-left">quota</td>
+</tr>
+
+<tr>
+<td class="org-left">rolebindings</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">roles</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">secrets</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">serviceaccounts</td>
+<td class="org-left">sa</td>
+</tr>
+
+<tr>
+<td class="org-left">services</td>
+<td class="org-left">svc</td>
+</tr>
+
+<tr>
+<td class="org-left">statefulsets</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">storageclasses</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org3cafbdf" class="outline-3">
+<h3 id="org3cafbdf"><span class="section-number-3">1.3.</span> 输出选项</h3>
+<div class="outline-text-3" id="text-1-3">
+</div>
+<div id="outline-container-org88f24ec" class="outline-4">
+<h4 id="org88f24ec"><span class="section-number-4">1.3.1.</span> 格式化输出</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+语法: <code>kubectl [command] [TYPE] [NAME] -o=&lt;output_format&gt;</code>
+</p>
+
+<p>
+支持的操作有:
+</p>
+
+<ul class="org-ul">
+<li><code>-o=custom-columns=&lt;spec&gt;</code>: 使用逗号分隔的自定义列</li>
+<li><code>-o=custom-columns-file=&lt;filename&gt;</code>: 文件中指定自定义列</li>
+<li><code>-o=json</code>: 输出 API 对象的 JSON 格式</li>
+<li><code>-o=jsonpath=&lt;template&gt;</code>: jsonpath 中指定模板</li>
+<li><code>-o=jsonpath-file=&lt;filename&gt;</code>: 同上，模板在文件中</li>
+<li><code>-o=name</code>: 只输出资源名称</li>
+<li><code>-o=wide</code>: 输出额外的信息，对于 pods 来讲，包含节点名字</li>
+<li><code>-o=yaml</code>: 输出 YAML 格式的 API 对象</li>
+</ul>
+
+<p>
+下面的命令把一个单独 pod 的信息作为以 YAML 格式输出:
+</p>
+
+<pre class="example" id="org613add6">
+kubectl get pod web-pod-13je7 -o=yaml
+</pre>
+</div>
+
+<div id="outline-container-org87f0708" class="outline-5">
+<h5 id="org87f0708"><span class="section-number-5">1.3.1.1.</span> 自定义列</h5>
+<div class="outline-text-5" id="text-1-3-1-1">
+<p>
+可以使用 <code>custom-columns</code> 选项来定制输出的内容列，可以使用内联的方式指定也可以通过文件的方式: <code>-o=custom-columns=&lt;spec&gt;</code> 或者 <code>-o=custom-columns-file=&lt;filename&gt;</code> 。比如：
+</p>
+
+<p>
+内联：
+</p>
+
+<pre class="example" id="orge15c184">
+kubectl get pods &lt;pod-name&gt; -o=custom-columns=NAME:.metadata.name,RSRC:.metadata.resourceVersion
+</pre>
+
+<p>
+模板文件：
+</p>
+
+<pre class="example" id="orgeb9a499">
+kubectl get pods &lt;pod-name&gt; -o=custom-columns-file=template.txt
+</pre>
+
+<p>
+<code>template.txt</code> 文件包含：
+</p>
+
+<pre class="example" id="org5a7f212">
+NAME          RSRC
+metadata.name metadata.resourceVersion
+</pre>
+
+<p>
+命令运行结果：
+</p>
+
+<pre class="example" id="orgc782ad2">
+NAME           RSRC
+submit-queue   610995
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgc8dfdda" class="outline-5">
+<h5 id="orgc8dfdda"><span class="section-number-5">1.3.1.2.</span> 服务端（Server-side）的列</h5>
+<div class="outline-text-5" id="text-1-3-1-2">
+<p>
+<code>kubectl</code> 支持从服务器接受有关对象的特定信息的列，这意味着任意给定的资源，服务器会返回资源相关的行和列，供客户端输出。这样的设定保证了相同的集群提供一致的跨客户端的人类可读的输出（服务器封装了打印的细节）。
+</p>
+
+<p>
+这个特性在 <code>kubectl</code> 1.11 或者更高的版本默认启用，在使用 <code>kubectl get</code> 添加 <code>--server-print=false</code> 来禁用它。比如：
+</p>
+
+<p>
+打印 pod 的状态信息，使用下面的命令：
+</p>
+
+<pre class="example" id="org9f446c5">
+kubectl get pods &lt;pod-name&gt; --server-print=false
+</pre>
+
+<p>
+输出结果像这样：
+</p>
+
+<pre class="example" id="org501b1ea">
+NAME       READY     STATUS              RESTARTS   AGE
+pod-name   1/1       Running             0          1m
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org19e0f86" class="outline-4">
+<h4 id="org19e0f86"><span class="section-number-4">1.3.2.</span> 对象排序</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<p>
+对于输出的行，可以指定 <code>--sort-by</code> 来指定排序方式，支持数字或者字符串字段，如果指定特定的字段，使用 jsonpath 表达式来实现。
+</p>
+
+<p>
+语法: <code>kubectl [command] [TYPE] [NAME] --sort-by=&lt;jsonpath_exp&gt;</code>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3dac23e" class="outline-3">
+<h3 id="org3dac23e"><span class="section-number-3">1.4.</span> 实例：常用操作</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+<code>kubectl create</code> - 从文件或者标准输入中创建资源。
+</p>
+
+<pre class="example" id="org389dd0f">
+// 使用 example-service.yaml 中的定义创建服务
+$ kubectl create -f example-service.yaml
+
+// 使用 example-controller.yaml 中的定义创建一个 replication controller
+$ kubectl create -f example-controller.yaml
+
+// 根据目录中的 .yaml, .yml 或者 .json 文件创建对象
+$ kubectl create -f &lt;directory&gt;
+</pre>
+
+<p>
+<code>kubectl get</code> - 列出一个或者多个资源
+</p>
+
+<pre class="example" id="org922917c">
+// 以纯文本输出格式列出所有的 pod
+$ kubectl get pods
+
+// 输出 pod 的额外信息（比如节点名字）
+$ kubectl get pods -o wide
+
+// 列出给定资源的 replication controller，你可以使用 'rc' 来代替 replicationcontroller
+$ kubectl get replicationcontroller &lt;rc-name&gt;
+
+// 一起列出所有的 replication controllers 和 服务
+$ kubectl get rc,services
+
+// 列出所有的 daemon 集合，包含未初始化的
+$ kubectl get ds --include-uninitialized
+
+// 列出所有在 server01 上运行的 pods
+$ kubectl get pods --field-selector=spec.nodeName=server01
+
+// List all pods in plain-text output format, delegating the details of printing to the server
+$ kubectl get pods --experimental-server-print
+</pre>
+
+<p>
+<code>kubectl describe</code> - 用来描述一个多个资源的详细状态，默认包含未被初始化的。
+</p>
+
+<pre class="example" id="org634a13d">
+// 显示节点详情
+$ kubectl describe nodes &lt;node-name&gt;
+
+// 显示 pod 的详情
+$ kubectl describe pods/&lt;pod-name&gt;
+
+// Display the details of all the pods that are managed by the replication controller named &lt;rc-name&gt;.
+// Remember: Any pods that are created by the replication controller get prefixed with the name of the replication controller.
+// 显示管理 replication controller 的所有 pods 的详情，
+$ kubectl describe pods &lt;rc-name&gt;
+
+// 显示所有 pod，不包含未初始化的
+$ kubectl describe pods --include-uninitialized=false
+</pre>
+
+<blockquote>
+<p>
+注意：=kubectl get= 通常聚焦于获取同类型的一个或者多个资源。它有丰富的 flag 用来定制输出格式（使用 <code>-o</code> 或者 <code>--output</code> flag）。比如说，你可以使用 <code>-w</code> 或者 <code>--watch</code> flag
+来观察特定对象的更新。 <code>kubectl describe</code> 命令更多的聚焦在描述特定资源的相关方面，它可能会调用一些 API 到 API server 为了构建用户视图。比如 <code>kubectl describe node</code> 命令，获取的不只是节点的信息，还包含运行在它上面的 pods，和为节点生成的事件等等。
+</p>
+</blockquote>
+
+<p>
+<code>kubectl delete</code> - 删除资源，可以是从文件、标准输入、指定的标签选择器、名称、资源选择器或者资源等。
+</p>
+
+<pre class="example" id="orgdbf845a">
+// 删除 pod.yaml 文件中指定的类型和名称的资源
+$ kubectl delete -f pod.yaml
+
+// 删除 name=&lt;label-name&gt; 指定 label 的 pod 和 服务
+$ kubectl delete pods,services -l name=&lt;label-name&gt;
+
+// 删除 name=&lt;label-name&gt; 指定 label 的 pod 和 服务，包含未初始化的
+$ kubectl delete pods,services -l name=&lt;label-name&gt; --include-uninitialized
+
+// 删除所有的 pod，包含未初始化的
+$ kubectl delete pods --all
+</pre>
+
+<p>
+<code>kubectl exec</code> - 对 pod 中的容器执行命令。
+</p>
+
+<pre class="example" id="org55e28a8">
+// 获取 pod &lt;pod-name&gt; 中 'date' 的输出结果，默认情况下，是第一个容器的输出
+$ kubectl exec &lt;pod-name&gt; date
+
+// 获取 &lt;pod-name&gt; 中容器 &lt;container-name&gt; 的 'date' 输出结果
+$ kubectl exec &lt;pod-name&gt; -c &lt;container-name&gt; date
+
+// 获取一个交互的 TTY，在 &lt;pod-name&gt; 中运行 /bin/bash
+$ kubectl exec -ti &lt;pod-name&gt; /bin/bash
+</pre>
+
+<p>
+<code>kubectl logs</code> - 输出 pod 中容器的日志。
+</p>
+
+<pre class="example" id="org577a7de">
+// 返回 &lt;pod-name&gt; 日志的快照
+$ kubectl logs &lt;pod-name&gt;
+
+// Start streaming the logs from pod &lt;pod-name&gt;. This is similar to the 'tail -f' Linux command.
+$ kubectl logs -f &lt;pod-name&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org637173d" class="outline-2">
+<h2 id="org637173d"><span class="section-number-2">2.</span> 备忘单（Cheat Sheet）</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org7a10e46" class="outline-3">
+<h3 id="org7a10e46"><span class="section-number-3">2.1.</span> Kubectl 自动补全</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org9aed18f" class="outline-4">
+<h4 id="org9aed18f"><span class="section-number-4">2.1.1.</span> BASH</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<pre class="example" id="orgec62199">
+source &lt;(kubectl completion bash) # setup autocomplete in bash into the current shell, bash-completion package should be installed first.
+echo "source &lt;(kubectl completion bash)" &gt;&gt; ~/.bashrc # add autocomplete permanently to your bash shell.
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgc8715e8" class="outline-4">
+<h4 id="orgc8715e8"><span class="section-number-4">2.1.2.</span> ZSH</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<pre class="example" id="orgff1bcea">
+source &lt;(kubectl completion zsh)  # setup autocomplete in zsh into the current shell
+echo "if [ $commands[kubectl] ]; then source &lt;(kubectl completion zsh); fi" &gt;&gt; ~/.zshrc # add autocomplete permanently to your zsh shell
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org394b35d" class="outline-3">
+<h3 id="org394b35d"><span class="section-number-3">2.2.</span> Kubectl 上下文和配置</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+配置文件用来设置跨集群认证，暂时用不到，先不看了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8a84518" class="outline-3">
+<h3 id="org8a84518"><span class="section-number-3">2.3.</span> 创建对象</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Kubernetes 可以使用 json 或者 yaml 来定义对象，扩展文件 <code>.yaml=、</code>.yml=
+和 <code>.json</code> 都可以使用。
+</p>
+
+<pre class="example" id="org25636bb">
+kubectl create -f ./my-manifest.yaml           # 创建资源
+kubectl create -f ./my1.yaml -f ./my2.yaml     # 从多个文件中创建资源
+kubectl create -f ./dir                        # 根据目录中的文件创建资源
+kubectl create -f https://git.io/vPieo         # 从 url 中创建资源
+kubectl run nginx --image=nginx                # 启动一个 nginx 实例
+kubectl explain pods,svc                       # 获取 pod 和 svc 的创建清单的文档
+
+# 从标准输入创建多个 YAML 对象
+cat &lt;&lt;EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-sleep
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    args:
+    - sleep
+    - "1000000"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-sleep-less
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    args:
+    - sleep
+    - "1000"
+EOF
+
+# Create a secret with several keys
+cat &lt;&lt;EOF | kubectl create -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+type: Opaque
+data:
+  password: $(echo -n "s33msi4" | base64)
+  username: $(echo -n "jane" | base64)
+EOF
+</pre>
+</div>
+</div>
+
+<div id="outline-container-查看查找资源" class="outline-3">
+<h3 id="查看查找资源"><span class="section-number-3">2.4.</span> 查看，查找资源</h3>
+<div class="outline-text-3" id="text-查看查找资源">
+<pre class="example" id="org99f63ad">
+# get：基本输出命令
+kubectl get services                          # 列出所有的 services
+kubectl get pods --all-namespaces             # 列出所有空间的 pods
+kubectl get pods -o wide                      # 列出空间中的 pods，包含更多的细节
+kubectl get deployment my-dep                 # 列出指定的 deployment
+kubectl get pods --include-uninitialized      # 列出空间中的 pods，包含未初始化的部分
+
+# describe：详细输出命令
+kubectl describe nodes my-node
+kubectl describe pods my-pod
+
+kubectl get services --sort-by=.metadata.name # 按照名称排序
+
+# 按照重启次数排序
+kubectl get pods --sort-by='.status.containerStatuses[0].restartCount'
+
+# 通过标签 app=cassandra 获取所有 pods 的版本标签
+kubectl get pods --selector=app=cassandra rc -o \
+  jsonpath='{.items[*].metadata.labels.version}'
+
+# 所有空间中所有的运行状态的 pods
+kubectl get pods --field-selector=status.phase=Running
+
+# 获取所有节点的外部 IP
+kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP")].address}'
+
+# 列出属于特定 RC 的 pod 名称
+# "jq" command useful for transformations that are too complex for jsonpath, it can be found at https://stedolan.github.io/jq/
+sel=${$(kubectl get rc my-rc --output=json | jq -j '.spec.selector | to_entries | .[] | "\(.key)=\(.value),"')%?}
+echo $(kubectl get pods --selector=$sel --output=jsonpath={.items..metadata.name})
+
+# 检查哪些节点是 ready 状态
+JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}' \
+ &amp;&amp; kubectl get nodes -o jsonpath="$JSONPATH" | grep "Ready=True"
+
+# List all Secrets currently in use by a pod
+kubectl get pods -o json | jq '.items[].spec.containers[].env[]?.valueFrom.secretKeyRef.name' | grep -v null | sort | uniq
+
+# 按照时间戳排序列出事件
+kubectl get events --sort-by=.metadata.creationTimestamp
+</pre>
+</div>
+</div>
+
+<div id="outline-container-更新资源" class="outline-3">
+<h3 id="更新资源"><span class="section-number-3">2.5.</span> 更新资源</h3>
+<div class="outline-text-3" id="text-更新资源">
+<pre class="example" id="org5b531cd">
+kubectl rolling-update frontend-v1 -f frontend-v2.json           # 滚动更新 frontend-1 pods
+kubectl rolling-update frontend-v1 frontend-v2 --image=image:v2  # 修改资源名称和更新镜像
+kubectl rolling-update frontend --image=image:v2                 # 更新 fronted 镜像
+kubectl rolling-update frontend-v1 frontend-v2 --rollback        # 中止正在进行的更新
+cat pod.json | kubectl replace -f -                              # 基于 json 替换标准输入
+
+# 强制替换、删除，然后重新创建资源，会引发资源停止运行
+kubectl replace --force -f ./pod.json
+
+# Create a service for a replicated nginx, which serves on port 80 and connects to the containers on port 8000
+# 创建一个 nginx 副本，服务在 80 端口，并连接到容器的 8000 端口
+kubectl expose rc nginx --port=80 --target-port=8000
+
+# Update a single-container pod's image version (tag) to v4
+# 更新单个容器 pod 镜像版本（tag）到 v4
+kubectl get pod mypod -o yaml | sed 's/\(image: myimage\):.*$/\1:v4/' | kubectl replace -f -
+
+kubectl label pods my-pod new-label=awesome                      # 添加一个标签
+kubectl annotate pods my-pod icon-url=http://goo.gl/XXBTWq       # 添加一个注解
+kubectl autoscale deployment foo --min=2 --max=10                # 自动扩展部署 "foo"
+</pre>
+</div>
+</div>
+
+<div id="outline-container-修补资源patching-resources" class="outline-3">
+<h3 id="修补资源patching-resources"><span class="section-number-3">2.6.</span> 修补资源（Patching Resources）</h3>
+<div class="outline-text-3" id="text-修补资源patching-resources">
+<pre class="example" id="org82a1e9a">
+kubectl patch node k8s-node-1 -p '{"spec":{"unschedulable":true}}' # 部分更新一个节点
+
+# 更新容器的镜像；spec.containers[*].name 是必须的因为它是一个合并的键
+kubectl patch pod valid-pod -p '{"spec":{"containers":[{"name":"kubernetes-serve-hostname","image":"new image"}]}}'
+
+# Update a container's image using a json patch with positional arrays
+kubectl patch pod valid-pod --type='json' -p='[{"op": "replace", "path": "/spec/containers/0/image", "value":"new image"}]'
+
+# Disable a deployment livenessProbe using a json patch with positional arrays
+kubectl patch deployment valid-deployment  --type json   -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/livenessProbe"}]'
+
+# Add a new element to a positional array
+kubectl patch sa default --type='json' -p='[{"op": "add", "path": "/secrets/1", "value": {"name": "whatever" } }]'
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgb5bad89" class="outline-3">
+<h3 id="orgb5bad89"><span class="section-number-3">2.7.</span> 编辑资源</h3>
+<div class="outline-text-3" id="text-2-7">
+<p>
+使用编辑器可以编辑任何 API 资源。
+</p>
+
+<pre class="example" id="orgb9ac53f">
+kubectl edit svc/docker-registry                      # 编辑名为 docker-registry 的服务
+KUBE_EDITOR="nano" kubectl edit svc/docker-registry   # 指定交互编辑器
+</pre>
+</div>
+</div>
+
+<div id="outline-container-扩展资源scaling-resources" class="outline-3">
+<h3 id="扩展资源scaling-resources"><span class="section-number-3">2.8.</span> 扩展资源（Scaling Resources）</h3>
+<div class="outline-text-3" id="text-扩展资源scaling-resources">
+<pre class="example" id="org0fc6afe">
+kubectl scale --replicas=3 rs/foo                                 # 将名为 'foo' 的 replicaset 缩放为 3
+kubectl scale --replicas=3 -f foo.yaml                            # Scale a resource specified in "foo.yaml" to 3
+kubectl scale --current-replicas=2 --replicas=3 deployment/mysql  # If the deployment named mysql's current size is 2, scale mysql to 3
+kubectl scale --replicas=5 rc/foo rc/bar rc/baz                   # Scale multiple replication controllers
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgb44bb87" class="outline-3">
+<h3 id="orgb44bb87"><span class="section-number-3">2.9.</span> 删除资源（Delete Resources）</h3>
+<div class="outline-text-3" id="text-2-9">
+<pre class="example" id="org2d7d6ff">
+kubectl delete -f ./pod.json                                              # Delete a pod using the type and name specified in pod.json
+kubectl delete pod,service baz foo                                        # Delete pods and services with same names "baz" and "foo"
+kubectl delete pods,services -l name=myLabel                              # Delete pods and services with label name=myLabel
+kubectl delete pods,services -l name=myLabel --include-uninitialized      # Delete pods and services, including uninitialized ones, with label name=myLabel
+kubectl -n my-ns delete po,svc --all                                      # Delete all pods and services, including uninitialized ones, in namespace my-ns,
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orge20d99e" class="outline-3">
+<h3 id="orge20d99e"><span class="section-number-3">2.10.</span> 与正在运行的 Pods 交互</h3>
+<div class="outline-text-3" id="text-2-10">
+<pre class="example" id="orge8d8b5b">
+kubectl logs my-pod                                 # 输出 pod 日志 (stdout)
+kubectl logs my-pod --previous                      # 为前一个 container 实例输出 pod 日志 (stdout)
+kubectl logs my-pod -c my-container                 # 输出指定 pods 中的容器日志（stdout，多容器的情况）
+kubectl logs my-pod -c my-container --previous      # dump pod container logs (stdout, multi-container case) for a previous instantiation of a container
+kubectl logs -f my-pod                              # stream pod logs (stdout)，类似 tail
+kubectl logs -f my-pod -c my-container              # stream pod container logs (stdout, multi-container case)
+kubectl run -i --tty busybox --image=busybox -- sh  # 运行一个交互 shell
+kubectl attach my-pod -i                            # 连接到一个运行容器上
+kubectl port-forward my-pod 5000:6000               # 将本地机器的 5000 转到转发到 my-pod 的 6000 端口上
+kubectl exec my-pod -- ls /                         # 在已存在的 pod 上运行命令（一个容器的情况下）
+kubectl exec my-pod -c my-container -- ls /         # 在已存在的 pod 上运行命令（多容器的情况下）
+kubectl top pod POD_NAME --containers               # 在给定 pod 上显示它的容器的 metrics
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org17522bc" class="outline-3">
+<h3 id="org17522bc"><span class="section-number-3">2.11.</span> 与节点和集群交互</h3>
+<div class="outline-text-3" id="text-2-11">
+<pre class="example" id="org59a816f">
+kubectl cordon my-node                                                # 标记节点 my-node 不可调度
+kubectl drain my-node                                                 # 排空 my-mode 准备维护（Drain my-node in preparation for maintenance）
+kubectl uncordon my-node                                              # 标记节点 my-mode 可调度
+kubectl top node my-node                                              # 显示给定节点的 metrics
+kubectl cluster-info                                                  # 显示 master 和 services 的地址
+kubectl cluster-info dump                                             # Dump current cluster state to stdout
+kubectl cluster-info dump --output-directory=/path/to/cluster-state   # Dump current cluster state to /path/to/cluster-state
+
+# If a taint with that key and effect already exists, its value is replaced as specified.
+kubectl taint nodes foo dedicated=special-user:NoSchedule
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org0d1b10b" class="outline-3">
+<h3 id="org0d1b10b"><span class="section-number-3">2.12.</span> 格式化输出</h3>
+<div class="outline-text-3" id="text-2-12">
+<p>
+<code>kubectl</code> 支持使用 <code>-o</code> 或者 <code>-output</code> flag 将输出信息以特定的格式格式化到你的终端窗口。
+</p>
+
+<ul class="org-ul">
+<li><code>-o=custom-columns=&lt;spec&gt;</code>: 逗号分隔的自定义列打印列表名称</li>
+<li><code>-o=custom-columns-file=&lt;filename&gt;</code>: 通过 <code>&lt;filename&gt;</code> 来指定</li>
+<li><code>-o=json</code>: 使用 JSON 格式化输出</li>
+<li><code>-o=jsonpath=&lt;template&gt;</code>: jsonpath 表达式指定的字段</li>
+<li><code>-o=jsonpath-file=&lt;filename&gt;</code></li>
+<li><code>-o=name</code>: 只打印资源名称</li>
+<li><code>-o=wide</code>: 输出更多的信息</li>
+<li><code>-o=yaml</code>: 使用 YAML 格式化输出</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaa28a45" class="outline-2">
+<h2 id="orgaa28a45"><span class="section-number-2">3.</span> 针对 Docker 用户</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+kubectl 与 docker-cli 很相似。然而两个命令也有一些细微的不同。下面详细的介绍了 docker 子命令，并且解释了 kubectl 等效的操作。
+</p>
+</div>
+
+<div id="outline-container-org8ae77b6" class="outline-3">
+<h3 id="org8ae77b6"><span class="section-number-3">3.1.</span> docker run</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+运行一个 nginx 应用（deployment），并且暴露应用。
+</p>
+
+<p>
+docker：
+</p>
+
+<pre class="example" id="org5df9c9c">
+$ docker run -d --restart=always -e DOMAIN=cluster --name nginx-app -p 80:80 nginx
+55c103fa129692154a7652490236fee9be47d70a8dd562281ae7d2f9a339a6db
+
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+55c103fa1296        nginx               "nginx -g 'daemon of…"   9 seconds ago       Up 9 seconds        0.0.0.0:80-&gt;80/tcp   nginx-app
+</pre>
+
+<p>
+kubectl：
+</p>
+
+<pre class="example" id="org20e2075">
+# start the pod running nginx
+$ kubectl run --image=nginx nginx-app --port=80 --env="DOMAIN=cluster"
+deployment "nginx-app" created
+
+# expose a port through with a service
+$ kubectl expose deployment nginx-app --port=80 --name=nginx-http
+service "nginx-http" exposed
+</pre>
+
+<p>
+默认使用 kubectl，你可以创建 Deployment 确保有 N 个 pods 在运行 nginx，N 是指 replicas 声明的数量，默认是 1。你也可以创建一个有选择器的 service 来匹配 pod 标签。
+</p>
+
+<p>
+默认情况下，镜像在后台运行，类似 <code>docker run -d ...</code> 。要在前台运行，请使用：
+</p>
+
+<pre class="example" id="org239680e">
+kubectl run [-i] [--tty] --attach &lt;name&gt; --image=&lt;image&gt;
+</pre>
+
+<p>
+跟 <code>docker run ...</code> 不同的是，如果你指定了 <code>--attach</code> ，那你可以连接 <code>stdin=，=stdout</code> 和 <code>stderr</code> 。要从容器中 detach ，你可以键入转义序列 Ctrl+P 然后按 Ctrl+Q。
+</p>
+
+<p>
+因为 kubectl run 命令启动容器的 Deployment，如果终端传入了 Ctrl+C 会引发 Deployment 重启，跟 <code>docker run -it</code> 不同。销毁 Deployment 和它的 pods 你需要运行 <code>kubectl delete deployment &lt;name&gt;</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf47ef65" class="outline-3">
+<h3 id="orgf47ef65"><span class="section-number-3">3.2.</span> docker ps</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+列出当前正在运行的内容。
+</p>
+
+<p>
+docker：
+</p>
+
+<pre class="example" id="orge9e4bba">
+$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS                     PORTS                NAMES
+14636241935f        ubuntu:16.04        "echo test"              5 seconds ago        Exited (0) 5 seconds ago                        cocky_fermi
+55c103fa1296        nginx               "nginx -g 'daemon of…"   About a minute ago   Up About a minute          0.0.0.0:80-&gt;80/tcp   nginx-app
+</pre>
+
+<p>
+kubectl：
+</p>
+
+<pre class="example" id="org99e9a10">
+$ kubectl get po -a
+NAME                        READY     STATUS      RESTARTS   AGE
+nginx-app-8df569cb7-4gd89   1/1       Running     0          3m
+ubuntu                      0/1       Completed   0          20s
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgd114096" class="outline-3">
+<h3 id="orgd114096"><span class="section-number-3">3.3.</span> docker attach</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+attach 到一个运行状态的容器上。
+</p>
+
+<p>
+docker：
+</p>
+
+<pre class="example" id="orga286ae2">
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+55c103fa1296        nginx               "nginx -g 'daemon of…"   5 minutes ago       Up 5 minutes        0.0.0.0:80-&gt;80/tcp   nginx-app
+
+$ docker attach 55c103fa1296
+...
+</pre>
+
+<p>
+kubectl：
+</p>
+
+<pre class="example" id="org4ae3c14">
+$ kubectl get pods
+NAME              READY     STATUS    RESTARTS   AGE
+nginx-app-5jyvm   1/1       Running   0          10m
+
+$ kubectl attach -it nginx-app-5jyvm
+...
+</pre>
+
+<p>
+Ctrl+P, Ctrl+Q 从容器中 detach 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-docker-exec" class="outline-3">
+<h3 id="docker-exec"><span class="section-number-3">3.4.</span> docker exec</h3>
+<div class="outline-text-3" id="text-docker-exec">
+<p>
+在容器中执行命令。
+</p>
+
+<p>
+docker：
+</p>
+
+<pre class="example" id="org7178e83">
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+55c103fa1296        nginx               "nginx -g 'daemon of…"   6 minutes ago       Up 6 minutes        0.0.0.0:80-&gt;80/tcp   nginx-app
+
+$ docker exec 55c103fa1296 cat /etc/hostname
+55c103fa1296
+</pre>
+
+<p>
+kubectl：
+</p>
+
+<pre class="example" id="orgb530315">
+$ kubectl get po
+NAME              READY     STATUS    RESTARTS   AGE
+nginx-app-5jyvm   1/1       Running   0          10m
+
+$ kubectl exec nginx-app-5jyvm -- cat /etc/hostname
+nginx-app-5jyvm
+</pre>
+
+<p>
+使用交互命令。
+</p>
+
+<p>
+docker：
+</p>
+
+<pre class="example" id="org05a9b84">
+$ docker exec -ti 55c103fa1296 /bin/sh
+# exit
+</pre>
+
+<p>
+kubectl：
+</p>
+
+<pre class="example" id="org970d31d">
+$ kubectl exec -ti nginx-app-5jyvm -- /bin/sh
+# exit
+</pre>
+</div>
+</div>
+
+<div id="outline-container-docker-logs" class="outline-3">
+<h3 id="docker-logs"><span class="section-number-3">3.5.</span> docker logs</h3>
+<div class="outline-text-3" id="text-docker-logs">
+<p>
+运行中进程的 stdout/stderr 日志。
+</p>
+
+<p>
+docker：
+</p>
+
+<pre class="example" id="org57fd483">
+$ docker logs -f a9e
+192.168.9.1 - - [14/Jul/2015:01:04:02 +0000] "GET / HTTP/1.1" 200 612 "-" "curl/7.35.0" "-"
+192.168.9.1 - - [14/Jul/2015:01:04:03 +0000] "GET / HTTP/1.1" 200 612 "-" "curl/7.35.0" "-"
+</pre>
+
+<p>
+kubectl：
+</p>
+
+<pre class="example" id="orgca25425">
+$ kubectl logs -f nginx-app-zibvs
+10.240.63.110 - - [14/Jul/2015:01:09:01 +0000] "GET / HTTP/1.1" 200 612 "-" "curl/7.26.0" "-"
+10.240.63.110 - - [14/Jul/2015:01:09:02 +0000] "GET / HTTP/1.1" 200 612 "-" "curl/7.26.0" "-"
+</pre>
+
+<p>
+pod 和容器略有不同，默认情况下进程退出，pod 不会终止。相反，pod 会重新该进程。这有点像 docker 的启动选项 <code>--restart=always</code> 但是有一个主要的区别。在 docker 中，每个进程调用的输出是连接在一起的，但是 Kubernetes 中，每个调用是分离的。
+要查看上一次运行的输出，请添加 <code>-previous</code> 参数。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge4ddba8" class="outline-3">
+<h3 id="orge4ddba8"><span class="section-number-3">3.6.</span> docker stop 和 docker rm</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+终止和删除运行的进程。
+</p>
+
+<p>
+docker：
+</p>
+
+<pre class="example" id="org5237149">
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                         NAMES
+a9ec34d98787        nginx               "nginx -g 'daemon of"  22 hours ago        Up 22 hours         0.0.0.0:80-&gt;80/tcp, 443/tcp   nginx-app
+
+$ docker stop a9ec34d98787
+a9ec34d98787
+
+$ docker rm a9ec34d98787
+a9ec34d98787
+</pre>
+
+<p>
+kubectl：
+</p>
+
+<pre class="example" id="org9493051">
+$ kubectl get deployment nginx-app
+NAME        DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+nginx-app   1         1         1            1           2m
+
+$ kubectl get po -l run=nginx-app
+NAME                         READY     STATUS    RESTARTS   AGE
+nginx-app-2883164633-aklf7   1/1       Running   0          2m
+
+$ kubectl delete deployment nginx-app
+deployment "nginx-app" deleted
+
+$ kubectl get po -l run=nginx-app
+# Return nothing
+</pre>
+
+<blockquote>
+<p>
+注意，在你使用 kubectl 的时候，你不能直接删除 pod。你首先要删除拥有 pod 的 Deployment。如果你直接删除 pod，Deployement 会重新创建一个 pod。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org099a282" class="outline-3">
+<h3 id="org099a282"><span class="section-number-3">3.7.</span> docker login</h3>
+<div class="outline-text-3" id="text-3-7">
+<p>
+在 kubectl 中没有与 <code>docker login</code> 类似的操作。
+</p>
+</div>
+</div>
+
+<div id="outline-container-docker-version" class="outline-3">
+<h3 id="docker-version"><span class="section-number-3">3.8.</span> docker version</h3>
+<div class="outline-text-3" id="text-docker-version">
+<p>
+获取客户端和服务器的版本。
+</p>
+
+<p>
+docker：
+</p>
+
+<pre class="example" id="org7cdfa5c">
+$ docker version
+Client version: 1.7.0
+Client API version: 1.19
+Go version (client): go1.4.2
+Git commit (client): 0baf609
+OS/Arch (client): linux/amd64
+Server version: 1.7.0
+Server API version: 1.19
+Go version (server): go1.4.2
+Git commit (server): 0baf609
+OS/Arch (server): linux/amd64
+</pre>
+
+<p>
+kubectl：
+</p>
+
+<pre class="example" id="org03c95b3">
+$ kubectl version
+Client Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.9+a3d1dfa6f4335", GitCommit:"9b77fed11a9843ce3780f70dd251e92901c43072", GitTreeState:"dirty", BuildDate:"2017-08-29T20:32:58Z", OpenPaasKubernetesVersion:"v1.03.02", GoVersion:"go1.7.5", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.9+a3d1dfa6f4335", GitCommit:"9b77fed11a9843ce3780f70dd251e92901c43072", GitTreeState:"dirty", BuildDate:"2017-08-29T20:32:58Z", OpenPaasKubernetesVersion:"v1.03.02", GoVersion:"go1.7.5", Compiler:"gc", Platform:"linux/amd64"}
+</pre>
+</div>
+</div>
+
+<div id="outline-container-docker-info" class="outline-3">
+<h3 id="docker-info"><span class="section-number-3">3.9.</span> docker info</h3>
+<div class="outline-text-3" id="text-docker-info">
+<p>
+获取环境和配置的更细的信息。
+</p>
+
+<p>
+docker：
+</p>
+
+<pre class="example" id="org0e8e0b7">
+$ docker info
+Containers: 40
+Images: 168
+Storage Driver: aufs
+ Root Dir: /usr/local/google/docker/aufs
+ Backing Filesystem: extfs
+ Dirs: 248
+ Dirperm1 Supported: false
+Execution Driver: native-0.2
+Logging Driver: json-file
+Kernel Version: 3.13.0-53-generic
+Operating System: Ubuntu 14.04.2 LTS
+CPUs: 12
+Total Memory: 31.32 GiB
+Name: k8s-is-fun.mtv.corp.google.com
+ID: ADUV:GCYR:B3VJ:HMPO:LNPQ:KD5S:YKFQ:76VN:IANZ:7TFV:ZBF4:BYJO
+WARNING: No swap limit support
+</pre>
+
+<p>
+kubectl：
+</p>
+
+<pre class="example" id="org68bdca7">
+$ kubectl cluster-info
+Kubernetes master is running at https://108.59.85.141
+KubeDNS is running at https://108.59.85.141/api/v1/namespaces/kube-system/services/kube-dns/proxy
+kubernetes-dashboard is running at https://108.59.85.141/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy
+Grafana is running at https://108.59.85.141/api/v1/namespaces/kube-system/services/monitoring-grafana/proxy
+Heapster is running at https://108.59.85.141/api/v1/namespaces/kube-system/services/monitoring-heapster/proxy
+InfluxDB is running at https://108.59.85.141/api/v1/namespaces/kube-system/services/monitoring-influxdb/proxy
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2018-08-20 17:38:19 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+</div>
+</body>
+</html>

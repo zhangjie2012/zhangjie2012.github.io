@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kubernetes 容器 - 容器的生命周期 hooks</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Kubernetes 容器 - 容器的生命周期 hooks</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org7bdeed0">1. 概览</a></li>
+<li><a href="#org5af7e45">2. 容器 hooks</a>
+<ul>
+<li><a href="#org83e7029">2.1. Hook 处理器的实现</a></li>
+<li><a href="#orgf0640e5">2.2. Hook 处理器执行</a></li>
+<li><a href="#org6c8a40e">2.3. Hook 交付保证</a></li>
+<li><a href="#org6e87a5c">2.4. 调试 Hook 处理器</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+本页面描述 kubelet 管理的容器可以使用容器的生命周期 hook 框架来运行事件在其管理生命周期中触发的代码。
+</p>
+
+<div id="outline-container-org7bdeed0" class="outline-2">
+<h2 id="org7bdeed0"><span class="section-number-2">1.</span> 概览</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+类似许多编程语言框架有生命周期 hooks，比如 Angular，Kubernetes 提供了容器的生命周期 hook。
+hooks 使容器能够了解其管理生命周期中的事件和执行相应的生命周期 hook 时运行处理程序中事件的代码。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5af7e45" class="outline-2">
+<h2 id="org5af7e45"><span class="section-number-2">2.</span> 容器 hooks</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+有两个暴露给容器的 hooks：
+</p>
+
+<p>
+<code>PostStart</code>
+</p>
+
+<p>
+创建容器之后立即执行此 hook。但是，不能保证该 hook 在容器的 ENTRYPOINT 之前执行。没有参数传递给处理程序。
+</p>
+
+<p>
+<code>PreStop</code>
+</p>
+
+<p>
+在容器终止之前（由于 API 请求或者管理事件如存活/启动探针失败，抢占，资源竞争等）hook 会被立即调用。
+如果容器已经处于终止状态或者已完成，并且 hook 必须在给容器发送给 TERM 信号之前完成。在执行 <code>PreStop</code> hook 之前，Pod 的宽限期倒计时开始，
+因此，无论处理程序的结果如何，容器最终将在 Pod 的终止宽限期内终止。没有参数传递给处理程序。
+</p>
+
+<p>
+有关终止行为的更多说明，参见 <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination">Pod 的终止</a> 文档。
+</p>
+</div>
+
+<div id="outline-container-org83e7029" class="outline-3">
+<h3 id="org83e7029"><span class="section-number-3">2.1.</span> Hook 处理器的实现</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+实现和注册一个 hook 的处理器，容器才可以使用 hook。有两种类型的 hook 处理器：
+</p>
+
+<ul class="org-ul">
+<li>Exec - 执行一个特定的命令，比如 <code>pre-stop.sh</code> ，在容器的 cgroups 和 namespaces 中。该命令消耗的资源计入容器中；</li>
+<li>HTTP - 针对容器上的特定端点执行 HTTP 请求；</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf0640e5" class="outline-3">
+<h3 id="orgf0640e5"><span class="section-number-3">2.2.</span> Hook 处理器执行</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+当容器生命周期管理 hook 被调用时，Kubernetes 管理系统根据 hook 行为执行处理器， <code>httpGet</code> 和 <code>tcpSocket</code> 是通过 kubelet 进程执行的，
+而 <code>exec</code> 在容器内部执行的。
+</p>
+
+<p>
+Hook 处理器调用在包含 Container 的 Pod 的上下文中是同步的。对于 <code>PostStart</code> hook，容器 ENTRYPOINT 和 hook 是异步的。
+但是，如果 hook 执行太长时间时间或者 hang 住的情况下，容器也无法到达 <code>running</code> 状态。
+</p>
+
+<p>
+<code>PreStop</code> hook 不是从终止容器信号之后异步执行的；hook 必须执行完毕之后，才能发送 TERM 信号。如果 <code>PreStop</code> hook 在执行期间 hang 住了
+Pod 的 phase 会被设置为 <code>Terminating</code> 然后一直保持这个状态，直到 Pod 的 GracePeriodSeconds 到时间之后才被杀死为止。
+此宽限期适用于 PreStop hook 执行和容器正常停止所话费的总时间。
+比如说， <code>terminationGracePeriodSeconds</code> 的值是 60，hook 花费了 55 秒，容器在收到信号之后需要 10 秒才能耐正常终止，这种情况下，
+容器在终止之前会被杀掉，因为 <code>terminationGracePeriodSeconds</code> 小于总时间（55+10）。
+</p>
+
+<p>
+无论是 <code>PostStart</code> 还是 <code>PreStop</code> hook 失败，都会杀掉容器。
+</p>
+
+<p>
+用户应该保证 hook 处理程序尽可能的轻巧。但是，有些情况下，长时间运行的命令才有意义。比如在停止容器之前保存状态。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6c8a40e" class="outline-3">
+<h3 id="org6c8a40e"><span class="section-number-3">2.3.</span> Hook 交付保证</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Hook 会保证至少执行一次，这意味着给定任何事件 (<code>PostStart</code> 或者 <code>PreStop</code>)，hook 可能被多次调用。hook 的执行程序需要能够适配这种可能情况。
+</p>
+
+<p>
+通常情况下，只执行一次。比如，HTTP hook 接收者已被关闭，无法正常通信，也不会进行重试。但是，在极少数情况下，可能出现两次调用。例如，如果 kubelet
+在发送 hook 的过程中重新启动，可能会出现重启之后再次发送。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6e87a5c" class="outline-3">
+<h3 id="org6e87a5c"><span class="section-number-3">2.4.</span> 调试 Hook 处理器</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+Hook 处理程序的日志没有在 Pod 事件中公开。如果处理程序因为某种原因失败，它将广播一个事件。对于 <code>PostStart</code> 是 <code>FailedPostStartHook</code> 事件，
+对于 <code>PreStop</code> 是 <code>FailedPreStopHook</code> 事件。你可以通过 <code>kubectl describe pod &lt;pod_name&gt;</code> 来查看这些事件。
+事件可能如下：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">Events:
+  FirstSeen  LastSeen  Count  From                                                   SubObjectPath          Type      Reason               Message
+  ---------  --------  -----  ----                                                   -------------          --------  ------               -------
+  1m         1m        1      {default-scheduler }                                                          Normal    Scheduled            Successfully assigned test-1730497541-cq1d2 to gke-test-cluster-default-pool-a07e5d30-siqd
+  1m         1m        1      {kubelet gke-test-cluster-default-pool-a07e5d30-siqd}  spec.containers{main}  Normal    Pulling              pulling image "test:1.0"
+  1m         1m        1      {kubelet gke-test-cluster-default-pool-a07e5d30-siqd}  spec.containers{main}  Normal    Created              Created container with docker id 5c6a256a2567; Security:[seccomp=unconfined]
+  1m         1m        1      {kubelet gke-test-cluster-default-pool-a07e5d30-siqd}  spec.containers{main}  Normal    Pulled               Successfully pulled image "test:1.0"
+  1m         1m        1      {kubelet gke-test-cluster-default-pool-a07e5d30-siqd}  spec.containers{main}  Normal    Started              Started container with docker id 5c6a256a2567
+  38s        38s       1      {kubelet gke-test-cluster-default-pool-a07e5d30-siqd}  spec.containers{main}  Normal    Killing              Killing container with docker id 5c6a256a2567: PostStart handler: Error executing in Docker Container: 1
+  37s        37s       1      {kubelet gke-test-cluster-default-pool-a07e5d30-siqd}  spec.containers{main}  Normal    Killing              Killing container with docker id 8df9fdfd7054: PostStart handler: Error executing in Docker Container: 1
+  38s        37s       2      {kubelet gke-test-cluster-default-pool-a07e5d30-siqd}                         Warning   FailedSync           Error syncing pod, skipping: failed to "StartContainer" for "main" with RunContainerError: "PostStart handler: Error executing in Docker Container: 1"
+  1m         22s       2      {kubelet gke-test-cluster-default-pool-a07e5d30-siqd}  spec.containers{main}  Warning   FailedPostStartHook
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2021-04-19 22:16:45 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+</div>
+</body>
+</html>

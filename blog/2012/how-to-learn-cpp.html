@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>如何学习C++</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">如何学习C++</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#缘由">1. 缘由</a></li>
+<li><a href="#笔者">2. 笔者</a></li>
+<li><a href="#关于本文">3. 关于本文</a></li>
+<li><a href="#正文">4. 正文</a>
+<ul>
+<li><a href="#为什么-cc">4.1. 1. 为什么 C/C++？</a></li>
+<li><a href="#c新手">4.2. 2. C++新手</a>
+<ul>
+<li><a href="#选择一本好书">4.2.1. 2.1 选择一本好书</a></li>
+<li><a href="#选择一个好的ide">4.2.2. 2.2 选择一个好的IDE</a></li>
+<li><a href="#保持一颗平静的心">4.2.3. 2.3 保持一颗平静的心</a></li>
+<li><a href="#还需要什么">4.2.4. 2.4 还需要什么？</a></li>
+</ul>
+</li>
+<li><a href="#c入门停留在表面">4.3. 3. C++入门（停留在表面）</a>
+<ul>
+<li><a href="#学习-c-要不要学习-c">4.3.1. 3.1 学习 C++ 要不要学习 C ？</a></li>
+<li><a href="#如何实现入门">4.3.2. 3.2 如何实现入门？</a></li>
+</ul>
+</li>
+<li><a href="#c进阶技术研究">4.4. 4. C++进阶（技术研究）</a>
+<ul>
+<li><a href="#如何实现进阶">4.4.1. 4.1 如何实现进阶？</a></li>
+</ul>
+</li>
+<li><a href="#c高手走出c">4.5. 5. C++高手（走出C++）</a>
+<ul>
+<li><a href="#如何成为高手">4.5.1. 5.1 如何成为高手？</a></li>
+</ul>
+</li>
+<li><a href="#c脑残粉回首c">4.6. 6. C++脑残粉（回首C++）</a>
+<ul>
+<li><a href="#如何成为脑残粉">4.6.1. 6.1 如何成为脑残粉？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+原创文章，转载请标明原文链接。
+</p>
+
+<p>
+感谢 <a href="http://www.wutianqi.com">Tanky Woo</a> 和
+<a href="http://www.cnblogs.com/yangxi">杨溪</a>
+抽出宝贵的时间为本文审校。在正确性、语法语义和用词上，他们为我提出了很多建设性的意见，我也进行了相应修改。
+</p>
+
+<p>
+尽管如此，我相信错误还是再所难免，如果你发现了错误，请给本文留言，谢谢。
+</p>
+
+<div id="outline-container-缘由" class="outline-2">
+<h2 id="缘由"><span class="section-number-2">1.</span> 缘由</h2>
+<div class="outline-text-2" id="text-缘由">
+<p>
+有写这篇文章（确切的说是这种类型方式方法的文章）的想法是几个月之前了（2012.08.09），"<a href="http://www.perfect-is-shit.com/2011/12/02/about-blog/">不敢下手的原因是自己
+C++ 资历尚浅，如果言语不当，实在是害人</a>"。我的这种踌躇也让
+<a href="http://www.wutianqi.com/">Tanky Woo</a>
+批评过多次了，但是我仍旧抱着胆怯的心里，这种文章涉及的面有点广，还有一个很大的原因是我的太多想法过于偏激。
+</p>
+
+<p>
+今天我去论坛回答了两个问题：<a href="http://www.cppleyuan.com/viewthread.php?tid=10302">关于结构体
+申请内存</a>，<a href="http://www.cppleyuan.com/viewthread.php?tid=10294">c++中输入的问题</a>，像这种类似的问题我在论坛回答过不知道多少遍了，可能每天仍旧有很多人会遇到。于是我有了一个在博客建一个
+<a href="http://www.perfect-is-shit.com/cpp-faq-list/">C++ FAQ
+目录</a>的想法，用来整理、总结一些常见的、不常见的、诡异的 C++
+问题和解决方案（称作"奇淫技巧"或许要好一点）。恰巧，我对此类问题也甚是关心。我想写一篇怎样学习
+C++ 的文章做为 C++
+FAQ的序是再好不过的了，以前的种种顾虑用文章谨慎的文字来弥补吧。
+</p>
+</div>
+</div>
+
+<div id="outline-container-笔者" class="outline-2">
+<h2 id="笔者"><span class="section-number-2">2.</span> 笔者</h2>
+<div class="outline-text-2" id="text-笔者">
+<p>
+简单的介绍一下笔者，目的在于读者在读本文的时候心里有一个定位："这是什么样的人写的文章，可不可靠，我应该相信他几分？"
+我 08 年上的大学，大一上学期学校开设了 C 语言课，下学期学的数据结构，C++
+是在大一暑假自学的（也就是 09 年 6
+月份，至今三年有余）。看过一些书（请看<a href="http://www.perfect-is-shit.com/it-book-rec/">书籍推荐</a>），在校期间用
+C/C++，C#
+做过很多小项目，自己也写过一些小软件自娱自乐，缺少公司类型大项目的开发经验。算是
+C/C++ 的忠实粉丝吧。
+</p>
+</div>
+</div>
+
+<div id="outline-container-关于本文" class="outline-2">
+<h2 id="关于本文"><span class="section-number-2">3.</span> 关于本文</h2>
+<div class="outline-text-2" id="text-关于本文">
+<ul class="org-ul">
+<li>读者定位是两类人群：a.初学者，即将入手 C++
+语言、不知道如何开始；b.已经开始学习C++许久了，却进度缓慢，抓不到精髓，倍感迷茫。</li>
+<li>本文不会深入到C++语言内部挖掘技术点。</li>
+<li>如果你自诩C++高手，请绕道；如果你本就是C++高手，开发经验丰富，可以对本文提一些建议。</li>
+<li>本文将结合我自己的学习经历和经验，谈一谈 C++
+应该如何学习，以及扩展到编程领域的一些想法和看法。</li>
+<li>文章中提及书籍的时候没有评价。我的<a href="http://www.perfect-is-shit.com/it-book-rec/">书籍推荐</a>中列举了一些
+C++ 书籍，都有我的相关评价，感兴趣的可以看一看。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-正文" class="outline-2">
+<h2 id="正文"><span class="section-number-2">4.</span> 正文</h2>
+<div class="outline-text-2" id="text-正文">
+</div>
+
+<div id="outline-container-为什么-cc" class="outline-3">
+<h3 id="为什么-cc"><span class="section-number-3">4.1.</span> 1. 为什么 C/C++？</h3>
+<div class="outline-text-3" id="text-为什么-cc">
+<p>
+C++
+是一门编程语言，请注意它仅仅是一门编程语言。这句话的意思就是一旦有人在做语言好坏之争的时候，一笑而过即可。特定的语言只是用来在特定的领域解决特定的问题，仅此而已，尤其是现在众多语言纷飞的年代，这句话的正确性不容置疑。
+</p>
+
+<p>
+在编程领域里，每个人都会有他/她的入门语言，各持己见。我个人认为 C
+语言是一个很不错的选择，语法简单，深度可深可浅，高级语言的鼻祖。很重要的一点是现今的各种编程语言，或多或少都是
+C 语言的衍生品，或者是衍生品的衍生品。语言相通，只要 C
+语言学好了，上手其他语言问题不大。C
+语言的灵魂在于指针，指针可以帮助你更好的理解内存，理解操作系统的工作机理。
+</p>
+
+<p>
+C++ 就是 C 的衍生品之一，兼容 C 语言。起初的目的是扩展 C 语言"C with
+Classes"，但是后来随着发展，C++ 标准中加入了：虚函数（virtual
+function）、运算符重载（operator overloading）、多重继承（multiple
+inheritance）、模板（template）、异常（exception）、RTTI、命名空间（name
+space）等。C++ 变得强大的同时也变的异常复杂，同时随着新内容的增加，C++
+离 C 也就越来越远（思想而非语法）。
+</p>
+
+<p>
+C++
+是一门争议性语言，喜欢研究的人很多，吐槽的（包括一些大神级的人物）的人也很多。在
+C/C++ 的时代（C/C++刚出道的时候），语言的可选性较少，所以 C++
+干了许多事情，现在时代不一样了，正如我前面所谓语言纷飞，针对性语言众多，程序员的选择性也就多了（有很多的优秀的语言可以去学，C#，java，php，python，ruby&#x2026;&#x2026;），所以
+C++ 不再是必须品。
+</p>
+
+<p>
+在你开始学习之前，请慎重考虑一下，为什么要学？如果考虑好了，请继续阅读。
+</p>
+</div>
+</div>
+
+<div id="outline-container-c新手" class="outline-3">
+<h3 id="c新手"><span class="section-number-3">4.2.</span> 2. C++新手</h3>
+<div class="outline-text-3" id="text-c新手">
+</div>
+
+<div id="outline-container-选择一本好书" class="outline-4">
+<h4 id="选择一本好书"><span class="section-number-4">4.2.1.</span> 2.1 选择一本好书</h4>
+<div class="outline-text-4" id="text-选择一本好书">
+<ul class="org-ul">
+<li>如果你发现以"数字"命名的书籍，请扔掉！（21天学通C++？）</li>
+<li>你发现以"通"字样命名的书籍，请扔掉！（零起点学通C++？C++从入门到精通？）</li>
+<li>你发现把"Visual" 和 "C++" 联系起来的 C++
+教程，请扔掉！（太多了，不举例了）</li>
+<li>如果你发现"void main"作为实例的书籍，请扔掉！</li>
+<li>如果你发现“”作为实例的书籍，请扔掉！</li>
+<li>&#x2026;&#x2026;</li>
+</ul>
+
+<p>
+有几本书可以供你选择：《<a href="http://product.dangdang.com/main/product.aspx?product_id=22783504">C++
+Primer
+Plus</a>》,《<a href="http://product.dangdang.com/main/product.aspx?product_id=9157098">C++
+Primer</a>》，《<a href="http://product.dangdang.com/main/product.aspx?product_id=20813125">C++程序设计语言</a>》
+</p>
+
+<p>
+我入门用的是《<a href="http://product.dangdang.com/main/product.aspx?product_id=9112402">C++入门经典</a>》，继而读的是《C++
+Primer》。其实好书和差书很容易区分，厚度和价位是一个很关键的点，通常薄薄的，又便宜，书名却非常霸气的告诉你如何精通，那你果断扔了，想都不要想。
+</p>
+</div>
+</div>
+
+<div id="outline-container-选择一个好的ide" class="outline-4">
+<h4 id="选择一个好的ide"><span class="section-number-4">4.2.2.</span> 2.2 选择一个好的IDE</h4>
+<div class="outline-text-4" id="text-选择一个好的ide">
+<p>
+请注意我强调的是IDE（集成开发环境），而不是套餐（GCC+VIM/EMACS+GDB+[linux]），对于一个初学者来说，一定要抓住重点。
+</p>
+
+<p>
+那个套餐NB么？NB!
+酷么？太酷了！学么？可以学，但不是现在。现在你需要的输入几行代码，然后运行处结果，如果有小问题，可以方便调试的工具。gcc，vim/emacs，gdb，linux
+必须承认，它们很优秀，但是学好很需要时间。不夸张的说，入手vim/emacs or
+linux 比入手 C++
+的时间只多不少。初学者一定要相信这一点，网上太多人吹嘘学 C++ 不应该用
+IDE ，就应该直接 文本编辑器+GCC 用 GDB 调试，进而言语鄙视 IDE
+。我不知道你抱着什么心态，我只想说你入门是那样入门的吗？当时有没有 IDE
+？你了解 IDE 吗？你公司用什么开发？
+</p>
+
+<p>
+IDE
+调试底层调用的也是调试工具，对调试工具进行封装，使之更为人性化了些。技术永远不是用来炫酷和装B，是用来解决实际问题的。因此，不管你用什么语言，什么工具，什么平台，只要能把事情做好就行了。
+</p>
+
+<p>
+对于一个入门新手，一个人性化的调试环境是必须的。当然，作为一个 C++
+程序员的话，GCC/GDB 是必须要去了解的，linux 也是必须要会的。
+</p>
+
+<p>
+IDE 我推荐使用 <a href="http://www.codeblocks.org/">CodeBlocks</a>，C++
+标准支持的好，开源，跨平台，免费，非常优秀。Microsoft Visual Studio 20XX
+也是可以的。忠告：同学们，千万不要再用 VC++ 6.0 了，对 C++
+标准支持极差，谨记！
+</p>
+
+<p>
+我学习一直用的是 CodeBlocks 10.05 今天好像已经是 12.11
+，软件开发用的是：VS2005，VS2008，VS2010。个人感觉 08 没有 05 和 10
+好用。
+</p>
+</div>
+</div>
+
+<div id="outline-container-保持一颗平静的心" class="outline-4">
+<h4 id="保持一颗平静的心"><span class="section-number-4">4.2.3.</span> 2.3 保持一颗平静的心</h4>
+<div class="outline-text-4" id="text-保持一颗平静的心">
+<p>
+给大家看一篇文章：<a href="http://coolshell.cn/articles/2250.html">"21天教你学会C++"</a>。"想要
+21 天学会C++，首选需要花8年时间学会
+C++，然后去学量子物理，生物化学，分子生物学，以及遗传学，制造“返老还童"药剂，把自己传送回学编程的21天”-&#x2013;&#x2014;这是迄今为止我所知道的最容易的《Teach
+Yourself C++ in 21 Days》，推荐大家去看看原文。
+</p>
+
+<p>
+大家再去看一篇文章：<a href="http://coolshell.cn/articles/2287.html">"C++
+程序员自信心曲线图"</a>，"对于大多数的自称自己熟悉C++的程序员来说，基本上来说他们都是用C++的语法来写C。"
+</p>
+
+<p>
+保持一颗平静的心是很重要的，切记不要急于求成，切记不要浮躁。学习 C++
+不是三天两天的事情，文中也说了，用 10 年时间来学习编程。你准备好了吗？
+</p>
+
+<p>
+有人天真的以为学几天 C++
+就可以写软件了，后来发现学了之后还是什么也干不了，软件需要界面，于是去学
+MFC,学了 MFC 后才发现 MFC 没什么，反而是 C++ 基础太差，反过头来继续学习
+C++。那个天真的人就是我，我就是这么过来的。高端的背后也无非都是一行行基础的代码，只要把基础打好了，高端也就没什么了（这里的高端并不是特指
+MFC 高端，基础也不是特指
+C++，任何事物我想都是一样的）。我想告诫大家，打好基础比学高端的技术要有用的多，所以不要急。
+</p>
+</div>
+</div>
+
+<div id="outline-container-还需要什么" class="outline-4">
+<h4 id="还需要什么"><span class="section-number-4">4.2.4.</span> 2.4 还需要什么？</h4>
+<div class="outline-text-4" id="text-还需要什么">
+<p>
+我觉得足够了，一本好书，一个好IDE，一颗平静的心态（当然你要有一台PC机了）。有三点我需要说明一下，第一，平台的选择，这个无所谓的，C++
+是跨平台的，学 C++
+标准就好了；第二，去培训机构培训会不会学的快一点？我对培训只用两个字总结"扯淡"，真是扯淡。第三，视频学习？我不推荐。就好像很多人学MFC，看孙鑫的视频一样。我们又不是小孩子了，学东西需要手把手吗？再者说了，手把手教的东西都是死的。当你手里握着一把锤子的时候，你会发现这个世界全都是钉子。解决问题的方法有很多种，视频能教给你的只是那么固定的一种或者几种，思维定势是很可怕的事情。
+</p>
+
+<p>
+我个人是非常不赞同去花钱培训，或者呆呆的在电脑前面看视频。
+</p>
+
+<p>
+学习是一种经历，进而这种经历就变成了你宝贵的经验。遇到问题，勤于思考分析，查阅资料，逐渐的培养出了自己快速、独立解决问题的一套方法，这才是你的财富，这才能以不变应万变。对于程序员来说，就是对
+BUG 敏锐的嗅觉。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-c入门停留在表面" class="outline-3">
+<h3 id="c入门停留在表面"><span class="section-number-3">4.3.</span> 3. C++入门（停留在表面）</h3>
+<div class="outline-text-3" id="text-c入门停留在表面">
+<p>
+参考标准：熟练掌握 C++ 语法结构，了解 C++
+主要模块，技术难点。大部分书上可以找到的知识点。
+</p>
+</div>
+
+<div id="outline-container-学习-c-要不要学习-c" class="outline-4">
+<h4 id="学习-c-要不要学习-c"><span class="section-number-4">4.3.1.</span> 3.1 学习 C++ 要不要学习 C ？</h4>
+<div class="outline-text-4" id="text-学习-c-要不要学习-c">
+<p>
+作为这样的一篇文章，这个探讨几乎是必须要做的。我的观点很明确，要学！因为我先学
+C 语言，后学的 C++
+的，而且学习使用过程中无数次穿插的相互学习。我的程序中从来没有刻意的区分这是
+C 还是 C++，我把握的标准是怎么样方便怎么来。就好像文件读写我从来都不用
+C++ 的文件流，因为我习惯了 C 语言的 fread、fwrite、 fopen、 fseek、
+ftell
+等等。我是站在语言的语法和库的角度来说"要学"的。如果你要学面向对象的话，那就没必要学
+C 了，好像也没有学 C++
+的必要了，你可以选择一个纯面向对象的语言去学面向对象岂不更好。总结，以我的个人经历来说，学
+C++ 可以先学习 C 语言（观点已明确，探讨结束！）。
+</p>
+
+<p>
+要了解哪些东西呢？总结是两点：语法和库。所有的语言几乎都是一样的。
+</p>
+
+<ul class="org-ul">
+<li>语法[基本类型、标准库类型、数组和指针、表达式、语句、函数等]</li>
+<li>STL[容器，算法]</li>
+<li>模板与泛型编程</li>
+<li>类与面向对象</li>
+</ul>
+
+<p>
+语法熟练的是必须的；熟练使用 STL
+编程，面向对象思想不是一天两天就可以有的，需要不断的历练和实战才能培养出来的；面向对象在C++中的实现方式一定要熟（继承，派生，虚函数等）；模板的实参演绎要搞清楚。
+</p>
+</div>
+</div>
+
+<div id="outline-container-如何实现入门" class="outline-4">
+<h4 id="如何实现入门"><span class="section-number-4">4.3.2.</span> 3.2 如何实现入门？</h4>
+<div class="outline-text-4" id="text-如何实现入门">
+<ul class="org-ul">
+<li>看书。《C++ primer》，《C++标准程序库》，《C++ template》</li>
+<li>多思考，多写小程序。</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-c进阶技术研究" class="outline-3">
+<h3 id="c进阶技术研究"><span class="section-number-3">4.4.</span> 4. C++进阶（技术研究）</h3>
+<div class="outline-text-3" id="text-c进阶技术研究">
+<p>
+参考标准：内部机理，奇淫技巧
+</p>
+
+<ul class="org-ul">
+<li>深入C++内部，探究实现的机理[为什么模板不支持分离编译？虚函数/多重继承是怎么实现的？类型转换做了那些事情？异常处理？等]</li>
+<li>STL源码学习[学习别人的设计方法？为什么STL效率高（为达效率，无所不用其极）？学习数据结构和算法？内存池？RTTI？等]</li>
+<li>内存[理解指针运算？内存对齐？类的内存布局？new/delete 和
+malloc/delete的区别？函数变参的实现？存储方式？智能指针？等]</li>
+<li>编译器在编译，链接的过程中偷偷的做了那些事情。[如何分析编译器的提示？链接错误代表可能出现哪些问题？等]</li>
+<li>跟上C++库的潮流，研究新标准。</li>
+</ul>
+</div>
+
+<div id="outline-container-如何实现进阶" class="outline-4">
+<h4 id="如何实现进阶"><span class="section-number-4">4.4.1.</span> 4.1 如何实现进阶？</h4>
+<div class="outline-text-4" id="text-如何实现进阶">
+<ul class="org-ul">
+<li>看书。Effective
+系列书籍，《STL源码剖析》，《C++标准程序库》，《C++沉思录》，《高质量C/C++编程》，《C++编程思想》，《深度探索C++对象模型》等。</li>
+<li>写软件，遇到问题之后自己折腾，自己探索。</li>
+<li>逛社区，回答别人的问题。</li>
+<li>多看看别人的博客。</li>
+<li>结交自己的技术圈子。</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-c高手走出c" class="outline-3">
+<h3 id="c高手走出c"><span class="section-number-3">4.5.</span> 5. C++高手（走出C++）</h3>
+<div class="outline-text-3" id="text-c高手走出c">
+<p>
+参考标准：面向对象编程，泛型编程
+</p>
+
+<p>
+面相对象和泛型编程是 C++
+的精粹，学好这些方面光靠书本上的知识是不够的，只有大量的实战才能切身体会它们的优势。
+</p>
+
+<p>
+很多人自以为自己C++学的很不错了，其实他只是在用C的方式写C++代码而已，这句话不无道理。
+</p>
+</div>
+
+<div id="outline-container-如何成为高手" class="outline-4">
+<h4 id="如何成为高手"><span class="section-number-4">4.5.1.</span> 5.1 如何成为高手？</h4>
+<div class="outline-text-4" id="text-如何成为高手">
+<ul class="org-ul">
+<li>看书
+《面向对象分析与设计》，《设计模式-&#x2013;&#x2014;可复用面向对象软件的基础》，《泛型编程与STL》《C++模板元编程》等。</li>
+<li>"实战-&gt;感悟-&gt;总结-&gt;实战-&gt;感悟-&gt;总结&#x2026;&#x2026;"如此循环</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-c脑残粉回首c" class="outline-3">
+<h3 id="c脑残粉回首c"><span class="section-number-3">4.6.</span> 6. C++脑残粉（回首C++）</h3>
+<div class="outline-text-3" id="text-c脑残粉回首c">
+<p>
+参考标准：为什么 C++ 是 C++
+</p>
+
+<p>
+去了解C++的历史，它的哲学观。为什么 C++
+包括现在这些成分，为什么会如此复杂，为什么会有那么多的缺陷。总之，为什么
+C++ 成为了 C++ ，而不是别的？这实在是值得思考的一个问题。
+</p>
+</div>
+
+<div id="outline-container-如何成为脑残粉" class="outline-4">
+<h4 id="如何成为脑残粉"><span class="section-number-4">4.6.1.</span> 6.1 如何成为脑残粉？</h4>
+<div class="outline-text-4" id="text-如何成为脑残粉">
+<ul class="org-ul">
+<li>看书。《C++语言的设计和演化》</li>
+<li>搜集野史。</li>
+</ul>
+
+<p>
+好了，总结了这许多，我个人理解的 C++
+学习历程应该是这样的。但是并不意味你看了我列举的书籍都成为高手了。一来，我列举的书籍不够全面；再者，我在上文中不断重复的两个字眼是"实战"，书上的东西永远是死的，只有经过不断的实战才能将这些知识融会贯通。
+</p>
+
+<hr />
+
+<p>
+接下来我们漫谈 C++
+学习吧，我喜欢漫谈，上面这种中规中矩方式不是我擅长的（我擅长的是闲扯淡）。把
+C++
+孤立起来的学习过程是缓慢的，只有脑子中有了整个的一个"计算机知识体系"，才能相互促进，进步的才快。
+</p>
+
+<p>
+<b>什么是计算机知识体系呢？</b>
+</p>
+
+<ul class="org-ul">
+<li>操作系统。这算是计算机第一大课。没有原因，必须要学好。进程管理？内存管理？文件管理？I/O通信？</li>
+<li>计算机组成原理。整数的加减乘除？浮点数表示法？补码？中断与DMA？</li>
+<li>汇编语言。不要求能写，但是能看懂代码的反汇编就够了。</li>
+<li>数据结构和算法。不做解释。</li>
+<li>编译原理。"scanner-&gt;parser-&gt;semantic analyzer-&gt;source code
+optimizer-&gt;code generator-&gt;target code optimizer"可有印象？</li>
+<li>计算机网络。TCP/IP？</li>
+<li>C语言</li>
+</ul>
+
+<p>
+看了这几项，你也许会说："卧槽，那个，那个不就是我当年逃过的课嘛？"，没错，这就是我们当年逃过的课，它确实这般的重要。不求别的，只要你了解这几大课，我敢说你
+C++ 中的大部分关于内存，编译器编译链接的问题已经解决了。而且不管你是学
+C++，还是学其他技术，水到渠成，一点就透。因为这是基础，你把基础打好了，万变不离其宗的。
+</p>
+
+<p>
+你现在所会的
+C++，你自以为学的很不错，可是你给别人2个月或者3个月时间耐心学，一样可以学的和你一样，甚至比你要好。那么你学的价值在哪儿呢？我学了好几年的C++别人几个月一样可以学到？是的，你以为C++有多少东西？！怎么样才能做到别人超不过你呢？
+</p>
+
+<ol class="org-ol">
+<li>学习这些计算机体系大课，你脑中的体系结构已经和你学的 C++
+融合到了一起，你脑中的类是存在内存中的，你的递归是在栈中不断的压栈，而他的只看到的是代码。这也就是为什么我不赞成你培训机构的原因，培训机构不会教会你这些学科大课的。他只会告诉你C++的函数是怎样声明的，类要怎样书写，而这些
+100 块钱买一本书，坐着看几天都学会了。何必花那么多钱去培训。</li>
+<li>多写代码，多调程序。培养错误的感知能力。</li>
+<li>学会挖掘，多思考。</li>
+</ol>
+
+<p>
+如果你的 C++ 仅仅停留在表面上的，卖弄技术，别人三两个月学的一定比你好。
+</p>
+
+<p>
+前几年混迹 CSDN
+,老赵的一句话非常之流行："计算机组成原理→DOS命令→汇编语言→C语言（不包括C++）、代码书写规范→数据结构、编译原理、操作系统→计算机网络、数据库原理、正则表达式→其它语言（包括C++）、架构&#x2026;&#x2026;"，确实很有道理。
+</p>
+
+<p>
+再看本文的题目吧：如何学习 C++，其实我的重点不想放在 C++
+上，我更想探讨的是如何学习的问题，C++ 只是一个实例。
+</p>
+
+<p>
+现在的互联网是浮躁的，导致现在的学生是浮躁的，都想一步登天。现在学习环境的肮脏的，是个人都想出来赚几声吆喝，就拿博客园的首页口水战一样，你喷我，我喷你，其实到最后都不知道大家在喷什么，只知道必须站出来喷一下证明自己的存在！这是多么可悲的一个环境。有这闲工夫多写几遍技术文章不必什么都强？新技术层出不穷，眼花缭乱，不知道该什么，有人说好的，必定有人在喷。作为新手，你当如何选择？我开始庆幸我当时的无知，无知给了我更少的选择，才有了选择。作为一个旁观者，我能做的不多，我不敢深入其中，只能站的远远的呐喊。
+</p>
+
+<p>
+"我建议大家把那几个学科大课学好，把C语言学好，然后再去选择其他编程语言。一步一步的来，不要急。"
+</p>
+
+<p>
+最后给大家几个忠告来结束本文吧：
+</p>
+
+<ul class="org-ul">
+<li>多交流：不管你的技术多么硬，你都不可能一个人做完所有的事情，你要学会与别人合作，与别人交流。交流过程中，要注意交流技巧。学会尊重别人，但要不亢不卑。</li>
+<li>多动手：熟能生巧，这是万能之理。我们干的是技术活，最能证明自己能力的就是干！不是扯淡！</li>
+<li>多思考：不要做编码机器。</li>
+<li>多总结：相同的问题不可能只出现一次，尤其是在我们这个行业。总结是为了你在以后更快的解决类似的问题，提高工作效率。</li>
+<li>多分享：分享的更多，你会得到的更多，相信我。</li>
+<li>多阅读：多聆听：不要仅限于技术，你要了解的不只是技术。同样的问题，听一听别人是怎么想的，怎么思考的，你会得到更多。</li>
+<li>永远不要做拿来主义：没有人有义务帮你搞定问题，不要张口就要，给你你很幸运，不给你也不是别人的错。</li>
+</ul>
+
+<p>
+能说的还有很多，让博客待续&#x2026;&#x2026;
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2012-12-10 16:12:07 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+</div>
+</body>
+</html>

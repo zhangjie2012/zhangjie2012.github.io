@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-11-30 Wed 16:14 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WSL2</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">WSL2</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org3a3155e">1. 简介</a></li>
+<li><a href="#org566be85">2. 安装指引</a></li>
+<li><a href="#org8dc0dc3">3. 命令</a></li>
+<li><a href="#org07a070c">4. 外部访问 WSL 中的服务</a></li>
+<li><a href="#orgc1955c7">5. 从 WSL 访问宿主机的服务</a></li>
+<li><a href="#orge5bc32b">6. 使用 SSH 连接</a></li>
+<li><a href="#org8aa0b29">7. FAQ</a>
+<ul>
+<li><a href="#org2ff321a">7.1. 如何禁用光标闪烁</a></li>
+<li><a href="#org2719aa6">7.2. 如何使用系统代理</a></li>
+<li><a href="#org10bb3a4">7.3. locale 设置为 en_US.UTF-8</a></li>
+<li><a href="#org22142c5">7.4. 系统如何使用 systemd？</a></li>
+<li><a href="#org17c1a35">7.5. Windows Dockers 开启 WSL2 还是在 WSL2 中安装 Docker？</a></li>
+<li><a href="#org950ff8a">7.6. 如何设置启动目录</a></li>
+<li><a href="#orgc21411b">7.7. ssh-add 报错：Could not open a connection to your authentication agent</a></li>
+<li><a href="#orge60c48c">7.8. 与宿主机文件系统互通</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3a3155e" class="outline-2">
+<h2 id="org3a3155e"><span class="section-number-2">1.</span> 简介</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+WSL<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>，Windows Subsystem for Linux。允许开发人员在 Windows 下运行 GNU/Linux 环境。
+包括大多数命令行工具，实用程序和引用程序。
+</p>
+
+<p>
+比较牛逼的一个点在于，安装一个 Linux 发行版跟安装普通软件一样，但却能拥有近乎原生的 Linux 系统
+（真正的 Linux 内核），而不需要安装虚拟机。
+</p>
+
+<p>
+<i>如无特殊说明以下 WSL 都表示 WSL2。</i>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org566be85" class="outline-2">
+<h2 id="org566be85"><span class="section-number-2">2.</span> 安装指引</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<a href="https://docs.microsoft.com/zh-cn/windows/wsl/install-win10">https://docs.microsoft.com/zh-cn/windows/wsl/install-win10</a>
+</p>
+
+<p>
+安装报错<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">Installing, this may take a few minutes...
+WslRegisterDistribution failed with error: 0x800701bc
+Error: 0x800701bc WSL 2 ?????????????????? https://aka.ms/wsl2kernel
+
+Press any key to continue...
+</pre>
+</div>
+
+<p>
+<a href="https://docs.microsoft.com/zh-cn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package">下载 Linux 内核包</a>，安装即可解决。
+</p>
+
+<p>
+vmmem 进程很占内存，<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>
+</p>
+
+<ol class="org-ol">
+<li>关闭 wsl <code>wsl --shutdown</code></li>
+<li><p>
+修改配置文件 <code>notepad "$env:USERPROFILE/.wslconfig"</code> 设置
+</p>
+<pre class="example">
+[wsl2]
+guiApplications=false
+memory=4GB
+</pre></li>
+</ol>
+
+<p>
+<i>在 Windows 下使用 WSL 做开发，系统内存至少 16G，否则再怎么缩减内存也不够用。</i>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8dc0dc3" class="outline-2">
+<h2 id="org8dc0dc3"><span class="section-number-2">3.</span> 命令</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><code>wsl -l -v</code> 查看当前运行的发行版</li>
+<li><code>wsl --shutdown</code> 关闭所有，不可以在 WSL 中使用 <code>sudo reboot</code> 命令实现重启
+<ul class="org-ul">
+<li><code>wsl -t &lt;distro-name&gt;</code> 关闭指定发行版</li>
+</ul></li>
+<li><code>wsl</code> 启动所有
+<ul class="org-ul">
+<li><code>wsl -d &lt;distro-name&gt;</code> 启动指定发行版</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org07a070c" class="outline-2">
+<h2 id="org07a070c"><span class="section-number-2">4.</span> 外部访问 WSL 中的服务</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+如果在宿主机中访问 WSL 中的某个端口服务，直接通过 <code>localhost</code> 即可。但如果是在宿主机外部（如手机浏览器），则需要一层转发：
+</p>
+
+<pre class="example">
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=4000 connectaddress=171.21.112.1 connectport=8080
+</pre>
+
+<p>
+说明：
+</p>
+
+<ul class="org-ul">
+<li><code>connectaddress</code> <code>connectport</code> WSL 的 IP 地址和服务暴露端口</li>
+<li><code>listenaddress</code> <code>listenport</code> 映射到宿主机的地址和端口</li>
+</ul>
+
+<p>
+查看当前所有映射： <code>netsh interface portproxy show all</code> 。
+</p>
+
+<p>
+删除某个映射： <code>netsh interface portproxy delete v4tov4 listenaddress=0.0.0.0 listenport=4000</code> 。
+</p>
+
+<p>
+其他说明：
+</p>
+
+<ul class="org-ul">
+<li>执行以上命令都需要管理员权限</li>
+<li>获取 WSL 的 IP 地址，Ubuntu <code>ip a</code> ，还有其他方法：<a href="https://superuser.com/questions/1586386/how-to-find-wsl2-machines-ip-address-from-windows">How to find WSL2 machine's IP address from windows</a></li>
+<li>如果外部无法访问，需要检查下 Windows 防火墙放行规则</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc1955c7" class="outline-2">
+<h2 id="orgc1955c7"><span class="section-number-2">5.</span> 从 WSL 访问宿主机的服务</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+宿主机对于 WSL IP 作为 <code>/etc/resolv.conf</code> 的 nameserver，另外也可以在 Windows 上执行 <code>ipconfig</code> 查看 <code>以太网适配器 vEthernet (WSL)</code> 中的值。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge5bc32b" class="outline-2">
+<h2 id="orge5bc32b"><span class="section-number-2">6.</span> 使用 SSH 连接</h2>
+<div class="outline-text-2" id="text-6">
+<ol class="org-ol">
+<li><code>sudo apt autoremove --purge openssh-server -y &amp;&amp; sudo apt install openssh-server -y</code></li>
+<li>修改 sshd 配置 <code>/etc/ssh/sshd_config</code> ：
+<ul class="org-ul">
+<li>端口： <code>Port 2222</code></li>
+<li>密码登录： <code>PasswordAuthentication yes</code></li>
+</ul></li>
+<li><code>sudo service ssh --full-restart</code></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org8aa0b29" class="outline-2">
+<h2 id="org8aa0b29"><span class="section-number-2">7.</span> FAQ</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-org2ff321a" class="outline-3">
+<h3 id="org2ff321a"><span class="section-number-3">7.1.</span> 如何禁用光标闪烁</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+配置没有办法直接禁用，只能在系统全局设置。 <code>控制面板 =&gt; 键盘 =&gt; 更改光标闪烁速率</code>
+</p>
+
+<p>
+<i>这个设定有点坑，估计后面会优化。</i>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2719aa6" class="outline-3">
+<h3 id="org2719aa6"><span class="section-number-3">7.2.</span> 如何使用系统代理</h3>
+<div class="outline-text-3" id="text-7-2">
+<p>
+<a href="https://gitlab.com/JerryZhang2012/dotfiles">https://gitlab.com/JerryZhang2012/dotfiles</a>
+</p>
+
+<p>
+主机使用 ClashX 作为代理时，注意打开 <code>Allow LAN</code> 选项。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org10bb3a4" class="outline-3">
+<h3 id="org10bb3a4"><span class="section-number-3">7.3.</span> locale 设置为 en_US.UTF-8</h3>
+<div class="outline-text-3" id="text-7-3">
+<p>
+很多种方法，大部分都是直接修改 <code>/etc/default/locale</code> 加上 <code>.bashrc</code> 比较麻烦。
+</p>
+
+<p>
+简单的方法：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">sudo locale-gen <span style="color: #2544bb;">"en_US.UTF-8"</span>
+sudo dpkg-reconfigure locales
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org22142c5" class="outline-3">
+<h3 id="org22142c5"><span class="section-number-3">7.4.</span> 系统如何使用 systemd？</h3>
+<div class="outline-text-3" id="text-7-4">
+<p>
+不支持 systemd，安装服务、自启动等使用 Docker。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org17c1a35" class="outline-3">
+<h3 id="org17c1a35"><span class="section-number-3">7.5.</span> Windows Dockers 开启 WSL2 还是在 WSL2 中安装 Docker？</h3>
+<div class="outline-text-3" id="text-7-5">
+<p>
+后者。所有带 GUI 的 Docker 都是垃圾（MacOS 和 Windows 下都一样）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org950ff8a" class="outline-3">
+<h3 id="org950ff8a"><span class="section-number-3">7.6.</span> 如何设置启动目录</h3>
+<div class="outline-text-3" id="text-7-6">
+<p>
+<code>"startingDirectory" : "//wsl$/Ubuntu-18.04/home/&lt;Your Ubuntu Username&gt;"</code> <sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc21411b" class="outline-3">
+<h3 id="orgc21411b"><span class="section-number-3">7.7.</span> ssh-add 报错：Could not open a connection to your authentication agent</h3>
+<div class="outline-text-3" id="text-7-7">
+<p>
+根源是 ssh-agent 没起来，使用： <code>eval $(ssh-agent -s)</code> 解决。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge60c48c" class="outline-3">
+<h3 id="orge60c48c"><span class="section-number-3">7.8.</span> 与宿主机文件系统互通</h3>
+<div class="outline-text-3" id="text-7-8">
+<p>
+Windows 系统目录被挂载在 Linux 的 <code>/mnt/</code> 目录下，拷贝文件超级方便。
+</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://docs.microsoft.com/en-us/windows/wsl/">https://docs.microsoft.com/en-us/windows/wsl/</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://github.com/microsoft/WSL/issues/5393">https://github.com/microsoft/WSL/issues/5393</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://superuser.com/questions/1559170/how-can-i-reduce-the-consumption-of-the-vmmem-process">https://superuser.com/questions/1559170/how-can-i-reduce-the-consumption-of-the-vmmem-process</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://docs.microsoft.com/en-us/windows/terminal/troubleshooting#set-your-wsl-distribution-to-start-in-the-home--directory-when-launched">https://docs.microsoft.com/en-us/windows/terminal/troubleshooting#set-your-wsl-distribution-to-start-in-the-home--directory-when-launched</a>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-11-21 11:40:19 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+</div>
+</body>
+</html>

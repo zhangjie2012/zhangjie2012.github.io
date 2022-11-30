@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>理解 Go 的 Array 和 slice</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">理解 Go 的 Array 和 slice</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org1b8f3d3">1. Array</a></li>
+<li><a href="#org091c623">2. Slice</a></li>
+<li><a href="#orgb4d5e23">3. 总结</a></li>
+<li><a href="#org98cc689">4. 更新记录</a></li>
+</ul>
+</div>
+</div>
+<p>
+今早 <a href="https://blog.opskumu.com/">磊磊</a> 在 Twitter 上看到一条消息，大致意思是问下面代码的执行结果是什么：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">package</span> main
+
+<span style="color: #5317ac;">import</span> <span style="color: #2544bb;">"fmt"</span>
+
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">four</span><span style="color: #000000;">(</span><span style="color: #00538b;">s</span> <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    s = <span style="color: #8f0075;">append</span><span style="color: #a8007f;">(</span>s, 4<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
+
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">s</span> := <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #a8007f;">{</span>1, 2, 3<span style="color: #a8007f;">}</span>
+    <span style="color: #721045;">four</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Println</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+可选的结果是：
+</p>
+
+<ol class="org-ol">
+<li><code>[1, 2, 3, 4]</code></li>
+<li><code>[4]</code></li>
+<li><code>[1, 2, 3]</code></li>
+<li>compile error</li>
+</ol>
+
+<p>
+乍一看结果是 <code>[1, 2, 3, 4]</code> ，毕竟向 s 中添加了一个元素。我对 Go 的细节了解不多，所以是按照已有的 C 的 Array 和 C++ 的
+vector 的知识来理解 Go 的 slice。本以为像 Go 这样一个比较「先进」的语言，自然会规避这种深浅拷贝的问题，但实际上并没有，
+所以对这道题有点迷糊。于是就花时间研究了一下 Go 中的 Array 和 Slice。
+</p>
+
+<div id="outline-container-org1b8f3d3" class="outline-2">
+<h2 id="org1b8f3d3"><span class="section-number-2">1.</span> Array</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Go 中的 Array 是通过 <code>[n]int</code> 这种样式来声明的，一如数据结构学到的那样，Array 必须是固定长度的。Go 的 Array（我一直拿 C
+的 Array 类比）可以理解成一个像 int 一样的内置类型，是一块连续的内存结构，比较好理解。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org091c623" class="outline-2">
+<h2 id="org091c623"><span class="section-number-2">2.</span> Slice</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+实际编码过程中， Array 逐渐满足不了需求，比如一个解析 HTTP 请求的 body 体或者从文件读入内容，不好提前知道内容的长度，
+所以大部分时候都需要变长的 Array 。 slice 就是实现了“可变长度的 Array”的抽象，类似 C++ 中的 vector。
+</p>
+
+<p>
+一个 slice 的实现通常有三部分组成：
+</p>
+
+<ul class="org-ul">
+<li><code>buffer</code>: 指向实际存数据的 buffer，定长，可以用 Array 来实现</li>
+<li><code>len</code>: 当前以使用的 buffer 长度</li>
+<li><code>cap</code>: 当前 buffer 的容量，当 <code>len</code> 大于等于 <code>cap</code> 时，即容量不足，则需要触发扩容：
+<ol class="org-ol">
+<li>重新声明一个足量的 buffer</li>
+<li>把现有的 buffer 内容拷贝过去</li>
+<li>修改 buffer 指向</li>
+<li>修改 <code>cap</code> 的值</li>
+</ol></li>
+</ul>
+
+<p>
+C++ 中的 vector 也是类似的实现，只不过它提供了拷贝构造函数（copy contructor），而 Go 没有提供类似的机制。
+</p>
+
+<p>
+再回到刚才之前的问题上，当把 s 传递给 four 的时候是一次浅拷贝，为了没有命名歧义，four 中的传入的 s 先叫成 sc。传参类似于
+做了 <code>sc = s</code> 的操作：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">sc.buffer = s.buffer
+sc.len = s.len
+sc.cap = s.cap
+</pre>
+</div>
+
+<p>
+len 和 cap 是内置类型，而 buffer 是一个指针。换句话说，修改 sc 中的 len 和 cap 不会影响 s 的 len 和 cap，但是修改 buffer
+的内容则会影响外部的 s。
+</p>
+
+<p>
+当执行 <code>append(s, 4)</code> 的时候， <code>sc.buffer</code> 容量不足，触发了扩容操作，扩容结束之后 <code>sc.buffer</code> 则指向了一个新的内容空间，
+自此 sc 和 s 就再无瓜葛了。
+</p>
+
+<p>
+所以说，广义上这道题的答案是函数内部修改是否会影响外部，取决于 buffer 的容量是否足够，是否引起 slice 的扩容操作，狭义上
+的答案是 <code>[1, 2, 3]</code> 。
+</p>
+
+<p>
+再看一段代码：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">package</span> main
+
+<span style="color: #5317ac;">import</span> <span style="color: #2544bb;">"fmt"</span>
+
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">five</span><span style="color: #000000;">(</span><span style="color: #00538b;">s</span> <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    s = <span style="color: #8f0075;">append</span><span style="color: #a8007f;">(</span>s, 5<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
+
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">s</span> := <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #a8007f;">{</span>1, 2, 3<span style="color: #a8007f;">}</span>
+    s = <span style="color: #8f0075;">append</span><span style="color: #a8007f;">(</span>s, 4<span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Printf</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"cap=%d\n"</span>, <span style="color: #8f0075;">cap</span><span style="color: #005f88;">(</span>s<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+
+    <span style="color: #721045;">five</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Println</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+输出的结果是: <code>[1 2 3 4]</code> 而不是 <code>[1 2 3 4 5]</code> 。那么问题来了，在容量充足的情况下，内部的 buffer 和外部的 buffer 相同，
+那么 <code>append</code> 的之后，s 怎么没有发生变化呢？
+</p>
+
+<p>
+答案很简单，因为扩展长度之后 five 外部的 s 的 <code>len</code> 并没有发生变化，只是内存中的 buffer 修改了值而已，外部 s 输出的时候，
+会按照 len 做限制。
+</p>
+
+<p>
+两种办法可以验证这个想法，第一种是把内存的的数据打印出来：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">package</span> main
+
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">(</span>
+    <span style="color: #2544bb;">"fmt"</span>
+    <span style="color: #2544bb;">"unsafe"</span>
+<span style="color: #000000;">)</span>
+
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">five</span><span style="color: #000000;">(</span><span style="color: #00538b;">s</span> <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    s = <span style="color: #8f0075;">append</span><span style="color: #a8007f;">(</span>s, 5<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
+
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">s</span> := <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #a8007f;">{</span>1, 2, 3<span style="color: #a8007f;">}</span>
+    s = <span style="color: #8f0075;">append</span><span style="color: #a8007f;">(</span>s, 4<span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Printf</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"cap=%d\n"</span>, <span style="color: #8f0075;">cap</span><span style="color: #005f88;">(</span>s<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+
+    <span style="color: #721045;">five</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>
+
+    <span style="color: #00538b;">start</span> := unsafe.<span style="color: #721045;">Pointer</span><span style="color: #a8007f;">(</span>&amp;s<span style="color: #005f88;">[</span>0<span style="color: #005f88;">]</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">size</span> := unsafe.<span style="color: #721045;">Sizeof</span><span style="color: #a8007f;">(</span><span style="color: #721045;">int</span><span style="color: #005f88;">(</span>0<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">s0</span> := *<span style="color: #a8007f;">(</span>*int<span style="color: #a8007f;">)(</span>unsafe.<span style="color: #721045;">Pointer</span><span style="color: #005f88;">(</span><span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">s1</span> := *<span style="color: #a8007f;">(</span>*int<span style="color: #a8007f;">)(</span>unsafe.<span style="color: #721045;">Pointer</span><span style="color: #005f88;">(</span><span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span> + size*<span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>1<span style="color: #904200;">)</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">s2</span> := *<span style="color: #a8007f;">(</span>*int<span style="color: #a8007f;">)(</span>unsafe.<span style="color: #721045;">Pointer</span><span style="color: #005f88;">(</span><span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span> + size*<span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>2<span style="color: #904200;">)</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">s3</span> := *<span style="color: #a8007f;">(</span>*int<span style="color: #a8007f;">)(</span>unsafe.<span style="color: #721045;">Pointer</span><span style="color: #005f88;">(</span><span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span> + size*<span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>3<span style="color: #904200;">)</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">s4</span> := *<span style="color: #a8007f;">(</span>*int<span style="color: #a8007f;">)(</span>unsafe.<span style="color: #721045;">Pointer</span><span style="color: #005f88;">(</span><span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span> + size*<span style="color: #721045;">uintptr</span><span style="color: #904200;">(</span>4<span style="color: #904200;">)</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Printf</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"%d %d %d %d %d\n"</span>, s0, s1, s2, s3, s4<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+通过指针偏移的方式（比 C 真的麻烦不知道多少倍），获取内存中的值，输出结果为 <code>1, 2, 3, 4, 5</code> 。第二种验证想法的方式是，在
+ <code>five</code> 中不要 <code>append</code> ，直接修改 s 的值，就会发现外部也发生的变化。
+</p>
+
+<p>
+上面这些行为都是由于浅拷贝导致的，符合预期，也算不上什么陷阱，如果以前写过 C++ 的话，这是一个很常见的问题。
+</p>
+
+<p>
+但是，Go 的 slice 的 slice，真有个使用上的陷阱。比如对一个 slice 做 slice 操作：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">s = <span style="color: #000000;">[]{</span>1, 2, 3, 4, 5, 6<span style="color: #000000;">}</span>
+<span style="color: #00538b;">t</span> := s<span style="color: #000000;">[</span>1:3<span style="color: #000000;">]</span>
+</pre>
+</div>
+
+<p>
+s 和 t 虽然是两个不同的对象，但是完全共享同一块内存（s 的 buffer 包含 t 的 buffer），只不过他们的首地址指向不同，len 和
+cap 也有可能不同。
+</p>
+
+<p>
+除非 t 以后触发了容量扩展的操作，否则不论谁修改共享的内存块都会导致 s 和 t 的变更。
+</p>
+
+<p>
+Go <a href="https://blog.golang.org/go-slices-usage-and-internals">有篇官方博客</a> 中的 A possible "gotcha"，说：因为这种设计，可能会导致内存的浪费。众所周知，Go 的有垃圾回收机制的，但是
+当做 slice 的 slice 时，如果原有的 slice 很大，slice 之后的很小，因为小的 slice 一直占用内存，导致大的 buffer 一直无法释
+放，举个例子：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">var</span> <span style="color: #00538b;">digitRegexp</span> = regexp.<span style="color: #721045;">MustCompile</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"[0-9]+"</span><span style="color: #000000;">)</span>
+
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">FindDigits</span><span style="color: #000000;">(</span><span style="color: #00538b;">filename</span> <span style="color: #005a5f;">string</span><span style="color: #000000;">)</span> <span style="color: #000000;">[]</span><span style="color: #005a5f;">byte</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">b</span>, <span style="color: #00538b;">_</span> := ioutil.<span style="color: #721045;">ReadFile</span><span style="color: #a8007f;">(</span>filename<span style="color: #a8007f;">)</span>
+    <span style="color: #5317ac;">return</span> digitRegexp.<span style="color: #721045;">Find</span><span style="color: #a8007f;">(</span>b<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+这会导致 <code>FindDigits</code> 返回的 <code>[]byte</code> 一直占用整个文件内容相同大小的 buffer，直到 <code>[]byte</code> 的变量释放。为了解决这个问题，
+在返回时新建一个所需实际大小的 buffer，然后拷贝过去，再返回。类似这样：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">CopyDigits</span><span style="color: #000000;">(</span><span style="color: #00538b;">filename</span> <span style="color: #005a5f;">string</span><span style="color: #000000;">)</span> <span style="color: #000000;">[]</span><span style="color: #005a5f;">byte</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">b</span>, <span style="color: #00538b;">_</span> := ioutil.<span style="color: #721045;">ReadFile</span><span style="color: #a8007f;">(</span>filename<span style="color: #a8007f;">)</span>
+    b = digitRegexp.<span style="color: #721045;">Find</span><span style="color: #a8007f;">(</span>b<span style="color: #a8007f;">)</span>
+    <span style="color: #00538b;">c</span> := <span style="color: #8f0075;">make</span><span style="color: #a8007f;">(</span><span style="color: #005f88;">[]</span><span style="color: #005a5f;">byte</span>, <span style="color: #8f0075;">len</span><span style="color: #005f88;">(</span>b<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+    <span style="color: #8f0075;">copy</span><span style="color: #a8007f;">(</span>c, b<span style="color: #a8007f;">)</span>
+    <span style="color: #5317ac;">return</span> c
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+这也是浅拷贝的带来的问题，但是 Go 的这种设计是非常「糟糕」的。理论上来讲，完全可以在做 slice 的时候做一次深拷贝来规避这
+个问题，这也并不符合通常程序员对 slice 操作的预期。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb4d5e23" class="outline-2">
+<h2 id="orgb4d5e23"><span class="section-number-2">3.</span> 总结</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+本文从一个问题入手讨论了 Go 的 Array 和 Slice 的区别、Slice 的设计以及浅拷贝可能会带来的「陷阱」。
+</p>
+
+<p>
+Go 官方博客有两篇博客 <a href="https://blog.golang.org/go-slices-usage-and-internals">Go Slices: usage and internals</a> 和 <a href="https://blog.golang.org/slices">Arrays, slices (and strings): The mechanics of 'append'</a> 也对相关
+的实现和特性做了介绍，推荐阅读。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org98cc689" class="outline-2">
+<h2 id="org98cc689"><span class="section-number-2">4.</span> 更新记录</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+<b>2018-07-24 16:55:03 更新：</b>
+</p>
+
+<p>
+看了 Effective Go 中的 Data 章节，描述了 Go 的数组与 C 的不同：
+</p>
+
+<ul class="org-ul">
+<li>数组是值，赋值时会把所有的数据拷贝一份</li>
+<li>如果把数组传递给函数，函数拿到的是数组的 copy ，而不是指针</li>
+<li>数组的大小是类型的一部分。 <code>[10]int</code> 和 <code>[20]int</code> 是不同的</li>
+</ul>
+
+<p>
+其实，Go 不仅仅是 C-safe language，很多的实现细节都不同，也并不是一门简单的语言。
+</p>
+
+<p>
+<b>2018-09-04 15:45:14 更新：</b>
+</p>
+
+<p>
+今天遇到个问题，默认初始化的 slices 被 json 序列化之后，值竟然是 <code>nil</code> 而不是 <code>[]</code> ，但是正常输出是却为 <code>[]</code> 。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">package</span> main
+
+<span style="color: #5317ac;">import</span> <span style="color: #000000;">(</span>
+    <span style="color: #2544bb;">"encoding/json"</span>
+    <span style="color: #2544bb;">"fmt"</span>
+<span style="color: #000000;">)</span>
+
+<span style="color: #5317ac;">type</span> <span style="color: #005a5f;">T</span> <span style="color: #5317ac;">struct</span> <span style="color: #000000;">{</span>
+    Xxx <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span> <span style="color: #2544bb;">`json:"xxx"`</span>
+<span style="color: #000000;">}</span>
+
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">var</span> <span style="color: #00538b;">t</span> <span style="color: #005a5f;">T</span>
+    fmt.<span style="color: #721045;">Printf</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"%v\n"</span>, t<span style="color: #a8007f;">)</span>
+
+    <span style="color: #00538b;">x</span>, <span style="color: #00538b;">_</span> := json.<span style="color: #721045;">Marshal</span><span style="color: #a8007f;">(</span>t<span style="color: #a8007f;">)</span>
+    fmt.<span style="color: #721045;">Println</span><span style="color: #a8007f;">(</span><span style="color: #721045;">string</span><span style="color: #005f88;">(</span>x<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+输出结果为：
+</p>
+
+<pre class="example">
+{[]}
+{"xxx":null}
+</pre>
+
+<p>
+这个行为真的很奇怪，按说一个结果的输出结果和他 json 序列化的值应该是保持一致的。网上对这个讨论也比较多，比如这个 <a href="https://github.com/golang/go/issues/2278">#issue</a>，
+之前是 <code>[]</code> ，后来改成了 null，具体可以看这次 <a href="https://github.com/golang/go/commit/48c75c5f9c8e97b87fbd8f24dffa73d6b2148691">提交记录</a>。
+</p>
+
+<p>
+可能是希望刻意的把空指针区分开，上面的例子中 <code>Xxx</code> 用 <code>make([]int, 0)</code> 初始化就可以了。
+</p>
+
+<p>
+虽然我觉得这是个糟糕的设计（不过整个 Go 语言的设计思路就让人觉得很刻意，那我还能怎么办呢，当然是怎么设计怎么用啦）。
+</p>
+
+<p>
+<b>2021-01-15 16:58:51 更新：</b>
+</p>
+
+<p>
+这里的图片很好的说明 Go Slice 的基本原理： <a href="https://ueokande.github.io/go-slice-tricks/">https://ueokande.github.io/go-slice-tricks/</a>
+</p>
+
+<p>
+<b>2021-10-19 18:49:53 更新：</b>
+</p>
+
+<p>
+Go Slice 更蛋疼的一个地方是，在执行 <code>append</code> 的时候，一个 <code>nil</code> 的 slice 依旧可以被 <code>append</code> ，会自动扩容。
+但是当你对一个 <code>nil</code> 的 map 赋值直接就 crash 了，告诉你 <code>nil</code> map 不可以直接使用。WTF ？？
+</p>
+
+<p>
+<a href="https://stackoverflow.com/questions/38543825/appending-one-element-to-nil-slice-increases-capacity-by-two">https://stackoverflow.com/questions/38543825/appending-one-element-to-nil-slice-increases-capacity-by-two</a>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2018-07-18 15:15:24 <br />Last updated: 2022-11-28 Mon 19:52 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+</div>
+</body>
+</html>

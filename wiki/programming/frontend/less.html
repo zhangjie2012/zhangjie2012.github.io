@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-11-30 Wed 16:14 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LESS</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">LESS</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org44f6acc">1. 安装</a></li>
+<li><a href="#orgc7cd0eb">2. 语言教程</a>
+<ul>
+<li><a href="#org5278525">2.1. 变量</a></li>
+<li><a href="#orgcd75fd1">2.2. 混合（Mixins）</a></li>
+<li><a href="#org172e558">2.3. 嵌套</a>
+<ul>
+<li><a href="#orgbc94bfd">2.3.1. 父选择器</a></li>
+<li><a href="#org1df4195">2.3.2. 在规则中嵌套和冒泡</a></li>
+</ul>
+</li>
+<li><a href="#org4bcdc24">2.4. 运算符</a></li>
+<li><a href="#orgc52dba6">2.5. 转义（Escaping）</a></li>
+<li><a href="#org1aac326">2.6. 函数</a></li>
+<li><a href="#orge08bd71">2.7. 命名空间和访问器</a></li>
+<li><a href="#orgf497678">2.8. 作用域</a></li>
+<li><a href="#org4321846">2.9. 注释</a></li>
+</ul>
+</li>
+<li><a href="#orgbc4c48e">3. style comment! */</a>
+<ul>
+<li><a href="#orgbf05778">3.1. 导入（Importing）</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+<a href="http://lesscss.org/">Less</a> 是 CSS 向后兼容的扩展语言，Less 语法可以通过 Less 提供的工具转换成 CSS。
+</p>
+
+<div id="outline-container-org44f6acc" class="outline-2">
+<h2 id="org44f6acc"><span class="section-number-2">1.</span> 安装</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">npm install less -g   <span style="color: #505050;"># </span><span style="color: #505050;">&#20840;&#23616;&#23433;&#35013; lessc &#24037;&#20855;</span>
+npm i less --save-dev <span style="color: #505050;"># </span><span style="color: #505050;">&#26412;&#24037;&#31243;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc7cd0eb" class="outline-2">
+<h2 id="orgc7cd0eb"><span class="section-number-2">2.</span> 语言教程</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org5278525" class="outline-3">
+<h3 id="org5278525"><span class="section-number-3">2.1.</span> 变量</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+使用 <code>@</code> 定义变量，比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #8f0075;">@nice-blue</span>: <span style="color: #ffffff; background-color: #5B83AD;">#5B83AD</span>;
+<span style="color: #8f0075;">@light-blue</span>: <span style="color: #8f0075;">@nice-blue</span> + <span style="color: #ffffff; background-color: #111;">#111</span>;
+
+<span style="color: #5317ac;">#header </span><span style="color: #000000;">{</span>
+    <span style="color: #005a5f;">color</span>: <span style="color: #8f0075;">@light-blue</span>;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcd75fd1" class="outline-3">
+<h3 id="orgcd75fd1"><span class="section-number-3">2.2.</span> 混合（Mixins）</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+混合（Mixins）提供了一个属性集合包含另外一个属性集合的方法。类似下面的类：
+</p>
+
+<pre class="example">
+.bordered {
+    border-top: dotted 1px black;
+    border-bottom: solid 2px black;
+}
+</pre>
+
+<p>
+我们想要在其他地方使用，只需要直接引用即可：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #5317ac;">#menu a </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">color</span>: <span style="color: #ffffff; background-color: #111;">#111</span>;
+  .bordered;
+<span style="color: #000000;">}</span>
+
+<span style="color: #5317ac;">.post a </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">color</span>: <span style="color: #ffffff; background-color: #ff0000;">red</span>;
+  .bordered;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org172e558" class="outline-3">
+<h3 id="org172e558"><span class="section-number-3">2.3.</span> 嵌套</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Less 提供了嵌套语法，比如说：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #5317ac;">#header </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">color</span>: <span style="color: #ffffff; background-color: #000000;">black</span>;
+<span style="color: #000000;">}</span>
+<span style="color: #5317ac;">#header .navigation </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">font-size</span>: 12px;
+<span style="color: #000000;">}</span>
+<span style="color: #5317ac;">#header .logo </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">width</span>: 300px;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+可以精简为：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #5317ac;">#header </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">color</span>: <span style="color: #ffffff; background-color: #000000;">black</span>;
+  <span style="color: #5317ac;">.navigation </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">font-size</span>: 12px;
+  <span style="color: #a8007f;">}</span>
+  <span style="color: #5317ac;">.logo </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">width</span>: 300px;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+嵌套中你也可以使用伪选择器（ <code>pseudo-selectors</code> ）, <code>&amp;</code> 代表当前父选择器：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #5317ac;">.clearfix </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">display</span>: block;
+  <span style="color: #005a5f;">zoom</span>: 1;
+
+  <span style="color: #5317ac;">&amp;:after </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">content</span>: <span style="color: #2544bb;">" "</span>;
+    <span style="color: #005a5f;">display</span>: block;
+    <span style="color: #005a5f;">font-size</span>: 0;
+    <span style="color: #005a5f;">height</span>: 0;
+    <span style="color: #005a5f;">clear</span>: both;
+    <span style="color: #005a5f;">visibility</span>: hidden;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgbc94bfd" class="outline-4">
+<h4 id="orgbc94bfd"><span class="section-number-4">2.3.1.</span> 父选择器</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+在嵌套规则中，使用 <code>&amp;</code> 表示父选择器，大部分时候被用来对一个已有的选择器修改类或者伪类。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #5317ac;">a </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">color</span>: <span style="color: #ffffff; background-color: #0000ff;">blue</span>;
+  <span style="color: #5317ac;">&amp;:hover </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">color</span>: <span style="color: #ffffff; background-color: #008000;">green</span>;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+结果为：
+</p>
+
+<pre class="example">
+a {
+  color: blue;
+}
+
+a:hover {
+  color: green;
+}
+</pre>
+
+<p>
+父选择器有多种用法，一种基本的用法是在嵌套的时候替代父选择器，展开的时候直接连接起来。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #5317ac;">.button </span><span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">&amp;-ok </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">background-image</span>: url<span style="color: #005f88;">(</span><span style="color: #2544bb;">"ok.png"</span><span style="color: #005f88;">)</span>;
+  <span style="color: #a8007f;">}</span>
+  <span style="color: #5317ac;">&amp;-cancel </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">background-image</span>: url<span style="color: #005f88;">(</span><span style="color: #2544bb;">"cancel.png"</span><span style="color: #005f88;">)</span>;
+  <span style="color: #a8007f;">}</span>
+
+  <span style="color: #5317ac;">&amp;-custom </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">background-image</span>: url<span style="color: #005f88;">(</span><span style="color: #2544bb;">"custom.png"</span><span style="color: #005f88;">)</span>;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+结果为：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #5317ac;">.button-ok </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">background-image</span>: url<span style="color: #a8007f;">(</span><span style="color: #2544bb;">"ok.png"</span><span style="color: #a8007f;">)</span>;
+<span style="color: #000000;">}</span>
+<span style="color: #5317ac;">.button-cancel </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">background-image</span>: url<span style="color: #a8007f;">(</span><span style="color: #2544bb;">"cancel.png"</span><span style="color: #a8007f;">)</span>;
+<span style="color: #000000;">}</span>
+<span style="color: #5317ac;">.button-custom </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">background-image</span>: url<span style="color: #a8007f;">(</span><span style="color: #2544bb;">"custom.png"</span><span style="color: #a8007f;">)</span>;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1df4195" class="outline-4">
+<h4 id="org1df4195"><span class="section-number-4">2.3.2.</span> 在规则中嵌套和冒泡</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<p>
+像 <code>@media</code> 或者 <code>@supports</code> 这种规则也可以以相同的方式嵌套在选择器中。不过这些规则将放在元素的顶部，称之为冒泡。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #5317ac;">.component </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">width</span>: 300px;
+  <span style="color: #8f0075;">@media</span> <span style="color: #a8007f;">(</span>min-width: 768px<span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">width</span>: 600px;
+    <span style="color: #8f0075;">@media</span>  <span style="color: #005f88;">(</span>min-resolution: 192dpi<span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
+      <span style="color: #005a5f;">background-image</span>: url<span style="color: #000000; background-color: #ffffff;">(</span><span style="color: #2544bb;">/img/retina2x.png</span><span style="color: #000000; background-color: #ffffff;">)</span>;
+    <span style="color: #005f88;">}</span>
+  <span style="color: #a8007f;">}</span>
+  <span style="color: #8f0075;">@media</span> <span style="color: #a8007f;">(</span>min-width: 1280px<span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">width</span>: 800px;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+
+<p>
+结果为：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #5317ac;">.component </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">width</span>: 300px;
+<span style="color: #000000;">}</span>
+<span style="color: #8f0075;">@media</span> <span style="color: #000000;">(</span>min-width: 768px<span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">.component </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">width</span>: 600px;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+<span style="color: #8f0075;">@media</span> <span style="color: #000000;">(</span>min-width: 768px<span style="color: #000000;">)</span> and <span style="color: #000000;">(</span>min-resolution: 192dpi<span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">.component </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">background-image</span>: url<span style="color: #000000; background-color: #ffffff;">(</span><span style="color: #2544bb;">/img/retina2x.png</span><span style="color: #000000; background-color: #ffffff;">)</span>;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+<span style="color: #8f0075;">@media</span> <span style="color: #000000;">(</span>min-width: 1280px<span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">.component </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">width</span>: 800px;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4bcdc24" class="outline-3">
+<h3 id="org4bcdc24"><span class="section-number-3">2.4.</span> 运算符</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+数学运算符（加减乘除）可以在任何数字、颜色或者变量中使用。在数学运算时将先把值转换为相同的单位，结果单位为最左边的单位类型。如果不可能转换或者没有意义，单位会被忽略。比如将 <code>px</code> 转换为 <code>cm</code> 或者 <code>rad</code> 转为为 <code>%</code> 。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css">// numbers are converted into the same units
+<span style="color: #8f0075;">@conversion-1</span>: 5cm + 10mm; // result is 6cm
+<span style="color: #8f0075;">@conversion-2</span>: 2 - 3cm - 5mm; // result is -1.5cm
+
+// conversion is impossible
+<span style="color: #8f0075;">@incompatible-units</span>: 2 + 5px - 3cm; // result is 4px
+
+// example with variables
+<span style="color: #8f0075;">@base</span>: 5%;
+<span style="color: #8f0075;">@filler</span>: <span style="color: #8f0075;">@base</span> * 2; // result is 10%
+<span style="color: #8f0075;">@other</span>: <span style="color: #8f0075;">@base</span> + <span style="color: #8f0075;">@filler</span>; // result is 15%
+</pre>
+</div>
+
+<p>
+乘法或者除法不会转换数字类型，因为大多数时候是无意义的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc52dba6" class="outline-3">
+<h3 id="orgc52dba6"><span class="section-number-3">2.5.</span> 转义（Escaping）</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+转义允许你使用任意字符串作为属性或者变量值。除了变量差值之外， <code>~"anything"</code> 或者 <code>~"anything"</code> 将会作为自己的原生值不会被改变。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #8f0075;">@min768</span>: ~<span style="color: #2544bb;">"(min-width: 768px)"</span>;
+<span style="color: #5317ac;">.element </span><span style="color: #000000;">{</span>
+  <span style="color: #8f0075;">@media</span> <span style="color: #8f0075;">@min768</span> <span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">font-size</span>: 1.2rem;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+
+<p>
+结果为：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #8f0075;">@media</span> <span style="color: #000000;">(</span>min-width: 768px<span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">.element </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">font-size</span>: 1.2rem;
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1aac326" class="outline-3">
+<h3 id="org1aac326"><span class="section-number-3">2.6.</span> 函数</h3>
+<div class="outline-text-3" id="text-2-6">
+<p>
+Less 提供了各式各样的函数用来转换颜色，处理字符串或者数学计算。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #8f0075;">@base</span>: <span style="color: #ffffff; background-color: #f04615;">#f04615</span>;
+<span style="color: #8f0075;">@width</span>: 0.5;
+
+<span style="color: #5317ac;">.class </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">width</span>: percentage<span style="color: #a8007f;">(</span><span style="color: #8f0075;">@width</span><span style="color: #a8007f;">)</span>; // returns ~50%~
+  <span style="color: #005a5f;">color</span>: saturate<span style="color: #a8007f;">(</span><span style="color: #8f0075;">@base</span>, 5%<span style="color: #a8007f;">)</span>;
+  <span style="color: #005a5f;">background-color</span>: spin<span style="color: #a8007f;">(</span>lighten<span style="color: #005f88;">(</span><span style="color: #8f0075;">@base</span>, 25%<span style="color: #005f88;">)</span>, 8<span style="color: #a8007f;">)</span>;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+<a href="http://lesscss.org/functions/">这里</a>有全部的参考文档。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge08bd71" class="outline-3">
+<h3 id="orge08bd71"><span class="section-number-3">2.7.</span> 命名空间和访问器</h3>
+<div class="outline-text-3" id="text-2-7">
+<p>
+有的时候，你为了更好的组织代码，更好的抽象，把想要把 minxins 分组，你可以在 Less 中很直观的做到这一点。比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css">#bundle<span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">.button </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">display</span>: block;
+    <span style="color: #005a5f;">border</span>: 1px solid <span style="color: #ffffff; background-color: #000000;">black</span>;
+    <span style="color: #005a5f;">background-color</span>: <span style="color: #ffffff; background-color: #808080;">grey</span>;
+    <span style="color: #5317ac;">&amp;:hover </span><span style="color: #005f88;">{</span>
+      <span style="color: #005a5f;">background-color</span>: <span style="color: #000000; background-color: #ffffff;">white</span>
+    <span style="color: #005f88;">}</span>
+  <span style="color: #a8007f;">}</span>
+  <span style="color: #5317ac;">.tab </span><span style="color: #a8007f;">{</span> ... <span style="color: #a8007f;">}</span>
+  <span style="color: #5317ac;">.citation </span><span style="color: #a8007f;">{</span> ... <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+然后你希望 <code>.button</code> 类和我们的 <code>#header a</code> 混合，我们可以这么做：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #5317ac;">#header a </span><span style="color: #000000;">{</span>
+  <span style="color: #005a5f;">color</span>: <span style="color: #ffffff; background-color: #ffa500;">orange</span>;
+  #bundle &gt; .button;  // can also be written as #bundle.button
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf497678" class="outline-3">
+<h3 id="orgf497678"><span class="section-number-3">2.8.</span> 作用域</h3>
+<div class="outline-text-3" id="text-2-8">
+<p>
+Less 中的作用域和其他编程语言很类似，变量、混合会优先使用当前作用域，如果找不到的话，编译器再会查看父作用域，等等。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #8f0075;">@var</span>: <span style="color: #ffffff; background-color: #ff0000;">red</span>;
+
+<span style="color: #5317ac;">#page </span><span style="color: #000000;">{</span>
+  <span style="color: #8f0075;">@var</span>: <span style="color: #000000; background-color: #ffffff;">white</span>;
+  <span style="color: #5317ac;">#header </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">color</span>: <span style="color: #8f0075;">@var</span>; // <span style="color: #000000; background-color: #ffffff;">white</span>
+  <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+
+<p>
+混合或者变量定义不一定要放在他们使用之前，所以下面的代码和上面等价：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #8f0075;">@var</span>: <span style="color: #ffffff; background-color: #ff0000;">red</span>;
+
+<span style="color: #5317ac;">#page </span><span style="color: #000000;">{</span>
+  <span style="color: #5317ac;">#header </span><span style="color: #a8007f;">{</span>
+    <span style="color: #005a5f;">color</span>: <span style="color: #8f0075;">@var</span>; // <span style="color: #000000; background-color: #ffffff;">white</span>
+  <span style="color: #a8007f;">}</span>
+  <span style="color: #8f0075;">@var</span>: <span style="color: #000000; background-color: #ffffff;">white</span>;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+原因查看 <a href="http://lesscss.org/features/#variables-feature-lazy-loading">惰性求值</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4321846" class="outline-3">
+<h3 id="org4321846"><span class="section-number-3">2.9.</span> 注释</h3>
+<div class="outline-text-3" id="text-2-9">
+<p>
+Less 支持块风格和内联注释。
+</p>
+
+<p>
+#+BEGIN_SRC css
+/* One heck of a block
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgbc4c48e" class="outline-2">
+<h2 id="orgbc4c48e"><span class="section-number-2">3.</span> style comment! */</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+@var: red;
+</p>
+
+<p>
+// Get in line!
+@var: white;
+#+END_SRC
+</p>
+</div>
+
+<div id="outline-container-orgbf05778" class="outline-3">
+<h3 id="orgbf05778"><span class="section-number-3">3.1.</span> 导入（Importing）</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+你可以导入 <code>.less</code> 文件，文件中的变量将会被全部导入，如果不指定后缀名，会被认为是 <code>.less</code> 文件。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-css"><span style="color: #8f0075;">@import</span> <span style="color: #2544bb;">"library"</span>; // library.less
+<span style="color: #8f0075;">@import</span> <span style="color: #2544bb;">"typo.css"</span>;
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2018-05-29 11:56:12 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>C和C++基本输入输出小谈</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">C和C++基本输入输出小谈</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#流的分类">1. 流的分类</a></li>
+<li><a href="#文件打开失败">2. 文件打开失败</a></li>
+<li><a href="#文件无内容">3. 文件无内容</a></li>
+<li><a href="#feof">4. feof</a></li>
+<li><a href="#字符串截断符-0">5. 字符串截断符 '\0'</a></li>
+<li><a href="#getchargetch">6. getchar/getch</a></li>
+<li><a href="#最后基本的格式化标准">7. 最后，基本的格式化标准</a></li>
+</ul>
+</div>
+</div>
+<p>
+今天翻了一下 Wunderlist ，发现有一个任务拖了好久，所以很有必要完成了。
+</p>
+
+<p>
+记录是这样的："把scanf/getchar/getch/gets这些讲一讲 by Tanky"， 具体原因记不清了，大体是 TankyWoo 说好多 ACM 新手在输入输出这块问题还是比较多，
+所以希望我有时间总结一下，写一写。没想到拖了这么长时间，实在惭愧。
+</p>
+
+<p>
+所以，本文的读者定位在初级/中级 ACMer 对语言的基本需求，我基本上没有 AC 过，但是作为一个过来人，我大体知道输入输出这一块会卡在什么地方。
+</p>
+
+<p>
+以前写过类似总结性的笔记：<a href="http://www.cnblogs.com/chinazhangjie/archive/2010/08/19/1803057.html">C/C++输入输出流总结</a>，C/C++表面上给程序员提供了丰富的输入输出接口，正如文章中所介绍的一大堆函数。
+但是，实际上，开发过程中用到的很少。对比 C，C++ 提供的不同输入输出函数，个人倾向于使用 C 语言的 fopen, fprintf, &#x2026; 而不是 C++ 的 fstream 类。
+C 语言所提供的接口更灵活好用，而 C++ 的 "&gt;&gt;" "&lt;&lt;" 让本来很简单的语句变的不清晰和复杂。比如：
+</p>
+
+<pre class="example" id="org148dbf4">
+fprintf(fp, "This is a int %d, this is a float %f", int, float); // C
+out &lt;&lt; "This is a int" &lt;&lt; int &lt;&lt; ", this is a float " &lt;&lt; float &lt;&lt; endl; // C++
+</pre>
+
+<p>
+通过 fprintf 我一口气就可以读出来，我要输出的字符串是什么，而 out 不行。我一直觉得 C++ 的输出输出是非常鸡肋的，限制性多又难以理解，
+尤其是 flags 的开启与关闭。再如类似 width 和 precision，我更喜欢用 C 语言的 0.3f% 做格式化控制。
+</p>
+
+<p>
+C++ 控制输入输出相对牛逼的一点是有 stringstream 类，功能强大，相对也比较好用。只是，略复杂。
+</p>
+
+<p>
+ok，不再吐槽，回到正题。
+</p>
+
+<p>
+如果挨个函数去解释的话，不知道这篇文章要写多长，也没有意义。最好的学习网站: <a href="http://www.cplusplus.com/">www.cplusplus.com</a>，很好的支持和跟进新标准。
+编译器推荐<a href="http://gcc.gnu.org/">gcc</a>，IDE推荐<a href="http://www.codeblocks.org/">CodeBlocks</a>，IDE 的选择可以看 <a href="http://www.perfect-is-shit.com/programming%20language/2013/05/14/top-10-best-c-compilers-html/">10个最佳的C/C++编译器和IDEs</a>，Eclipse也挺好，但是太大了，不推荐。
+</p>
+
+<p>
+<i>不要觉得这些东西不重要，选择最标准支持的好的编译器和一个易于调试的IDE，对于一个新手来说是至关重要的。</i>
+</p>
+
+<p>
+千万不要再用 VC6.0了，标准支持太差。为什么不推荐 vs2010/vs2012？ 不免费，重量级，微软太喜欢给程序员强加东西了。
+</p>
+
+<p>
+下面说一下，我个人认为输出输出这块的迷惑点：
+</p>
+
+<div id="outline-container-流的分类" class="outline-2">
+<h2 id="流的分类"><span class="section-number-2">1.</span> 流的分类</h2>
+<div class="outline-text-2" id="text-流的分类">
+<p>
+当年，这是相当迷惑我的一个地方。也就是所谓的"二进制流"和"文本流"，即"text file" or "binary file"，代码上的区别就是打开文件时的参数有没有'b'。
+</p>
+
+<p>
+怎么理解呢？我们知道计算机中所有的文件无非都是01二进制存储的，所以，所谓的文本流也是二进制文件，单靠字面的
+text file , binray file 的区分很容易误导的。其实所谓的 text file 和
+binary file 就是人肉眼能不能直观的看懂内容，能看懂即 text file ，看不懂
+binray file。 你看我的博客内容是 text file，而一个可执行文件，一个 dll
+就是 binary file 了。这两种文件，打开都是用
+fopen，只是传入的参数有没有'b',对应的操作函数区别也比较大:
+</p>
+
+<pre class="example" id="org0dfabeb">
+text file: fprintf fscanf, fputs, fgets ...
+binary file: fread, fwrite, fseek, ftell, ...
+</pre>
+
+<p>
+ACM 的话，用前者比较多，但是实际应用中后者居多。以我个人的经历来说，text
+file我做项目基本上没有用过。个人特别喜欢 fwrite, fread, fseek &#x2026;
+这些函数，灵活性强，可控性强。它不会像 fscanf
+使用考虑那么多，基本上这几个函数就可以满足我的文件操作需求了。
+</p>
+
+<p>
+其实常用的函数也就这么几个，想 rewind 这种函数我从来没用过。
+</p>
+
+<p>
+值得一提的是 C11 新填了一个参数
+'x'，作用是如果文件存在的话，打开文件失败。
+</p>
+
+<blockquote>
+<p>
+The new C standard (C2011, which is not part of C++) adds a new
+standard subspecifier ("x"), that can be appended to any "w" specifier
+(to form "wx", "wbx", "w+x" or "w+bx"/"wb+x"). This subspecifier
+forces the function to fail if the file exists, instead of overwriting
+it.
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-文件打开失败" class="outline-2">
+<h2 id="文件打开失败"><span class="section-number-2">2.</span> 文件打开失败</h2>
+<div class="outline-text-2" id="text-文件打开失败">
+<p>
+相信很多人会遇到这个问题，一般三个原因：
+</p>
+
+<ol class="org-ol">
+<li>相对/绝对路径，这应该是最多数的情况了。绝对路径是相对盘符/根目录的，比如 <code>C:\\program files</code>, <code>/usr/bin/</code> ，
+相对路径是相对工程和可执行文件的，取决于你真实运行的起始端；</li>
+<li>文件正在被占用，同一个程序，运行了两次；</li>
+<li>权限，如果在 Unix-like 系统下，如果文件打开失败，首先去找这个原因；</li>
+<li>路径中的转义字符，"\"、"/"、路径中的空格都是常见问题，遇到的多了就知道了；</li>
+</ol>
+
+<p>
+建议在 fopen 之后加一个 if 判断，确保第一时间得到文件打开失败的信息。
+</p>
+</div>
+</div>
+
+<div id="outline-container-文件无内容" class="outline-2">
+<h2 id="文件无内容"><span class="section-number-2">3.</span> 文件无内容</h2>
+<div class="outline-text-2" id="text-文件无内容">
+<p>
+文件打开成功，也写入了内容，程序关闭后无内容。原因是可能没有 fclose。如果想在程序运行的时候实时的看到文件内容的变化，可以写入一次调用一次
+fflush()，调试程序可以这么用。但是，工程中就不要频繁的 fflush 了，会影响运行效率。
+</p>
+</div>
+</div>
+
+<div id="outline-container-feof" class="outline-2">
+<h2 id="feof"><span class="section-number-2">4.</span> feof</h2>
+<div class="outline-text-2" id="text-feof">
+<p>
+这块出问题比较多，但是只要仔细的看文档，就不会有问题了。很容易记反！
+</p>
+
+<blockquote>
+<p>
+A non-zero value is returned in the case that the end-of-file
+indicator associated with the stream is set. Otherwise, zero is
+returned.
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-字符串截断符-0" class="outline-2">
+<h2 id="字符串截断符-0"><span class="section-number-2">5.</span> 字符串截断符 '\0'</h2>
+<div class="outline-text-2" id="text-字符串截断符-0">
+<p>
+看看我遇到过的坑吧：<a href="http://www.perfect-is-shit.com/programming%20language/2012/03/30/cpp-little-story-about-string-terminator/">C++|'\0'引发的小故事</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-getchargetch" class="outline-2">
+<h2 id="getchargetch"><span class="section-number-2">6.</span> getchar/getch</h2>
+<div class="outline-text-2" id="text-getchargetch">
+<p>
+getchar() 两个注意点：
+</p>
+
+<ol class="org-ol">
+<li>读取一个字符并回现，但是只有接收到回车才会函数返回；</li>
+<li>返回值是 int 而不是 char；</li>
+</ol>
+
+<p>
+getch() 两个注意点：
+</p>
+
+<ol class="org-ol">
+<li>不是标准C函数，不建议使用；</li>
+<li>读取一个字符不回现，印象中会立刻返回，不用等到接收到回车；</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-最后基本的格式化标准" class="outline-2">
+<h2 id="最后基本的格式化标准"><span class="section-number-2">7.</span> 最后，基本的格式化标准</h2>
+<div class="outline-text-2" id="text-最后基本的格式化标准">
+<p>
+这是所有的基础，你需要知道 %d 表示的整形，%f 表示的是浮点型，%s是字符串，且只以'\0'作为结束符等。类型不匹配也是经常出现的一个问题，
+在 C 中有的时候参数不匹配，编译不会报错，但是运行就直接崩掉了。
+</p>
+
+<p>
+文件输入输出和控制台输入输出基本相同，fprintf 和 printf 对应等等，可以理解成控制台也是一个特殊的文件。
+</p>
+
+<p>
+有几篇相关的文章，感兴趣可以去看看：
+</p>
+
+<ul class="org-ul">
+<li><a href="http://www.perfect-is-shit.com/programming%20language/2013/03/24/sprintf_s-and-swprintf_s-differ-in-release-and-debu/">sprintf_s和swprintf_s在Release和Debug不同模式表现不同</a> 微软的 '_s' 就是真的安全了吗？</li>
+<li><a href="http://www.perfect-is-shit.com/programming%20language/2013/01/18/deep-into-while-cin/">C++ 深入探究 while(cin)</a> 你知道 C++ 背着你做了哪些事吗？</li>
+<li><a href="http://www.perfect-is-shit.com/programming%20language/2012/10/07/cpp-setf/">C++ setf 方法</a> 揭秘所谓的 flags，不过是一些标志位而已！</li>
+<li><a href="http://www.perfect-is-shit.com/programming%20language/2012/08/17/deep-explore-c-va-arg/">深度探索C语言函数可变长参数</a> fprintf, fscanf 为什么可以变长参数 ？</li>
+</ul>
+
+<p>
+总感觉一写起来都有很多零碎的东西可以说。但是真正想说的是，遇到问题要勤于思考，勤于查阅，解决之后要勤于总结。即便 C 语言只是你的 AC 工具，
+我依旧建议你这么做。毕竟解决问题能力的培养才是重要的。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2013-10-20 00:00:00 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+</div>
+</body>
+</html>

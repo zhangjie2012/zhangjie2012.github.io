@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>容器运行时的综合比较</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">容器运行时的综合比较</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgb68fede">1. 首先，什么是容器？</a></li>
+<li><a href="#orgff2b104">2. 什么是容器运行时？</a></li>
+<li><a href="#org2fa3fde">3. 容器运行时的简短历史</a></li>
+<li><a href="#orgf4f54b2">4. 容器运行时比较</a></li>
+<li><a href="#org0dbec90">5. 开放容器规范（OCI）运行时</a></li>
+<li><a href="#org7b7cdc1">6. 容器运行时接口（CRI）</a></li>
+<li><a href="#org46f31c4">7. 容器引擎</a></li>
+<li><a href="#orgdce262a">8. 包装容器运行时</a></li>
+</ul>
+</div>
+</div>
+<p>
+这是一篇 <b>译文</b> ，原文在：<a href="https://www.capitalone.com/tech/cloud/container-runtime/">https://www.capitalone.com/tech/cloud/container-runtime/</a>
+</p>
+
+<p>
+之前翻译过：
+</p>
+
+<ul class="org-ul">
+<li><a href="../2018/different-from-docker-and-vm.html">Docker 与 VM 的区别</a></li>
+<li><a href="../2018/an-overall-view-on-docker-ecosystem-containers-moby-swarm-linuxkit-containerd-kubernete.html">Docker 生态一览</a></li>
+<li><a href="kubernetes-vs-docker.html">Kubernetes vs Docker</a> 内容比较新（2021）</li>
+</ul>
+
+<p>
+通过这 3 篇内容基本上比较完善的了解从 VM 到 Docker 再到 Kubernetes 的变迁。这篇文章会有些内容重叠，可以作为补充（侧重于一些容易混淆的概念）。
+</p>
+
+
+<hr />
+
+<p>
+在本文中，我将研究容器运行时的术语和工具。最后，你将对容器有一个很好的了解，容器的格局如何随着时间而演变，以为今天为何称为这个状态。
+</p>
+
+<div id="outline-container-orgb68fede" class="outline-2">
+<h2 id="orgb68fede"><span class="section-number-2">1.</span> 首先，什么是容器？</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+在分析运行时之前，让我们快速的回顾一下容器。
+</p>
+
+<p>
+在 Linux 内核中，容器不是一类对象。容器本质上由几个底层的内核原语组成：namespace（允许你跟谁交谈），cgroups（允许使用的资源量），和 LSMs
+（Linux 安全模块 —— 允许你做的事情）。这些凑在一起能够为我们的进程设置安全、隔离和可计量的执行环境。这很棒，但是，当我们要创建一个新的隔离进程时，
+手动执行所有的操作将很麻烦。
+</p>
+
+<p>
+每次创建隔离进程时，都不需要手动隔离、自定义命名空间等，把这些组件捆绑在一起，我们称之为「容器」。我们称之为「容器运行时」的工具将这些部分组合成
+一个隔离的、安全的执行环境变得很容易，来让我们可以以重复的方式部署<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>。
+</p>
+
+<p>
+有关容器的更多信息，可以查看我们的文章<a href="https://www.capitalone.com/tech/cloud/what-is-a-container/">什么是容器？定义，优点和使用范例</a>。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgff2b104" class="outline-2">
+<h2 id="orgff2b104"><span class="section-number-2">2.</span> 什么是容器运行时？</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+你可能听过「运行时」一词，指的是程序的生命周期阶段或者使用特定语言的执行程序。容器运行时的功能类似于后者——它是一种软件，用于运行和管理容器运行所需要的组件。
+正如刚才所说，这些工具使得安全执行和高效部署容器变得更加容易。并且是<a href="https://www.capitalone.com/tech/cloud/holistic-container-management/">容器管理</a>的关键组件。随着容器自身的发展和变化，它们的运行时也在随着变化。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2fa3fde" class="outline-2">
+<h2 id="org2fa3fde"><span class="section-number-2">3.</span> 容器运行时的简短历史</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+2007 年 <i>cgroup</i> 加入到 Linux 内核中之后，通过创建容器化进程，出现了几个利用它们的项目：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://linuxcontainers.org/lxc/">lxc</a></li>
+<li><a href="https://github.com/google/lmctfy">LMCTFY</a></li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/systemd-nspawn.html">systemd-nspawn</a></li>
+<li><a href="https://github.com/rkt/rkt">rkt</a></li>
+</ul>
+
+<p>
+LXC，Linux 容器，是在 cgroup 之后不久推出的，被设计用于「全系统（full-system）」。systemd 也获得了类似容器的支持——systemd-nspawn
+可以运行命名空间的（namespaced）的进程，而 systemd 本身可以控制 cgroup。不管是是 LXC 还是 systemd-nspawn 都没能吸引最终用户，
+但是它们确实在其它的系统中有一些用途。比如说，Canonical 的 JuJu  和 Docker（简单版）是在 LXC 上构建的著名工具。
+</p>
+
+<p>
+Docker（当时，"dotcloud"），开始围绕 LXC 够建工具，以使容器对更多的开发人员和用户更加的友好。不久之后，Docker 就放弃了 LXC，创建了
+<a href="https://github.com/opencontainers/runtime-spec">开放容器倡议</a>（OCI）来建立容器标准（稍后更多），并将一些容器组件开源为 <b>libcontainer</b> 项目。
+</p>
+
+<p>
+Google 也开源了内部的容器堆栈版本，LMCTFY，但是随着 Docker 的流行而放弃了它。LMCTFY 开发人员将大多数功能逐渐复制到 Docker 的 libcontainer 中。
+</p>
+
+<p>
+CoreOS，在最初在其 Container Linux 产品中只使用 Docker 之后，创建了一个 Docker 的替代品，称之为 <b>rkt</b> 。
+rkt 提前具备了与 Docker 和其它早期运行时区分开的功能。值得注意的是，它不需要以 root 用户身份运行所有内容，是没有守护程序和 CLI 驱动的，
+并且具有加密验证和完全的 Docker 镜像兼容等便利的设施。
+</p>
+
+<p>
+在 Docker 创建 OCI 之前，CoreOS 也发布了一个容器标准叫做 <b>appc</b> 。然而，随着 Docker 的流行<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>，CoreOS 致力于共建和支持 OCI。
+这有助于推广，而且最终 OCI 也囊括了 appc 的部分。rkt 和 appc 最终都被遗弃。
+</p>
+
+<p>
+随着时间的推移，这些早期和多样化的容器尝试的经验有助于使得 OCI 规范达到一定程度的标准化。规范的各种实现都已经发布，这些构成了我称之为「现代」的
+容器运行时环境内容。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgf4f54b2" class="outline-2">
+<h2 id="orgf4f54b2"><span class="section-number-2">4.</span> 容器运行时比较</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+在本节中，我们将回顾不同类型的容器运行时。通常，它们分为两大类：OCI 运行时和 CRI（容器运行接口）。
+</p>
+
+<ul class="org-ul">
+<li>开放容器规范（OCI）运行时
+<ul class="org-ul">
+<li>本地运行时
+<ul class="org-ul">
+<li>runC</li>
+<li>Railcar</li>
+<li>Crun</li>
+<li>rkt</li>
+</ul></li>
+<li>沙盒和虚拟化运行时
+<ul class="org-ul">
+<li>gviso</li>
+<li>nabla-containers</li>
+<li>runV</li>
+<li>clearcontainers</li>
+<li>kata-containers</li>
+</ul></li>
+</ul></li>
+<li>CRI
+<ul class="org-ul">
+<li>containerd</li>
+<li>cri-o</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0dbec90" class="outline-2">
+<h2 id="org0dbec90"><span class="section-number-2">5.</span> 开放容器规范（OCI）运行时</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+有时称为「低级别」运行时，实现 OCI 运行时规范专注于管理容器的生命周期——抽象了 Linux 原语——并且无需其它操作。
+低级别运行时创建和运行「容器」。
+</p>
+
+<p>
+<b>本地运行时（Native runtimes）</b>
+</p>
+
+<p>
+本地低级别运行时包括：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://github.com/opencontainers/runc">runC</a></li>
+<li><a href="https://github.com/oracle/railcar">railcar</a>（弃用）</li>
+<li><a href="https://github.com/containers/crun">crun</a></li>
+<li><a href="https://github.com/rkt/rkt">rkt</a>（弃用）</li>
+</ul>
+
+<p>
+<b>runC</b> Docker 在 libcontainer 和 OCI 上的所有工作结果。这是事实上的标准低级别的运行时。由 Go 编写的，并由 Docker 开源的 <b>moby</b> 项目维护。
+</p>
+
+<p>
+<b>Railcar</b> 是 Oracle 创建的 OCI 运行时实现。由 Rust 编写，与 runC 的 Go 代码相比，他们人为，对于像容器运行时这样的组件而言，Rust 是
+一种出色的语言，它可以与内核进行低级别的交互。不幸的是，Railcar 已经被遗弃。
+</p>
+
+<p>
+<b>crun</b> 是 Redhat 领导的 OCI 实现，也是<a href="https://github.com/containers">容器项目</a>更广泛的一部分，也是 libpod 的同级产品（稍后会详细介绍）。它是由 C 开发的，性能好且轻量级。
+并且是最早支持 <a href="https://medium.com/nttlabs/cgroup-v2-596d035be4d7">cgroup v2</a> 的运行时。
+</p>
+
+<p>
+<b>rkt</b> 不是一个 OCI 运行时的实现，但这是一个类似低级别的容器运行时。除了 appc 捆绑之外，它支持运行 Docker 和 OCI 镜像，但不能与使用 OCI 运行时
+高级别的组件交互。
+</p>
+
+<p>
+需要注意的是，正如我们在<a href="https://events19.linuxfoundation.org/wp-content/uploads/2017/11/How-Container-Runtime-Matters-in-Kubernetes_-OSS-Kunal-Kushwaha.pdf">本次开源峰会演讲</a>所看到的，低级别的运行时性能仅在容器创建和删除期间才有意义。一旦进程运行之后，容器运行时就消失了。
+</p>
+
+<p>
+<b>沙盒和虚拟化的运行时</b>
+</p>
+
+<p>
+除了本地运行时，还可以在同一个主机内核上运行容器化的进程，有一些 OCI 规范的沙盒化和虚拟化实现：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://gvisor.dev/">gVisor</a></li>
+<li><a href="https://nabla-containers.github.io/">nabla-containers</a></li>
+<li><a href="https://github.com/hyperhq/runv">runV</a>（被非正式弃用）</li>
+<li><a href="https://github.com/clearcontainers">clearcontainers</a>（弃用）</li>
+<li><a href="https://github.com/kata-containers">kata-containers</a></li>
+</ul>
+
+<p>
+<b>gVisor</b> 和 <b>Nabla</b> 是沙盒化的运行时，这样可以进一步的隔离宿主和容器化的进程。取代共享主机内核，容器化的进程在 unikernel 或者内核代理层运行，
+然后代表容器与主机内核进行交互。随着逐渐增多的隔离，这些运行时减少了攻击面，使容器化进程对主机产生恶意影响的可能性降低。
+</p>
+
+<p>
+<b>runV</b>, <b>Clear</b> 和 <b>Kata</b> 是虚拟化的运行时。它们是 OCI 运行时规范的实现，有虚拟机接口（而不是主机内核）支持。runV 和 Clear 已经被废弃，
+他们的特性被 Kata 所吸收。它们都可以运行标准的 OCI 容器镜像，尽管它们通过更强的主机隔离来做到这一点。它们使用标准的 Linux 内核镜像并在虚拟机
+中运行「容器化」的进程。
+</p>
+
+<p>
+与本地运行时相比，沙盒化和虚拟化运行时在整个容器化进程的生命周期中都会对性能产生影响。在沙盒容器中，有一个额外的抽象层：进程运行在沙盒的
+unikernetl/代理上运行，该指令中继到主机内核。在虚拟化的容器中，有一层虚拟化：进程全部在虚拟机中运行，这样会比直接在本地运行慢。将 VM 技术
+（如注重性能的 <a href="https://github.com/firecracker-microvm/firecracker">AWS Firecracker</a>）用作 VM 容器的支持虚拟机类型可以最大程度上减少性能的影响。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7b7cdc1" class="outline-2">
+<h2 id="org7b7cdc1"><span class="section-number-2">6.</span> 容器运行时接口（CRI）</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+当引入 Kubernetes 容器编排时，Docker 运行时硬编码到机器的守护进程中，也就是 <b>kubelet</b> 。但是，随着 Kubernetes 的迅速流行，社区开始有
+替代运行时的需求。
+</p>
+
+<p>
+<b>rkt</b> 通过自定义 rkt 的 kubelet 代码（rktlet）添加了支持。但是这种基于运行时的自定义构建过程不能扩展，并且暴露了 Kubernetes 对抽象运行时
+模型的需求。为了解决这个问题，Hyper，CoreOS，Google 和其它的 Kubernetes 赞助合作商在容器编排的角度上抽象了容器运行时的高级规范：也就是
+<a href="https://kubernetes.io/blog/2016/12/container-runtime-interface-cri-in-kubernetes/">CRI</a>（Container Runtime Interface）。与 CRI 集成（而不是特定的运行时）允许 kubelet 支持多个容器运行时，而无需为每个运行时编译自定义的 kubelet。
+</p>
+
+<p>
+CRI 对 OCI 运行时还存在其它额外的担忧，包括镜像管理和分发，存储，快照，网络（与 CNI 有所不同），等等。CRI 还有在动态云环境中对容器所需的功能，
+与 OCI 运行时不同，OCI 运行时始终专注于在机器上创建容器。此外，CRI 通常委托 OCI 运行时进行实际的容器执行。通过引入 CRI，Kubernetes 的坐着
+以可扩展的方式有效的将 kubelet 与基础容器运行时进行解耦。
+</p>
+
+<p>
+最初的 CRI 实现是 <b>dockershim</b> ，它在 Docker 引擎之前提供了一层约定的抽象。后来 containerd 和 runC 从 Docker 的核心中分离出来，
+后来 Docker 这一层就变得不重要了，因为 containerd 提供了完整的 CRI 实现。
+</p>
+
+<p>
+还有一个 VM CRI， <b>frakti</b> （v1），是第一个 <a href="https://object-storage-ca-ymq-1.vexxhost.net/swift/v1/6e4619c416ff4bd19e1c087f27a43eea/www-assets-prod/presentation-media/hyper-kata-frakti-cri2.pdf">非 Docker CRI 的实现</a>。它是为以下目的创建的，旨在与之配合使用：runV 并提供与本机 OCI 支持的
+CRI 相同的功能，但有 VM。由于 Kata 吸收了 Clear 和 runV 功能集合，因此 frakti 的重要性降低了 —— containerd + kata 是更现代的 frakti + runV。
+</p>
+
+<p>
+目前，CRI 领域有两个主要的参与者：
+</p>
+
+<ul class="org-ul">
+<li><a href="https://github.com/containerd">containerd</a></li>
+<li><a href="https://cri-o.io/">cri-o</a></li>
+</ul>
+
+
+<p>
+<b>containerd</b> 是 Docker 的高级别运行时，在 Moby 项目下开源管理和开发。默认情况下，底层是 runC 。就像其它来自 Docker 容器工具一样，
+它是当前事实上的标准 CRI。它提供了 CRI 的所有核心功能以及更多其它功能<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>，这是我们在 <a href="https://www.capitalone.com/tech/solutions/container-orchestration/">Critical Stack</a> 中的 CRI，我们基于 Kubernetes 构建的
+容器编排平台。containerd 有一个插件的设计 - <a href="https://github.com/containerd/cri">cri-containerd</a> 实现了 CRI，并且存在各种 shims 来将 containerd 和低级别的运行时集合在一起
+（比如 Kata）。
+</p>
+
+<p>
+<b>cri-o</b> 是由 Redhat 领导的一个瘦（slim）的 CRI 实现，专为 Kubernetes 设计。它旨在充当 CRI 和支持的 OCI 运行时的轻量级桥梁。
+相比 containerd 具有较少的外围功能，并委托 libpod 和容器工具项目<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>中的组件进行镜像管理和存储。默认情况下，cri-o 使用 runC 作为它的 OCI，
+但是在最近的 Redhat Fedora 安装（cgroups v2）使用的是 crun。由于它具有完全的 OCI 兼容性，cri-o 与低级别的运行时开箱即用<sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>，
+比如 kata，不需要其它的零部件，而且很小的配置即可。
+</p>
+
+<p>
+这两个 CRIs 都通过本机交互操作或者 shim/插件（包括沙盒和虚拟化实现）支持上述所有的 OCI 运行时的交互操作。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org46f31c4" class="outline-2">
+<h2 id="org46f31c4"><span class="section-number-2">7.</span> 容器引擎</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+你可能注意到了 Docker 不是 CRI 或者 OCI 的实现，而是包含了 containerd 和 runC。事实上，它具有 CRI 或者 OCI 范围之外的其他功能，
+比如镜像构建和签名。那么，它的应用场景在哪些方面呢？
+</p>
+
+<p>
+Docker 的产品叫『Docker 引擎』，并且通常将这些完整的容器工具套件称之为『容器引擎』。除了 Docker 之外，没有一个可执行文件提供如此功能齐全的
+的功能，但是我们可以从容器工具（Container Tools）项目中拼凑出类似的工具。
+</p>
+
+<p>
+Container Tools 项目遵循了 UNIX 小型工具哲学，每个工具只做好一件事情：
+</p>
+
+<ul class="org-ul">
+<li><b>podman</b> - 运行镜像</li>
+<li><b>buildah</b> - 构建镜像</li>
+<li><b>skopeo</b> - 分发镜像</li>
+</ul>
+
+<p>
+实际上，这些是独立 Docker 堆栈的替代方案，包括 cri-o（cri-o 项目替代了最后缺少的一部分）。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgdce262a" class="outline-2">
+<h2 id="orgdce262a"><span class="section-number-2">8.</span> 包装容器运行时</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+至此，我们调查了容器运行时的历史和当前状态。容器是用于打包、隔离和安全性强大的工具，合理使用，它们可以轻松的可靠且一致性的交付软件。
+容器运行时是该生态系统中很小但至关重要的部分，在评估使用场景时，了解各种运行时的历史和意图很重要。希望这里的信息可以帮助你确定本地开发，
+CI/CD 和 Kubernetes 需求组件的上下文。
+</p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://jvns.ca/blog/2016/10/10/what-even-is-a-container/">https://jvns.ca/blog/2016/10/10/what-even-is-a-container/</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://www.redhat.com/en/blog/history-containers">https://www.redhat.com/en/blog/history-containers</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><div id="orga19d2d7" class="figure">
+<p><img src="https://containerd.io/img/architecture.png" alt="architecture.png" />
+</p>
+</div></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://github.com/containers/">https://github.com/containers/</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://github.com/kata-containers/documentation/blob/master/how-to/run-kata-with-k8s.md#cri-o">https://github.com/kata-containers/documentation/blob/master/how-to/run-kata-with-k8s.md#cri-o</a>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2021-02-25 16:55:11 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+</div>
+</body>
+</html>

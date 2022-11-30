@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2022-11-30 Wed 16:14 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>gRPC 负载均衡</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">gRPC 负载均衡</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orge7cabb6">1. 常用负载均衡方法</a>
+<ul>
+<li><a href="#orgf972e43">1.1. 代理模式</a></li>
+<li><a href="#org502cace">1.2. 客户端的均衡</a></li>
+<li><a href="#orgf126a52">1.3. 额外的负载均衡服务</a></li>
+</ul>
+</li>
+<li><a href="#org808d486">2. gRPC Load Balancing 2017</a>
+<ul>
+<li><a href="#org1d7ea8e">2.1. 代理的负载均衡器选项</a></li>
+<li><a href="#orgea5e22b">2.2. 客户端和服务器的负载均衡对比</a></li>
+<li><a href="#org53e8725">2.3. 最佳实践</a></li>
+</ul>
+</li>
+<li><a href="#orgdc0167d">3. Nginx gRPC 支持</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge7cabb6" class="outline-2">
+<h2 id="orge7cabb6"><span class="section-number-2">1.</span> 常用负载均衡方法</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+来自：<a href="https://github.com/grpc/grpc/blob/master/doc/load-balancing.md#approaches-to-load-balancing">https://github.com/grpc/grpc/blob/master/doc/load-balancing.md#approaches-to-load-balancing</a>
+</p>
+</div>
+
+<div id="outline-container-orgf972e43" class="outline-3">
+<h3 id="orgf972e43"><span class="section-number-3">1.1.</span> 代理模式</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+在客户端和服务器之间提供一层服务转发代理，代理需要拥有将 RPC 的请求和响应临时副本，会消耗更多的资源。
+代理模式会增加了 RPC 的延迟。在代理大量的服务（比如存储），会被任务效率低下。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org502cace" class="outline-3">
+<h3 id="org502cace"><span class="section-number-3">1.2.</span> 客户端的均衡</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+把负载均衡的逻辑放在客户端中。客户端自己实现负载均衡策略（比如：轮询，随机分发等）来选择一个后端服务。在这种情况下，客户端通过 name resolution 系统
+中拉取服务器列表。
+</p>
+
+<p>
+这种方法的缺点之一是要书写多语言，多版本的负载均衡器和维护。这些策略比较复杂。一些算法需要服务器和客户端通信来除了满足用户需要请求的 RPC 调用之外，
+还需要额外的支持 RPC 以获得后端服务的运行状态和加载信息等。
+</p>
+
+<p>
+总之，会增大客户端的代码复杂度。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf126a52" class="outline-3">
+<h3 id="orgf126a52"><span class="section-number-3">1.3.</span> 额外的负载均衡服务</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+客户端向负载均衡服务发出请求，负载均衡服务负责维护服务器列表的维护，以及实现各种复杂的负载均衡策略，而且通过健康检测和服务器的负载来合理的处理服务器可用性。
+</p>
+
+<p>
+这种情况下，客户端和服务都很轻松。
+</p>
+
+<blockquote>
+<p>
+第一种代理模式和第三种额外的负载均衡服务，我理解都是在客户端和服务器之间加了一个中间层，都可以称之为代理。只不过实现手段不一样（基于的网络协议）不同。
+第一种是同等协议的转发，比如 HTTP 请求转发；而第三种是基于底层的网络协议转发，以节省资源浪费。
+第三种的例子是 nginx，kubernetes 中的 services，或者 service mash 中的 sidecar。
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org808d486" class="outline-2">
+<h2 id="org808d486"><span class="section-number-2">2.</span> <a href="https://grpc.io/blog/grpc-load-balancing/">gRPC Load Balancing</a> 2017</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org1d7ea8e" class="outline-3">
+<h3 id="org1d7ea8e"><span class="section-number-3">2.1.</span> 代理的负载均衡器选项</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+代理分为：L3/L4（传输层）代理或者 L7（应用层）代理。
+</p>
+
+<ul class="org-ul">
+<li>在传输层的代理中，服务器终止 TCP 连接，然后在后端列表中再选一个。</li>
+<li>应用层（HTTP/2 和 gRPC 桢）只需要简单在客户端连接和后端连接之间复制即可。</li>
+</ul>
+
+<p>
+相比 L7，L3/L4 做的事情少，延迟短，消耗更少的资源。在 L7 中，LB 终止并解析 HTTP/2 协议。LB 可以根据请求内容分配后端，比如根据头部的 Cookie 值与特定的后端关联，
+因此同一个会话的所有请求全部会转发给同一个后端。一旦 LB 选择了一个后端，它会创建一个新的 HTTP/2 连接，然后把客户端收到的 HTTP/2 流转发到所选的后端。使用 HTTP/2
+LB 可以在多个后端之间分配来自同一个客户端的流。
+</p>
+
+<p>
+<i>也就是说，L7 是会同时建立一个与客户端和服务器的流，然后做请求，响应复制转发。</i>
+</p>
+
+<p>
+选择 L3/L4 还是 L7？
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">用户案例</th>
+<th scope="col" class="org-left">推荐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">RPC 在大量连接中负载变化很大</td>
+<td class="org-left">L7</td>
+</tr>
+
+<tr>
+<td class="org-left">存储或者计算亲和力很重要</td>
+<td class="org-left">L7，并使用 cookie 或者类似的东西进行后端请求矫正</td>
+</tr>
+
+<tr>
+<td class="org-left">最大限度的减少代理中的资源利用率（比功能更重要）</td>
+<td class="org-left">L3/L4</td>
+</tr>
+
+<tr>
+<td class="org-left">低延迟容忍</td>
+<td class="org-left">L3/L4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgea5e22b" class="outline-3">
+<h3 id="orgea5e22b"><span class="section-number-3">2.2.</span> 客户端和服务器的负载均衡对比</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+（略），一般不会选择客户端。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org53e8725" class="outline-3">
+<h3 id="org53e8725"><span class="section-number-3">2.3.</span> 最佳实践</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+<b>场景 1</b>
+</p>
+
+<ul class="org-ul">
+<li>客户端和服务器之间流量非常大</li>
+<li>客户端可以被信赖</li>
+</ul>
+
+<p>
+推荐：
+</p>
+
+<ul class="org-ul">
+<li>客户端侧（重）的负载均衡</li>
+<li>带 ZooKeeper/Etcd/Consul/Eureka 的客户端，<a href="https://github.com/makdharma/grpc-zookeeper-lb">ZooKeeper 范例</a></li>
+</ul>
+
+<p>
+<b>场景 2</b>
+</p>
+
+<ul class="org-ul">
+<li>传统逻辑 - 许多客户端连接到代理后面的服务</li>
+<li>客户端和服务器之间需要信任边界</li>
+</ul>
+
+<p>
+推荐：
+</p>
+
+<ul class="org-ul">
+<li>负载均衡代理</li>
+<li>L3/L4 LB + GCLB（如果使用 GCP 的话）</li>
+<li>L3/L4 LB + haproxy - <a href="https://gist.github.com/thpham/114d20de8472b2cef966">配置文件</a></li>
+<li>nginx 不久会支持  <i>事实上 nginx 1.13.10 已经支持了，<a href="https://www.nginx.com/blog/nginx-1-13-10-grpc">https://www.nginx.com/blog/nginx-1-13-10-grpc</a> 在这篇文章发布之后 2018.3</i></li>
+<li>如果需要会话粘滞性 - 使用 Envoy 代理的 L7 LB</li>
+</ul>
+
+<p>
+<b>场景 3</b>
+</p>
+
+<ul class="org-ul">
+<li>微服务架构 - 数据中心中有 N 个 客户端，M 个服务器</li>
+<li>极高的性能要求（低延迟、高流量）</li>
+<li>客户端不受信任</li>
+</ul>
+
+<p>
+推荐：
+</p>
+
+<ul class="org-ul">
+<li>后备负载均衡</li>
+<li>使用 gRPC-LB 协议的客户端 LB，Roll your own implementation (Q2’17), hosted gRPC-LB in the works</li>
+</ul>
+
+<p>
+<b>场景 4</b>
+</p>
+
+<ul class="org-ul">
+<li>已存在服务网格架构，使用 Linkerd 或者 Istio</li>
+</ul>
+
+<p>
+推荐：
+</p>
+
+<ul class="org-ul">
+<li>Service Mesh</li>
+<li>使用 Istio 或者 Envoy 内置的 LB</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdc0167d" class="outline-2">
+<h2 id="orgdc0167d"><span class="section-number-2">3.</span> Nginx gRPC 支持</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+<a href="https://www.nginx.com/blog/nginx-1-13-10-grpc/">https://www.nginx.com/blog/nginx-1-13-10-grpc/</a>
+</p>
+
+<p>
+<a href="https://nginx.org/en/docs/http/ngx_http_grpc_module.html">https://nginx.org/en/docs/http/ngx_http_grpc_module.html</a>
+</p>
+
+
+<div id="org263d6db" class="figure">
+<p><img src="https://www.nginx.com/wp-content/uploads/2018/03/gRPC-nginx-routing.png" alt="gRPC-nginx-routing.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span><a href="https://www.nginx.com/blog/nginx-1-13-10-grpc/">https://www.nginx.com/blog/nginx-1-13-10-grpc/</a></p>
+</div>
+
+<p>
+Nginx 作为 client 和 server 之间的 proxy，跟之前支持 HTTP 和 TCP 一样，对 gRPC 支持已经比较完善了。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2020-05-28 11:17:11 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+</div>
+</body>
+</html>

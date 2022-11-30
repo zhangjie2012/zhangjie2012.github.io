@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GCE 的 Kubernetes 最佳实践系列</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">GCE 的 Kubernetes 最佳实践系列</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgdd71087">1. 使用命令空间进行组织</a>
+<ul>
+<li><a href="#orgaf0f42f">1.1. 服务发现</a></li>
+<li><a href="#org6938912">1.2. 空间的粒度</a></li>
+</ul>
+</li>
+<li><a href="#orgdb0cb89">2. 使用就绪探针和存活探针进行健康检测</a></li>
+<li><a href="#orgfe682f9">3. 资源的 requests 和 limits</a></li>
+<li><a href="#org142ef89">4. 优雅终止</a></li>
+<li><a href="#orgd75542b">5. 外部服务映射</a></li>
+<li><a href="#orgddc02f9">6. 零宕机更新集群</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgdd71087" class="outline-2">
+<h2 id="orgdd71087"><span class="section-number-2">1.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-organizing-with-namespaces">使用命令空间进行组织</a></h2>
+<div class="outline-text-2" id="text-1">
+<p>
+命名空间可以理解成 Kubernetes 集群中的虚拟集群，一个 Kubernetes 集群中可以包含多个命名空间，逻辑上相互隔离；
+</p>
+
+<p>
+一般情况下，Kubernetes 默认会创建三个空间：
+</p>
+
+<ul class="org-ul">
+<li><code>default</code></li>
+<li><code>kube-system</code> 用于 Kubernetes 组件</li>
+<li><code>kube-public</code> 用户公共资源</li>
+</ul>
+
+<p>
+<code>kube-public</code> 通常不怎么使用， <code>kube-system</code> 相对独立，所以你的 services 和 apps 通常会被创建在 <code>default</code> 空间中。
+<code>default</code> 空间没有什么特别的，除了默认会创建还有你不能通过 kubectl 删掉他。适合很小的集群，但是不建议在生产环境中这么用
+（同一个空间中的应用名是不可重复的，所以很容易被别人覆盖掉）。
+</p>
+</div>
+
+<div id="outline-container-orgaf0f42f" class="outline-3">
+<h3 id="orgaf0f42f"><span class="section-number-3">1.1.</span> 服务发现</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Kubernetes 中 Services 使用以下的通用 DNS 模式来暴露他们的端点（endpoints）。类似这样：
+</p>
+
+<pre class="example">
+&lt;Service Name&gt;.&lt;Namespace Name&gt;.svc.cluster.local
+</pre>
+
+<p>
+通常只需要指定 Service 名字，DNS 会自动解析全路径。跨空间的情况下需要携带空间名字，比如： <code>database.test</code> <code>database.production</code> 。
+</p>
+
+<p>
+<b>警告：</b> 如果你创建一个 <code>com</code> 或者 <code>org</code> 这样的顶级域名，然后创建和网站同名的服务，比如 "google" 或者 "reddit" 。这会导致你的服务请求 <code>"google.com"</code>
+会映射到 Service 上。这通常对于测试和代理非常有用，但也很容易破坏集群中的东西。
+</p>
+
+<p>
+*注意：*如果你想隔离命名空间，你应该使用 <a href="https://ahmet.im/blog/kubernetes-network-policy/">网络策略</a> 来实现他。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6938912" class="outline-3">
+<h3 id="org6938912"><span class="section-number-3">1.2.</span> 空间的粒度</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+视公司的阶段和规模而定。大公司下业务比较复杂（技术栈丰富），团队较多，需要配合 CI/CD 工具来使用，使用 RBAC 和资源配合是个好主意。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdb0cb89" class="outline-2">
+<h2 id="orgdb0cb89"><span class="section-number-2">2.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-setting-up-health-checks-with-readiness-and-liveness-probes">使用就绪探针和存活探针进行健康检测</a></h2>
+</div>
+
+<div id="outline-container-orgfe682f9" class="outline-2">
+<h2 id="orgfe682f9"><span class="section-number-2">3.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits">资源的 requests 和 limits</a></h2>
+<div class="outline-text-2" id="text-3">
+<p>
+requests 和 limits 是 Kubernetes 控制 CPU 和内存资源的机制。Requests 的值是 Kubernetes 一定给服务分配到的，分配不到就会提示
+资源不足；Limits 是服务可用的最大资源限制。所以 Limits 的值不能小于 Requests（否则会抛错，容器也运行不起来）。
+</p>
+
+<ul class="org-ul">
+<li>CPU 到达 Limits 之后，程序的性能会受影响，但是不会被终止（因为 CPU 是可压缩的资源）；</li>
+<li>内存到达 Limits 之后，程序会被终止（OOM，因为内存是不可压缩的资源）；</li>
+</ul>
+
+<p>
+命名空间级别也可以配置资源限制：通过 ResourceQuotas 和 LimitRanges。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org142ef89" class="outline-2">
+<h2 id="org142ef89"><span class="section-number-2">4.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-terminating-with-grace">优雅终止</a></h2>
+<div class="outline-text-2" id="text-4">
+<ol class="org-ol">
+<li>Pod 被设置为 "Terminating" 时，会从 Service 中的 endpoints 列表中移出；</li>
+<li>执行 preStop Hook，preStop Hook 可以帮助你做应用程序的优雅关闭；</li>
+<li>SIGTERM 信号发送到 Pod（此时应用程序判断 TERM 信号，然后优雅退出）；</li>
+<li>Kubernetes 等待宽限期（grace period）：Kubernetes 会等待 preStop Hook 和 Pod 的结束（注意：preStop Hook 和 Pod 的终止是并行执行的），
+<ul class="org-ul">
+<li>如果程序在 terminationGracePeriod 之前执行完成，Kubernetes 会立即执行下一步。默认的宽限期是 30s；</li>
+<li>一般情况下使用 preStop Hook 要手动设置 terminationGracePeriod 一起来操作，来增加宽限期；</li>
+</ul></li>
+<li>向 Pod 发送 SIGKILL，移出 Pod。也就是说如果 terminationGracePeriod 内进程没有自动退出，会强制杀掉进程。</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgd75542b" class="outline-2">
+<h2 id="orgd75542b"><span class="section-number-2">5.</span> <a href="https://prog.world/kubernetes-best-practices-mapping-external-services/">外部服务映射</a></h2>
+<div class="outline-text-2" id="text-5">
+<p>
+类似数据库这样的服务通常是运行在集群外部的，在集群内部通常会有这样一个需求：一个服务在不同的环境，有相同的配置，但是却要连到不同
+的数据库上（测试用测试的，生产用生产的，但是他们连接配置的名字希望是一样的）。
+</p>
+
+<p>
+这种需求下，你可以指定将 Service  的 <code>type</code> 指定为 <code>ExternalName</code> 来实现。具体见：
+</p>
+
+<p>
+<a href="https://blog.opskumu.com/kubernetes-ext-service.html">https://blog.opskumu.com/kubernetes-ext-service.html</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgddc02f9" class="outline-2">
+<h2 id="orgddc02f9"><span class="section-number-2">6.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-upgrading-your-clusters-with-zero-downtime">零宕机更新集群</a></h2>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2021-05-11 16:58:20 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+</div>
+</body>
+</html>

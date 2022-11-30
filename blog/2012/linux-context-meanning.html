@@ -1,0 +1,802 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linux 目录结构及其含义</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Linux 目录结构及其含义</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#根目录的意义与内容">1. 根目录(/)的意义与内容</a>
+<ul>
+<li><a href="#bin-目录">1.1. /bin 目录</a></li>
+<li><a href="#boot-目录">1.2. /boot 目录</a></li>
+<li><a href="#cdrom-目录是一个空目录具体含义未知">1.3. /cdrom 目录是一个空目录，具体含义未知</a></li>
+<li><a href="#dev-目录">1.4. /dev 目录</a></li>
+<li><a href="#etc-目录">1.5. /etc 目录</a></li>
+<li><a href="#home-目录">1.6. /home 目录</a></li>
+<li><a href="#lib-目录">1.7. /lib 目录</a></li>
+<li><a href="#media-目录">1.8. /media 目录</a></li>
+<li><a href="#mnt-目录">1.9. /mnt 目录</a></li>
+<li><a href="#opt-目录">1.10. /opt 目录</a></li>
+<li><a href="#root-目录">1.11. /root 目录</a></li>
+<li><a href="#sbin-目录">1.12. /sbin 目录</a></li>
+<li><a href="#srv-目录">1.13. /srv 目录</a></li>
+<li><a href="#tmp-目录">1.14. /tmp 目录</a></li>
+<li><a href="#lostfound-目录">1.15. /lost+found 目录</a></li>
+<li><a href="#proc-目录">1.16. /proc 目录</a></li>
+<li><a href="#sys-目录">1.17. /sys 目录</a></li>
+</ul>
+</li>
+<li><a href="#usr-的意义与内容">2. /usr 的意义与内容</a>
+<ul>
+<li><a href="#usrbin-目录">2.1. /usr/bin 目录</a></li>
+<li><a href="#usrinclude-目录">2.2. /usr/include 目录</a></li>
+<li><a href="#usrlocal-目录">2.3. /usr/local 目录</a></li>
+<li><a href="#usrsbin-目录">2.4. /usr/sbin 目录</a></li>
+<li><a href="#usrshare-目录">2.5. /usr/share 目录</a></li>
+<li><a href="#usrsrc-目录">2.6. /usr/src 目录</a></li>
+</ul>
+</li>
+<li><a href="#var-的意义和内容">3. /var 的意义和内容</a>
+<ul>
+<li><a href="#varcache-目录">3.1. /var/cache 目录</a></li>
+<li><a href="#varlocal-目录">3.2. /var/local 目录</a></li>
+<li><a href="#varlock-目录">3.3. /var/lock 目录</a></li>
+<li><a href="#varlog-目录">3.4. /var/log 目录</a></li>
+<li><a href="#varmail-目录">3.5. /var/mail 目录</a></li>
+<li><a href="#varrun-目录">3.6. /var/run 目录</a></li>
+<li><a href="#varspool-目录">3.7. /var/spool 目录</a></li>
+</ul>
+</li>
+<li><a href="#selinux-的意义和内容">4. /selinux 的意义和内容</a></li>
+</ul>
+</div>
+</div>
+<p>
+昨天在看《鸟哥的 Linux 私房菜(第三版)》 6.3 节《Linux 目录配置》感触很大，突然间理解了很多东西。
+作为一个 Linux 新手，总是不理解 Linux 的目录结构，以及每个目录下该放置那些文件，文件的含义的等等。
+本文不是权威的方式来表述，可能在一些理解上会有偏差，不适合老手，只适合刚接触 Linux 不久，对目录结构略感迷茫的新手。
+</p>
+
+<p>
+本文以《鸟哥的 Linux 私房菜(第三版)》为准，结合我的 Ubuntu 11.04 目录结构 ，加上我的一些理解来表述。
+</p>
+
+<hr />
+
+<p>
+首先介绍一下 Linux 目录配置标准: FHS。 FHS: Filesystem Hierarchy Standard.
+</p>
+
+<p>
+建立这个标准的主要目的是希望让用户可以了解到已安装软件通常放置于那个目录下，所以希望独立的软件开发商、
+操作系统制作者以及想要维护系统的用户，都能够遵循 FHS 标准。
+</p>
+
+<div id="outline-container-根目录的意义与内容" class="outline-2">
+<h2 id="根目录的意义与内容"><span class="section-number-2">1.</span> 根目录(/)的意义与内容</h2>
+<div class="outline-text-2" id="text-根目录的意义与内容">
+<p>
+根目录是整个 Linux 系统最重要的一个目录，所有的目录都是由根目录衍生出来的，根目录也与开机、还原、系统修复等操作有关。
+</p>
+
+<p>
+FHS 标准建议: 根目录(<code>/</code>)所在分区应该越小越好，且应用程序所安装的软件最好不要与根目录放在同一个分区内，保持根目录越小越好。
+如此不但性能较好，根目录所在的文件系统也较不容易发生问题。查看 (<code>/</code>) 的文件结构如下:
+</p>
+
+
+<div id="orga79172e" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/0.png" alt="0.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-bin-目录" class="outline-3">
+<h3 id="bin-目录"><span class="section-number-3">1.1.</span> /bin 目录</h3>
+<div class="outline-text-3" id="text-bin-目录">
+<p>
+放置内容: 系统的可执行文件目录，Linux 系统中有很多放置可执行文件的目录。
+但 <code>/bin</code> 比较特殊。=/bin= 放置的是在单用户维护模式下还能够被操作的命令。在 <code>/bin</code> 下面的命令可以被 root 与一般帐号使用。
+下面列出 /bin 下文件与目录。
+</p>
+
+
+<div id="orgb5cd370" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/11.png" alt="11.png" />
+</p>
+</div>
+
+<p>
+可以发现常用的 cp, grep, ls, dir, more, rm, cat 等命令都在 /bin 下。
+</p>
+</div>
+</div>
+
+<div id="outline-container-boot-目录" class="outline-3">
+<h3 id="boot-目录"><span class="section-number-3">1.2.</span> /boot 目录</h3>
+<div class="outline-text-3" id="text-boot-目录">
+<p>
+放置内容: 这个目录下放置开机会使用到的文件，包括 Linux 内核文件以及开机菜单与开机所配置文件等。
+</p>
+
+
+<div id="orgef23016" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/2.png" alt="2.png" />
+</p>
+</div>
+
+<p>
+<code>/grub</code> 是一个目录，继续查看 <code>/grub</code> 目录内容:
+</p>
+
+
+<div id="org67b499e" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/3.png" alt="3.png" />
+</p>
+</div>
+
+<p>
+还有很多以 .mod .img .o的文件，我没有全部列出来。我猜测 /grub 文件应该是 Linux 开机引导程序。
+</p>
+</div>
+</div>
+
+<div id="outline-container-cdrom-目录是一个空目录具体含义未知" class="outline-3">
+<h3 id="cdrom-目录是一个空目录具体含义未知"><span class="section-number-3">1.3.</span> /cdrom 目录是一个空目录，具体含义未知</h3>
+<div class="outline-text-3" id="text-cdrom-目录是一个空目录具体含义未知">
+</div>
+</div>
+
+<div id="outline-container-dev-目录" class="outline-3">
+<h3 id="dev-目录"><span class="section-number-3">1.4.</span> /dev 目录</h3>
+<div class="outline-text-3" id="text-dev-目录">
+<p>
+放置内容: 在 Linux 系统上，任何设备与接口都是以文件的形式存在于这个目录中。访问这些文件，就相当于访问某个设备。
+查看目录内容:
+</p>
+
+
+<div id="orge5d7086" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/4.png" alt="4.png" />
+</p>
+</div>
+
+<p>
+硬盘，光驱，鼠标，键盘 都是以文件的方式放在这个目录下。
+</p>
+</div>
+</div>
+
+<div id="outline-container-etc-目录" class="outline-3">
+<h3 id="etc-目录"><span class="section-number-3">1.5.</span> /etc 目录</h3>
+<div class="outline-text-3" id="text-etc-目录">
+<p>
+放置内容: 系统的主要配置文件几乎都放置在这个目录下。一般来说，这个目录下的各个文件属性是可以让一般用户查阅的，
+但是只有 root 有权利修改。 FHS 建议不要放置可执行文件在这个目录中。查看目录内容:
+</p>
+
+
+<div id="org5497949" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/5.png" alt="5.png" />
+</p>
+</div>
+
+<p>
+一些重要的目录有:
+</p>
+
+<ul class="org-ul">
+<li><code>/etc/init.d/</code>: 所有服务的默认启动脚本都是放置在这里的。</li>
+<li><code>/etc/xinetd.d/</code>: 这就是所谓的的 super daemon
+管理的各项服务的配置文件目录。但是在我的 ubuntu <code>/etc/</code> 下并无此文件。</li>
+<li><code>/etc/X11/</code>: 与 X Window 有关的各种配置文件都在这里。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-home-目录" class="outline-3">
+<h3 id="home-目录"><span class="section-number-3">1.6.</span> /home 目录</h3>
+<div class="outline-text-3" id="text-home-目录">
+<p>
+放置内容: 系统默认的用户主文件夹。每创建一个一般用户帐号，默认的用户主文件夹都会规范到这里来。
+</p>
+</div>
+</div>
+
+<div id="outline-container-lib-目录" class="outline-3">
+<h3 id="lib-目录"><span class="section-number-3">1.7.</span> /lib 目录</h3>
+<div class="outline-text-3" id="text-lib-目录">
+<p>
+放置内容: 放置开机时会用到的函数库，以及在 /bin 或 /sbin 下面的命令会调用的函数。 查看目录内容:
+</p>
+
+
+<div id="org468d7b1" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/6.png" alt="6.png" />
+</p>
+</div>
+
+<p>
+<code>/lib/modules/</code> 放置内核相关的模块(驱动程序)
+</p>
+</div>
+</div>
+
+<div id="outline-container-media-目录" class="outline-3">
+<h3 id="media-目录"><span class="section-number-3">1.8.</span> /media 目录</h3>
+<div class="outline-text-3" id="text-media-目录">
+<p>
+放置内容: 放置可删除的设备。包括软盘、光盘、DVD 等设备都在暂时挂载于此。
+</p>
+</div>
+</div>
+
+<div id="outline-container-mnt-目录" class="outline-3">
+<h3 id="mnt-目录"><span class="section-number-3">1.9.</span> /mnt 目录</h3>
+<div class="outline-text-3" id="text-mnt-目录">
+<p>
+放置内容: 挂载某些额外的设备
+</p>
+</div>
+</div>
+
+<div id="outline-container-opt-目录" class="outline-3">
+<h3 id="opt-目录"><span class="section-number-3">1.10.</span> /opt 目录</h3>
+<div class="outline-text-3" id="text-opt-目录">
+<p>
+放置内容: 第三方软件放置的目录。如果你想自行安装额外的软件(非原本的 distribution 提供的)，那么也能够将你的软件安装到这里来。
+</p>
+
+<p>
+在我的 ubuntu 下， <code>/opt/</code> 中只有 birl 一个文件，因为我安装了一个 birl。
+</p>
+</div>
+</div>
+
+<div id="outline-container-root-目录" class="outline-3">
+<h3 id="root-目录"><span class="section-number-3">1.11.</span> /root 目录</h3>
+<div class="outline-text-3" id="text-root-目录">
+<p>
+放置内容: 系统管理员(root)的主文件夹。之所以放在这里，是因为如果进入单用户维护模式而仅挂载根目录时，该文件能够拥有
+root 的主文件夹，所以希望 root 的主文件夹与根目录放置在同一个分区中。 只有 root 权限才可以访问 <code>/root</code> 目录。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sbin-目录" class="outline-3">
+<h3 id="sbin-目录"><span class="section-number-3">1.12.</span> /sbin 目录</h3>
+<div class="outline-text-3" id="text-sbin-目录">
+<p>
+放置内容: 开机过程中所需要的，里面包括开机、修复、还原系统所需要的命令。
+某些服务器软件程序，一般放置到 <code>/usr/sbin/</code> 当中。本机自行安装的软件所产生的系统执行文件，则放置到 <code>/usr/local/sbin</code> 中。
+</p>
+
+<p>
+查看 /sbin 目录:
+</p>
+
+
+<div id="org9e10a92" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/7.png" alt="7.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-srv-目录" class="outline-3">
+<h3 id="srv-目录"><span class="section-number-3">1.13.</span> /srv 目录</h3>
+<div class="outline-text-3" id="text-srv-目录">
+<p>
+放置内容: "service" 的缩写，是一些网络服务启动后，这些服务所需要取用的数据目录。常见的服务例如 WWW，FTP 等。
+</p>
+</div>
+</div>
+
+<div id="outline-container-tmp-目录" class="outline-3">
+<h3 id="tmp-目录"><span class="section-number-3">1.14.</span> /tmp 目录</h3>
+<div class="outline-text-3" id="text-tmp-目录">
+<p>
+放置内容: 一般用户或者是正在执行的程序暂时放置文件的地方。这个目录任何人都可以访问，所以需要定期清理一下。
+查看 <code>/tmp/</code> 目录:
+</p>
+
+
+<div id="org88595b7" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/8.png" alt="8.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-lostfound-目录" class="outline-3">
+<h3 id="lostfound-目录"><span class="section-number-3">1.15.</span> /lost+found 目录</h3>
+<div class="outline-text-3" id="text-lostfound-目录">
+<p>
+放置内容: 放置 <code>ext2/ext3</code> 文件系统格式才会产生的一个目录，目的在于当文件系统发生错误时，将一些丢失的片段放置到这个目录下。
+这个目录通常会放置在分区的最顶层存在。我的 ubuntu 文件格式为 ext4， <code>/lost+found/</code> 目录中无内容
+</p>
+
+<p>
+(不知道这样的解释对不对?)
+</p>
+</div>
+</div>
+
+<div id="outline-container-proc-目录" class="outline-3">
+<h3 id="proc-目录"><span class="section-number-3">1.16.</span> /proc 目录</h3>
+<div class="outline-text-3" id="text-proc-目录">
+<p>
+放置内容: 这个目录本身是一个虚拟文件系统(virtual filesystem)。它放置的数据都是在内存中，例如系统内核、进程、外部设备的状态及网络状态等。
+目录下所有数据都是在内存中，所以本身不占任何硬盘空间。 查看 <code>/proc</code> 目录:
+</p>
+
+
+<div id="org752d2b8" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/8.png" alt="8.png" />
+</p>
+</div>
+
+<p>
+比较重要的有 <code>/proc/dma</code> , <code>/proc/interrupts</code> , <code>/proc/cpuinfo</code> 等。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sys-目录" class="outline-3">
+<h3 id="sys-目录"><span class="section-number-3">1.17.</span> /sys 目录</h3>
+<div class="outline-text-3" id="text-sys-目录">
+<p>
+放置内容: 虚拟文件系统，主要记录与内核相关的信息，包括目前已加载的内核模块与内核检测到的硬件设备信息，同样不占硬盘容量。
+查看内容:
+</p>
+
+
+<div id="orge4fdea7" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/10.png" alt="10.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-usr-的意义与内容" class="outline-2">
+<h2 id="usr-的意义与内容"><span class="section-number-2">2.</span> /usr 的意义与内容</h2>
+<div class="outline-text-2" id="text-usr-的意义与内容">
+<p>
+usr: UNIX Software Resource. "Unix 操作系统软件资源" 所放置的目录，不是用户数据。
+</p>
+
+<p>
+FHS 建议所有的软件开发者应该将他们的数据合理的放置到这个目录下的子目录，而不是自行新建该软件自己独立的目录。
+</p>
+
+<p>
+查看 /usr 目录结构:
+</p>
+
+
+<div id="org3fa2fbd" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/111.png" alt="111.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-usrbin-目录" class="outline-3">
+<h3 id="usrbin-目录"><span class="section-number-3">2.1.</span> /usr/bin 目录</h3>
+<div class="outline-text-3" id="text-usrbin-目录">
+<p>
+放置内容: 绝大部分的用户可使用命令都放在这里。和 <code>/bin</code> 的不同之处在于是否与开机过程有关。
+</p>
+
+
+<div id="org1712d0c" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/12.png" alt="12.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-usrinclude-目录" class="outline-3">
+<h3 id="usrinclude-目录"><span class="section-number-3">2.2.</span> /usr/include 目录</h3>
+<div class="outline-text-3" id="text-usrinclude-目录">
+<p>
+放置内容: C/C++ 等程序设计语言(header)与包含文件(include) 放置处，当我们以 tarball 方式安装某些数据时，会使用到里头的许多包含文件。
+</p>
+
+<p>
+查看内容:
+</p>
+
+
+<div id="org4ce331c" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/13.png" alt="13.png" />
+</p>
+</div>
+
+<p>
+看到这，很多做 C/C++ 开发的程序员会不会有种豁然开朗的感觉呢，至少我是这样。
+</p>
+</div>
+</div>
+
+<div id="outline-container-usrlocal-目录" class="outline-3">
+<h3 id="usrlocal-目录"><span class="section-number-3">2.3.</span> /usr/local 目录</h3>
+<div class="outline-text-3" id="text-usrlocal-目录">
+<p>
+放置内容: 系统管理员在本机自行安装自己下载的软件，建议安装到此目录，这样方便管理。 <code>/local</code> 中也包括 bin, etc, include, lib 等子目录
+</p>
+</div>
+</div>
+
+<div id="outline-container-usrsbin-目录" class="outline-3">
+<h3 id="usrsbin-目录"><span class="section-number-3">2.4.</span> /usr/sbin 目录</h3>
+<div class="outline-text-3" id="text-usrsbin-目录">
+<p>
+放置内容: 非系统正常运行所需要的系统命令。最常见的就是某些网络服务器软件的服务命令(daemon)。
+</p>
+</div>
+</div>
+
+<div id="outline-container-usrshare-目录" class="outline-3">
+<h3 id="usrshare-目录"><span class="section-number-3">2.5.</span> /usr/share 目录</h3>
+<div class="outline-text-3" id="text-usrshare-目录">
+<p>
+放置内容: 共享文件，在这个目录下放置的数据几乎是不分硬件架构均可读的数据。
+</p>
+
+<p>
+举两个例子:
+</p>
+
+<ol class="org-ol">
+<li><code>/usr/share/emacs/site-lisp</code> 是 emacs 加载目录。</li>
+<li>如果你的系统是双系统，假如要修改默认启动项，只需修改 <code>/usr/share/grub/default/grub</code> 文件。</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-usrsrc-目录" class="outline-3">
+<h3 id="usrsrc-目录"><span class="section-number-3">2.6.</span> /usr/src 目录</h3>
+<div class="outline-text-3" id="text-usrsrc-目录">
+<p>
+放置内容: src for source ，一般源码放置到这里。内核源码一般放置到 <code>/usr/src/linux/</code> 目录下。
+</p>
+
+<p>
+查看内容:
+</p>
+
+
+<div id="orgfe9309c" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/14.png" alt="14.png" />
+</p>
+</div>
+
+<p>
+想必不同的 <code>linux-header-*</code> 是由于我升级系统造成的。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-var-的意义和内容" class="outline-2">
+<h2 id="var-的意义和内容"><span class="section-number-2">3.</span> /var 的意义和内容</h2>
+<div class="outline-text-2" id="text-var-的意义和内容">
+<p>
+如果 /usr 是安装时会占用较大硬盘容量的目录，那么 /var 就是在系统后才会渐渐占用硬盘容量的目录。
+因为 /var 主要针对常态性变动的文件，包括缓存，登录文件以及软件运行所产生的文件。
+</p>
+
+<p>
+查看目录:
+</p>
+
+
+<div id="org3a1f296" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/linux-content-meanning/15.png" alt="15.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-varcache-目录" class="outline-3">
+<h3 id="varcache-目录"><span class="section-number-3">3.1.</span> /var/cache 目录</h3>
+<div class="outline-text-3" id="text-varcache-目录">
+<p>
+放置内容: 应用程序本身运行过程中会产生的一些暂存文件。
+</p>
+</div>
+</div>
+
+<div id="outline-container-varlocal-目录" class="outline-3">
+<h3 id="varlocal-目录"><span class="section-number-3">3.2.</span> /var/local 目录</h3>
+<div class="outline-text-3" id="text-varlocal-目录">
+<p>
+放置内容: 程序本身执行过程中，需要使用的数据库文件放置的目录。
+</p>
+</div>
+</div>
+
+<div id="outline-container-varlock-目录" class="outline-3">
+<h3 id="varlock-目录"><span class="section-number-3">3.3.</span> /var/lock 目录</h3>
+<div class="outline-text-3" id="text-varlock-目录">
+<p>
+放置内容: 某些设备或者是文件资源一次只能被一个应用程序所使用，如果同时有两个程序使用该设备时，就可能产生一些错误的状况，
+因此就要将该设备上锁(lock)，以确保该设备只会给单一软件所使用。
+</p>
+</div>
+</div>
+
+<div id="outline-container-varlog-目录" class="outline-3">
+<h3 id="varlog-目录"><span class="section-number-3">3.4.</span> /var/log 目录</h3>
+<div class="outline-text-3" id="text-varlog-目录">
+<p>
+放置内容: 登录文件。
+</p>
+</div>
+</div>
+
+<div id="outline-container-varmail-目录" class="outline-3">
+<h3 id="varmail-目录"><span class="section-number-3">3.5.</span> /var/mail 目录</h3>
+<div class="outline-text-3" id="text-varmail-目录">
+<p>
+放置内容: 个人电子邮件信箱的目录，不过这个目录也被放置到 <code>/var/spool/mail/</code> 目录中。通常这两个文件的互为链接文件
+</p>
+</div>
+</div>
+
+<div id="outline-container-varrun-目录" class="outline-3">
+<h3 id="varrun-目录"><span class="section-number-3">3.6.</span> /var/run 目录</h3>
+<div class="outline-text-3" id="text-varrun-目录">
+<p>
+放置内容: 某些程序或者服务启动后，会将他们的 PID 放置在这个目录下。
+</p>
+</div>
+</div>
+
+<div id="outline-container-varspool-目录" class="outline-3">
+<h3 id="varspool-目录"><span class="section-number-3">3.7.</span> /var/spool 目录</h3>
+<div class="outline-text-3" id="text-varspool-目录">
+<p>
+放置内容: 一些队列数据，这些数据使用后一般会被删除。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-selinux-的意义和内容" class="outline-2">
+<h2 id="selinux-的意义和内容"><span class="section-number-2">4.</span> /selinux 的意义和内容</h2>
+<div class="outline-text-2" id="text-selinux-的意义和内容">
+<p>
+同样放置内存中的信息，不占用任何硬盘容量。 <code>/selinux</code> 是 Secure Enhance Linux 的执行目录，而 SELinux 是 Linux
+内核的重要外挂功能之一，它可以作为具体权限的管理，主要针对程序(尤其是网络程序)的访问权限。
+</p>
+
+<p>
+本文完，如有疑惑请查看 《鸟哥的 linux 私房菜(第三版)》 P152 。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2012-02-03 15:34:19 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+</div>
+</body>
+</html>

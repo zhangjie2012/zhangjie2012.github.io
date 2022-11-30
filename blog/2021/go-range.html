@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Go for &#x2026; range</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Go for &#x2026; range</h1>
+<p>
+今天写代码发现一个 bug：数据回写到 MySQL 的时候，第一条数据被重复写了，后面的数据没写进入。最后定位到：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">for</span> <span style="color: #00538b;">_</span>, <span style="color: #00538b;">r</span> := <span style="color: #5317ac;">range</span> recvs <span style="color: #000000;">{</span>
+    ib = ib.<span style="color: #721045;">Values</span><span style="color: #a8007f;">(</span>&amp;lastId, &amp;e.Fingerprint, &amp;e.Version, &amp;r<span style="color: #a8007f;">)</span>
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+操作数据库使用了 <a href="https://github.com/Masterminds/squirrel">squirrel</a>， <code>Values</code> 的参数是 <code>interface{}</code> ，所以我下意识的用了地址。我把取地址 <code>&amp;</code> 去掉之后，
+就正常了。
+</p>
+
+<p>
+然后就开始怀疑， <b>难道 Go range 中的第二个参数每次的地址都是一样的？</b> 那不就是简单的赋值操作，做个浅拷贝？
+</p>
+
+<p>
+写了一段测试代码：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5317ac;">package</span> main
+
+<span style="color: #5317ac;">import</span> <span style="color: #2544bb;">"fmt"</span>
+
+<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span> <span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
+    <span style="color: #00538b;">arr</span> := <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">int</span><span style="color: #a8007f;">{</span>1, 2, 3, 4, 5, 6<span style="color: #a8007f;">}</span>
+
+    <span style="color: #5317ac;">for</span> <span style="color: #00538b;">i</span>, <span style="color: #00538b;">a</span> := <span style="color: #5317ac;">range</span> arr <span style="color: #a8007f;">{</span>
+        fmt.<span style="color: #721045;">Println</span><span style="color: #005f88;">(</span>&amp;a, &amp;arr<span style="color: #904200;">[</span>i<span style="color: #904200;">]</span><span style="color: #005f88;">)</span>
+    <span style="color: #a8007f;">}</span>
+<span style="color: #000000;">}</span>
+
+</pre>
+</div>
+
+<p>
+输出：
+</p>
+
+<pre class="example">
+0xc0000140f0 0xc000018090
+0xc0000140f0 0xc000018098
+0xc0000140f0 0xc0000180a0
+0xc0000140f0 0xc0000180a8
+0xc0000140f0 0xc0000180b0
+0xc0000140f0 0xc0000180b8
+</pre>
+
+<p>
+还真是。查了一下官方文档<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
+</p>
+
+<blockquote>
+<ol class="org-ol">
+<li>For an array, pointer to array, or slice value a, the index iteration values are produced in increasing order, starting at element index 0.
+If at most one iteration variable is present, the range loop produces iteration values from 0 up to len(a)-1 and does not index
+into the array or slice itself. For a nil slice, the number of iterations is 0.</li>
+<li>For a string value, the "range" clause iterates over the Unicode code points in the string starting at byte index 0.
+On successive iterations, the index value will be the index of the first byte of successive UTF-8-encoded code points
+in the string, and the second value, of type rune, will be the value of the corresponding code point.
+If the iteration encounters an invalid UTF-8 sequence, the second value will be 0xFFFD, the Unicode replacement character,
+and the next iteration will advance a single byte in the string.</li>
+<li>The iteration order over maps is not specified and is not guaranteed to be the same from one iteration to the next.
+If a map entry that has not yet been reached is removed during iteration, the corresponding iteration value will not be produced.
+If a map entry is created during iteration, that entry may be produced during the iteration or may be skipped.
+The choice may vary for each entry created and from one iteration to the next. If the map is nil, the number of iterations is 0.</li>
+<li>For channels, the iteration values produced are the successive values sent on the channel until the channel is closed.
+If the channel is nil, the range expression blocks forever.</li>
+</ol>
+
+<p>
+The iteration variables may be declared by the "range" clause using a form of short variable declaration (:=).
+In this case their types are set to the types of the respective iteration values and their scope is the block of the "for" statement;
+they are re-used in each iteration. If the iteration variables are declared outside the "for" statement,
+after execution their values will be those of the last iteration.
+</p>
+</blockquote>
+
+<p>
+也就是说对于 array, slice 这种只是一个简单的赋值 <code>:=</code> 然后变量复用。我本以为是一个迭代器，迭代器里引用了变量的地址。
+没想到是个这么原始的实现。
+</p>
+
+<p>
+既然这样的话，对于比较大的结构体，最好在数组中存放指针。如 <code>[]*BigStruct</code> ，或者在遍历的时候，通过索引访问（使用第一个参数，忽略第二个参数）。
+</p>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+<a href="https://golang.org/ref/spec#For_statements">https://golang.org/ref/spec#For_statements</a>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2021-01-20 15:58:58 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+</div>
+</body>
+</html>

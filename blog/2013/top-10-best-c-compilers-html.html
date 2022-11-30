@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
+<head>
+<!-- 2022-11-30 Wed 16:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>[译]10个最佳的C/C++编译器和IDEs</title>
+<meta name="author" content="JerryZhang" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">[译]10个最佳的C/C++编译器和IDEs</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#声明">1. 声明</a></li>
+<li><a href="#译文">2. 译文</a>
+<ul>
+<li><a href="#eclipse">2.1. Eclipse</a></li>
+<li><a href="#netbeans">2.2. NetBeans</a></li>
+<li><a href="#codeblocks">2.3. Code::Blocks</a></li>
+<li><a href="#digital-mars">2.4. Digital Mars</a></li>
+<li><a href="#c-free">2.5. C Free</a></li>
+<li><a href="#sky-ide">2.6. Sky IDE</a></li>
+<li><a href="#dev-c">2.7. Dev C++</a></li>
+<li><a href="#codelite">2.8. CodeLite</a></li>
+<li><a href="#mingw">2.9. MinGW</a></li>
+<li><a href="#ultimate">2.10. Ultimate++:</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-声明" class="outline-2">
+<h2 id="声明"><span class="section-number-2">1.</span> 声明</h2>
+<div class="outline-text-2" id="text-声明">
+<ul class="org-ul">
+<li>来源：<a href="http://www.tricksmode.com/2013/02/Top-10-Best-C-Compilers.html">http://www.tricksmode.com/2013/02/Top-10-Best-C-Compilers.html</a></li>
+<li>翻译仅以技术学习和交流为目的，如需转载请标明本文链接并全文转载。</li>
+<li>水平有限，如有翻译不当，欢迎探讨、批评与指正。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-译文" class="outline-2">
+<h2 id="译文"><span class="section-number-2">2.</span> 译文</h2>
+<div class="outline-text-2" id="text-译文">
+<p>
+在今时的计算环境(computing environment)中，编程语言扮演者着一个很重要的角色。编程语言的良好运用，可以让 PC 硬件配置真实的利用起来。
+有许多的编程语言都是从最初的计算机中衍生出来的。其中的一些已经不再能够满足现在的计算环境，但是有一些仍旧可以毅力不倒。
+</p>
+
+<p>
+C 和 C++ 就是那个群体中的两个。C/C++ 是强大的编程语言，每一个程序员都应该知道它们，这两门语言是其他编程语言的基础。
+除此之外，这些编程语言也广泛的应用在与硬件交互上。任何追求效率的程序员和编程语言经常依赖于编程环境（使用编译器或者IDEs进行编码）。
+</p>
+
+<p>
+对于编程新手来说，各种不同的的 C/C++ 编译器或者 IDE ，都可以为他们提供友好的编码环境。为此，我们今天给大家分享 10 个最佳的 C/C++ 编译器和
+IDEs，并说明它们所提供的特性。按照你的喜好进行选择，他们可以让你的编码工作更加简单有效。
+</p>
+</div>
+
+<div id="outline-container-eclipse" class="outline-3">
+<h3 id="eclipse"><span class="section-number-3">2.1.</span> Eclipse</h3>
+<div class="outline-text-3" id="text-eclipse">
+
+<div id="org7c1ff67" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2013/10-best-compilers/eclipse.jpeg" alt="eclipse.jpeg" />
+</p>
+</div>
+
+<p>
+Eclipse IDE 是一个开源的编码工具，为 C/C++ 程序员提供许多高级的功能。包括强大的语法高亮、调试、自动代码完成。
+Eclipse 分别支持 Windows、Linux 和 Mac OS X 平台。对新手来说，它使得编码变的更简单了。
+</p>
+
+<p>
+下载链接：<a href="http://www.eclipse.org/downloads/moreinfo/c.php">http://www.eclipse.org/downloads/moreinfo/c.php</a>
+</p>
+
+<p>
+使用 Eclipse 需要安装 Java 运行时，从下面的链接下载 JRE：
+</p>
+
+<p>
+<a href="http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html">http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-netbeans" class="outline-3">
+<h3 id="netbeans"><span class="section-number-3">2.2.</span> NetBeans</h3>
+<div class="outline-text-3" id="text-netbeans">
+
+<div id="orga2206ad" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2013/10-best-compilers/netbeans.png" alt="netbeans.png" />
+</p>
+</div>
+
+<p>
+NetBeans 是另外一个开源的 IDE，有代码高亮，自动格式匹配，单元测试，代码助手（code assistance）等特性。
+</p>
+
+<p>
+下载链接：<a href="https://netbeans.org/downloads/index.html">https://netbeans.org/downloads/index.html</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-codeblocks" class="outline-3">
+<h3 id="codeblocks"><span class="section-number-3">2.3.</span> Code::Blocks</h3>
+<div class="outline-text-3" id="text-codeblocks">
+
+<div id="org47f9dfc" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2013/10-best-compilers/codeblocks.png" alt="codeblocks.png" />
+</p>
+</div>
+
+<p>
+Code::Blocks 是一个开源的，跨平台并且可扩展的 C++ IDE。CB 的最大特性是，按照所需，你可以通过可用插件来扩展它。
+</p>
+
+<p>
+下载链接：<a href="http://www.codeblocks.org/downloads">http://www.codeblocks.org/downloads</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-digital-mars" class="outline-3">
+<h3 id="digital-mars"><span class="section-number-3">2.4.</span> Digital Mars</h3>
+<div class="outline-text-3" id="text-digital-mars">
+<p>
+Digital Mars 是另外一个免费的 C/C++ 编译器，包括命令行和 GUI 两个版本，相比其他的编译器， Digital Mars 具有更快的编译和链接速度。
+</p>
+
+<p>
+下载链接：<a href="http://www.digitalmars.com/">http://www.digitalmars.com/</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-c-free" class="outline-3">
+<h3 id="c-free"><span class="section-number-3">2.5.</span> C Free</h3>
+<div class="outline-text-3" id="text-c-free">
+
+<div id="org28bae1b" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2013/10-best-compilers/c-free.gif" alt="c-free.gif" />
+</p>
+</div>
+
+<p>
+C free 是一个传统的 turbo C 编译器的替代品。它是一个小的 C IDE，但是具有许多优秀的特性。值得注意的是 C free 不是一个免费的 IDE，
+不过你可以免费的使用30天。
+</p>
+
+<p>
+下载链接：<a href="http://www.programarts.com/cfree_en/download.htm">http://www.programarts.com/cfree_en/download.htm</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-sky-ide" class="outline-3">
+<h3 id="sky-ide"><span class="section-number-3">2.6.</span> Sky IDE</h3>
+<div class="outline-text-3" id="text-sky-ide">
+
+<div id="orgc96d1de" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2013/10-best-compilers/sky_ide.png" alt="sky_ide.png" />
+</p>
+</div>
+
+<p>
+Sky IDE 是一个多编译(multi-compiler)，多视窗(multi-view)，多工程(multi-project)，和多层面(multi-profile)的免费 C++ IDE。
+Sky IDE 也支持其他的编程语言比如，java, php 和 JavaScript。它具有强大的文本处理能力，颜色高亮，自动匹配，行追踪（line tracker）。
+</p>
+
+<p>
+下载链接：<a href="http://www.download.hr/software-skyide.html">http://www.download.hr/software-skyide.html</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-dev-c" class="outline-3">
+<h3 id="dev-c"><span class="section-number-3">2.7.</span> Dev C++</h3>
+<div class="outline-text-3" id="text-dev-c">
+
+<div id="org3699065" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2013/10-best-compilers/dev_cpp.png" alt="dev_cpp.png" />
+</p>
+</div>
+
+<p>
+Dev C++ 使用 MinGW (gcc端口)作为它的编译器。Dev C++ 也支持 C 语言，它的特性包括，基于GCC，语法高亮，自动代码补全，工程管理和打印输出。
+</p>
+
+<p>
+下载链接：<a href="http://www.bloodshed.net/dev/devcpp.html">http://www.bloodshed.net/dev/devcpp.html</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-codelite" class="outline-3">
+<h3 id="codelite"><span class="section-number-3">2.8.</span> CodeLite</h3>
+<div class="outline-text-3" id="text-codelite">
+
+<div id="orgb23064a" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2013/10-best-compilers/codelite.png" alt="codelite.png" />
+</p>
+</div>
+
+<p>
+CodeLite有点像 Code::Blocks，也是开源、跨平台的 C/C++ IDE。可以在 Windows，Linux 和 Mac OS 平台下工作。
+</p>
+
+<p>
+下载链接：<a href="http://codelite.org/LiteEditor/Download">http://codelite.org/LiteEditor/Download</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-mingw" class="outline-3">
+<h3 id="mingw"><span class="section-number-3">2.9.</span> MinGW</h3>
+<div class="outline-text-3" id="text-mingw">
+<p>
+MinGW 提供一系列的编码工具集，和本地的应用程序相匹配，包含的 GCC 端口包括 C、C++、ADA 和 Fortan 编译器。它是一个开源的编译器。
+</p>
+
+<p>
+下载链接：<a href="http://sourceforge.net/projects/mingw/files/">http://sourceforge.net/projects/mingw/files/</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-ultimate" class="outline-3">
+<h3 id="ultimate"><span class="section-number-3">2.10.</span> Ultimate++:</h3>
+<div class="outline-text-3" id="text-ultimate">
+<p>
+U++ 是一个跨平台的 RAD IDE，主要针对 C++ 程序员的工作效率。它包括了一套 GUI 和 SQL 库。U++ 可以和 GCC，Virtual C++ ，MingGW一起工作。
+</p>
+
+<p>
+下载链接：<a href="http://www.ultimatepp.org/www$uppweb$download$en-us.html">http://www.ultimatepp.org/www$uppweb$download$en-us.html</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2013-05-14 00:00:00 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+</div>
+</body>
+</html>
