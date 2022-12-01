@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-11-30 Wed 16:13 -->
+<!-- 2022-12-01 Thu 14:37 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Effective Go 精简版</title>
-<meta name="author" content="JerryZhang" />
+<meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,50 +223,50 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgecb2664">1. 引言</a></li>
-<li><a href="#orgb1cd238">2. 格式化</a></li>
-<li><a href="#org043b1b7">3. 注释</a></li>
-<li><a href="#org0c6262a">4. 命名</a>
+<li><a href="#orgdac0d22">1. 引言</a></li>
+<li><a href="#org7a94191">2. 格式化</a></li>
+<li><a href="#orgd3c1c1c">3. 注释</a></li>
+<li><a href="#org701adde">4. 命名</a>
 <ul>
-<li><a href="#orga0805ed">4.1. 包命名</a></li>
-<li><a href="#org8c9805a">4.2. Getter、Setter 命名</a></li>
-<li><a href="#orgd50060b">4.3. 接口命名</a></li>
-<li><a href="#orgdab2165">4.4. 驼峰命名</a></li>
+<li><a href="#org7727630">4.1. 包命名</a></li>
+<li><a href="#org18ac405">4.2. Getter、Setter 命名</a></li>
+<li><a href="#org0fe242e">4.3. 接口命名</a></li>
+<li><a href="#org59e626f">4.4. 驼峰命名</a></li>
 </ul>
 </li>
-<li><a href="#orga8e95fb">5. 分号</a></li>
-<li><a href="#org1fc8158">6. 控制结构</a>
+<li><a href="#org7767bed">5. 分号</a></li>
+<li><a href="#org705fb05">6. 控制结构</a>
 <ul>
-<li><a href="#orge89c871">6.1. Switch</a></li>
+<li><a href="#orgd3f60d7">6.1. Switch</a></li>
 </ul>
 </li>
-<li><a href="#orgff0f354">7. 函数</a></li>
-<li><a href="#orgfacfac2">8. 数据</a>
+<li><a href="#org3799584">7. 函数</a></li>
+<li><a href="#orgab852e7">8. 数据</a>
 <ul>
-<li><a href="#org7c7e48d">8.1. 数组</a></li>
-<li><a href="#orgd3c336b">8.2. 切片</a></li>
-<li><a href="#org541b04b">8.3. Map</a></li>
-<li><a href="#org8a60186">8.4. 初始化</a></li>
+<li><a href="#org1f421e3">8.1. 数组</a></li>
+<li><a href="#orgf60a508">8.2. 切片</a></li>
+<li><a href="#org463599d">8.3. Map</a></li>
+<li><a href="#org564059a">8.4. 初始化</a></li>
 </ul>
 </li>
-<li><a href="#org250d7fe">9. 方法</a>
+<li><a href="#org8dcac10">9. 方法</a>
 <ul>
-<li><a href="#orga89bd78">9.1. 指针 vs 值</a></li>
+<li><a href="#org08cf1ee">9.1. 指针 vs 值</a></li>
 </ul>
 </li>
-<li><a href="#orgaaa532e">10. 接口</a></li>
-<li><a href="#orgff6094a">11. 空白标识符</a></li>
-<li><a href="#org49ced50">12. 内嵌</a></li>
-<li><a href="#orgd0a315e">13. 并发</a>
+<li><a href="#org92944d0">10. 接口</a></li>
+<li><a href="#org6b39eb6">11. 空白标识符</a></li>
+<li><a href="#org666181f">12. 内嵌</a></li>
+<li><a href="#orgc147a39">13. 并发</a>
 <ul>
-<li><a href="#org90b07ba">13.1. Goroutines</a></li>
-<li><a href="#org5f32e90">13.2. 管道（Channels）</a></li>
+<li><a href="#org45a80b9">13.1. Goroutines</a></li>
+<li><a href="#org62f29fe">13.2. 管道（Channels）</a></li>
 </ul>
 </li>
-<li><a href="#org81d227e">14. 错误</a>
+<li><a href="#org07c9570">14. 错误</a>
 <ul>
-<li><a href="#org0bb416d">14.1. Panic</a></li>
-<li><a href="#org3ae189e">14.2. Recover</a></li>
+<li><a href="#org7918994">14.1. Panic</a></li>
+<li><a href="#org2a0814b">14.2. Recover</a></li>
 </ul>
 </li>
 </ul>
@@ -297,8 +297,8 @@
 
 <hr />
 
-<div id="outline-container-orgecb2664" class="outline-2">
-<h2 id="orgecb2664"><span class="section-number-2">1.</span> 引言</h2>
+<div id="outline-container-orgdac0d22" class="outline-2">
+<h2 id="orgdac0d22"><span class="section-number-2">1.</span> 引言</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Go 是一门全新的语言，尽管它借鉴了很多已有语言的许多理念，但它有自己的语言特性。虽然你也可以用写 C++ 或者 Java 的方式来写
@@ -311,8 +311,8 @@ Go 语言，但程序可能不能令人满意。
 </div>
 </div>
 
-<div id="outline-container-orgb1cd238" class="outline-2">
-<h2 id="orgb1cd238"><span class="section-number-2">2.</span> 格式化</h2>
+<div id="outline-container-org7a94191" class="outline-2">
+<h2 id="org7a94191"><span class="section-number-2">2.</span> 格式化</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Go 提供了 gofmt 工具来按照标准来格式化代码，尝试解决同一种语言编码风格混乱的问题，所有人都遵循相同的风格，也不用在编码风
@@ -321,8 +321,8 @@ Go 提供了 gofmt 工具来按照标准来格式化代码，尝试解决同一�
 </div>
 </div>
 
-<div id="outline-container-org043b1b7" class="outline-2">
-<h2 id="org043b1b7"><span class="section-number-2">3.</span> 注释</h2>
+<div id="outline-container-orgd3c1c1c" class="outline-2">
+<h2 id="orgd3c1c1c"><span class="section-number-2">3.</span> 注释</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Go 语言支持 C 风格的注释 <code>/**/</code> 和 <code>//</code> ，块注释一般用于给包做注释。
@@ -343,12 +343,12 @@ Go 语言支持 C 风格的注释 <code>/**/</code> 和 <code>//</code> ，块�
 </div>
 </div>
 
-<div id="outline-container-org0c6262a" class="outline-2">
-<h2 id="org0c6262a"><span class="section-number-2">4.</span> 命名</h2>
+<div id="outline-container-org701adde" class="outline-2">
+<h2 id="org701adde"><span class="section-number-2">4.</span> 命名</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orga0805ed" class="outline-3">
-<h3 id="orga0805ed"><span class="section-number-3">4.1.</span> 包命名</h3>
+<div id="outline-container-org7727630" class="outline-3">
+<h3 id="org7727630"><span class="section-number-3">4.1.</span> 包命名</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 包的名字应该简洁明了，易于理解：
@@ -362,8 +362,8 @@ Go 语言支持 C 风格的注释 <code>/**/</code> 和 <code>//</code> ，块�
 </div>
 </div>
 
-<div id="outline-container-org8c9805a" class="outline-3">
-<h3 id="org8c9805a"><span class="section-number-3">4.2.</span> Getter、Setter 命名</h3>
+<div id="outline-container-org18ac405" class="outline-3">
+<h3 id="org18ac405"><span class="section-number-3">4.2.</span> Getter、Setter 命名</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 Go 不在语言层面提供 getter 和 setter 的支持，你可以自己做封装。通常 getter 直接用变量名命名（首字母大写），
@@ -372,8 +372,8 @@ Go 不在语言层面提供 getter 和 setter 的支持，你可以自己做封�
 </div>
 </div>
 
-<div id="outline-container-orgd50060b" class="outline-3">
-<h3 id="orgd50060b"><span class="section-number-3">4.3.</span> 接口命名</h3>
+<div id="outline-container-org0fe242e" class="outline-3">
+<h3 id="org0fe242e"><span class="section-number-3">4.3.</span> 接口命名</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
 如果只有一个方法的接口，应该在该方法的名称加上 <code>-er</code> 后缀来命名，比如 Reader、Writer。
@@ -381,8 +381,8 @@ Go 不在语言层面提供 getter 和 setter 的支持，你可以自己做封�
 </div>
 </div>
 
-<div id="outline-container-orgdab2165" class="outline-3">
-<h3 id="orgdab2165"><span class="section-number-3">4.4.</span> 驼峰命名</h3>
+<div id="outline-container-org59e626f" class="outline-3">
+<h3 id="org59e626f"><span class="section-number-3">4.4.</span> 驼峰命名</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 Go 使用驼峰的方式来命名，MinxedCaps 或者 mixedCaps。
@@ -391,8 +391,8 @@ Go 使用驼峰的方式来命名，MinxedCaps 或者 mixedCaps。
 </div>
 </div>
 
-<div id="outline-container-orga8e95fb" class="outline-2">
-<h2 id="orga8e95fb"><span class="section-number-2">5.</span> 分号</h2>
+<div id="outline-container-org7767bed" class="outline-2">
+<h2 id="org7767bed"><span class="section-number-2">5.</span> 分号</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Go 语言和 C 一样，已分号作为语句的结尾，但与 C 不同的是，分号并不会在源码中出现，Go 的词法分析器会根据规则自动插入分号。
@@ -402,8 +402,8 @@ Go 语言和 C 一样，已分号作为语句的结尾，但与 C 不同的是�
 </div>
 </div>
 
-<div id="outline-container-org1fc8158" class="outline-2">
-<h2 id="org1fc8158"><span class="section-number-2">6.</span> 控制结构</h2>
+<div id="outline-container-org705fb05" class="outline-2">
+<h2 id="org705fb05"><span class="section-number-2">6.</span> 控制结构</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>Go 没有 while 循环，只有通用的 for 循环（可以满足 while 的需求）</li>
@@ -413,8 +413,8 @@ Go 语言和 C 一样，已分号作为语句的结尾，但与 C 不同的是�
 </ul>
 </div>
 
-<div id="outline-container-orge89c871" class="outline-3">
-<h3 id="orge89c871"><span class="section-number-3">6.1.</span> Switch</h3>
+<div id="outline-container-orgd3f60d7" class="outline-3">
+<h3 id="orgd3f60d7"><span class="section-number-3">6.1.</span> Switch</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 Go 中的 switch 比 C 更通用（而且解决 C 的很多潜在问题）：
@@ -432,8 +432,8 @@ case 条件是否满足）</li>
 </div>
 </div>
 
-<div id="outline-container-orgff0f354" class="outline-2">
-<h2 id="orgff0f354"><span class="section-number-2">7.</span> 函数</h2>
+<div id="outline-container-org3799584" class="outline-2">
+<h2 id="org3799584"><span class="section-number-2">7.</span> 函数</h2>
 <div class="outline-text-2" id="text-7">
 <ul class="org-ul">
 <li>Go 支持多值返回，通常第二个值表示错误码</li>
@@ -447,15 +447,15 @@ case 条件是否满足）</li>
 </div>
 </div>
 
-<div id="outline-container-orgfacfac2" class="outline-2">
-<h2 id="orgfacfac2"><span class="section-number-2">8.</span> 数据</h2>
+<div id="outline-container-orgab852e7" class="outline-2">
+<h2 id="orgab852e7"><span class="section-number-2">8.</span> 数据</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 Go 有两种内置的内存分配原语： <code>new</code> 和 <code>make</code> 。
 </p>
 
 <ul class="org-ul">
-<li><code>new</code> 跟其它编程语言不同的地方在于它申请的内存不会被 <span class="underline">初始化</span> ，它只是全部设置为 <span class="underline">零值</span> 返回的是 T*
+<li><code>new</code> 跟其它编程语言不同的地方在于它申请的内存不会被 <span class="underline">初始化</span> ，它只是全部设置为 <span class="underline">零值</span> 返回的是 T* 
 译者：文档有点歧义，实际上 Go 的 new 是会初始化内存的，只不过初始化成了对应类型的零值，这里表达的应该是类似 C++ 中的
 new 会自动调用构造函数。</li>
 <li><code>make(T, args)</code> 和 <code>new(T)</code> 有不同的设计目标，make 只用来创建 slices、maps 和 channels，并且返回的是 <span class="underline">初始化</span> 的（非零值）
@@ -469,8 +469,8 @@ channels，make 会初始化其内部结构数据。</li>
 </p>
 </div>
 
-<div id="outline-container-org7c7e48d" class="outline-3">
-<h3 id="org7c7e48d"><span class="section-number-3">8.1.</span> 数组</h3>
+<div id="outline-container-org1f421e3" class="outline-3">
+<h3 id="org1f421e3"><span class="section-number-3">8.1.</span> 数组</h3>
 <div class="outline-text-3" id="text-8-1">
 <p>
 Go 的数组与 C 不同点：
@@ -488,8 +488,8 @@ Go 的数组与 C 不同点：
 </div>
 </div>
 
-<div id="outline-container-orgd3c336b" class="outline-3">
-<h3 id="orgd3c336b"><span class="section-number-3">8.2.</span> 切片</h3>
+<div id="outline-container-orgf60a508" class="outline-3">
+<h3 id="orgf60a508"><span class="section-number-3">8.2.</span> 切片</h3>
 <div class="outline-text-3" id="text-8-2">
 <p>
 请查看我之前写的 <a href="understand-go-array-and-slice.html">理解 Go 的 Array 和 slice</a>。
@@ -497,8 +497,8 @@ Go 的数组与 C 不同点：
 </div>
 </div>
 
-<div id="outline-container-org541b04b" class="outline-3">
-<h3 id="org541b04b"><span class="section-number-3">8.3.</span> Map</h3>
+<div id="outline-container-org463599d" class="outline-3">
+<h3 id="org463599d"><span class="section-number-3">8.3.</span> Map</h3>
 <div class="outline-text-3" id="text-8-3">
 <ul class="org-ul">
 <li>将 map 传递给函数，在函数内部修改 map 会修改调用方的 map</li>
@@ -521,8 +521,8 @@ Go 的数组与 C 不同点：
 </div>
 </div>
 
-<div id="outline-container-org8a60186" class="outline-3">
-<h3 id="org8a60186"><span class="section-number-3">8.4.</span> 初始化</h3>
+<div id="outline-container-org564059a" class="outline-3">
+<h3 id="org564059a"><span class="section-number-3">8.4.</span> 初始化</h3>
 <div class="outline-text-3" id="text-8-4">
 <ul class="org-ul">
 <li>常量：在 Go 中常量仅仅指的是不变的值。他们由编译期间创建，可以为数字、字符、字符串或者布尔类型，因为编译期间的限制，
@@ -535,12 +535,12 @@ Go 的数组与 C 不同点：
 </div>
 </div>
 
-<div id="outline-container-org250d7fe" class="outline-2">
-<h2 id="org250d7fe"><span class="section-number-2">9.</span> 方法</h2>
+<div id="outline-container-org8dcac10" class="outline-2">
+<h2 id="org8dcac10"><span class="section-number-2">9.</span> 方法</h2>
 <div class="outline-text-2" id="text-9">
 </div>
-<div id="outline-container-orga89bd78" class="outline-3">
-<h3 id="orga89bd78"><span class="section-number-3">9.1.</span> 指针 vs 值</h3>
+<div id="outline-container-org08cf1ee" class="outline-3">
+<h3 id="org08cf1ee"><span class="section-number-3">9.1.</span> 指针 vs 值</h3>
 <div class="outline-text-3" id="text-9-1">
 <p>
 对于指针和值接收器调用原则为：值接收器关联的函数可以被指针和值调用，而指针方法只能被指针调用。语言为了避免这种错误，就添
@@ -554,8 +554,8 @@ Go 的数组与 C 不同点：
 </div>
 </div>
 
-<div id="outline-container-orgaaa532e" class="outline-2">
-<h2 id="orgaaa532e"><span class="section-number-2">10.</span> 接口</h2>
+<div id="outline-container-org92944d0" class="outline-2">
+<h2 id="org92944d0"><span class="section-number-2">10.</span> 接口</h2>
 <div class="outline-text-2" id="text-10">
 <ul class="org-ul">
 <li>Go 中的接口和实现不像其它语言一样，没有显式的关联关系，它只是定义了一个规范，谁有它的 <b>行为</b> ，谁就是它</li>
@@ -565,8 +565,8 @@ Go 的数组与 C 不同点：
 </div>
 </div>
 
-<div id="outline-container-orgff6094a" class="outline-2">
-<h2 id="orgff6094a"><span class="section-number-2">11.</span> 空白标识符</h2>
+<div id="outline-container-org6b39eb6" class="outline-2">
+<h2 id="org6b39eb6"><span class="section-number-2">11.</span> 空白标识符</h2>
 <div class="outline-text-2" id="text-11">
 <ul class="org-ul">
 <li>空白标识符可被赋予或声明为任何类型的任何值，而其值会被无害地丢弃，类似 Unix 中的 <code>/dev/null</code> 文件，只写不读</li>
@@ -575,8 +575,8 @@ Go 的数组与 C 不同点：
 </div>
 </div>
 
-<div id="outline-container-org49ced50" class="outline-2">
-<h2 id="org49ced50"><span class="section-number-2">12.</span> 内嵌</h2>
+<div id="outline-container-org666181f" class="outline-2">
+<h2 id="org666181f"><span class="section-number-2">12.</span> 内嵌</h2>
 <div class="outline-text-2" id="text-12">
 <p>
 Go 语言不提供类型子类这样的东西，但是它提供了在接口或者结构体中内嵌的接口或结构体的方法。
@@ -613,12 +613,12 @@ Go 语言不提供类型子类这样的东西，但是它提供了在接口或�
 </div>
 </div>
 
-<div id="outline-container-orgd0a315e" class="outline-2">
-<h2 id="orgd0a315e"><span class="section-number-2">13.</span> 并发</h2>
+<div id="outline-container-orgc147a39" class="outline-2">
+<h2 id="orgc147a39"><span class="section-number-2">13.</span> 并发</h2>
 <div class="outline-text-2" id="text-13">
 </div>
-<div id="outline-container-org90b07ba" class="outline-3">
-<h3 id="org90b07ba"><span class="section-number-3">13.1.</span> Goroutines</h3>
+<div id="outline-container-org45a80b9" class="outline-3">
+<h3 id="org45a80b9"><span class="section-number-3">13.1.</span> Goroutines</h3>
 <div class="outline-text-3" id="text-13-1">
 <ul class="org-ul">
 <li>goroutines 是并发运行在同一地址空间的函数，比线程更轻量级（消耗只有栈空间的分配）</li>
@@ -628,8 +628,8 @@ Go 语言不提供类型子类这样的东西，但是它提供了在接口或�
 </div>
 </div>
 
-<div id="outline-container-org5f32e90" class="outline-3">
-<h3 id="org5f32e90"><span class="section-number-3">13.2.</span> 管道（Channels）</h3>
+<div id="outline-container-org62f29fe" class="outline-3">
+<h3 id="org62f29fe"><span class="section-number-3">13.2.</span> 管道（Channels）</h3>
 <div class="outline-text-3" id="text-13-2">
 <p>
 管道和 maps 类似，使用 <code>make</code> 分配，返回一个底层数据结构的引用。可以提供一个可选的整型参数，用来设置管道的大小。默认值是
@@ -639,12 +639,12 @@ Go 语言不提供类型子类这样的东西，但是它提供了在接口或�
 </div>
 </div>
 
-<div id="outline-container-org81d227e" class="outline-2">
-<h2 id="org81d227e"><span class="section-number-2">14.</span> 错误</h2>
+<div id="outline-container-org07c9570" class="outline-2">
+<h2 id="org07c9570"><span class="section-number-2">14.</span> 错误</h2>
 <div class="outline-text-2" id="text-14">
 </div>
-<div id="outline-container-org0bb416d" class="outline-3">
-<h3 id="org0bb416d"><span class="section-number-3">14.1.</span> Panic</h3>
+<div id="outline-container-org7918994" class="outline-3">
+<h3 id="org7918994"><span class="section-number-3">14.1.</span> Panic</h3>
 <div class="outline-text-3" id="text-14-1">
 <p>
 通常情况下，出错的时候应该向调用者返回一个 <code>error</code> ，比如 Read 方法会返回字节数量和 error。但是有时候会遇到错误无法恢复，
@@ -679,8 +679,8 @@ Go 提供了内建函数 <code>panic</code> 用来创建一个运行时的错误
 </div>
 </div>
 
-<div id="outline-container-org3ae189e" class="outline-3">
-<h3 id="org3ae189e"><span class="section-number-3">14.2.</span> Recover</h3>
+<div id="outline-container-org2a0814b" class="outline-3">
+<h3 id="org2a0814b"><span class="section-number-3">14.2.</span> Recover</h3>
 <div class="outline-text-3" id="text-14-2">
 <p>
 当 <code>panic</code> 调用时，包含隐式的运行时错误，比如越界访问，断言失败等，它会立即停止运行然后展开 goroutine 的堆栈，接下来运行
@@ -696,7 +696,7 @@ recover 只会关闭当前的 goroutine（干净的退出），而不会影响�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-08-03 14:11:00 <br />Last updated: 2022-11-28 Mon 19:52 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-08-03 14:11:00 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

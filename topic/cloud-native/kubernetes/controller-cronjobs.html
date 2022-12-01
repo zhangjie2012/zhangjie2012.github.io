@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-11-30 Wed 16:13 -->
+<!-- 2022-12-01 Thu 14:38 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - CronJob</title>
-<meta name="author" content="JerryZhang" />
+<meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,12 +223,12 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orge75b1a1">1. CronJob</a>
+<li><a href="#orge45f731">1. CronJob</a>
 <ul>
-<li><a href="#orgd4f38f5">1.1. 举例</a></li>
+<li><a href="#orgee3716c">1.1. 举例</a></li>
 </ul>
 </li>
-<li><a href="#org85cf60d">2. CronJob 局限性</a></li>
+<li><a href="#orgdffabf3">2. CronJob 局限性</a></li>
 </ul>
 </div>
 </div>
@@ -241,48 +241,48 @@
 Job 名称不可超过 63 个字符。
 </p>
 
-<div id="outline-container-orge75b1a1" class="outline-2">
-<h2 id="orge75b1a1"><span class="section-number-2">1.</span> CronJob</h2>
+<div id="outline-container-orge45f731" class="outline-2">
+<h2 id="orge45f731"><span class="section-number-2">1.</span> CronJob</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 CronJob 对于周期性的重复任务非常有用，类似备份和发送邮件。也可以用来安排特定的任务在指定时间执行，比如在集群空闲的时候调度 Job。
 </p>
 </div>
 
-<div id="outline-container-orgd4f38f5" class="outline-3">
-<h3 id="orgd4f38f5"><span class="section-number-3">1.1.</span> 举例</h3>
+<div id="outline-container-orgee3716c" class="outline-3">
+<h3 id="orgee3716c"><span class="section-number-3">1.1.</span> 举例</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 下面的例子周期性的在每分钟打印当前时间和 hello 消息：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml" id="org664ce2e"><span style="color: #00538b;">apiVersion</span>: batch/v1beta1
+<pre class="src src-yaml" id="org3f559f2"><span style="color: #00538b;">apiVersion</span>: batch/v1beta1
 <span style="color: #00538b;">kind</span>: CronJob
 <span style="color: #00538b;">metadata</span>:
   <span style="color: #00538b;">name</span>: hello
   <span style="color: #00538b;">spec</span>:
-    <span style="color: #00538b;">schedule</span>: <span style="color: #2544bb;">"*/1 * * * *"</span>
-    <span style="color: #00538b;">jobTemplate</span>:
-      <span style="color: #00538b;">spec</span>:
-        <span style="color: #00538b;">template</span>:
-          <span style="color: #00538b;">spec</span>:
-            <span style="color: #00538b;">containers</span>:
-              - <span style="color: #00538b;">name</span>: hello
-                <span style="color: #00538b;">image</span>: busybox
-                <span style="color: #00538b;">args</span>:
-                  - /bin/sh
-                  - -c
-                  - date; echo Hello from the Kubernetes cluster
-                  <span style="color: #00538b;">restartPolicy</span>: OnFailure
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">schedule</span>: <span style="color: #2544bb;">"*/1 * * * *"</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">jobTemplate</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  spec</span>:
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">template</span>:
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  spec</span>:
+<span style="color: #000000; background-color: #ff9f9f;">            </span><span style="color: #00538b;">containers</span>:
+<span style="color: #000000; background-color: #ff9f9f;">            </span><span style="color: #00538b;">  - name</span>: hello
+<span style="color: #000000; background-color: #ff9f9f;">                </span><span style="color: #00538b;">image</span>: busybox
+<span style="color: #000000; background-color: #ff9f9f;">                </span><span style="color: #00538b;">args</span>:
+<span style="color: #000000; background-color: #ff9f9f;">                </span>  - /bin/sh
+<span style="color: #000000; background-color: #ff9f9f;">                </span>  - -c
+<span style="color: #000000; background-color: #ff9f9f;">                </span>  - date; echo Hello from the Kubernetes cluster
+<span style="color: #000000; background-color: #ff9f9f;">                </span><span style="color: #00538b;">  restartPolicy</span>: OnFailure
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org85cf60d" class="outline-2">
-<h2 id="org85cf60d"><span class="section-number-2">2.</span> CronJob 局限性</h2>
+<div id="outline-container-orgdffabf3" class="outline-2">
+<h2 id="orgdffabf3"><span class="section-number-2">2.</span> CronJob 局限性</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 cron job 在隔一段时间应该会创建一个 job。我们说“应该”是因为在有些情况下可能会创建两个 job，或者可能不会被创建。
@@ -324,7 +324,7 @@ CronJob 的职责是在匹配的时间表中创建 Jobs，而 Job 则负责对�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-18 10:22:38 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+<p class="postamble">First created: 2020-04-18 10:22:38 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>

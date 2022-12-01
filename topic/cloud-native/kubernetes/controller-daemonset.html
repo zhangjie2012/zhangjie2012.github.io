@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-11-30 Wed 16:13 -->
+<!-- 2022-12-01 Thu 14:38 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - DaemonSet</title>
-<meta name="author" content="JerryZhang" />
+<meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,26 +223,26 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgb4282ba">1. 书写 DaemonSet 规范</a>
+<li><a href="#org1ae4baf">1. 书写 DaemonSet 规范</a>
 <ul>
-<li><a href="#org44227e5">1.1. Pod Tempate</a></li>
-<li><a href="#org74786b0">1.2. Pod Selector</a></li>
-<li><a href="#org246f341">1.3. 仅在某些节点上运行 Pod</a></li>
+<li><a href="#org84f9ff3">1.1. Pod Tempate</a></li>
+<li><a href="#org113ddff">1.2. Pod Selector</a></li>
+<li><a href="#org0b66acd">1.3. 仅在某些节点上运行 Pod</a></li>
 </ul>
 </li>
-<li><a href="#org2624bc7">2. Daemon Pods 是如何调度的</a>
+<li><a href="#org3ebe45e">2. Daemon Pods 是如何调度的</a>
 <ul>
-<li><a href="#org784c07c">2.1. 默认的调度器调度</a></li>
-<li><a href="#orgffcbf4a">2.2. Taints and Tolerations</a></li>
+<li><a href="#org5bea7e8">2.1. 默认的调度器调度</a></li>
+<li><a href="#org97965e4">2.2. Taints and Tolerations</a></li>
 </ul>
 </li>
-<li><a href="#org686639b">3. 与 Daemon Pods 通信</a></li>
-<li><a href="#orgaaec700">4. 更新 DaemonSet</a></li>
-<li><a href="#orga9138b3">5. 替代品</a>
+<li><a href="#org55d9d2b">3. 与 Daemon Pods 通信</a></li>
+<li><a href="#org1cf54fa">4. 更新 DaemonSet</a></li>
+<li><a href="#org8d2e97c">5. 替代品</a>
 <ul>
-<li><a href="#org2135132">5.1. Init 脚本</a></li>
-<li><a href="#org6f9638f">5.2. 裸 Pods（Bare Pods）</a></li>
-<li><a href="#org8dd1e9c">5.3. 静态 Pods</a></li>
+<li><a href="#org98b74e5">5.1. Init 脚本</a></li>
+<li><a href="#org86ab25f">5.2. 裸 Pods（Bare Pods）</a></li>
+<li><a href="#orgfe13c69">5.3. 静态 Pods</a></li>
 </ul>
 </li>
 </ul>
@@ -263,60 +263,60 @@
 <li>运行集群每个节点的监控，比如 Promethues Node Exporter</li>
 </ul>
 
-<div id="outline-container-orgb4282ba" class="outline-2">
-<h2 id="orgb4282ba"><span class="section-number-2">1.</span> 书写 DaemonSet 规范</h2>
+<div id="outline-container-org1ae4baf" class="outline-2">
+<h2 id="org1ae4baf"><span class="section-number-2">1.</span> 书写 DaemonSet 规范</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
-<pre class="src src-yaml" id="org1b544ed"><span style="color: #00538b;">apiVersion</span>: apps/v1
+<pre class="src src-yaml" id="org9bd4c23"><span style="color: #00538b;">apiVersion</span>: apps/v1
 <span style="color: #00538b;">kind</span>: DaemonSet
 <span style="color: #00538b;">metadata</span>:
   <span style="color: #00538b;">name</span>: fluentd-elasticsearch
   <span style="color: #00538b;">namespace</span>: kube-system
   <span style="color: #00538b;">labels</span>:
-    <span style="color: #00538b;">k8s-app</span>: fluentd-logging
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">k8s-app</span>: fluentd-logging
 <span style="color: #00538b;">spec</span>:
   <span style="color: #00538b;">selector</span>:
-    <span style="color: #00538b;">matchLabels</span>:
-      <span style="color: #00538b;">name</span>: fluentd-elasticsearch
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">matchLabels</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  name</span>: fluentd-elasticsearch
   <span style="color: #00538b;">template</span>:
-    <span style="color: #00538b;">metadata</span>:
-      <span style="color: #00538b;">labels</span>:
-        <span style="color: #00538b;">name</span>: fluentd-elasticsearch
-    <span style="color: #00538b;">spec</span>:
-      <span style="color: #00538b;">tolerations</span>:
-      <span style="color: #505050;"># </span><span style="color: #505050;">this toleration is to have the daemonset runnable on master nodes</span>
-      <span style="color: #505050;"># </span><span style="color: #505050;">remove it if your masters can't run pods</span>
-      - <span style="color: #00538b;">key</span>: node-role.kubernetes.io/master
-        <span style="color: #00538b;">effect</span>: NoSchedule
-      <span style="color: #00538b;">containers</span>:
-      - <span style="color: #00538b;">name</span>: fluentd-elasticsearch
-        <span style="color: #00538b;">image</span>: quay.io/fluentd_elasticsearch/fluentd:v2.5.2
-        <span style="color: #00538b;">resources</span>:
-          <span style="color: #00538b;">limits</span>:
-            <span style="color: #00538b;">memory</span>: 200Mi
-          <span style="color: #00538b;">requests</span>:
-            <span style="color: #00538b;">cpu</span>: 100m
-            <span style="color: #00538b;">memory</span>: 200Mi
-        <span style="color: #00538b;">volumeMounts</span>:
-        - <span style="color: #00538b;">name</span>: varlog
-          <span style="color: #00538b;">mountPath</span>: /var/log
-        - <span style="color: #00538b;">name</span>: varlibdockercontainers
-          <span style="color: #00538b;">mountPath</span>: /var/lib/docker/containers
-          <span style="color: #00538b;">readOnly</span>: <span style="color: #0000c0;">true</span>
-      <span style="color: #00538b;">terminationGracePeriodSeconds</span>: 30
-      <span style="color: #00538b;">volumes</span>:
-      - <span style="color: #00538b;">name</span>: varlog
-        <span style="color: #00538b;">hostPath</span>:
-          <span style="color: #00538b;">path</span>: /var/log
-      - <span style="color: #00538b;">name</span>: varlibdockercontainers
-        <span style="color: #00538b;">hostPath</span>:
-          <span style="color: #00538b;">path</span>: /var/lib/docker/containers
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">metadata</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  labels</span>:
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">name</span>: fluentd-elasticsearch
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">spec</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  tolerations</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span>  <span style="color: #505050;"># </span><span style="color: #505050;">this toleration is to have the daemonset runnable on master nodes</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span>  <span style="color: #505050;"># </span><span style="color: #505050;">remove it if your masters can't run pods</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  - key</span>: node-role.kubernetes.io/master
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">effect</span>: NoSchedule
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  containers</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  - name</span>: fluentd-elasticsearch
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">image</span>: quay.io/fluentd_elasticsearch/fluentd:v2.5.2
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">resources</span>:
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  limits</span>:
+<span style="color: #000000; background-color: #ff9f9f;">            </span><span style="color: #00538b;">memory</span>: 200Mi
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  requests</span>:
+<span style="color: #000000; background-color: #ff9f9f;">            </span><span style="color: #00538b;">cpu</span>: 100m
+<span style="color: #000000; background-color: #ff9f9f;">            </span><span style="color: #00538b;">memory</span>: 200Mi
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">volumeMounts</span>:
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">- name</span>: varlog
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  mountPath</span>: /var/log
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">- name</span>: varlibdockercontainers
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  mountPath</span>: /var/lib/docker/containers
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  readOnly</span>: <span style="color: #0000c0;">true</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  terminationGracePeriodSeconds</span>: 30
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  volumes</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  - name</span>: varlog
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">hostPath</span>:
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  path</span>: /var/log
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  - name</span>: varlibdockercontainers
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">hostPath</span>:
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  path</span>: /var/lib/docker/containers
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org44227e5" class="outline-3">
-<h3 id="org44227e5"><span class="section-number-3">1.1.</span> Pod Tempate</h3>
+<div id="outline-container-org84f9ff3" class="outline-3">
+<h3 id="org84f9ff3"><span class="section-number-3">1.1.</span> Pod Tempate</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 <code>.spec.template</code> 是 <code>.spec</code> 必填字段之一，是一个 <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/#pod-templates">pod template</a>。除了 <code>apiVersion</code> 和 <code>kind</code> 之外，其它的跟 Pod
@@ -330,8 +330,8 @@
 </div>
 </div>
 
-<div id="outline-container-org74786b0" class="outline-3">
-<h3 id="org74786b0"><span class="section-number-3">1.2.</span> Pod Selector</h3>
+<div id="outline-container-org113ddff" class="outline-3">
+<h3 id="org113ddff"><span class="section-number-3">1.2.</span> Pod Selector</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 <code>.spec.selector</code> 字段是一个 pod 选择器，和 Job 的 <code>.spec.selector</code> 类似。它是一个对象由两个字段组成：
@@ -357,8 +357,8 @@ Kubernetes 1.8 以后，这个字段是你必须要指定的，留空不再会�
 </div>
 </div>
 
-<div id="outline-container-org246f341" class="outline-3">
-<h3 id="org246f341"><span class="section-number-3">1.3.</span> 仅在某些节点上运行 Pod</h3>
+<div id="outline-container-org0b66acd" class="outline-3">
+<h3 id="org0b66acd"><span class="section-number-3">1.3.</span> 仅在某些节点上运行 Pod</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 如果指定了 <code>.spec.template.spec.nodeSelector</code> ，控制器只会在匹配的节点（<a href="https://kubernetes.io/docs/concepts/configuration/assign-pod-node/">节点选择器</a>）上创建 Pods。
@@ -369,12 +369,12 @@ Kubernetes 1.8 以后，这个字段是你必须要指定的，留空不再会�
 </div>
 </div>
 
-<div id="outline-container-org2624bc7" class="outline-2">
-<h2 id="org2624bc7"><span class="section-number-2">2.</span> Daemon Pods 是如何调度的</h2>
+<div id="outline-container-org3ebe45e" class="outline-2">
+<h2 id="org3ebe45e"><span class="section-number-2">2.</span> Daemon Pods 是如何调度的</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org784c07c" class="outline-3">
-<h3 id="org784c07c"><span class="section-number-3">2.1.</span> 默认的调度器调度</h3>
+<div id="outline-container-org5bea7e8" class="outline-3">
+<h3 id="org5bea7e8"><span class="section-number-3">2.1.</span> 默认的调度器调度</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 DaemonSet 保证所有合适的节点运行一个 Pod 副本。一般来说，节点上运行的 Pod 都是由集群的调度器来选择的。
@@ -396,12 +396,12 @@ DaemonSet 保证所有合适的节点运行一个 Pod 副本。一般来说，�
 <pre class="example">
 nodeAffinity:
   requiredDuringSchedulingIgnoredDuringExecution:
-    nodeSelectorTerms:
-    - matchFields:
-      - key: metadata.name
-        operator: In
-        values:
-        - target-host-name
+	nodeSelectorTerms:
+	- matchFields:
+	  - key: metadata.name
+		operator: In
+		values:
+		- target-host-name
 </pre>
 
 <p>
@@ -411,8 +411,8 @@ Pods 时，会自动忽略 <code>unschedulable</code> 节点。
 </div>
 </div>
 
-<div id="outline-container-orgffcbf4a" class="outline-3">
-<h3 id="orgffcbf4a"><span class="section-number-3">2.2.</span> Taints and Tolerations</h3>
+<div id="outline-container-org97965e4" class="outline-3">
+<h3 id="org97965e4"><span class="section-number-3">2.2.</span> Taints and Tolerations</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Although Daemon Pods respect taints and tolerations, the following tolerations are added to DaemonSet Pods
@@ -487,8 +487,8 @@ automatically according to the related features.
 </div>
 </div>
 
-<div id="outline-container-org686639b" class="outline-2">
-<h2 id="org686639b"><span class="section-number-2">3.</span> 与 Daemon Pods 通信</h2>
+<div id="outline-container-org55d9d2b" class="outline-2">
+<h2 id="org55d9d2b"><span class="section-number-2">3.</span> 与 Daemon Pods 通信</h2>
 <div class="outline-text-2" id="text-3">
 <ul class="org-ul">
 <li><b>Push</b> 用来将更新发送给另外一个服务，比如统计数据。它们没有 clients。</li>
@@ -500,8 +500,8 @@ automatically according to the related features.
 </div>
 </div>
 
-<div id="outline-container-orgaaec700" class="outline-2">
-<h2 id="orgaaec700"><span class="section-number-2">4.</span> 更新 DaemonSet</h2>
+<div id="outline-container-org1cf54fa" class="outline-2">
+<h2 id="org1cf54fa"><span class="section-number-2">4.</span> 更新 DaemonSet</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 当节点 labes 被修改之后，DaemonSet 立即将 Pod 添加到新匹配的节点，然后从不匹配的节点删除 Pod。
@@ -523,12 +523,12 @@ automatically according to the related features.
 </div>
 </div>
 
-<div id="outline-container-orga9138b3" class="outline-2">
-<h2 id="orga9138b3"><span class="section-number-2">5.</span> 替代品</h2>
+<div id="outline-container-org8d2e97c" class="outline-2">
+<h2 id="org8d2e97c"><span class="section-number-2">5.</span> 替代品</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org2135132" class="outline-3">
-<h3 id="org2135132"><span class="section-number-3">5.1.</span> Init 脚本</h3>
+<div id="outline-container-org98b74e5" class="outline-3">
+<h3 id="org98b74e5"><span class="section-number-3">5.1.</span> Init 脚本</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 你可以直接在节点上运行守护进程（比如使用 <code>init</code>, <code>upstartd</code>, <code>systemd</code> ）。这样也是可以的。但是使用 DaemonSet 有如下好处：
@@ -543,8 +543,8 @@ automatically according to the related features.
 </div>
 </div>
 
-<div id="outline-container-org6f9638f" class="outline-3">
-<h3 id="org6f9638f"><span class="section-number-3">5.2.</span> 裸 Pods（Bare Pods）</h3>
+<div id="outline-container-org86ab25f" class="outline-3">
+<h3 id="org86ab25f"><span class="section-number-3">5.2.</span> 裸 Pods（Bare Pods）</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 可以指定节点直接创建 Pod。然而，DaemonSet 会替换由于任何原因（例如在节点故障或者破坏性节点维护，比如内核升级的情况下）
@@ -553,8 +553,8 @@ automatically according to the related features.
 </div>
 </div>
 
-<div id="outline-container-org8dd1e9c" class="outline-3">
-<h3 id="org8dd1e9c"><span class="section-number-3">5.3.</span> 静态 Pods</h3>
+<div id="outline-container-orgfe13c69" class="outline-3">
+<h3 id="orgfe13c69"><span class="section-number-3">5.3.</span> 静态 Pods</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 通过向 kubelet 监听的目录写入文件来创建 Pod，称之为静态 Pods。不像 DaemonSet，静态 Pods 不能使用 kubectl 或其它的
@@ -569,7 +569,7 @@ kubernetes API 客户端管理。静态 pod 不依赖于 apiserver，使得它�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-11 18:20:37 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+<p class="postamble">First created: 2020-04-11 18:20:37 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>

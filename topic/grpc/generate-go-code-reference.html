@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-11-30 Wed 16:14 -->
+<!-- 2022-12-01 Thu 14:38 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>gPPC 生成 Go 代码参考文档</title>
-<meta name="author" content="JerryZhang" />
+<meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,24 +223,24 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org8632884">1. 命令行</a></li>
-<li><a href="#orgd0bacdb">2. 服务器接口生成的方法</a>
+<li><a href="#org78353c1">1. 命令行</a></li>
+<li><a href="#orgb62c492">2. 服务器接口生成的方法</a>
 <ul>
-<li><a href="#orgb27b321">2.1. 一元方法(Unary methods)</a></li>
-<li><a href="#org0031531">2.2. 服务器流方法(Server-streaming methods)</a></li>
-<li><a href="#orgd379392">2.3. 客户端流方法(Client-streaming methods)</a></li>
-<li><a href="#orgecc7371">2.4. 双向流（Bidi-streaming methods）</a></li>
+<li><a href="#org3828830">2.1. 一元方法(Unary methods)</a></li>
+<li><a href="#org2cdb322">2.2. 服务器流方法(Server-streaming methods)</a></li>
+<li><a href="#orgbaa43b7">2.3. 客户端流方法(Client-streaming methods)</a></li>
+<li><a href="#orge217921">2.4. 双向流（Bidi-streaming methods）</a></li>
 </ul>
 </li>
-<li><a href="#org7c20d23">3. 客户端接口生成的方法</a>
+<li><a href="#org49cb830">3. 客户端接口生成的方法</a>
 <ul>
-<li><a href="#orgfccabbc">3.1. 一元方法(Unary Methods)</a></li>
-<li><a href="#orgcf7780e">3.2. 服务端流方法(Server-Streaming methods)</a></li>
-<li><a href="#org7480187">3.3. 客户端流方法(Client-Streaming methods)</a></li>
-<li><a href="#org36343c7">3.4. 双向流方法(Bidi-Streaming methods)</a></li>
+<li><a href="#org1ce9083">3.1. 一元方法(Unary Methods)</a></li>
+<li><a href="#org91cc75c">3.2. 服务端流方法(Server-Streaming methods)</a></li>
+<li><a href="#orgc6d957e">3.3. 客户端流方法(Client-Streaming methods)</a></li>
+<li><a href="#org8eee062">3.4. 双向流方法(Bidi-Streaming methods)</a></li>
 </ul>
 </li>
-<li><a href="#org736e0f8">4. 包和命名空间</a></li>
+<li><a href="#org5aecb31">4. 包和命名空间</a></li>
 </ul>
 </div>
 </div>
@@ -252,8 +252,8 @@
 生成 Go 的 protobuf package 文件需要在使用 protoc 编译 <code>.proto</code> 文件时使用 <code>protoc-gen-go</code> 插件。
 </p>
 
-<div id="outline-container-org8632884" class="outline-2">
-<h2 id="org8632884"><span class="section-number-2">1.</span> 命令行</h2>
+<div id="outline-container-org78353c1" class="outline-2">
+<h2 id="org78353c1"><span class="section-number-2">1.</span> 命令行</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 使用 protobuf 编译器：
@@ -266,8 +266,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgd0bacdb" class="outline-2">
-<h2 id="orgd0bacdb"><span class="section-number-2">2.</span> 服务器接口生成的方法</h2>
+<div id="outline-container-orgb62c492" class="outline-2">
+<h2 id="orgb62c492"><span class="section-number-2">2.</span> 服务器接口生成的方法</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 在 Server 端， <code>.proto</code> 文件中的每一个 <code>service Bar</code> 都会生成如下的函数：
@@ -283,8 +283,8 @@
 </p>
 </div>
 
-<div id="outline-container-orgb27b321" class="outline-3">
-<h3 id="orgb27b321"><span class="section-number-3">2.1.</span> 一元方法(Unary methods)</h3>
+<div id="outline-container-org3828830" class="outline-3">
+<h3 id="org3828830"><span class="section-number-3">2.1.</span> 一元方法(Unary methods)</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 这些方法在生成服务接口的时候有如下的签名：
@@ -300,8 +300,8 @@ Foo(context.Context, *MsgA) (*MsgB, error)
 </div>
 </div>
 
-<div id="outline-container-org0031531" class="outline-3">
-<h3 id="org0031531"><span class="section-number-3">2.2.</span> 服务器流方法(Server-streaming methods)</h3>
+<div id="outline-container-org2cdb322" class="outline-3">
+<h3 id="org2cdb322"><span class="section-number-3">2.2.</span> 服务器流方法(Server-streaming methods)</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 这些方法在生成服务接口的时候有如下的签名：
@@ -333,8 +333,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-orgd379392" class="outline-3">
-<h3 id="orgd379392"><span class="section-number-3">2.3.</span> 客户端流方法(Client-streaming methods)</h3>
+<div id="outline-container-orgbaa43b7" class="outline-3">
+<h3 id="orgbaa43b7"><span class="section-number-3">2.3.</span> 客户端流方法(Client-streaming methods)</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 这些方法在生成服务接口的时候有如下的签名：
@@ -369,8 +369,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-orgecc7371" class="outline-3">
-<h3 id="orgecc7371"><span class="section-number-3">2.4.</span> 双向流（Bidi-streaming methods）</h3>
+<div id="outline-container-orge217921" class="outline-3">
+<h3 id="orge217921"><span class="section-number-3">2.4.</span> 双向流（Bidi-streaming methods）</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 这些方法在生成服务接口的时候有如下的签名：
@@ -403,8 +403,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-org7c20d23" class="outline-2">
-<h2 id="org7c20d23"><span class="section-number-2">3.</span> 客户端接口生成的方法</h2>
+<div id="outline-container-org49cb830" class="outline-2">
+<h2 id="org49cb830"><span class="section-number-2">3.</span> 客户端接口生成的方法</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 在客户端测， <code>proto</code> 文件中的每一个 <code>service Bar</code> 也都会生成一个函数: <code>func BarClient(cc *grpc.ClientConn) BarClient</code> ，
@@ -412,8 +412,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </p>
 </div>
 
-<div id="outline-container-orgfccabbc" class="outline-3">
-<h3 id="orgfccabbc"><span class="section-number-3">3.1.</span> 一元方法(Unary Methods)</h3>
+<div id="outline-container-org1ce9083" class="outline-3">
+<h3 id="org1ce9083"><span class="section-number-3">3.1.</span> 一元方法(Unary Methods)</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 这些方法生成的客户端存根具有以下签名：
@@ -430,8 +430,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-orgcf7780e" class="outline-3">
-<h3 id="orgcf7780e"><span class="section-number-3">3.2.</span> 服务端流方法(Server-Streaming methods)</h3>
+<div id="outline-container-org91cc75c" class="outline-3">
+<h3 id="org91cc75c"><span class="section-number-3">3.2.</span> 服务端流方法(Server-Streaming methods)</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 这些方法生成的客户端存根具有以下签名：
@@ -460,8 +460,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-org7480187" class="outline-3">
-<h3 id="org7480187"><span class="section-number-3">3.3.</span> 客户端流方法(Client-Streaming methods)</h3>
+<div id="outline-container-orgc6d957e" class="outline-3">
+<h3 id="orgc6d957e"><span class="section-number-3">3.3.</span> 客户端流方法(Client-Streaming methods)</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 这些方法生成的客户端存根具有以下签名：
@@ -495,8 +495,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-org36343c7" class="outline-3">
-<h3 id="org36343c7"><span class="section-number-3">3.4.</span> 双向流方法(Bidi-Streaming methods)</h3>
+<div id="outline-container-org8eee062" class="outline-3">
+<h3 id="org8eee062"><span class="section-number-3">3.4.</span> 双向流方法(Bidi-Streaming methods)</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 这些方法生成的客户端存根具有以下签名：
@@ -531,8 +531,8 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 
-<div id="outline-container-org736e0f8" class="outline-2">
-<h2 id="org736e0f8"><span class="section-number-2">4.</span> 包和命名空间</h2>
+<div id="outline-container-org5aecb31" class="outline-2">
+<h2 id="org5aecb31"><span class="section-number-2">4.</span> 包和命名空间</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 当 <code>protoc</code> 编译器调用 <code>-go_out=plugins=grpc:</code>  时， <code>proto package</code> 会被转换成 Go 的包，跟 <code>protoc-gen-go</code> 插件不加 <code>grpc</code>
@@ -546,7 +546,7 @@ Foo(*MsgA, &lt;ServiceName&gt;_FooServer) error
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-21 15:05:55 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2020-05-21 15:05:55 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

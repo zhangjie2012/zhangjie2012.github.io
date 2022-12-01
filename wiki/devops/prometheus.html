@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-11-30 Wed 16:14 -->
+<!-- 2022-12-01 Thu 14:38 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Prometheus 文档（非官方）</title>
-<meta name="author" content="JerryZhang" />
+<meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,244 +223,244 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org7c717ba">1. 引言（Introduction）</a>
+<li><a href="#org8caf156">1. 引言（Introduction）</a>
 <ul>
-<li><a href="#org296d8ad">1.1. 概览</a>
+<li><a href="#orgc2229b0">1.1. 概览</a>
 <ul>
-<li><a href="#org92fb2f7">1.1.1. 什么是 Prometheus?</a></li>
-<li><a href="#orgfbe6d31">1.1.2. 特性</a></li>
-<li><a href="#org80f4266">1.1.3. 组件</a></li>
-<li><a href="#org18f6b0a">1.1.4. 架构</a></li>
-<li><a href="#org17046e4">1.1.5. 什么时候比较适合使用 Prometheus？</a></li>
-<li><a href="#orgcb5e589">1.1.6. 什么时候不适合使用 Prometheus？</a></li>
+<li><a href="#orge301d4a">1.1.1. 什么是 Prometheus?</a></li>
+<li><a href="#org110edef">1.1.2. 特性</a></li>
+<li><a href="#org6626a9e">1.1.3. 组件</a></li>
+<li><a href="#orgd9ffccf">1.1.4. 架构</a></li>
+<li><a href="#orgc1647cf">1.1.5. 什么时候比较适合使用 Prometheus？</a></li>
+<li><a href="#orgaf28ab7">1.1.6. 什么时候不适合使用 Prometheus？</a></li>
 </ul>
 </li>
-<li><a href="#org03ef14e">1.2. 第一步</a>
+<li><a href="#org4260be4">1.2. 第一步</a>
 <ul>
-<li><a href="#orgd2e1fdf">1.2.1. 下载</a></li>
-<li><a href="#org7da6e4d">1.2.2. 配置</a></li>
-<li><a href="#org5904717">1.2.3. 启动 Prometheus</a></li>
-<li><a href="#org2cd3327">1.2.4. 在浏览器上使用表达式</a></li>
-<li><a href="#org854b8ad">1.2.5. 使用图形界面</a></li>
-<li><a href="#org87dbe29">1.2.6. 监控其它目标</a></li>
+<li><a href="#org51bca4e">1.2.1. 下载</a></li>
+<li><a href="#orga85131e">1.2.2. 配置</a></li>
+<li><a href="#org3e5fdfb">1.2.3. 启动 Prometheus</a></li>
+<li><a href="#orgc52929a">1.2.4. 在浏览器上使用表达式</a></li>
+<li><a href="#orgbef9842">1.2.5. 使用图形界面</a></li>
+<li><a href="#org0d985bf">1.2.6. 监控其它目标</a></li>
 </ul>
 </li>
-<li><a href="#org877b9b8">1.3. 与替代品的比较 <code>[5/5]</code></a>
+<li><a href="#orgf54323d">1.3. 与替代品的比较 <code>[5/5]</code></a>
 <ul>
-<li><a href="#orgf34ef22">1.3.1. <span class="done DONE">DONE</span> Prometheus vs. Graphite</a>
+<li><a href="#org39c07a0">1.3.1. <span class="done DONE">DONE</span> Prometheus vs. Graphite</a>
 <ul>
-<li><a href="#org314e0ba">1.3.1.1. 范围（Scope）</a></li>
-<li><a href="#orge3efb77">1.3.1.2. 数据模型</a></li>
-<li><a href="#org4352510">1.3.1.3. 存储</a></li>
-<li><a href="#orgca90e87">1.3.1.4. 总结</a></li>
+<li><a href="#org07c921f">1.3.1.1. 范围（Scope）</a></li>
+<li><a href="#orgde967ba">1.3.1.2. 数据模型</a></li>
+<li><a href="#orge8276ad">1.3.1.3. 存储</a></li>
+<li><a href="#orgfe08cc5">1.3.1.4. 总结</a></li>
 </ul>
 </li>
-<li><a href="#org5ad6296">1.3.2. <span class="done DONE">DONE</span> Prometheus vs. InfluxDB</a>
+<li><a href="#org2a8b351">1.3.2. <span class="done DONE">DONE</span> Prometheus vs. InfluxDB</a>
 <ul>
-<li><a href="#org8524f29">1.3.2.1. 范围（Scope）</a></li>
-<li><a href="#orgefb73ef">1.3.2.2. 数据模型/存储</a></li>
-<li><a href="#org5ad9268">1.3.2.3. 架构</a></li>
-<li><a href="#org379f9a9">1.3.2.4. 总结</a></li>
+<li><a href="#orgd3379ce">1.3.2.1. 范围（Scope）</a></li>
+<li><a href="#org482ec92">1.3.2.2. 数据模型/存储</a></li>
+<li><a href="#org219825d">1.3.2.3. 架构</a></li>
+<li><a href="#org4dba307">1.3.2.4. 总结</a></li>
 </ul>
 </li>
-<li><a href="#orga7d2d6d">1.3.3. <span class="done DONE">DONE</span> Prometheus vs. OpenTSDB</a>
+<li><a href="#org7b1956d">1.3.3. <span class="done DONE">DONE</span> Prometheus vs. OpenTSDB</a>
 <ul>
-<li><a href="#org1e35625">1.3.3.1. 范围</a></li>
-<li><a href="#orgda38bcb">1.3.3.2. 数据模型</a></li>
-<li><a href="#org1705526">1.3.3.3. 存储</a></li>
-<li><a href="#org509cca3">1.3.3.4. 总结</a></li>
+<li><a href="#org416dc42">1.3.3.1. 范围</a></li>
+<li><a href="#orgb159827">1.3.3.2. 数据模型</a></li>
+<li><a href="#org1736196">1.3.3.3. 存储</a></li>
+<li><a href="#org72ee006">1.3.3.4. 总结</a></li>
 </ul>
 </li>
-<li><a href="#org8386f19">1.3.4. <span class="done DONE">DONE</span> Prometheus vs. Nagios</a>
+<li><a href="#org315ca7a">1.3.4. <span class="done DONE">DONE</span> Prometheus vs. Nagios</a>
 <ul>
-<li><a href="#org1ac7546">1.3.4.1. 范围</a></li>
-<li><a href="#orgcd12f0b">1.3.4.2. 数据模型</a></li>
-<li><a href="#orgeaac832">1.3.4.3. 存储</a></li>
-<li><a href="#org7d103a4">1.3.4.4. 架构</a></li>
-<li><a href="#org9ad2299">1.3.4.5. 总结</a></li>
+<li><a href="#org3c1a341">1.3.4.1. 范围</a></li>
+<li><a href="#org34dd456">1.3.4.2. 数据模型</a></li>
+<li><a href="#org62cd80b">1.3.4.3. 存储</a></li>
+<li><a href="#org03677bf">1.3.4.4. 架构</a></li>
+<li><a href="#org838b6b5">1.3.4.5. 总结</a></li>
 </ul>
 </li>
-<li><a href="#orgbdebc31">1.3.5. <span class="done DONE">DONE</span> Prometheus vs. Sensu</a>
+<li><a href="#org9c39159">1.3.5. <span class="done DONE">DONE</span> Prometheus vs. Sensu</a>
 <ul>
-<li><a href="#orge5194cc">1.3.5.1. 范围</a></li>
-<li><a href="#orgde6aa8c">1.3.5.2. 数据模型</a></li>
-<li><a href="#orgcce5869">1.3.5.3. 存储</a></li>
-<li><a href="#org245e719">1.3.5.4. 架构</a></li>
-<li><a href="#orgf0b67f3">1.3.5.5. 总结</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orged2609a">1.4. FAQ</a>
-<ul>
-<li><a href="#org0ca58cf">1.4.1. 一般问题</a>
-<ul>
-<li><a href="#orgc9f1e8c">1.4.1.1. 什么是 Prometheus？</a></li>
-<li><a href="#org4d786e9">1.4.1.2. 与其他系统监控相比如何？</a></li>
-<li><a href="#orgbcd3e53">1.4.1.3. 它依赖什么？</a></li>
-<li><a href="#org2a63d0e">1.4.1.4. 可以高可用吗？</a></li>
-<li><a href="#org3c846a3">1.4.1.5. 有人跟我说 Prometheus 「不可被扩展」？</a></li>
-<li><a href="#org6901f64">1.4.1.6. Prometheus 用什么语言写的？</a></li>
-<li><a href="#org7ba311e">1.4.1.7. Prometheus 特性、存储格式和 APIs 的稳定性如何？</a></li>
-<li><a href="#org8205889">1.4.1.8. 为什么使用 pull 而不是 push？</a></li>
-<li><a href="#org700b088">1.4.1.9. 如何将日志输入到 Prometheus？</a></li>
-<li><a href="#org130563d">1.4.1.10. 谁写的 Prometheus？</a></li>
-<li><a href="#org6eeea2a">1.4.1.11. Prometheus 使用什么许可证？</a></li>
-<li><a href="#org650ad0b">1.4.1.12. Prometheus 的复数是什么？</a></li>
-<li><a href="#org83d9b68">1.4.1.13. 我可以重新载入 Prometheus 的配置吗？</a></li>
-<li><a href="#org3c76733">1.4.1.14. 我可以发送告警吗？</a></li>
-<li><a href="#org6cb210a">1.4.1.15. 我可以创建 dashboard 吗？</a></li>
-<li><a href="#orgfb618df">1.4.1.16. 我可以修改时区吗？所有的内容都才用 UTC？</a></li>
-</ul>
-</li>
-<li><a href="#orgab2d0e4">1.4.2. Instrumentation</a>
-<ul>
-<li><a href="#org32218d9">1.4.2.1. 哪些语言有 instrumentation 库？</a></li>
-<li><a href="#org5af1b75">1.4.2.2. 我可以监控机器吗？</a></li>
-<li><a href="#org4b59ff7">1.4.2.3. 我可以监控网络设备吗？</a></li>
-<li><a href="#orgb9c8728">1.4.2.4. 我可以监控批处理作业吗？</a></li>
-<li><a href="#org7fb94f4">1.4.2.5. Prometheus 可以直接监视哪些应用程序？</a></li>
-<li><a href="#orgf6bd581">1.4.2.6. 我可以通过 JMX 监控 JVM 应用程序吗？</a></li>
-<li><a href="#orga138244">1.4.2.7. What is the performance impact of instrumentation?</a></li>
-</ul>
-</li>
-<li><a href="#org3d5c946">1.4.3. <span class="todo TODO">TODO</span> 故障排除</a></li>
-<li><a href="#org761e92d">1.4.4. 实现</a>
-<ul>
-<li><a href="#org37dd8cc">1.4.4.1. 为什么所有的采样都使用 64 位浮点型，我想使用整型？</a></li>
-<li><a href="#org26f796c">1.4.4.2. 为什么 Prometheus 服务组件不支持 TLS 或身份验证，我可以添加这些吗？</a></li>
+<li><a href="#org50ff325">1.3.5.1. 范围</a></li>
+<li><a href="#org4b88e8f">1.3.5.2. 数据模型</a></li>
+<li><a href="#org634876a">1.3.5.3. 存储</a></li>
+<li><a href="#org707e9f7">1.3.5.4. 架构</a></li>
+<li><a href="#org26c8bf7">1.3.5.5. 总结</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org9858ea7">1.5. ROADMAP</a></li>
-<li><a href="#org2d6b9ec">1.6. Media</a></li>
-<li><a href="#org4224ff1">1.7. 专有名词表（Glossary）</a></li>
-</ul>
-</li>
-<li><a href="#org8513fdb">2. 概念</a>
+<li><a href="#org2ed2368">1.4. FAQ</a>
 <ul>
-<li><a href="#org78fc784">2.1. 数据模型</a>
+<li><a href="#orge14e188">1.4.1. 一般问题</a>
 <ul>
-<li><a href="#orgbb4ae09">2.1.1. Metric 名字和标签（labels）</a></li>
-<li><a href="#org7343253">2.1.2. 样本</a></li>
-<li><a href="#orgf646730">2.1.3. 表达式（Notation）</a></li>
+<li><a href="#orgcf1b07d">1.4.1.1. 什么是 Prometheus？</a></li>
+<li><a href="#org8803ed3">1.4.1.2. 与其他系统监控相比如何？</a></li>
+<li><a href="#orgbe8a13e">1.4.1.3. 它依赖什么？</a></li>
+<li><a href="#orgb6a38b1">1.4.1.4. 可以高可用吗？</a></li>
+<li><a href="#org2b881dc">1.4.1.5. 有人跟我说 Prometheus 「不可被扩展」？</a></li>
+<li><a href="#org3a72c25">1.4.1.6. Prometheus 用什么语言写的？</a></li>
+<li><a href="#orgcecc464">1.4.1.7. Prometheus 特性、存储格式和 APIs 的稳定性如何？</a></li>
+<li><a href="#org3e1d9f3">1.4.1.8. 为什么使用 pull 而不是 push？</a></li>
+<li><a href="#orgde539cb">1.4.1.9. 如何将日志输入到 Prometheus？</a></li>
+<li><a href="#orgb081c41">1.4.1.10. 谁写的 Prometheus？</a></li>
+<li><a href="#orge835dc2">1.4.1.11. Prometheus 使用什么许可证？</a></li>
+<li><a href="#orge4f93cc">1.4.1.12. Prometheus 的复数是什么？</a></li>
+<li><a href="#orgffafa47">1.4.1.13. 我可以重新载入 Prometheus 的配置吗？</a></li>
+<li><a href="#org8ba6fa5">1.4.1.14. 我可以发送告警吗？</a></li>
+<li><a href="#org7801b75">1.4.1.15. 我可以创建 dashboard 吗？</a></li>
+<li><a href="#orgd5829c0">1.4.1.16. 我可以修改时区吗？所有的内容都才用 UTC？</a></li>
 </ul>
 </li>
-<li><a href="#org09b6104">2.2. Metric 类型</a></li>
-<li><a href="#org2ccc244">2.3. Jobs 和 instances</a>
+<li><a href="#org1904f58">1.4.2. Instrumentation</a>
 <ul>
-<li><a href="#org613164b">2.3.1. 自动生成 labels 和时间序列</a></li>
+<li><a href="#orga1e1813">1.4.2.1. 哪些语言有 instrumentation 库？</a></li>
+<li><a href="#orgfaf0224">1.4.2.2. 我可以监控机器吗？</a></li>
+<li><a href="#orgc07de5b">1.4.2.3. 我可以监控网络设备吗？</a></li>
+<li><a href="#org63db179">1.4.2.4. 我可以监控批处理作业吗？</a></li>
+<li><a href="#orgffc76cd">1.4.2.5. Prometheus 可以直接监视哪些应用程序？</a></li>
+<li><a href="#orgd28fd26">1.4.2.6. 我可以通过 JMX 监控 JVM 应用程序吗？</a></li>
+<li><a href="#org62d73ca">1.4.2.7. What is the performance impact of instrumentation?</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#org0a24642">3. <span class="todo TODO">TODO</span> Prometheus <code>[0/4]</code></a>
+<li><a href="#orgc5a09ff">1.4.3. <span class="todo TODO">TODO</span> 故障排除</a></li>
+<li><a href="#orge4ea562">1.4.4. 实现</a>
 <ul>
-<li><a href="#orgc823558">3.1. 开始</a>
+<li><a href="#org6c84c23">1.4.4.1. 为什么所有的采样都使用 64 位浮点型，我想使用整型？</a></li>
+<li><a href="#org89426bf">1.4.4.2. 为什么 Prometheus 服务组件不支持 TLS 或身份验证，我可以添加这些吗？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgaddb3f8">1.5. ROADMAP</a></li>
+<li><a href="#orgf7343c9">1.6. Media</a></li>
+<li><a href="#org4bb5f66">1.7. 专有名词表（Glossary）</a></li>
+</ul>
+</li>
+<li><a href="#orgee12f83">2. 概念</a>
 <ul>
-<li><a href="#orga68744b">3.1.1. 下载和运行</a></li>
-<li><a href="#org1eaed8a">3.1.2. 配置 Prometheus 然后监控它自己</a></li>
-<li><a href="#org90743d4">3.1.3. 启动 Prometheus</a></li>
-<li><a href="#org1a1610c">3.1.4. 在浏览器使用表达式</a></li>
-<li><a href="#org7b11dc7">3.1.5. 使用图形界面</a></li>
-<li><a href="#orgb64fae0">3.1.6. 启用一些样本目标</a></li>
-<li><a href="#orgc2e3914">3.1.7. 配置 Prometheus 监控样本目标</a></li>
-<li><a href="#org37c2745">3.1.8. 配置规则将抓取的数据汇总到新的时间序列</a></li>
-</ul>
-</li>
-<li><a href="#orgecc7d57">3.2. 安装</a>
+<li><a href="#org05d25fd">2.1. 数据模型</a>
 <ul>
-<li><a href="#org61baaf9">3.2.1. 使用预编译的二进制包</a></li>
-<li><a href="#org0c76cdc">3.2.2. 通过源代码</a></li>
-<li><a href="#org61a5a67">3.2.3. 使用 Docker</a>
+<li><a href="#orgcd51ad9">2.1.1. Metric 名字和标签（labels）</a></li>
+<li><a href="#org110dc27">2.1.2. 样本</a></li>
+<li><a href="#org5281829">2.1.3. 表达式（Notation）</a></li>
+</ul>
+</li>
+<li><a href="#org8e84c9d">2.2. Metric 类型</a></li>
+<li><a href="#org2a1422b">2.3. Jobs 和 instances</a>
 <ul>
-<li><a href="#org12c62ba">3.2.3.1. 卷 &amp; 绑定挂载</a></li>
-<li><a href="#orgd170f14">3.2.3.2. 自定义镜像</a></li>
-<li><a href="#orgbe3aa09">3.2.3.3. 使用配置管理系统</a></li>
+<li><a href="#org787d6cd">2.3.1. 自动生成 labels 和时间序列</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org7ddff4a">3.3. <span class="todo TODO">TODO</span> 配置</a></li>
-<li><a href="#orgff26d9b">3.4. 查询</a>
+<li><a href="#org688cfe1">3. <span class="todo TODO">TODO</span> Prometheus <code>[0/4]</code></a>
 <ul>
-<li><a href="#org0ae8ec2">3.4.1. 基础（Basic）</a>
+<li><a href="#org908c1f4">3.1. 开始</a>
 <ul>
-<li><a href="#orgbab5948">3.4.1.1. 表达语言的数据类型</a></li>
-<li><a href="#orgb581ebe">3.4.1.2. 字面（Literals）</a>
+<li><a href="#org9a42215">3.1.1. 下载和运行</a></li>
+<li><a href="#org9a4e126">3.1.2. 配置 Prometheus 然后监控它自己</a></li>
+<li><a href="#org0ec4a68">3.1.3. 启动 Prometheus</a></li>
+<li><a href="#org4f61b9f">3.1.4. 在浏览器使用表达式</a></li>
+<li><a href="#org9d3fb9f">3.1.5. 使用图形界面</a></li>
+<li><a href="#org309324d">3.1.6. 启用一些样本目标</a></li>
+<li><a href="#orga4770d7">3.1.7. 配置 Prometheus 监控样本目标</a></li>
+<li><a href="#org086da35">3.1.8. 配置规则将抓取的数据汇总到新的时间序列</a></li>
+</ul>
+</li>
+<li><a href="#org3406e0e">3.2. 安装</a>
 <ul>
-<li><a href="#orgdc045cd">3.4.1.2.1. 字符串字面（String literals）</a></li>
-<li><a href="#orgeb24cdd">3.4.1.2.2. 浮点字面（Float literals）</a></li>
-</ul>
-</li>
-<li><a href="#orgf5cc31d">3.4.1.3. <span class="todo TODO">TODO</span> 时间序列选择器</a>
+<li><a href="#orgfec4f2e">3.2.1. 使用预编译的二进制包</a></li>
+<li><a href="#org5de8b05">3.2.2. 通过源代码</a></li>
+<li><a href="#orgeec3d8c">3.2.3. 使用 Docker</a>
 <ul>
-<li><a href="#org9384ca6">3.4.1.3.1. 瞬时向量选择器</a></li>
+<li><a href="#org242aadc">3.2.3.1. 卷 &amp; 绑定挂载</a></li>
+<li><a href="#orge3cca74">3.2.3.2. 自定义镜像</a></li>
+<li><a href="#org019a663">3.2.3.3. 使用配置管理系统</a></li>
 </ul>
 </li>
-<li><a href="#orge33ae70">3.4.1.4. <span class="todo TODO">TODO</span> 子查询</a></li>
-<li><a href="#org1fc001a">3.4.1.5. <span class="todo TODO">TODO</span> 函数</a></li>
-<li><a href="#orgaa73836">3.4.1.6. <span class="todo TODO">TODO</span> 注释</a></li>
-<li><a href="#orgda31761">3.4.1.7. <span class="todo TODO">TODO</span> 陷阱（Gotchas）</a></li>
 </ul>
 </li>
-<li><a href="#org0fbe53d">3.4.2. 函数（Functions）</a>
+<li><a href="#org4197c37">3.3. <span class="todo TODO">TODO</span> 配置</a></li>
+<li><a href="#org9d4f9a8">3.4. 查询</a>
 <ul>
-<li><a href="#orgeed512c">3.4.2.1. irate 与 rate</a></li>
-</ul>
-</li>
-<li><a href="#org4c8fc50">3.4.3. HTTP API</a>
+<li><a href="#org372aa29">3.4.1. 基础（Basic）</a>
 <ul>
-<li><a href="#orga83500b">3.4.3.1. 格式</a></li>
-<li><a href="#org7cfc27d">3.4.3.2. 表达式查询</a>
+<li><a href="#orgd846ec2">3.4.1.1. 表达语言的数据类型</a></li>
+<li><a href="#orgc3ac284">3.4.1.2. 字面（Literals）</a>
 <ul>
-<li><a href="#org7b1f961">3.4.3.2.1. 瞬时查询</a></li>
-<li><a href="#org52d983b">3.4.3.2.2. 范围查询</a></li>
+<li><a href="#orge3e4990">3.4.1.2.1. 字符串字面（String literals）</a></li>
+<li><a href="#org8e4fdd6">3.4.1.2.2. 浮点字面（Float literals）</a></li>
 </ul>
 </li>
-<li><a href="#orgbf268b9">3.4.3.3. 查询元数据（metadata）</a>
+<li><a href="#orgdd515e9">3.4.1.3. <span class="todo TODO">TODO</span> 时间序列选择器</a>
 <ul>
-<li><a href="#org16c5ad2">3.4.3.3.1. 通过 label 匹配找到时间序列</a></li>
-<li><a href="#org09f6692">3.4.3.3.2. 获取 label 名称</a></li>
-<li><a href="#org9ce1127">3.4.3.3.3. 查询 label 值</a></li>
+<li><a href="#org117597c">3.4.1.3.1. 瞬时向量选择器</a></li>
 </ul>
 </li>
-<li><a href="#orge193ae6">3.4.3.4. 表达式查询结果格式</a>
+<li><a href="#orga5640af">3.4.1.4. <span class="todo TODO">TODO</span> 子查询</a></li>
+<li><a href="#orgde5e325">3.4.1.5. <span class="todo TODO">TODO</span> 函数</a></li>
+<li><a href="#org22ce04a">3.4.1.6. <span class="todo TODO">TODO</span> 注释</a></li>
+<li><a href="#org6b23f3e">3.4.1.7. <span class="todo TODO">TODO</span> 陷阱（Gotchas）</a></li>
+</ul>
+</li>
+<li><a href="#org6edd2e7">3.4.2. 函数（Functions）</a>
 <ul>
-<li><a href="#org4ce5911">3.4.3.4.1. 范围向量（Range vectors）</a></li>
-<li><a href="#orgbd2a83f">3.4.3.4.2. 瞬间向量（Instant vectors）</a></li>
-<li><a href="#org8df9e33">3.4.3.4.3. 标量（Scalars）</a></li>
-<li><a href="#org5c92d90">3.4.3.4.4. 字符串（Strings）</a></li>
+<li><a href="#org4dcd688">3.4.2.1. irate 与 rate</a></li>
 </ul>
 </li>
-<li><a href="#orga7cdcc2">3.4.3.5. <span class="todo TODO">TODO</span> 目标（targets）</a></li>
-<li><a href="#org4c1fa1d">3.4.3.6. <span class="todo TODO">TODO</span> 规则（Rules）</a></li>
-<li><a href="#org494e714">3.4.3.7. <span class="todo TODO">TODO</span> 告警（Alerts）</a></li>
-<li><a href="#org07b6f0d">3.4.3.8. <span class="todo TODO">TODO</span> 查询目标元数据</a></li>
-<li><a href="#orgab8c995">3.4.3.9. <span class="todo TODO">TODO</span> 查询 metric 元数据</a></li>
-<li><a href="#org5484e0a">3.4.3.10. <span class="todo TODO">TODO</span> Alertmanagers</a></li>
-<li><a href="#org7f4efb4">3.4.3.11. <span class="todo TODO">TODO</span> 状态（status）</a></li>
-<li><a href="#org5ce9b0e">3.4.3.12. <span class="todo TODO">TODO</span> TSDB 管理 APIs</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgbfc26fc">3.5. <span class="todo TODO">TODO</span> 存储</a></li>
-<li><a href="#orgfb47f57">3.6. <span class="todo TODO">TODO</span> Federation</a></li>
-<li><a href="#org7262f8c">3.7. <span class="todo TODO">TODO</span> 管理 API</a></li>
-</ul>
-</li>
-<li><a href="#org38ca87c">4. <span class="todo TODO">TODO</span> 可视化</a></li>
-<li><a href="#orgc1abd52">5. <span class="todo TODO">TODO</span> Instrumenting</a></li>
-<li><a href="#orga584679">6. <span class="todo TODO">TODO</span> Operating</a></li>
-<li><a href="#org9306fe7">7. <span class="todo TODO">TODO</span> 告警（Alerting）</a></li>
-<li><a href="#org4f37f22">8. <span class="todo TODO">TODO</span> 最佳实践</a>
+<li><a href="#orgf464c36">3.4.3. HTTP API</a>
 <ul>
-<li><a href="#org51a010f">8.1. <span class="todo TODO">TODO</span> 何时使用 Pushgateway ?</a></li>
+<li><a href="#org56d0484">3.4.3.1. 格式</a></li>
+<li><a href="#org83aec16">3.4.3.2. 表达式查询</a>
+<ul>
+<li><a href="#org39c8883">3.4.3.2.1. 瞬时查询</a></li>
+<li><a href="#org501853a">3.4.3.2.2. 范围查询</a></li>
 </ul>
 </li>
-<li><a href="#orgdfa6b7f">9. <span class="todo TODO">TODO</span> 指南（GUIDES）</a></li>
+<li><a href="#org3b63162">3.4.3.3. 查询元数据（metadata）</a>
+<ul>
+<li><a href="#orgcc64ad3">3.4.3.3.1. 通过 label 匹配找到时间序列</a></li>
+<li><a href="#orge5e7d52">3.4.3.3.2. 获取 label 名称</a></li>
+<li><a href="#org736a3b6">3.4.3.3.3. 查询 label 值</a></li>
+</ul>
+</li>
+<li><a href="#org125a3c4">3.4.3.4. 表达式查询结果格式</a>
+<ul>
+<li><a href="#org050a7bc">3.4.3.4.1. 范围向量（Range vectors）</a></li>
+<li><a href="#orge90942d">3.4.3.4.2. 瞬间向量（Instant vectors）</a></li>
+<li><a href="#org6b1e0e4">3.4.3.4.3. 标量（Scalars）</a></li>
+<li><a href="#org23afd2c">3.4.3.4.4. 字符串（Strings）</a></li>
+</ul>
+</li>
+<li><a href="#orga532a0e">3.4.3.5. <span class="todo TODO">TODO</span> 目标（targets）</a></li>
+<li><a href="#org3f842d1">3.4.3.6. <span class="todo TODO">TODO</span> 规则（Rules）</a></li>
+<li><a href="#org8ec6fb2">3.4.3.7. <span class="todo TODO">TODO</span> 告警（Alerts）</a></li>
+<li><a href="#org21c7436">3.4.3.8. <span class="todo TODO">TODO</span> 查询目标元数据</a></li>
+<li><a href="#org44f1cd2">3.4.3.9. <span class="todo TODO">TODO</span> 查询 metric 元数据</a></li>
+<li><a href="#orgc23983a">3.4.3.10. <span class="todo TODO">TODO</span> Alertmanagers</a></li>
+<li><a href="#orgef1f6d2">3.4.3.11. <span class="todo TODO">TODO</span> 状态（status）</a></li>
+<li><a href="#org4826db6">3.4.3.12. <span class="todo TODO">TODO</span> TSDB 管理 APIs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgcced92b">3.5. <span class="todo TODO">TODO</span> 存储</a></li>
+<li><a href="#orgfff11e6">3.6. <span class="todo TODO">TODO</span> Federation</a></li>
+<li><a href="#orge0c8f4b">3.7. <span class="todo TODO">TODO</span> 管理 API</a></li>
+</ul>
+</li>
+<li><a href="#org338dd84">4. <span class="todo TODO">TODO</span> 可视化</a></li>
+<li><a href="#org1196230">5. <span class="todo TODO">TODO</span> Instrumenting</a></li>
+<li><a href="#org759a565">6. <span class="todo TODO">TODO</span> Operating</a></li>
+<li><a href="#org6b8a467">7. <span class="todo TODO">TODO</span> 告警（Alerting）</a></li>
+<li><a href="#org4b06cea">8. <span class="todo TODO">TODO</span> 最佳实践</a>
+<ul>
+<li><a href="#org00301b4">8.1. <span class="todo TODO">TODO</span> 何时使用 Pushgateway ?</a></li>
+</ul>
+</li>
+<li><a href="#org7bedc1e">9. <span class="todo TODO">TODO</span> 指南（GUIDES）</a></li>
 </ul>
 </div>
 </div>
@@ -472,16 +472,16 @@
 需要边看边练习的话，可以用自己的主机搭建一个临时的监控平台，可参考 <a href="monitor-based-on-prometheus.html">基于 Promethetheus 监控告警</a> 中的示例。
 </p>
 
-<div id="outline-container-org7c717ba" class="outline-2">
-<h2 id="org7c717ba"><span class="section-number-2">1.</span> 引言（Introduction）</h2>
+<div id="outline-container-org8caf156" class="outline-2">
+<h2 id="org8caf156"><span class="section-number-2">1.</span> 引言（Introduction）</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org296d8ad" class="outline-3">
-<h3 id="org296d8ad"><span class="section-number-3">1.1.</span> 概览</h3>
+<div id="outline-container-orgc2229b0" class="outline-3">
+<h3 id="orgc2229b0"><span class="section-number-3">1.1.</span> 概览</h3>
 <div class="outline-text-3" id="text-1-1">
 </div>
-<div id="outline-container-org92fb2f7" class="outline-4">
-<h4 id="org92fb2f7"><span class="section-number-4">1.1.1.</span> 什么是 Prometheus?</h4>
+<div id="outline-container-orge301d4a" class="outline-4">
+<h4 id="orge301d4a"><span class="section-number-4">1.1.1.</span> 什么是 Prometheus?</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <p>
 Prometheus 是一个开源的监控告警系统，最初由 <a href="https://soundcloud.com/">SoundCloud</a> 构建。2012 年成立以来，许多公司和组织都开始使用 Prometheus，拥有非常活跃的开发人员和用户社区。
@@ -490,8 +490,8 @@ Prometheus 是一个开源的监控告警系统，最初由 <a href="https://sou
 </div>
 </div>
 
-<div id="outline-container-orgfbe6d31" class="outline-4">
-<h4 id="orgfbe6d31"><span class="section-number-4">1.1.2.</span> 特性</h4>
+<div id="outline-container-org110edef" class="outline-4">
+<h4 id="org110edef"><span class="section-number-4">1.1.2.</span> 特性</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <p>
 Prometheus 的主要特性：
@@ -509,8 +509,8 @@ Prometheus 的主要特性：
 </div>
 </div>
 
-<div id="outline-container-org80f4266" class="outline-4">
-<h4 id="org80f4266"><span class="section-number-4">1.1.3.</span> 组件</h4>
+<div id="outline-container-org6626a9e" class="outline-4">
+<h4 id="org6626a9e"><span class="section-number-4">1.1.3.</span> 组件</h4>
 <div class="outline-text-4" id="text-1-1-3">
 <p>
 Prometheus 生态由多个组件组成，其中许多都是可选的：
@@ -531,15 +531,15 @@ Prometheus 生态由多个组件组成，其中许多都是可选的：
 </div>
 </div>
 
-<div id="outline-container-org18f6b0a" class="outline-4">
-<h4 id="org18f6b0a"><span class="section-number-4">1.1.4.</span> 架构</h4>
+<div id="outline-container-orgd9ffccf" class="outline-4">
+<h4 id="orgd9ffccf"><span class="section-number-4">1.1.4.</span> 架构</h4>
 <div class="outline-text-4" id="text-1-1-4">
 <p>
 下面这张图说明了 Prometheus 的体系结构以及一些生态组件：
 </p>
 
 
-<div id="org44e2ebe" class="figure">
+<div id="org644372b" class="figure">
 <p><img src="https://prometheus.io/assets/architecture.png" alt="architecture.png" />
 </p>
 </div>
@@ -553,8 +553,8 @@ Prometheus 生态由多个组件组成，其中许多都是可选的：
 </div>
 </div>
 
-<div id="outline-container-org17046e4" class="outline-4">
-<h4 id="org17046e4"><span class="section-number-4">1.1.5.</span> 什么时候比较适合使用 Prometheus？</h4>
+<div id="outline-container-orgc1647cf" class="outline-4">
+<h4 id="orgc1647cf"><span class="section-number-4">1.1.5.</span> 什么时候比较适合使用 Prometheus？</h4>
 <div class="outline-text-4" id="text-1-1-5">
 <p>
 Prometheus 比较适合记录任何纯数值的时间序列。它既适合以机器为中心的监控，也适合高度动态的面向服务的架构体系的监控。
@@ -567,8 +567,8 @@ Prometheus 比较适合记录任何纯数值的时间序列。它既适合以机
 </div>
 </div>
 
-<div id="outline-container-orgcb5e589" class="outline-4">
-<h4 id="orgcb5e589"><span class="section-number-4">1.1.6.</span> 什么时候不适合使用 Prometheus？</h4>
+<div id="outline-container-orgaf28ab7" class="outline-4">
+<h4 id="orgaf28ab7"><span class="section-number-4">1.1.6.</span> 什么时候不适合使用 Prometheus？</h4>
 <div class="outline-text-4" id="text-1-1-6">
 <p>
 Prometheus 很重视可靠性，即使在有故障的时候，始终可以看到有关系统的可用统计信息。
@@ -579,8 +579,8 @@ Prometheus 很重视可靠性，即使在有故障的时候，始终可以看到
 </div>
 </div>
 
-<div id="outline-container-org03ef14e" class="outline-3">
-<h3 id="org03ef14e"><span class="section-number-3">1.2.</span> 第一步</h3>
+<div id="outline-container-org4260be4" class="outline-3">
+<h3 id="org4260be4"><span class="section-number-3">1.2.</span> 第一步</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Prometheus 是一个监控平台，它从监控目标通过 HTTP 获取度量指标。
@@ -588,8 +588,8 @@ Prometheus 的第一个监控目标是 Prometheus 自己，它提供了各种各
 </p>
 </div>
 
-<div id="outline-container-orgd2e1fdf" class="outline-4">
-<h4 id="orgd2e1fdf"><span class="section-number-4">1.2.1.</span> 下载</h4>
+<div id="outline-container-org51bca4e" class="outline-4">
+<h4 id="org51bca4e"><span class="section-number-4">1.2.1.</span> 下载</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
 在 <a href="https://prometheus.io/download/">下载</a> 页面下载对应平台的二进制包，然后解压即可使用。
@@ -605,8 +605,8 @@ console_libraries  consoles  LICENSE  NOTICE  prometheus  prometheus.yml  promto
 </div>
 </div>
 
-<div id="outline-container-org7da6e4d" class="outline-4">
-<h4 id="org7da6e4d"><span class="section-number-4">1.2.2.</span> 配置</h4>
+<div id="outline-container-orga85131e" class="outline-4">
+<h4 id="orga85131e"><span class="section-number-4">1.2.2.</span> 配置</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <p>
 Prometheus 配置是 <a href="https://yaml.org/start.html">YAML</a> 格式的，下载之后会提供了一个配置样本文件 <code>prometheus.yml</code> 。
@@ -622,13 +622,13 @@ Prometheus 配置是 <a href="https://yaml.org/start.html">YAML</a> 格式的，
   <span style="color: #00538b;">evaluation_interval</span>: 15s
 
   <span style="color: #00538b;">rule_files</span>:
-    <span style="color: #505050;"># </span><span style="color: #505050;">- "first_rules.yml"</span>
-    <span style="color: #505050;"># </span><span style="color: #505050;">- "second_rules.yml"</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #505050;"># </span><span style="color: #505050;">- "first_rules.yml"</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #505050;"># </span><span style="color: #505050;">- "second_rules.yml"</span>
 
-    <span style="color: #00538b;">scrape_configs</span>:
-      - <span style="color: #00538b;">job_name</span>: <span style="color: #2544bb;">'prometheus'</span>
-        <span style="color: #00538b;">static_configs</span>:
-          - <span style="color: #00538b;">targets</span>: [<span style="color: #2544bb;">'localhost:9090'</span>]
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">scrape_configs</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  - job_name</span>: <span style="color: #2544bb;">'prometheus'</span>
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">static_configs</span>:
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  - targets</span>: [<span style="color: #2544bb;">'localhost:9090'</span>]
 </pre>
 </div>
 
@@ -651,8 +651,8 @@ Prometheus 配置是 <a href="https://yaml.org/start.html">YAML</a> 格式的，
 </div>
 </div>
 
-<div id="outline-container-org5904717" class="outline-4">
-<h4 id="org5904717"><span class="section-number-4">1.2.3.</span> 启动 Prometheus</h4>
+<div id="outline-container-org3e5fdfb" class="outline-4">
+<h4 id="org3e5fdfb"><span class="section-number-4">1.2.3.</span> 启动 Prometheus</h4>
 <div class="outline-text-4" id="text-1-2-3">
 <p>
 使用我们新创建的配置文件 Prometheus，切换到 Prometheus 二进制文件的目录并执行：
@@ -673,8 +673,8 @@ Prometheus 配置是 <a href="https://yaml.org/start.html">YAML</a> 格式的，
 </div>
 </div>
 
-<div id="outline-container-org2cd3327" class="outline-4">
-<h4 id="org2cd3327"><span class="section-number-4">1.2.4.</span> 在浏览器上使用表达式</h4>
+<div id="outline-container-orgc52929a" class="outline-4">
+<h4 id="orgc52929a"><span class="section-number-4">1.2.4.</span> 在浏览器上使用表达式</h4>
 <div class="outline-text-4" id="text-1-2-4">
 <p>
 访问 <a href="http://localhost:9090/graph">http://localhost:9090/graph</a> ，"Graph" 菜单，然后可以看到 "Graph" 和 "Console" 两个页签。
@@ -712,8 +712,8 @@ count(promhttp_metric_handler_requests_total)
 </div>
 </div>
 
-<div id="outline-container-org854b8ad" class="outline-4">
-<h4 id="org854b8ad"><span class="section-number-4">1.2.5.</span> 使用图形界面</h4>
+<div id="outline-container-orgbef9842" class="outline-4">
+<h4 id="orgbef9842"><span class="section-number-4">1.2.5.</span> 使用图形界面</h4>
 <div class="outline-text-4" id="text-1-2-5">
 <p>
 切换到 "Graph" 页签，可以查看表达式执行结果的图形。
@@ -729,8 +729,8 @@ rate(promhttp_metric_handler_requests_total{code="200"}[1m])
 </div>
 </div>
 
-<div id="outline-container-org87dbe29" class="outline-4">
-<h4 id="org87dbe29"><span class="section-number-4">1.2.6.</span> 监控其它目标</h4>
+<div id="outline-container-org0d985bf" class="outline-4">
+<h4 id="org0d985bf"><span class="section-number-4">1.2.6.</span> 监控其它目标</h4>
 <div class="outline-text-4" id="text-1-2-6">
 <p>
 仅从 Prometheus 的指标不能很好的说明 Promethues 的功能，为了更好的了解 Prometheus 可以做什么，
@@ -740,16 +740,16 @@ rate(promhttp_metric_handler_requests_total{code="200"}[1m])
 </div>
 </div>
 
-<div id="outline-container-org877b9b8" class="outline-3">
-<h3 id="org877b9b8"><span class="section-number-3">1.3.</span> 与替代品的比较 <code>[5/5]</code></h3>
+<div id="outline-container-orgf54323d" class="outline-3">
+<h3 id="orgf54323d"><span class="section-number-3">1.3.</span> 与替代品的比较 <code>[5/5]</code></h3>
 <div class="outline-text-3" id="text-1-3">
 </div>
-<div id="outline-container-orgf34ef22" class="outline-4">
-<h4 id="orgf34ef22"><span class="section-number-4">1.3.1.</span> <span class="done DONE">DONE</span> Prometheus vs. Graphite</h4>
+<div id="outline-container-org39c07a0" class="outline-4">
+<h4 id="org39c07a0"><span class="section-number-4">1.3.1.</span> <span class="done DONE">DONE</span> Prometheus vs. Graphite</h4>
 <div class="outline-text-4" id="text-1-3-1">
 </div>
-<div id="outline-container-org314e0ba" class="outline-5">
-<h5 id="org314e0ba"><span class="section-number-5">1.3.1.1.</span> 范围（Scope）</h5>
+<div id="outline-container-org07c921f" class="outline-5">
+<h5 id="org07c921f"><span class="section-number-5">1.3.1.1.</span> 范围（Scope）</h5>
 <div class="outline-text-5" id="text-1-3-1-1">
 <p>
 <a href="https://graphite.readthedocs.io/en/latest/">Graphite</a> 致力于成为具有查询语言和图形特性的被动的（passtive）时间序列数据库。其它的任何问题都可以通过外部组件解决。
@@ -762,8 +762,8 @@ Prometheus 是一个完整的监控和趋势分析系统，包括内置的主动
 </div>
 </div>
 
-<div id="outline-container-orge3efb77" class="outline-5">
-<h5 id="orge3efb77"><span class="section-number-5">1.3.1.2.</span> 数据模型</h5>
+<div id="outline-container-orgde967ba" class="outline-5">
+<h5 id="orgde967ba"><span class="section-number-5">1.3.1.2.</span> 数据模型</h5>
 <div class="outline-text-5" id="text-1-3-1-2">
 <p>
 Graphite 存储具名的时间序列的数值样本，跟 Prometheus 很像。然而，Prometheus 的元数据模型更加的丰富：
@@ -797,8 +797,8 @@ api_server_http_requests_total{method="POST",handler="/tracks",status="500",inst
 </div>
 </div>
 
-<div id="outline-container-org4352510" class="outline-5">
-<h5 id="org4352510"><span class="section-number-5">1.3.1.3.</span> 存储</h5>
+<div id="outline-container-orge8276ad" class="outline-5">
+<h5 id="orge8276ad"><span class="section-number-5">1.3.1.3.</span> 存储</h5>
 <div class="outline-text-5" id="text-1-3-1-3">
 <p>
 Graphite 使用 <a href="https://graphite.readthedocs.org/en/latest/whisper.html">Whisper</a> 存储时间序列数据在本地，是一个 RRD 风格的数据库，它希望样本以固定时间间隔到达。
@@ -812,8 +812,8 @@ Prometheus 也是每个时间序列单独的文件，但是允许在获取数据
 </div>
 </div>
 
-<div id="outline-container-orgca90e87" class="outline-5">
-<h5 id="orgca90e87"><span class="section-number-5">1.3.1.4.</span> 总结</h5>
+<div id="outline-container-orgfe08cc5" class="outline-5">
+<h5 id="orgfe08cc5"><span class="section-number-5">1.3.1.4.</span> 总结</h5>
 <div class="outline-text-5" id="text-1-3-1-4">
 <p>
 Prometheus 除了更容易运行和集成到你的环境之外，还提供了丰富的数据模型和查询语言。
@@ -823,8 +823,8 @@ Prometheus 除了更容易运行和集成到你的环境之外，还提供了丰
 </div>
 </div>
 
-<div id="outline-container-org5ad6296" class="outline-4">
-<h4 id="org5ad6296"><span class="section-number-4">1.3.2.</span> <span class="done DONE">DONE</span> Prometheus vs. InfluxDB</h4>
+<div id="outline-container-org2a8b351" class="outline-4">
+<h4 id="org2a8b351"><span class="section-number-4">1.3.2.</span> <span class="done DONE">DONE</span> Prometheus vs. InfluxDB</h4>
 <div class="outline-text-4" id="text-1-3-2">
 <p>
 <a href="https://influxdata.com/">InfluxDB</a> 是一个开源的时间序列数据库，商业版本支持水平扩展和集群。Prometheus 开始开发近一年后，InfluxDB 项目才发布的，
@@ -832,8 +832,8 @@ Prometheus 除了更容易运行和集成到你的环境之外，还提供了丰
 </p>
 </div>
 
-<div id="outline-container-org8524f29" class="outline-5">
-<h5 id="org8524f29"><span class="section-number-5">1.3.2.1.</span> 范围（Scope）</h5>
+<div id="outline-container-orgd3379ce" class="outline-5">
+<h5 id="orgd3379ce"><span class="section-number-5">1.3.2.1.</span> 范围（Scope）</h5>
 <div class="outline-text-5" id="text-1-3-2-1">
 <p>
 为了公平的比较，我们还比如把 <a href="https://github.com/influxdata/kapacitor">Kapacitor</a> 和 InfluxDB 放一起考虑，它们结合一起来，可以解决 Prometheus 和
@@ -852,8 +852,8 @@ Prometheus 提供了<a href="https://www.robustperception.io/translating-between
 </div>
 </div>
 
-<div id="outline-container-orgefb73ef" class="outline-5">
-<h5 id="orgefb73ef"><span class="section-number-5">1.3.2.2.</span> 数据模型/存储</h5>
+<div id="outline-container-org482ec92" class="outline-5">
+<h5 id="org482ec92"><span class="section-number-5">1.3.2.2.</span> 数据模型/存储</h5>
 <div class="outline-text-5" id="text-1-3-2-2">
 <p>
 和 Prometheus 一样，InfluxDB 数据模型有有键值对作为标签（label），名字叫做标签（tags）。
@@ -873,8 +873,8 @@ InfluxDB 使用 <a href="https://docs.influxdata.com/influxdb/v1.7/concepts/stor
 </div>
 </div>
 
-<div id="outline-container-org5ad9268" class="outline-5">
-<h5 id="org5ad9268"><span class="section-number-5">1.3.2.3.</span> 架构</h5>
+<div id="outline-container-org219825d" class="outline-5">
+<h5 id="org219825d"><span class="section-number-5">1.3.2.3.</span> 架构</h5>
 <div class="outline-text-5" id="text-1-3-2-3">
 <p>
 Prometheus 服务器彼此独立运行，仅依靠本地存储来实现核心功能：抓取、规则处理和告警。开源的 InfluxDB 版本类似。
@@ -901,8 +901,8 @@ Influx 提供了 <a href="https://docs.influxdata.com/enterprise_kapacitor/v1.5/
 </div>
 </div>
 
-<div id="outline-container-org379f9a9" class="outline-5">
-<h5 id="org379f9a9"><span class="section-number-5">1.3.2.4.</span> 总结</h5>
+<div id="outline-container-org4dba307" class="outline-5">
+<h5 id="org4dba307"><span class="section-number-5">1.3.2.4.</span> 总结</h5>
 <div class="outline-text-5" id="text-1-3-2-4">
 <p>
 两个系统有很大的相似性。都有标签（一个叫 label，一个叫 tag）来高效的支持多维指标。都有基本相同的数据压缩算法。
@@ -937,16 +937,16 @@ Prometheus 是一个完全开源的独立项目，由许多公司和个人维护
 </div>
 </div>
 
-<div id="outline-container-orga7d2d6d" class="outline-4">
-<h4 id="orga7d2d6d"><span class="section-number-4">1.3.3.</span> <span class="done DONE">DONE</span> Prometheus vs. OpenTSDB</h4>
+<div id="outline-container-org7b1956d" class="outline-4">
+<h4 id="org7b1956d"><span class="section-number-4">1.3.3.</span> <span class="done DONE">DONE</span> Prometheus vs. OpenTSDB</h4>
 <div class="outline-text-4" id="text-1-3-3">
 <p>
 <a href="http://opentsdb.net/">OpenTSDB</a> 是一个基于 <a href="https://hadoop.apache.org/">Hadoop</a> 和 <a href="https://hbase.apache.org/">HBase</a> 的分布式的时间序列数据库。
 </p>
 </div>
 
-<div id="outline-container-org1e35625" class="outline-5">
-<h5 id="org1e35625"><span class="section-number-5">1.3.3.1.</span> 范围</h5>
+<div id="outline-container-org416dc42" class="outline-5">
+<h5 id="org416dc42"><span class="section-number-5">1.3.3.1.</span> 范围</h5>
 <div class="outline-text-5" id="text-1-3-3-1">
 <p>
 这里的适用范围和 Graphite 应用相同。
@@ -954,8 +954,8 @@ Prometheus 是一个完全开源的独立项目，由许多公司和个人维护
 </div>
 </div>
 
-<div id="outline-container-orgda38bcb" class="outline-5">
-<h5 id="orgda38bcb"><span class="section-number-5">1.3.3.2.</span> 数据模型</h5>
+<div id="outline-container-orgb159827" class="outline-5">
+<h5 id="orgb159827"><span class="section-number-5">1.3.3.2.</span> 数据模型</h5>
 <div class="outline-text-5" id="text-1-3-3-2">
 <p>
 OpenTSDB 的数据模型几乎和 Prometheus 相同：时间序列由一组任意的键值对标识（OpenTSDB 的 tags 是 Prometheus 的 labels）。所有的指标数据是 <a href="http://opentsdb.net/docs/build/html/user_guide/writing/index.html#time-series-cardinality">存储在一起的</a>，限制指标的基数。
@@ -964,8 +964,8 @@ OpenTSDB 的数据模型几乎和 Prometheus 相同：时间序列由一组任�
 </div>
 </div>
 
-<div id="outline-container-org1705526" class="outline-5">
-<h5 id="org1705526"><span class="section-number-5">1.3.3.3.</span> 存储</h5>
+<div id="outline-container-org1736196" class="outline-5">
+<h5 id="org1736196"><span class="section-number-5">1.3.3.3.</span> 存储</h5>
 <div class="outline-text-5" id="text-1-3-3-3">
 <p>
 OpenTSDB 是在 Hadoop 和 HBase 之上实现的，这意味着水平扩展比较简单，但是你一开始就要接受运行 Hadoop/HBase 集群的总体复杂性。
@@ -977,8 +977,8 @@ Prometheus 最初运行起来会很简单，但是一旦超出单个节点的容
 </div>
 </div>
 
-<div id="outline-container-org509cca3" class="outline-5">
-<h5 id="org509cca3"><span class="section-number-5">1.3.3.4.</span> 总结</h5>
+<div id="outline-container-org72ee006" class="outline-5">
+<h5 id="org72ee006"><span class="section-number-5">1.3.3.4.</span> 总结</h5>
 <div class="outline-text-5" id="text-1-3-3-4">
 <p>
 Prometheus 提供了更丰富的查询语言，可以处理更高的基数指标，并且是构建完整监控系统的一部分。如果你已经在运行 Hadoop 并重视长期存储的优势，那么 OpenTSDB 是一个不错的选择。
@@ -987,16 +987,16 @@ Prometheus 提供了更丰富的查询语言，可以处理更高的基数指标
 </div>
 </div>
 
-<div id="outline-container-org8386f19" class="outline-4">
-<h4 id="org8386f19"><span class="section-number-4">1.3.4.</span> <span class="done DONE">DONE</span> Prometheus vs. Nagios</h4>
+<div id="outline-container-org315ca7a" class="outline-4">
+<h4 id="org315ca7a"><span class="section-number-4">1.3.4.</span> <span class="done DONE">DONE</span> Prometheus vs. Nagios</h4>
 <div class="outline-text-4" id="text-1-3-4">
 <p>
 <a href="https://www.nagios.org/">Nagios</a> 是一个始于 20 世纪 90 年代（1990s）的 NetSaint 监控系统。
 </p>
 </div>
 
-<div id="outline-container-org1ac7546" class="outline-5">
-<h5 id="org1ac7546"><span class="section-number-5">1.3.4.1.</span> 范围</h5>
+<div id="outline-container-org3c1a341" class="outline-5">
+<h5 id="org3c1a341"><span class="section-number-5">1.3.4.1.</span> 范围</h5>
 <div class="outline-text-5" id="text-1-3-4-1">
 <p>
 Nagios 主要基于脚本退出码进行告警。它们被称为 "checks"。单个告警支持静默，但是不会进行分组，路由或者重复数据删除。
@@ -1009,8 +1009,8 @@ NRPE 在远程机器上运行检查。
 </div>
 </div>
 
-<div id="outline-container-orgcd12f0b" class="outline-5">
-<h5 id="orgcd12f0b"><span class="section-number-5">1.3.4.2.</span> 数据模型</h5>
+<div id="outline-container-org34dd456" class="outline-5">
+<h5 id="org34dd456"><span class="section-number-5">1.3.4.2.</span> 数据模型</h5>
 <div class="outline-text-5" id="text-1-3-4-2">
 <p>
 Nagios 是基于主机的。每个主机可以有有一个或者多个服务，并且每个服务执行一项检查。
@@ -1022,8 +1022,8 @@ Nagios 是基于主机的。每个主机可以有有一个或者多个服务，�
 </div>
 </div>
 
-<div id="outline-container-orgeaac832" class="outline-5">
-<h5 id="orgeaac832"><span class="section-number-5">1.3.4.3.</span> 存储</h5>
+<div id="outline-container-org62cd80b" class="outline-5">
+<h5 id="org62cd80b"><span class="section-number-5">1.3.4.3.</span> 存储</h5>
 <div class="outline-text-5" id="text-1-3-4-3">
 <p>
 除了检查状态之外，Nagios 本身没有存储空间。有些插件可以存储诸如可视化的数据。
@@ -1031,8 +1031,8 @@ Nagios 是基于主机的。每个主机可以有有一个或者多个服务，�
 </div>
 </div>
 
-<div id="outline-container-org7d103a4" class="outline-5">
-<h5 id="org7d103a4"><span class="section-number-5">1.3.4.4.</span> 架构</h5>
+<div id="outline-container-org03677bf" class="outline-5">
+<h5 id="org03677bf"><span class="section-number-5">1.3.4.4.</span> 架构</h5>
 <div class="outline-text-5" id="text-1-3-4-4">
 <p>
 Nagios 服务器是独立的，所有的检查配置均通过文件进行。
@@ -1040,8 +1040,8 @@ Nagios 服务器是独立的，所有的检查配置均通过文件进行。
 </div>
 </div>
 
-<div id="outline-container-org9ad2299" class="outline-5">
-<h5 id="org9ad2299"><span class="section-number-5">1.3.4.5.</span> 总结</h5>
+<div id="outline-container-org838b6b5" class="outline-5">
+<h5 id="org838b6b5"><span class="section-number-5">1.3.4.5.</span> 总结</h5>
 <div class="outline-text-5" id="text-1-3-4-5">
 <p>
 Nagios 适用于黑盒（blackbox）探测足够小型或者静态的系统的基本监控。
@@ -1054,16 +1054,16 @@ Nagios 适用于黑盒（blackbox）探测足够小型或者静态的系统的�
 </div>
 </div>
 
-<div id="outline-container-orgbdebc31" class="outline-4">
-<h4 id="orgbdebc31"><span class="section-number-4">1.3.5.</span> <span class="done DONE">DONE</span> Prometheus vs. Sensu</h4>
+<div id="outline-container-org9c39159" class="outline-4">
+<h4 id="org9c39159"><span class="section-number-4">1.3.5.</span> <span class="done DONE">DONE</span> Prometheus vs. Sensu</h4>
 <div class="outline-text-4" id="text-1-3-5">
 <p>
 <a href="https://sensu.io/">Sensu</a> 是一个组合的监控管道，允许复用现有的 Nagios 检查。
 </p>
 </div>
 
-<div id="outline-container-orge5194cc" class="outline-5">
-<h5 id="orge5194cc"><span class="section-number-5">1.3.5.1.</span> 范围</h5>
+<div id="outline-container-org50ff325" class="outline-5">
+<h5 id="org50ff325"><span class="section-number-5">1.3.5.1.</span> 范围</h5>
 <div class="outline-text-5" id="text-1-3-5-1">
 <p>
 The same general scope differences as in the case of Nagios apply here.
@@ -1075,8 +1075,8 @@ The same general scope differences as in the case of Nagios apply here.
 </div>
 </div>
 
-<div id="outline-container-orgde6aa8c" class="outline-5">
-<h5 id="orgde6aa8c"><span class="section-number-5">1.3.5.2.</span> 数据模型</h5>
+<div id="outline-container-org4b88e8f" class="outline-5">
+<h5 id="org4b88e8f"><span class="section-number-5">1.3.5.2.</span> 数据模型</h5>
 <div class="outline-text-5" id="text-1-3-5-2">
 <p>
 Sensu 和 Nagios 有相同粗糙的数据模型。
@@ -1084,8 +1084,8 @@ Sensu 和 Nagios 有相同粗糙的数据模型。
 </div>
 </div>
 
-<div id="outline-container-orgcce5869" class="outline-5">
-<h5 id="orgcce5869"><span class="section-number-5">1.3.5.3.</span> 存储</h5>
+<div id="outline-container-org634876a" class="outline-5">
+<h5 id="org634876a"><span class="section-number-5">1.3.5.3.</span> 存储</h5>
 <div class="outline-text-5" id="text-1-3-5-3">
 <p>
 Sensu 使用 Redis 来存储监控数据，包括 Sensu 客户端注册表，检查结果，检查执行记录，和当前事件数据。
@@ -1093,8 +1093,8 @@ Sensu 使用 Redis 来存储监控数据，包括 Sensu 客户端注册表，检
 </div>
 </div>
 
-<div id="outline-container-org245e719" class="outline-5">
-<h5 id="org245e719"><span class="section-number-5">1.3.5.4.</span> 架构</h5>
+<div id="outline-container-org707e9f7" class="outline-5">
+<h5 id="org707e9f7"><span class="section-number-5">1.3.5.4.</span> 架构</h5>
 <div class="outline-text-5" id="text-1-3-5-4">
 <p>
 Sensu 有许多组件。它使用 RabbitMQ 传送，Redis 存储当前状态，并使用单独的服务器进行处理和 API 访问。
@@ -1106,8 +1106,8 @@ Sensu 有许多组件。它使用 RabbitMQ 传送，Redis 存储当前状态，�
 </div>
 </div>
 
-<div id="outline-container-orgf0b67f3" class="outline-5">
-<h5 id="orgf0b67f3"><span class="section-number-5">1.3.5.5.</span> 总结</h5>
+<div id="outline-container-org26c8bf7" class="outline-5">
+<h5 id="org26c8bf7"><span class="section-number-5">1.3.5.5.</span> 总结</h5>
 <div class="outline-text-5" id="text-1-3-5-5">
 <p>
 如果你已经有 Nagios 安装并且希望水平扩展，或者想利用 Sensu 的自动注册功能，那么 Sensu 是一个不错的选择。
@@ -1121,36 +1121,36 @@ Sensu 有许多组件。它使用 RabbitMQ 传送，Redis 存储当前状态，�
 </div>
 </div>
 
-<div id="outline-container-orged2609a" class="outline-3">
-<h3 id="orged2609a"><span class="section-number-3">1.4.</span> FAQ</h3>
+<div id="outline-container-org2ed2368" class="outline-3">
+<h3 id="org2ed2368"><span class="section-number-3">1.4.</span> FAQ</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 经常被问到的一些问题。
 </p>
 </div>
 
-<div id="outline-container-org0ca58cf" class="outline-4">
-<h4 id="org0ca58cf"><span class="section-number-4">1.4.1.</span> 一般问题</h4>
+<div id="outline-container-orge14e188" class="outline-4">
+<h4 id="orge14e188"><span class="section-number-4">1.4.1.</span> 一般问题</h4>
 <div class="outline-text-4" id="text-1-4-1">
 </div>
-<div id="outline-container-orgc9f1e8c" class="outline-5">
-<h5 id="orgc9f1e8c"><span class="section-number-5">1.4.1.1.</span> 什么是 Prometheus？</h5>
+<div id="outline-container-orgcf1b07d" class="outline-5">
+<h5 id="orgcf1b07d"><span class="section-number-5">1.4.1.1.</span> 什么是 Prometheus？</h5>
 <div class="outline-text-5" id="text-1-4-1-1">
 <p>
 Prometheus 是具有活跃的生态的开源系统监控和告警工具包。
 </p>
 </div>
 </div>
-<div id="outline-container-org4d786e9" class="outline-5">
-<h5 id="org4d786e9"><span class="section-number-5">1.4.1.2.</span> 与其他系统监控相比如何？</h5>
+<div id="outline-container-org8803ed3" class="outline-5">
+<h5 id="org8803ed3"><span class="section-number-5">1.4.1.2.</span> 与其他系统监控相比如何？</h5>
 <div class="outline-text-5" id="text-1-4-1-2">
 <p>
 见上一小结。
 </p>
 </div>
 </div>
-<div id="outline-container-orgbcd3e53" class="outline-5">
-<h5 id="orgbcd3e53"><span class="section-number-5">1.4.1.3.</span> 它依赖什么？</h5>
+<div id="outline-container-orgbe8a13e" class="outline-5">
+<h5 id="orgbe8a13e"><span class="section-number-5">1.4.1.3.</span> 它依赖什么？</h5>
 <div class="outline-text-5" id="text-1-4-1-3">
 <p>
 Prometheus 主服务器独立运行，没有外部依赖。
@@ -1158,8 +1158,8 @@ Prometheus 主服务器独立运行，没有外部依赖。
 </div>
 </div>
 
-<div id="outline-container-org2a63d0e" class="outline-5">
-<h5 id="org2a63d0e"><span class="section-number-5">1.4.1.4.</span> 可以高可用吗？</h5>
+<div id="outline-container-orgb6a38b1" class="outline-5">
+<h5 id="orgb6a38b1"><span class="section-number-5">1.4.1.4.</span> 可以高可用吗？</h5>
 <div class="outline-text-5" id="text-1-4-1-4">
 <p>
 是的，在两台或者多台独立的计算机中运行相同的 Prometheus 服务即可。相同的告警将被 <a href="https://github.com/prometheus/alertmanager">Alertmanager</a> 删除。
@@ -1171,8 +1171,8 @@ Prometheus 主服务器独立运行，没有外部依赖。
 </div>
 </div>
 
-<div id="outline-container-org3c846a3" class="outline-5">
-<h5 id="org3c846a3"><span class="section-number-5">1.4.1.5.</span> 有人跟我说 Prometheus 「不可被扩展」？</h5>
+<div id="outline-container-org2b881dc" class="outline-5">
+<h5 id="org2b881dc"><span class="section-number-5">1.4.1.5.</span> 有人跟我说 Prometheus 「不可被扩展」？</h5>
 <div class="outline-text-5" id="text-1-4-1-5">
 <p>
 实际上有多种扩展方式来联邦（federate）Prometheus。阅读 Robust Perception 的 <a href="https://www.robustperception.io/scaling-and-federating-prometheus">Scaling and Federating Prometheus</a> 获取更多信息。
@@ -1180,8 +1180,8 @@ Prometheus 主服务器独立运行，没有外部依赖。
 </div>
 </div>
 
-<div id="outline-container-org6901f64" class="outline-5">
-<h5 id="org6901f64"><span class="section-number-5">1.4.1.6.</span> Prometheus 用什么语言写的？</h5>
+<div id="outline-container-org3a72c25" class="outline-5">
+<h5 id="org3a72c25"><span class="section-number-5">1.4.1.6.</span> Prometheus 用什么语言写的？</h5>
 <div class="outline-text-5" id="text-1-4-1-6">
 <p>
 大部分组件都是由 Go 写的。还有些是用 Java、Python 和 Ruby。
@@ -1189,8 +1189,8 @@ Prometheus 主服务器独立运行，没有外部依赖。
 </div>
 </div>
 
-<div id="outline-container-org7ba311e" class="outline-5">
-<h5 id="org7ba311e"><span class="section-number-5">1.4.1.7.</span> Prometheus 特性、存储格式和 APIs 的稳定性如何？</h5>
+<div id="outline-container-orgcecc464" class="outline-5">
+<h5 id="orgcecc464"><span class="section-number-5">1.4.1.7.</span> Prometheus 特性、存储格式和 APIs 的稳定性如何？</h5>
 <div class="outline-text-5" id="text-1-4-1-7">
 <p>
 Github 上的所有仓库都已到达 1.0.0 版本，都符合 <a href="http://semver.org/">语义版本</a>。重大更改或者主要版本都是用增量表示。
@@ -1204,8 +1204,8 @@ Github 上的所有仓库都已到达 1.0.0 版本，都符合 <a href="http://s
 </div>
 </div>
 
-<div id="outline-container-org8205889" class="outline-5">
-<h5 id="org8205889"><span class="section-number-5">1.4.1.8.</span> 为什么使用 pull 而不是 push？</h5>
+<div id="outline-container-org3e1d9f3" class="outline-5">
+<h5 id="org3e1d9f3"><span class="section-number-5">1.4.1.8.</span> 为什么使用 pull 而不是 push？</h5>
 <div class="outline-text-5" id="text-1-4-1-8">
 <p>
 使用拉取（pulling）有很多的优点：
@@ -1227,8 +1227,8 @@ Github 上的所有仓库都已到达 1.0.0 版本，都符合 <a href="http://s
 </div>
 </div>
 
-<div id="outline-container-org700b088" class="outline-5">
-<h5 id="org700b088"><span class="section-number-5">1.4.1.9.</span> 如何将日志输入到 Prometheus？</h5>
+<div id="outline-container-orgde539cb" class="outline-5">
+<h5 id="orgde539cb"><span class="section-number-5">1.4.1.9.</span> 如何将日志输入到 Prometheus？</h5>
 <div class="outline-text-5" id="text-1-4-1-9">
 <p>
 精简的答案：别这么干！使用类似 <a href="https://www.elastic.co/products">ELK</a> 技术栈来替代它。
@@ -1245,8 +1245,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-org130563d" class="outline-5">
-<h5 id="org130563d"><span class="section-number-5">1.4.1.10.</span> 谁写的 Prometheus？</h5>
+<div id="outline-container-orgb081c41" class="outline-5">
+<h5 id="orgb081c41"><span class="section-number-5">1.4.1.10.</span> 谁写的 Prometheus？</h5>
 <div class="outline-text-5" id="text-1-4-1-10">
 <p>
 最初是由 <a href="http://www.matttproud.com/">Matt T. Proud</a> 和 <a href="http://juliusv.com/">Julius Volz</a> 私下写的。大部分最初开发都是 <a href="https://soundcloud.com/">SoundCloud</a> 赞助的。
@@ -1258,8 +1258,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-org6eeea2a" class="outline-5">
-<h5 id="org6eeea2a"><span class="section-number-5">1.4.1.11.</span> Prometheus 使用什么许可证？</h5>
+<div id="outline-container-orge835dc2" class="outline-5">
+<h5 id="orge835dc2"><span class="section-number-5">1.4.1.11.</span> Prometheus 使用什么许可证？</h5>
 <div class="outline-text-5" id="text-1-4-1-11">
 <p>
 <a href="https://github.com/prometheus/prometheus/blob/master/LICENSE">Apache License 2.0</a>
@@ -1267,8 +1267,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-org650ad0b" class="outline-5">
-<h5 id="org650ad0b"><span class="section-number-5">1.4.1.12.</span> Prometheus 的复数是什么？</h5>
+<div id="outline-container-orge4f93cc" class="outline-5">
+<h5 id="orge4f93cc"><span class="section-number-5">1.4.1.12.</span> Prometheus 的复数是什么？</h5>
 <div class="outline-text-5" id="text-1-4-1-12">
 <p>
 经过<a href="https://youtu.be/B_CDeYrqxjQ">广泛的研究</a>，现在确定 'Prometheus' 的正确复数是 'Prometheis'。
@@ -1276,8 +1276,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-org83d9b68" class="outline-5">
-<h5 id="org83d9b68"><span class="section-number-5">1.4.1.13.</span> 我可以重新载入 Prometheus 的配置吗？</h5>
+<div id="outline-container-orgffafa47" class="outline-5">
+<h5 id="orgffafa47"><span class="section-number-5">1.4.1.13.</span> 我可以重新载入 Prometheus 的配置吗？</h5>
 <div class="outline-text-5" id="text-1-4-1-13">
 <p>
 是的，发送 <code>SIGHUP</code> 到 Promtheus 进程或者 HTTP POST 服务的 <code>/-/reload</code> 地址会重新加载配置文件。各种组件会尝试妥善处理失败的更改。
@@ -1285,8 +1285,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-org3c76733" class="outline-5">
-<h5 id="org3c76733"><span class="section-number-5">1.4.1.14.</span> 我可以发送告警吗？</h5>
+<div id="outline-container-org8ba6fa5" class="outline-5">
+<h5 id="org8ba6fa5"><span class="section-number-5">1.4.1.14.</span> 我可以发送告警吗？</h5>
 <div class="outline-text-5" id="text-1-4-1-14">
 <p>
 是的，使用 <a href="https://github.com/prometheus/alertmanager">Alertmanager</a>。当前支持以下外部系统：
@@ -1304,8 +1304,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-org6cb210a" class="outline-5">
-<h5 id="org6cb210a"><span class="section-number-5">1.4.1.15.</span> 我可以创建 dashboard 吗？</h5>
+<div id="outline-container-org7801b75" class="outline-5">
+<h5 id="org7801b75"><span class="section-number-5">1.4.1.15.</span> 我可以创建 dashboard 吗？</h5>
 <div class="outline-text-5" id="text-1-4-1-15">
 <p>
 是的，生产环境推荐使用 <a href="https://prometheus.io/docs/visualization/grafana/">Grafana</a>。也有 <a href="https://prometheus.io/docs/visualization/consoles/">控制台模板</a>。
@@ -1313,8 +1313,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-orgfb618df" class="outline-5">
-<h5 id="orgfb618df"><span class="section-number-5">1.4.1.16.</span> 我可以修改时区吗？所有的内容都才用 UTC？</h5>
+<div id="outline-container-orgd5829c0" class="outline-5">
+<h5 id="orgd5829c0"><span class="section-number-5">1.4.1.16.</span> 我可以修改时区吗？所有的内容都才用 UTC？</h5>
 <div class="outline-text-5" id="text-1-4-1-16">
 <p>
 为了避免时区混乱，尤其是在涉及到所谓的夏时制，我们决定在内部使用 Unix 时间和 UTC 用于所有组件中的显示。
@@ -1324,12 +1324,12 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-orgab2d0e4" class="outline-4">
-<h4 id="orgab2d0e4"><span class="section-number-4">1.4.2.</span> Instrumentation</h4>
+<div id="outline-container-org1904f58" class="outline-4">
+<h4 id="org1904f58"><span class="section-number-4">1.4.2.</span> Instrumentation</h4>
 <div class="outline-text-4" id="text-1-4-2">
 </div>
-<div id="outline-container-org32218d9" class="outline-5">
-<h5 id="org32218d9"><span class="section-number-5">1.4.2.1.</span> 哪些语言有 instrumentation 库？</h5>
+<div id="outline-container-orga1e1813" class="outline-5">
+<h5 id="orga1e1813"><span class="section-number-5">1.4.2.1.</span> 哪些语言有 instrumentation 库？</h5>
 <div class="outline-text-5" id="text-1-4-2-1">
 <p>
 请查看 <a href="https://prometheus.io/docs/instrumenting/clientlibs/">Client Libraries</a>，支持很多语言。
@@ -1341,8 +1341,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-org5af1b75" class="outline-5">
-<h5 id="org5af1b75"><span class="section-number-5">1.4.2.2.</span> 我可以监控机器吗？</h5>
+<div id="outline-container-orgfaf0224" class="outline-5">
+<h5 id="orgfaf0224"><span class="section-number-5">1.4.2.2.</span> 我可以监控机器吗？</h5>
 <div class="outline-text-5" id="text-1-4-2-2">
 <p>
 是的，<a href="https://github.com/prometheus/node_exporter">Node Exporter</a> 提供了在 Linux 和其他 Unix 系统上暴露一些通用的系统级别指标比如 CPU 使用率，内存、磁盘利用率，
@@ -1351,8 +1351,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-org4b59ff7" class="outline-5">
-<h5 id="org4b59ff7"><span class="section-number-5">1.4.2.3.</span> 我可以监控网络设备吗？</h5>
+<div id="outline-container-orgc07de5b" class="outline-5">
+<h5 id="orgc07de5b"><span class="section-number-5">1.4.2.3.</span> 我可以监控网络设备吗？</h5>
 <div class="outline-text-5" id="text-1-4-2-3">
 <p>
 是的，<a href="https://github.com/prometheus/snmp_exporter">SNMP Exporter</a> 允许监控支持 SNMP 的设备。
@@ -1360,8 +1360,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-orgb9c8728" class="outline-5">
-<h5 id="orgb9c8728"><span class="section-number-5">1.4.2.4.</span> 我可以监控批处理作业吗？</h5>
+<div id="outline-container-org63db179" class="outline-5">
+<h5 id="org63db179"><span class="section-number-5">1.4.2.4.</span> 我可以监控批处理作业吗？</h5>
 <div class="outline-text-5" id="text-1-4-2-4">
 <p>
 是的，使用 <a href="https://prometheus.io/docs/instrumenting/pushing/">Pushgateway</a>。也可以查看批处理作业监控的 <a href="https://prometheus.io/docs/practices/instrumentation/#batch-jobs">最佳实践</a>。
@@ -1369,8 +1369,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-org7fb94f4" class="outline-5">
-<h5 id="org7fb94f4"><span class="section-number-5">1.4.2.5.</span> Prometheus 可以直接监视哪些应用程序？</h5>
+<div id="outline-container-orgffc76cd" class="outline-5">
+<h5 id="orgffc76cd"><span class="section-number-5">1.4.2.5.</span> Prometheus 可以直接监视哪些应用程序？</h5>
 <div class="outline-text-5" id="text-1-4-2-5">
 <p>
 查看 <a href="https://prometheus.io/docs/instrumenting/exporters/">Exporter 和集合</a>。
@@ -1378,8 +1378,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-orgf6bd581" class="outline-5">
-<h5 id="orgf6bd581"><span class="section-number-5">1.4.2.6.</span> 我可以通过 JMX 监控 JVM 应用程序吗？</h5>
+<div id="outline-container-orgd28fd26" class="outline-5">
+<h5 id="orgd28fd26"><span class="section-number-5">1.4.2.6.</span> 我可以通过 JMX 监控 JVM 应用程序吗？</h5>
 <div class="outline-text-5" id="text-1-4-2-6">
 <p>
 是的，对于无法直接使用 Java 客户端监控的应用程序，你可以使用 <a href="https://github.com/prometheus/jmx_exporter">JMX Exporter</a> ，可以独立使用或者作为 Java 代理来用。
@@ -1387,8 +1387,8 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-orga138244" class="outline-5">
-<h5 id="orga138244"><span class="section-number-5">1.4.2.7.</span> What is the performance impact of instrumentation?</h5>
+<div id="outline-container-org62d73ca" class="outline-5">
+<h5 id="org62d73ca"><span class="section-number-5">1.4.2.7.</span> What is the performance impact of instrumentation?</h5>
 <div class="outline-text-5" id="text-1-4-2-7">
 <p>
 不同的语言的客户端库可能不同。对 Java 而言，基准测试表示添加 Counter/gauge 会增加 12-17ns。
@@ -1398,15 +1398,15 @@ Raintank 的博客文章：<a href="https://blog.raintank.io/logs-and-metrics-an
 </div>
 </div>
 
-<div id="outline-container-org3d5c946" class="outline-4">
-<h4 id="org3d5c946"><span class="section-number-4">1.4.3.</span> <span class="todo TODO">TODO</span> 故障排除</h4>
+<div id="outline-container-orgc5a09ff" class="outline-4">
+<h4 id="orgc5a09ff"><span class="section-number-4">1.4.3.</span> <span class="todo TODO">TODO</span> 故障排除</h4>
 </div>
-<div id="outline-container-org761e92d" class="outline-4">
-<h4 id="org761e92d"><span class="section-number-4">1.4.4.</span> 实现</h4>
+<div id="outline-container-orge4ea562" class="outline-4">
+<h4 id="orge4ea562"><span class="section-number-4">1.4.4.</span> 实现</h4>
 <div class="outline-text-4" id="text-1-4-4">
 </div>
-<div id="outline-container-org37dd8cc" class="outline-5">
-<h5 id="org37dd8cc"><span class="section-number-5">1.4.4.1.</span> 为什么所有的采样都使用 64 位浮点型，我想使用整型？</h5>
+<div id="outline-container-org6c84c23" class="outline-5">
+<h5 id="org6c84c23"><span class="section-number-5">1.4.4.1.</span> 为什么所有的采样都使用 64 位浮点型，我想使用整型？</h5>
 <div class="outline-text-5" id="text-1-4-4-1">
 <p>
 我们限制使用 64-bit 浮点型是为了简化设计。<a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">IEEE 754 双精度二进制浮点格式</a> 支持最大为 <code>2^53</code> 的整数精度。
@@ -1421,8 +1421,8 @@ A counter, even if incremented one million times per second, will only run into 
 </div>
 </div>
 
-<div id="outline-container-org26f796c" class="outline-5">
-<h5 id="org26f796c"><span class="section-number-5">1.4.4.2.</span> 为什么 Prometheus 服务组件不支持 TLS 或身份验证，我可以添加这些吗？</h5>
+<div id="outline-container-org89426bf" class="outline-5">
+<h5 id="org89426bf"><span class="section-number-5">1.4.4.2.</span> 为什么 Prometheus 服务组件不支持 TLS 或身份验证，我可以添加这些吗？</h5>
 <div class="outline-text-5" id="text-1-4-4-2">
 <p>
 注意：Prometheus 团队在 2018 年 8 月 11 日的开发峰会上改变其立场，该项目的 <a href="https://prometheus.io/docs/introduction/roadmap/#tls-and-authentication-in-http-serving-endpoints">roadmap</a> 现在已经支持 TLS 和身份验证。
@@ -1442,8 +1442,8 @@ A counter, even if incremented one million times per second, will only run into 
 </div>
 </div>
 
-<div id="outline-container-org9858ea7" class="outline-3">
-<h3 id="org9858ea7"><span class="section-number-3">1.5.</span> ROADMAP</h3>
+<div id="outline-container-orgaddb3f8" class="outline-3">
+<h3 id="orgaddb3f8"><span class="section-number-3">1.5.</span> ROADMAP</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 Prometheus 的规划，更全面的了解可以参考相关组件的 issue，比如 <a href="https://github.com/prometheus/prometheus/issues">prometheus issues</a>。
@@ -1455,8 +1455,8 @@ Prometheus 的规划，更全面的了解可以参考相关组件的 issue，比
 </div>
 </div>
 
-<div id="outline-container-org2d6b9ec" class="outline-3">
-<h3 id="org2d6b9ec"><span class="section-number-3">1.6.</span> Media</h3>
+<div id="outline-container-orgf7343c9" class="outline-3">
+<h3 id="orgf7343c9"><span class="section-number-3">1.6.</span> Media</h3>
 <div class="outline-text-3" id="text-1-6">
 <p>
 有个 <a href="https://www.reddit.com/r/PrometheusMonitoring/">subreddit</a> 收集了网上所有与 Prometheus 相关的资源。
@@ -1468,8 +1468,8 @@ Prometheus 的规划，更全面的了解可以参考相关组件的 issue，比
 </div>
 </div>
 
-<div id="outline-container-org4224ff1" class="outline-3">
-<h3 id="org4224ff1"><span class="section-number-3">1.7.</span> 专有名词表（Glossary）</h3>
+<div id="outline-container-org4bb5f66" class="outline-3">
+<h3 id="org4bb5f66"><span class="section-number-3">1.7.</span> 专有名词表（Glossary）</h3>
 <div class="outline-text-3" id="text-1-7">
 <dl class="org-dl">
 <dt>告警（alert）</dt><dd>告警是 Prometheus 的告警规则运行触发的结果，告警从 Prometheus 发送到 Alertmanager。</dd>
@@ -1496,16 +1496,16 @@ This allows Prometheus to scrape their metrics after they have terminated.</dd>
 </div>
 </div>
 
-<div id="outline-container-org8513fdb" class="outline-2">
-<h2 id="org8513fdb"><span class="section-number-2">2.</span> 概念</h2>
+<div id="outline-container-orgee12f83" class="outline-2">
+<h2 id="orgee12f83"><span class="section-number-2">2.</span> 概念</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org78fc784" class="outline-3">
-<h3 id="org78fc784"><span class="section-number-3">2.1.</span> 数据模型</h3>
+<div id="outline-container-org05d25fd" class="outline-3">
+<h3 id="org05d25fd"><span class="section-number-3">2.1.</span> 数据模型</h3>
 <div class="outline-text-3" id="text-2-1">
 </div>
-<div id="outline-container-orgbb4ae09" class="outline-4">
-<h4 id="orgbb4ae09"><span class="section-number-4">2.1.1.</span> Metric 名字和标签（labels）</h4>
+<div id="outline-container-orgcd51ad9" class="outline-4">
+<h4 id="orgcd51ad9"><span class="section-number-4">2.1.1.</span> Metric 名字和标签（labels）</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 每一个时间序列都是一个唯一标识，标识由它的 <i>metric 名字</i> 和可选的 key-value 对称之为 <i>标签(labels)</i> 组成。
@@ -1535,8 +1535,8 @@ label 的值可以是任意的 Unicode 字符。值如果是空的，被认为 l
 </div>
 </div>
 
-<div id="outline-container-org7343253" class="outline-4">
-<h4 id="org7343253"><span class="section-number-4">2.1.2.</span> 样本</h4>
+<div id="outline-container-org110dc27" class="outline-4">
+<h4 id="org110dc27"><span class="section-number-4">2.1.2.</span> 样本</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <p>
 样本构成了实际的时间序列数据。每个样本包括：
@@ -1549,8 +1549,8 @@ label 的值可以是任意的 Unicode 字符。值如果是空的，被认为 l
 </div>
 </div>
 
-<div id="outline-container-orgf646730" class="outline-4">
-<h4 id="orgf646730"><span class="section-number-4">2.1.3.</span> 表达式（Notation）</h4>
+<div id="outline-container-org5281829" class="outline-4">
+<h4 id="org5281829"><span class="section-number-4">2.1.3.</span> 表达式（Notation）</h4>
 <div class="outline-text-4" id="text-2-1-3">
 <p>
 由一个 metric 名字和一组标签组成，通常使用一下符号来标识时间序列：
@@ -1571,8 +1571,8 @@ api_http_requests_total{method="POST", handler="/messages"}
 </div>
 </div>
 
-<div id="outline-container-org09b6104" class="outline-3">
-<h3 id="org09b6104"><span class="section-number-3">2.2.</span> Metric 类型</h3>
+<div id="outline-container-org8e84c9d" class="outline-3">
+<h3 id="org8e84c9d"><span class="section-number-3">2.2.</span> Metric 类型</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Prometheus 客户端库提供了四种核心的 Metric 类型。
@@ -1660,8 +1660,8 @@ Histogram 会暴露出多个采样的时间序列，假如说名称为 <code>&lt
 </div>
 </div>
 
-<div id="outline-container-org2ccc244" class="outline-3">
-<h3 id="org2ccc244"><span class="section-number-3">2.3.</span> Jobs 和 instances</h3>
+<div id="outline-container-org2a1422b" class="outline-3">
+<h3 id="org2a1422b"><span class="section-number-3">2.3.</span> Jobs 和 instances</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 在 Prometheus 术语中，获取 metric 的端点（endpoint）叫做 <i>instance（实例）</i> ，通常对应一个单独的进程。
@@ -1683,8 +1683,8 @@ Histogram 会暴露出多个采样的时间序列，假如说名称为 <code>&lt
 </ul>
 </div>
 
-<div id="outline-container-org613164b" class="outline-4">
-<h4 id="org613164b"><span class="section-number-4">2.3.1.</span> 自动生成 labels 和时间序列</h4>
+<div id="outline-container-org787d6cd" class="outline-4">
+<h4 id="org787d6cd"><span class="section-number-4">2.3.1.</span> 自动生成 labels 和时间序列</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <p>
 当 Prometheus 从目标获取数据时，会自动将一些 labels 添加到获取的时间序列上，用来区别获取目标：
@@ -1719,12 +1719,12 @@ Histogram 会暴露出多个采样的时间序列，假如说名称为 <code>&lt
 </div>
 </div>
 
-<div id="outline-container-org0a24642" class="outline-2">
-<h2 id="org0a24642"><span class="section-number-2">3.</span> <span class="todo TODO">TODO</span> Prometheus <code>[0/4]</code></h2>
+<div id="outline-container-org688cfe1" class="outline-2">
+<h2 id="org688cfe1"><span class="section-number-2">3.</span> <span class="todo TODO">TODO</span> Prometheus <code>[0/4]</code></h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgc823558" class="outline-3">
-<h3 id="orgc823558"><span class="section-number-3">3.1.</span> 开始</h3>
+<div id="outline-container-org908c1f4" class="outline-3">
+<h3 id="org908c1f4"><span class="section-number-3">3.1.</span> 开始</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 这是一个 "Hello World" 风格的教程，已简单的方式展示了如何安装、配置和使用 Prometheus。
@@ -1733,8 +1733,8 @@ Histogram 会暴露出多个采样的时间序列，假如说名称为 <code>&lt
 </p>
 </div>
 
-<div id="outline-container-orga68744b" class="outline-4">
-<h4 id="orga68744b"><span class="section-number-4">3.1.1.</span> 下载和运行</h4>
+<div id="outline-container-org9a42215" class="outline-4">
+<h4 id="org9a42215"><span class="section-number-4">3.1.1.</span> 下载和运行</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <p>
 到 <a href="https://prometheus.io/download/">下载</a> 页面找到你平台的 Prometheus 包，然后解压和运行。
@@ -1751,8 +1751,8 @@ cd prometheus-*
 </div>
 </div>
 
-<div id="outline-container-org1eaed8a" class="outline-4">
-<h4 id="org1eaed8a"><span class="section-number-4">3.1.2.</span> 配置 Prometheus 然后监控它自己</h4>
+<div id="outline-container-org9a4e126" class="outline-4">
+<h4 id="org9a4e126"><span class="section-number-4">3.1.2.</span> 配置 Prometheus 然后监控它自己</h4>
 <div class="outline-text-4" id="text-3-1-2">
 <p>
 Prometheus 从 HTTP 到达点收集指标数据，Prometheus 自己的服务也以相同的方式暴露了数据，它可以抓取自己数据
@@ -1771,26 +1771,26 @@ Prometheus 从 HTTP 到达点收集指标数据，Prometheus 自己的服务也�
   <span style="color: #505050;"># </span><span style="color: #505050;">Attach these labels to any time series or alerts when communicating with</span>
   <span style="color: #505050;"># </span><span style="color: #505050;">external systems (federation, remote storage, Alertmanager).</span>
   <span style="color: #00538b;">external_labels</span>:
-    <span style="color: #00538b;">monitor</span>: <span style="color: #2544bb;">'codelab-monitor'</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">monitor</span>: <span style="color: #2544bb;">'codelab-monitor'</span>
 
-    <span style="color: #505050;"># </span><span style="color: #505050;">A scrape configuration containing exactly one endpoint to scrape:</span>
-    <span style="color: #505050;"># </span><span style="color: #505050;">Here it's Prometheus itself.</span>
-    <span style="color: #00538b;">scrape_configs</span>:
-      <span style="color: #505050;"># </span><span style="color: #505050;">The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span>
-      - <span style="color: #00538b;">job_name</span>: <span style="color: #2544bb;">'prometheus'</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #505050;"># </span><span style="color: #505050;">A scrape configuration containing exactly one endpoint to scrape:</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #505050;"># </span><span style="color: #505050;">Here it's Prometheus itself.</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">scrape_configs</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span>  <span style="color: #505050;"># </span><span style="color: #505050;">The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  - job_name</span>: <span style="color: #2544bb;">'prometheus'</span>
 
-        <span style="color: #505050;"># </span><span style="color: #505050;">Override the global default and scrape targets from this job every 5 seconds.</span>
-        <span style="color: #00538b;">scrape_interval</span>: 5s
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #505050;"># </span><span style="color: #505050;">Override the global default and scrape targets from this job every 5 seconds.</span>
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">scrape_interval</span>: 5s
 
-        <span style="color: #00538b;">static_configs</span>:
-          - <span style="color: #00538b;">targets</span>: [<span style="color: #2544bb;">'localhost:9090'</span>]
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">static_configs</span>:
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  - targets</span>: [<span style="color: #2544bb;">'localhost:9090'</span>]
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org90743d4" class="outline-4">
-<h4 id="org90743d4"><span class="section-number-4">3.1.3.</span> 启动 Prometheus</h4>
+<div id="outline-container-org0ec4a68" class="outline-4">
+<h4 id="org0ec4a68"><span class="section-number-4">3.1.3.</span> 启动 Prometheus</h4>
 <div class="outline-text-4" id="text-3-1-3">
 <p>
 切换到包含 Prometheus 二进制文件的目录然后运行：
@@ -1813,8 +1813,8 @@ Prometheus 启动之后，您就可以在 localhost:9090 浏览到有关其自�
 </div>
 </div>
 
-<div id="outline-container-org1a1610c" class="outline-4">
-<h4 id="org1a1610c"><span class="section-number-4">3.1.4.</span> 在浏览器使用表达式</h4>
+<div id="outline-container-org4f61b9f" class="outline-4">
+<h4 id="org4f61b9f"><span class="section-number-4">3.1.4.</span> 在浏览器使用表达式</h4>
 <div class="outline-text-4" id="text-3-1-4">
 <p>
 打开 <a href="http://localhost:9090/graph">http://localhost:9090/graph</a> 然后选择 Console 查看 Graph 页签。
@@ -1852,8 +1852,8 @@ count(prometheus_target_interval_length_seconds)
 </div>
 </div>
 
-<div id="outline-container-org7b11dc7" class="outline-4">
-<h4 id="org7b11dc7"><span class="section-number-4">3.1.5.</span> 使用图形界面</h4>
+<div id="outline-container-org9d3fb9f" class="outline-4">
+<h4 id="org9d3fb9f"><span class="section-number-4">3.1.5.</span> 使用图形界面</h4>
 <div class="outline-text-4" id="text-3-1-5">
 <p>
 选择 Graph 页签。下面的表达式表示每秒创建 chunks 的速率：
@@ -1865,8 +1865,8 @@ rate(prometheus_tsdb_head_chunks_created_total[1m])
 </div>
 </div>
 
-<div id="outline-container-orgb64fae0" class="outline-4">
-<h4 id="orgb64fae0"><span class="section-number-4">3.1.6.</span> 启用一些样本目标</h4>
+<div id="outline-container-org309324d" class="outline-4">
+<h4 id="org309324d"><span class="section-number-4">3.1.6.</span> 启用一些样本目标</h4>
 <div class="outline-text-4" id="text-3-1-6">
 <p>
 Go 的客户端库有一个例子，道出了具有不同的延迟分布的虚拟 RPC 延迟。
@@ -1904,8 +1904,8 @@ go build
 </div>
 </div>
 
-<div id="outline-container-orgc2e3914" class="outline-4">
-<h4 id="orgc2e3914"><span class="section-number-4">3.1.7.</span> 配置 Prometheus 监控样本目标</h4>
+<div id="outline-container-orga4770d7" class="outline-4">
+<h4 id="orga4770d7"><span class="section-number-4">3.1.7.</span> 配置 Prometheus 监控样本目标</h4>
 <div class="outline-text-4" id="text-3-1-7">
 <p>
 这三个到达点（endpoint）统称为 <code>example-random</code> 的作业。假设，其中的两个 endpoints 是生产的目标，
@@ -1920,17 +1920,17 @@ go build
 <pre class="src src-yaml"><span style="color: #00538b;">scrape_configs</span>:
   - <span style="color: #00538b;">job_name</span>:       <span style="color: #2544bb;">'example-random'</span>
 
-    <span style="color: #505050;"># </span><span style="color: #505050;">Override the global default and scrape targets from this job every 5 seconds.</span>
-    <span style="color: #00538b;">scrape_interval</span>: 5s
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #505050;"># </span><span style="color: #505050;">Override the global default and scrape targets from this job every 5 seconds.</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">scrape_interval</span>: 5s
 
-    <span style="color: #00538b;">static_configs</span>:
-      - <span style="color: #00538b;">targets</span>: [<span style="color: #2544bb;">'localhost:8080'</span>, <span style="color: #2544bb;">'localhost:8081'</span>]
-        <span style="color: #00538b;">labels</span>:
-          <span style="color: #00538b;">group</span>: <span style="color: #2544bb;">'production'</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">static_configs</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  - targets</span>: [<span style="color: #2544bb;">'localhost:8080'</span>, <span style="color: #2544bb;">'localhost:8081'</span>]
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">labels</span>:
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  group</span>: <span style="color: #2544bb;">'production'</span>
 
-          - <span style="color: #00538b;">targets</span>: [<span style="color: #2544bb;">'localhost:8082'</span>]
-            <span style="color: #00538b;">labels</span>:
-              <span style="color: #00538b;">group</span>: <span style="color: #2544bb;">'canary'</span>
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  - targets</span>: [<span style="color: #2544bb;">'localhost:8082'</span>]
+<span style="color: #000000; background-color: #ff9f9f;">            </span><span style="color: #00538b;">labels</span>:
+<span style="color: #000000; background-color: #ff9f9f;">            </span><span style="color: #00538b;">  group</span>: <span style="color: #2544bb;">'canary'</span>
 </pre>
 </div>
 
@@ -1940,8 +1940,8 @@ go build
 </div>
 </div>
 
-<div id="outline-container-org37c2745" class="outline-4">
-<h4 id="org37c2745"><span class="section-number-4">3.1.8.</span> 配置规则将抓取的数据汇总到新的时间序列</h4>
+<div id="outline-container-org086da35" class="outline-4">
+<h4 id="org086da35"><span class="section-number-4">3.1.8.</span> 配置规则将抓取的数据汇总到新的时间序列</h4>
 <div class="outline-text-4" id="text-3-1-8">
 <p>
 尽管在这个例子中不存在问题，但是在临时计算时，汇总数千个时间序列的查询可能会变慢。为了提高效率，Prometheus 允许
@@ -1965,9 +1965,9 @@ avg(rate(rpc_durations_seconds_count[5m])) by (job, service)
 <div class="org-src-container">
 <pre class="src src-yaml"><span style="color: #00538b;">groups</span>:
   - <span style="color: #00538b;">name</span>: example
-    <span style="color: #00538b;">rules</span>:
-      - <span style="color: #00538b;">record</span>: job_service:rpc_durations_seconds_count:avg_rate5m
-        <span style="color: #00538b;">expr</span>: avg(rate(rpc_durations_seconds_count[5m])) by (job, service)
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">rules</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  - record</span>: job_service:rpc_durations_seconds_count:avg_rate5m
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">expr</span>: avg(rate(rpc_durations_seconds_count[5m])) by (job, service)
 </pre>
 </div>
 
@@ -1982,33 +1982,33 @@ avg(rate(rpc_durations_seconds_count[5m])) by (job, service)
 
   <span style="color: #505050;"># </span><span style="color: #505050;">Attach these extra labels to all timeseries collected by this Prometheus instance.</span>
   <span style="color: #00538b;">external_labels</span>:
-    <span style="color: #00538b;">monitor</span>: <span style="color: #2544bb;">'codelab-monitor'</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">monitor</span>: <span style="color: #2544bb;">'codelab-monitor'</span>
 
-    <span style="color: #00538b;">rule_files</span>:
-      - <span style="color: #2544bb;">'prometheus.rules.yml'</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">rule_files</span>:
+<span style="color: #000000; background-color: #ff9f9f;">    </span>  - <span style="color: #2544bb;">'prometheus.rules.yml'</span>
 
-      <span style="color: #00538b;">scrape_configs</span>:
-        - <span style="color: #00538b;">job_name</span>: <span style="color: #2544bb;">'prometheus'</span>
+<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  scrape_configs</span>:
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">- job_name</span>: <span style="color: #2544bb;">'prometheus'</span>
 
-          <span style="color: #505050;"># </span><span style="color: #505050;">Override the global default and scrape targets from this job every 5 seconds.</span>
-          <span style="color: #00538b;">scrape_interval</span>: 5s
+<span style="color: #000000; background-color: #ff9f9f;">        </span>  <span style="color: #505050;"># </span><span style="color: #505050;">Override the global default and scrape targets from this job every 5 seconds.</span>
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  scrape_interval</span>: 5s
 
-          <span style="color: #00538b;">static_configs</span>:
-            - <span style="color: #00538b;">targets</span>: [<span style="color: #2544bb;">'localhost:9090'</span>]
+<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">  static_configs</span>:
+<span style="color: #000000; background-color: #ff9f9f;">            </span><span style="color: #00538b;">- targets</span>: [<span style="color: #2544bb;">'localhost:9090'</span>]
 
-              - <span style="color: #00538b;">job_name</span>:       <span style="color: #2544bb;">'example-random'</span>
+<span style="color: #000000; background-color: #ff9f9f;">            </span><span style="color: #00538b;">  - job_name</span>:       <span style="color: #2544bb;">'example-random'</span>
 
-                <span style="color: #505050;"># </span><span style="color: #505050;">Override the global default and scrape targets from this job every 5 seconds.</span>
-                <span style="color: #00538b;">scrape_interval</span>: 5s
+<span style="color: #000000; background-color: #ff9f9f;">                </span><span style="color: #505050;"># </span><span style="color: #505050;">Override the global default and scrape targets from this job every 5 seconds.</span>
+<span style="color: #000000; background-color: #ff9f9f;">                </span><span style="color: #00538b;">scrape_interval</span>: 5s
 
-                <span style="color: #00538b;">static_configs</span>:
-                  - <span style="color: #00538b;">targets</span>: [<span style="color: #2544bb;">'localhost:8080'</span>, <span style="color: #2544bb;">'localhost:8081'</span>]
-                    <span style="color: #00538b;">labels</span>:
-                      <span style="color: #00538b;">group</span>: <span style="color: #2544bb;">'production'</span>
+<span style="color: #000000; background-color: #ff9f9f;">                </span><span style="color: #00538b;">static_configs</span>:
+<span style="color: #000000; background-color: #ff9f9f;">                </span><span style="color: #00538b;">  - targets</span>: [<span style="color: #2544bb;">'localhost:8080'</span>, <span style="color: #2544bb;">'localhost:8081'</span>]
+<span style="color: #000000; background-color: #ff9f9f;">                    </span><span style="color: #00538b;">labels</span>:
+<span style="color: #000000; background-color: #ff9f9f;">                    </span><span style="color: #00538b;">  group</span>: <span style="color: #2544bb;">'production'</span>
 
-                      - <span style="color: #00538b;">targets</span>: [<span style="color: #2544bb;">'localhost:8082'</span>]
-                        <span style="color: #00538b;">labels</span>:
-                          <span style="color: #00538b;">group</span>: <span style="color: #2544bb;">'canary'</span>
+<span style="color: #000000; background-color: #ff9f9f;">                    </span><span style="color: #00538b;">  - targets</span>: [<span style="color: #2544bb;">'localhost:8082'</span>]
+<span style="color: #000000; background-color: #ff9f9f;">                        </span><span style="color: #00538b;">labels</span>:
+<span style="color: #000000; background-color: #ff9f9f;">                        </span><span style="color: #00538b;">  group</span>: <span style="color: #2544bb;">'canary'</span>
 </pre>
 </div>
 
@@ -2020,12 +2020,12 @@ avg(rate(rpc_durations_seconds_count[5m])) by (job, service)
 </div>
 </div>
 
-<div id="outline-container-orgecc7d57" class="outline-3">
-<h3 id="orgecc7d57"><span class="section-number-3">3.2.</span> 安装</h3>
+<div id="outline-container-org3406e0e" class="outline-3">
+<h3 id="org3406e0e"><span class="section-number-3">3.2.</span> 安装</h3>
 <div class="outline-text-3" id="text-3-2">
 </div>
-<div id="outline-container-org61baaf9" class="outline-4">
-<h4 id="org61baaf9"><span class="section-number-4">3.2.1.</span> 使用预编译的二进制包</h4>
+<div id="outline-container-orgfec4f2e" class="outline-4">
+<h4 id="orgfec4f2e"><span class="section-number-4">3.2.1.</span> 使用预编译的二进制包</h4>
 <div class="outline-text-4" id="text-3-2-1">
 <p>
 我们为大多数官方的 Prometheus 组件提供了预编译二进制文件。查看 <a href="https://prometheus.io/download/">下载链接</a>。
@@ -2033,8 +2033,8 @@ avg(rate(rpc_durations_seconds_count[5m])) by (job, service)
 </div>
 </div>
 
-<div id="outline-container-org0c76cdc" class="outline-4">
-<h4 id="org0c76cdc"><span class="section-number-4">3.2.2.</span> 通过源代码</h4>
+<div id="outline-container-org5de8b05" class="outline-4">
+<h4 id="org5de8b05"><span class="section-number-4">3.2.2.</span> 通过源代码</h4>
 <div class="outline-text-4" id="text-3-2-2">
 <p>
 用源代码编译 Prometheus 组件，查看各自仓库中的 <code>Makefile</code> 。
@@ -2042,8 +2042,8 @@ avg(rate(rpc_durations_seconds_count[5m])) by (job, service)
 </div>
 </div>
 
-<div id="outline-container-org61a5a67" class="outline-4">
-<h4 id="org61a5a67"><span class="section-number-4">3.2.3.</span> 使用 Docker</h4>
+<div id="outline-container-orgeec3d8c" class="outline-4">
+<h4 id="orgeec3d8c"><span class="section-number-4">3.2.3.</span> 使用 Docker</h4>
 <div class="outline-text-4" id="text-3-2-3">
 <p>
 所有的 Prometheus 组件服务镜像都在 <a href="https://quay.io/repository/prometheus/prometheus">quay.io</a> 或者 <a href="https://hub.docker.com/r/prom/prometheus/">Docker Hub</a>。
@@ -2062,8 +2062,8 @@ Prometheus 镜像以卷的方式存储实际的指标。生产环境部署强烈
 </p>
 </div>
 
-<div id="outline-container-org12c62ba" class="outline-5">
-<h5 id="org12c62ba"><span class="section-number-5">3.2.3.1.</span> 卷 &amp; 绑定挂载</h5>
+<div id="outline-container-org242aadc" class="outline-5">
+<h5 id="org242aadc"><span class="section-number-5">3.2.3.1.</span> 卷 &amp; 绑定挂载</h5>
 <div class="outline-text-5" id="text-3-2-3-1">
 <p>
 把你的 <code>prometheus.yml</code> 从宿主机挂载到容器中：
@@ -2091,8 +2091,8 @@ Prometheus 镜像以卷的方式存储实际的指标。生产环境部署强烈
 </div>
 </div>
 
-<div id="outline-container-orgd170f14" class="outline-5">
-<h5 id="orgd170f14"><span class="section-number-5">3.2.3.2.</span> 自定义镜像</h5>
+<div id="outline-container-orge3cca74" class="outline-5">
+<h5 id="orge3cca74"><span class="section-number-5">3.2.3.2.</span> 自定义镜像</h5>
 <div class="outline-text-5" id="text-3-2-3-2">
 <p>
 为了避免在外部管理配置文件，配置可以添加到镜像中。如果配置文件是静态的，并且在所有的环境中都是相同的，这种方法很不错。
@@ -2124,8 +2124,8 @@ docker run -p 9090:9090 my-prometheus
 </div>
 </div>
 
-<div id="outline-container-orgbe3aa09" class="outline-5">
-<h5 id="orgbe3aa09"><span class="section-number-5">3.2.3.3.</span> 使用配置管理系统</h5>
+<div id="outline-container-org019a663" class="outline-5">
+<h5 id="org019a663"><span class="section-number-5">3.2.3.3.</span> 使用配置管理系统</h5>
 <div class="outline-text-5" id="text-3-2-3-3">
 <p>
 一些第三方的配置管理系统：
@@ -2150,15 +2150,15 @@ docker run -p 9090:9090 my-prometheus
 </div>
 </div>
 
-<div id="outline-container-org7ddff4a" class="outline-3">
-<h3 id="org7ddff4a"><span class="section-number-3">3.3.</span> <span class="todo TODO">TODO</span> 配置</h3>
+<div id="outline-container-org4197c37" class="outline-3">
+<h3 id="org4197c37"><span class="section-number-3">3.3.</span> <span class="todo TODO">TODO</span> 配置</h3>
 </div>
-<div id="outline-container-orgff26d9b" class="outline-3">
-<h3 id="orgff26d9b"><span class="section-number-3">3.4.</span> 查询</h3>
+<div id="outline-container-org9d4f9a8" class="outline-3">
+<h3 id="org9d4f9a8"><span class="section-number-3">3.4.</span> 查询</h3>
 <div class="outline-text-3" id="text-3-4">
 </div>
-<div id="outline-container-org0ae8ec2" class="outline-4">
-<h4 id="org0ae8ec2"><span class="section-number-4">3.4.1.</span> 基础（Basic）</h4>
+<div id="outline-container-org372aa29" class="outline-4">
+<h4 id="org372aa29"><span class="section-number-4">3.4.1.</span> 基础（Basic）</h4>
 <div class="outline-text-4" id="text-3-4-1">
 <p>
 Prometheus 提供了叫做 PromQL 的查询语言，允许用户来选择和汇总时间序列数据。
@@ -2166,8 +2166,8 @@ Prometheus 提供了叫做 PromQL 的查询语言，允许用户来选择和汇�
 </p>
 </div>
 
-<div id="outline-container-orgbab5948" class="outline-5">
-<h5 id="orgbab5948"><span class="section-number-5">3.4.1.1.</span> 表达语言的数据类型</h5>
+<div id="outline-container-orgd846ec2" class="outline-5">
+<h5 id="orgd846ec2"><span class="section-number-5">3.4.1.1.</span> 表达语言的数据类型</h5>
 <div class="outline-text-5" id="text-3-4-1-1">
 <p>
 Prometheus 表达语言中，一个表达式或者子表达式可以计算为以下四中类型之一：
@@ -2186,12 +2186,12 @@ Prometheus 表达语言中，一个表达式或者子表达式可以计算为以
 </div>
 </div>
 
-<div id="outline-container-orgb581ebe" class="outline-5">
-<h5 id="orgb581ebe"><span class="section-number-5">3.4.1.2.</span> 字面（Literals）</h5>
+<div id="outline-container-orgc3ac284" class="outline-5">
+<h5 id="orgc3ac284"><span class="section-number-5">3.4.1.2.</span> 字面（Literals）</h5>
 <div class="outline-text-5" id="text-3-4-1-2">
 </div>
-<div id="outline-container-orgdc045cd" class="outline-6">
-<h6 id="orgdc045cd"><span class="section-number-6">3.4.1.2.1.</span> 字符串字面（String literals）</h6>
+<div id="outline-container-orge3e4990" class="outline-6">
+<h6 id="orge3e4990"><span class="section-number-6">3.4.1.2.1.</span> 字符串字面（String literals）</h6>
 <div class="outline-text-6" id="text-3-4-1-2-1">
 <p>
 可以在单引号、双引号、反引号中包含的字符串为字符串字面值。
@@ -2210,8 +2210,8 @@ PromQL 可以像 Go 一样进行 <a href="https://golang.org/ref/spec#String_lit
 </div>
 </div>
 
-<div id="outline-container-orgeb24cdd" class="outline-6">
-<h6 id="orgeb24cdd"><span class="section-number-6">3.4.1.2.2.</span> 浮点字面（Float literals）</h6>
+<div id="outline-container-org8e4fdd6" class="outline-6">
+<h6 id="org8e4fdd6"><span class="section-number-6">3.4.1.2.2.</span> 浮点字面（Float literals）</h6>
 <div class="outline-text-6" id="text-3-4-1-2-2">
 <p>
 标量的浮点值可以被写为以下形式的数字： <code>[-](digits)[.(digits)]</code> 。
@@ -2224,12 +2224,12 @@ PromQL 可以像 Go 一样进行 <a href="https://golang.org/ref/spec#String_lit
 </div>
 </div>
 
-<div id="outline-container-orgf5cc31d" class="outline-5">
-<h5 id="orgf5cc31d"><span class="section-number-5">3.4.1.3.</span> <span class="todo TODO">TODO</span> 时间序列选择器</h5>
+<div id="outline-container-orgdd515e9" class="outline-5">
+<h5 id="orgdd515e9"><span class="section-number-5">3.4.1.3.</span> <span class="todo TODO">TODO</span> 时间序列选择器</h5>
 <div class="outline-text-5" id="text-3-4-1-3">
 </div>
-<div id="outline-container-org9384ca6" class="outline-6">
-<h6 id="org9384ca6"><span class="section-number-6">3.4.1.3.1.</span> 瞬时向量选择器</h6>
+<div id="outline-container-org117597c" class="outline-6">
+<h6 id="org117597c"><span class="section-number-6">3.4.1.3.1.</span> 瞬时向量选择器</h6>
 <div class="outline-text-6" id="text-3-4-1-3-1">
 <p>
 瞬时向量允许在给定的时间戳下选择一组时间序列和每个样本的样本值：在最简单的形式中，仅制定度量名称。
@@ -2238,25 +2238,25 @@ PromQL 可以像 Go 一样进行 <a href="https://golang.org/ref/spec#String_lit
 </div>
 </div>
 </div>
-<div id="outline-container-orge33ae70" class="outline-5">
-<h5 id="orge33ae70"><span class="section-number-5">3.4.1.4.</span> <span class="todo TODO">TODO</span> 子查询</h5>
+<div id="outline-container-orga5640af" class="outline-5">
+<h5 id="orga5640af"><span class="section-number-5">3.4.1.4.</span> <span class="todo TODO">TODO</span> 子查询</h5>
 </div>
-<div id="outline-container-org1fc001a" class="outline-5">
-<h5 id="org1fc001a"><span class="section-number-5">3.4.1.5.</span> <span class="todo TODO">TODO</span> 函数</h5>
+<div id="outline-container-orgde5e325" class="outline-5">
+<h5 id="orgde5e325"><span class="section-number-5">3.4.1.5.</span> <span class="todo TODO">TODO</span> 函数</h5>
 </div>
-<div id="outline-container-orgaa73836" class="outline-5">
-<h5 id="orgaa73836"><span class="section-number-5">3.4.1.6.</span> <span class="todo TODO">TODO</span> 注释</h5>
+<div id="outline-container-org22ce04a" class="outline-5">
+<h5 id="org22ce04a"><span class="section-number-5">3.4.1.6.</span> <span class="todo TODO">TODO</span> 注释</h5>
 </div>
-<div id="outline-container-orgda31761" class="outline-5">
-<h5 id="orgda31761"><span class="section-number-5">3.4.1.7.</span> <span class="todo TODO">TODO</span> 陷阱（Gotchas）</h5>
+<div id="outline-container-org6b23f3e" class="outline-5">
+<h5 id="org6b23f3e"><span class="section-number-5">3.4.1.7.</span> <span class="todo TODO">TODO</span> 陷阱（Gotchas）</h5>
 </div>
 </div>
-<div id="outline-container-org0fbe53d" class="outline-4">
-<h4 id="org0fbe53d"><span class="section-number-4">3.4.2.</span> 函数（Functions）</h4>
+<div id="outline-container-org6edd2e7" class="outline-4">
+<h4 id="org6edd2e7"><span class="section-number-4">3.4.2.</span> 函数（Functions）</h4>
 <div class="outline-text-4" id="text-3-4-2">
 </div>
-<div id="outline-container-orgeed512c" class="outline-5">
-<h5 id="orgeed512c"><span class="section-number-5">3.4.2.1.</span> irate 与 rate</h5>
+<div id="outline-container-org4dcd688" class="outline-5">
+<h5 id="org4dcd688"><span class="section-number-5">3.4.2.1.</span> irate 与 rate</h5>
 <div class="outline-text-5" id="text-3-4-2-1">
 <p>
 <code>irate(v range-vector)</code> 计算范围内时间序列的 <span class="underline">每秒</span> 瞬时增加率，是 <span class="underline">基于最后两个点</span> 计算的。数值中断（比如机器重启，计数器重置）会自动调整。
@@ -2324,15 +2324,15 @@ rate 的计算方法为：
 </div>
 </div>
 </div>
-<div id="outline-container-org4c8fc50" class="outline-4">
-<h4 id="org4c8fc50"><span class="section-number-4">3.4.3.</span> HTTP API</h4>
+<div id="outline-container-orgf464c36" class="outline-4">
+<h4 id="orgf464c36"><span class="section-number-4">3.4.3.</span> HTTP API</h4>
 <div class="outline-text-4" id="text-3-4-3">
 <p>
 稳定的 API 都在 <code>/api/v1</code> 路径下。
 </p>
 </div>
-<div id="outline-container-orga83500b" class="outline-5">
-<h5 id="orga83500b"><span class="section-number-5">3.4.3.1.</span> 格式</h5>
+<div id="outline-container-org56d0484" class="outline-5">
+<h5 id="org56d0484"><span class="section-number-5">3.4.3.1.</span> 格式</h5>
 <div class="outline-text-5" id="text-3-4-3-1">
 <p>
 回包格式是 JSON，每个成功的 API 状态码都是 <code>2xx</code> 。
@@ -2409,16 +2409,16 @@ rate 的计算方法为：
 </div>
 </div>
 
-<div id="outline-container-org7cfc27d" class="outline-5">
-<h5 id="org7cfc27d"><span class="section-number-5">3.4.3.2.</span> 表达式查询</h5>
+<div id="outline-container-org83aec16" class="outline-5">
+<h5 id="org83aec16"><span class="section-number-5">3.4.3.2.</span> 表达式查询</h5>
 <div class="outline-text-5" id="text-3-4-3-2">
 <p>
 查询语言表达式可以在单个瞬间或者一段时间内求值。
 </p>
 </div>
 
-<div id="outline-container-org7b1f961" class="outline-6">
-<h6 id="org7b1f961"><span class="section-number-6">3.4.3.2.1.</span> 瞬时查询</h6>
+<div id="outline-container-org39c8883" class="outline-6">
+<h6 id="org39c8883"><span class="section-number-6">3.4.3.2.1.</span> 瞬时查询</h6>
 <div class="outline-text-6" id="text-3-4-3-2-1">
 <p>
 下面两个 API 查询单个时间点的值：
@@ -2469,33 +2469,33 @@ $ curl 'http://localhost:9090/api/v1/query?query=up&amp;time=2015-07-01T20:10:51
 {
    "status" : "success",
    "data" : {
-      "resultType" : "vector",
-      "result" : [
-         {
-            "metric" : {
-               "__name__" : "up",
-               "job" : "prometheus",
-               "instance" : "localhost:9090"
-            },
-            "value": [ 1435781451.781, "1" ]
-         },
-         {
-            "metric" : {
-               "__name__" : "up",
-               "job" : "node",
-               "instance" : "localhost:9100"
-            },
-            "value" : [ 1435781451.781, "0" ]
-         }
-      ]
+	  "resultType" : "vector",
+	  "result" : [
+		 {
+			"metric" : {
+			   "__name__" : "up",
+			   "job" : "prometheus",
+			   "instance" : "localhost:9090"
+			},
+			"value": [ 1435781451.781, "1" ]
+		 },
+		 {
+			"metric" : {
+			   "__name__" : "up",
+			   "job" : "node",
+			   "instance" : "localhost:9100"
+			},
+			"value" : [ 1435781451.781, "0" ]
+		 }
+	  ]
    }
 }
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org52d983b" class="outline-6">
-<h6 id="org52d983b"><span class="section-number-6">3.4.3.2.2.</span> 范围查询</h6>
+<div id="outline-container-org501853a" class="outline-6">
+<h6 id="org501853a"><span class="section-number-6">3.4.3.2.2.</span> 范围查询</h6>
 <div class="outline-text-6" id="text-3-4-3-2-2">
 <p>
 以下 API 查询一段时间内的范围数据：
@@ -2531,33 +2531,33 @@ $ curl 'http://localhost:9090/api/v1/query_range?query=up&amp;start=2015-07-01T2
 {
    "status" : "success",
    "data" : {
-      "resultType" : "matrix",
-      "result" : [
-         {
-            "metric" : {
-               "__name__" : "up",
-               "job" : "prometheus",
-               "instance" : "localhost:9090"
-            },
-            "values" : [
-               [ 1435781430.781, "1" ],
-               [ 1435781445.781, "1" ],
-               [ 1435781460.781, "1" ]
-            ]
-         },
-         {
-            "metric" : {
-               "__name__" : "up",
-               "job" : "node",
-               "instance" : "localhost:9091"
-            },
-            "values" : [
-               [ 1435781430.781, "0" ],
-               [ 1435781445.781, "0" ],
-               [ 1435781460.781, "1" ]
-            ]
-         }
-      ]
+	  "resultType" : "matrix",
+	  "result" : [
+		 {
+			"metric" : {
+			   "__name__" : "up",
+			   "job" : "prometheus",
+			   "instance" : "localhost:9090"
+			},
+			"values" : [
+			   [ 1435781430.781, "1" ],
+			   [ 1435781445.781, "1" ],
+			   [ 1435781460.781, "1" ]
+			]
+		 },
+		 {
+			"metric" : {
+			   "__name__" : "up",
+			   "job" : "node",
+			   "instance" : "localhost:9091"
+			},
+			"values" : [
+			   [ 1435781430.781, "0" ],
+			   [ 1435781445.781, "0" ],
+			   [ 1435781460.781, "1" ]
+			]
+		 }
+	  ]
    }
 }
 </pre>
@@ -2565,12 +2565,12 @@ $ curl 'http://localhost:9090/api/v1/query_range?query=up&amp;start=2015-07-01T2
 </div>
 </div>
 
-<div id="outline-container-orgbf268b9" class="outline-5">
-<h5 id="orgbf268b9"><span class="section-number-5">3.4.3.3.</span> 查询元数据（metadata）</h5>
+<div id="outline-container-org3b63162" class="outline-5">
+<h5 id="org3b63162"><span class="section-number-5">3.4.3.3.</span> 查询元数据（metadata）</h5>
 <div class="outline-text-5" id="text-3-4-3-3">
 </div>
-<div id="outline-container-org16c5ad2" class="outline-6">
-<h6 id="org16c5ad2"><span class="section-number-6">3.4.3.3.1.</span> 通过 label 匹配找到时间序列</h6>
+<div id="outline-container-orgcc64ad3" class="outline-6">
+<h6 id="orgcc64ad3"><span class="section-number-6">3.4.3.3.1.</span> 通过 label 匹配找到时间序列</h6>
 <div class="outline-text-6" id="text-3-4-3-3-1">
 <p>
 下面的 API 通过 label 找到匹配的时间序列列表：
@@ -2604,29 +2604,29 @@ $ curl -g 'http://localhost:9090/api/v1/series?' --data-urlencode 'match[]=up' -
 {
    "status" : "success",
    "data" : [
-      {
-         "__name__" : "up",
-         "job" : "prometheus",
-         "instance" : "localhost:9090"
-      },
-      {
-         "__name__" : "up",
-         "job" : "node",
-         "instance" : "localhost:9091"
-      },
-      {
-         "__name__" : "process_start_time_seconds",
-         "job" : "prometheus",
-         "instance" : "localhost:9090"
-      }
+	  {
+		 "__name__" : "up",
+		 "job" : "prometheus",
+		 "instance" : "localhost:9090"
+	  },
+	  {
+		 "__name__" : "up",
+		 "job" : "node",
+		 "instance" : "localhost:9091"
+	  },
+	  {
+		 "__name__" : "process_start_time_seconds",
+		 "job" : "prometheus",
+		 "instance" : "localhost:9090"
+	  }
    ]
 }
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org09f6692" class="outline-6">
-<h6 id="org09f6692"><span class="section-number-6">3.4.3.3.2.</span> 获取 label 名称</h6>
+<div id="outline-container-orge5e7d52" class="outline-6">
+<h6 id="orge5e7d52"><span class="section-number-6">3.4.3.3.2.</span> 获取 label 名称</h6>
 <div class="outline-text-6" id="text-3-4-3-3-2">
 <p>
 下面 API 获取所有的 label 名称：
@@ -2644,37 +2644,37 @@ POST /api/v1/labels
 <pre class="example">
 $ curl 'localhost:9090/api/v1/labels'
 {
-    "status": "success",
-    "data": [
-        "__name__",
-        "call",
-        "code",
-        "config",
-        "dialer_name",
-        "endpoint",
-        "event",
-        "goversion",
-        "handler",
-        "instance",
-        "interval",
-        "job",
-        "le",
-        "listener_name",
-        "name",
-        "quantile",
-        "reason",
-        "role",
-        "scrape_job",
-        "slice",
-        "version"
-    ]
+	"status": "success",
+	"data": [
+		"__name__",
+		"call",
+		"code",
+		"config",
+		"dialer_name",
+		"endpoint",
+		"event",
+		"goversion",
+		"handler",
+		"instance",
+		"interval",
+		"job",
+		"le",
+		"listener_name",
+		"name",
+		"quantile",
+		"reason",
+		"role",
+		"scrape_job",
+		"slice",
+		"version"
+	]
 }
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org9ce1127" class="outline-6">
-<h6 id="org9ce1127"><span class="section-number-6">3.4.3.3.3.</span> 查询 label 值</h6>
+<div id="outline-container-org736a3b6" class="outline-6">
+<h6 id="org736a3b6"><span class="section-number-6">3.4.3.3.3.</span> 查询 label 值</h6>
 <div class="outline-text-6" id="text-3-4-3-3-3">
 <p>
 下面的 API 通过 <code>label_name</code> 返回所有的值列表：
@@ -2693,8 +2693,8 @@ $ curl http://localhost:9090/api/v1/label/job/values
 {
    "status" : "success",
    "data" : [
-      "node",
-      "prometheus"
+	  "node",
+	  "prometheus"
    ]
 }
 </pre>
@@ -2702,8 +2702,8 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </div>
 </div>
 
-<div id="outline-container-orge193ae6" class="outline-5">
-<h5 id="orge193ae6"><span class="section-number-5">3.4.3.4.</span> 表达式查询结果格式</h5>
+<div id="outline-container-org125a3c4" class="outline-5">
+<h5 id="org125a3c4"><span class="section-number-5">3.4.3.4.</span> 表达式查询结果格式</h5>
 <div class="outline-text-5" id="text-3-4-3-4">
 <p>
 表达式查询结果在 <code>data</code> 中的 <code>result</code> 属性中。JSON 不支持特殊的浮点值，比如 <code>NaN</code> <code>Inf</code> <code>-Inf</code> 等，
@@ -2711,8 +2711,8 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </p>
 </div>
 
-<div id="outline-container-org4ce5911" class="outline-6">
-<h6 id="org4ce5911"><span class="section-number-6">3.4.3.4.1.</span> 范围向量（Range vectors）</h6>
+<div id="outline-container-org050a7bc" class="outline-6">
+<h6 id="org050a7bc"><span class="section-number-6">3.4.3.4.1.</span> 范围向量（Range vectors）</h6>
 <div class="outline-text-6" id="text-3-4-3-4-1">
 <p>
 <code>matrix</code> 类型表示范围向量， <code>result</code> 属性格式如下：
@@ -2731,8 +2731,8 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </div>
 </div>
 
-<div id="outline-container-orgbd2a83f" class="outline-6">
-<h6 id="orgbd2a83f"><span class="section-number-6">3.4.3.4.2.</span> 瞬间向量（Instant vectors）</h6>
+<div id="outline-container-orge90942d" class="outline-6">
+<h6 id="orge90942d"><span class="section-number-6">3.4.3.4.2.</span> 瞬间向量（Instant vectors）</h6>
 <div class="outline-text-6" id="text-3-4-3-4-2">
 <p>
 <code>vector</code> 类型表示瞬间向量， <code>result</code> 属性格式如下：
@@ -2751,8 +2751,8 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </div>
 </div>
 
-<div id="outline-container-org8df9e33" class="outline-6">
-<h6 id="org8df9e33"><span class="section-number-6">3.4.3.4.3.</span> 标量（Scalars）</h6>
+<div id="outline-container-org6b1e0e4" class="outline-6">
+<h6 id="org6b1e0e4"><span class="section-number-6">3.4.3.4.3.</span> 标量（Scalars）</h6>
 <div class="outline-text-6" id="text-3-4-3-4-3">
 <p>
 <code>scalar</code> 类型表示标量， <code>result</code> 属性格式如下：
@@ -2765,8 +2765,8 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </div>
 </div>
 
-<div id="outline-container-org5c92d90" class="outline-6">
-<h6 id="org5c92d90"><span class="section-number-6">3.4.3.4.4.</span> 字符串（Strings）</h6>
+<div id="outline-container-org23afd2c" class="outline-6">
+<h6 id="org23afd2c"><span class="section-number-6">3.4.3.4.4.</span> 字符串（Strings）</h6>
 <div class="outline-text-6" id="text-3-4-3-4-4">
 <p>
 <code>string</code> 类型表示字符串， <code>result</code> 属性格式如下：
@@ -2780,53 +2780,53 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </div>
 </div>
 
-<div id="outline-container-orga7cdcc2" class="outline-5">
-<h5 id="orga7cdcc2"><span class="section-number-5">3.4.3.5.</span> <span class="todo TODO">TODO</span> 目标（targets）</h5>
+<div id="outline-container-orga532a0e" class="outline-5">
+<h5 id="orga532a0e"><span class="section-number-5">3.4.3.5.</span> <span class="todo TODO">TODO</span> 目标（targets）</h5>
 </div>
-<div id="outline-container-org4c1fa1d" class="outline-5">
-<h5 id="org4c1fa1d"><span class="section-number-5">3.4.3.6.</span> <span class="todo TODO">TODO</span> 规则（Rules）</h5>
+<div id="outline-container-org3f842d1" class="outline-5">
+<h5 id="org3f842d1"><span class="section-number-5">3.4.3.6.</span> <span class="todo TODO">TODO</span> 规则（Rules）</h5>
 </div>
-<div id="outline-container-org494e714" class="outline-5">
-<h5 id="org494e714"><span class="section-number-5">3.4.3.7.</span> <span class="todo TODO">TODO</span> 告警（Alerts）</h5>
+<div id="outline-container-org8ec6fb2" class="outline-5">
+<h5 id="org8ec6fb2"><span class="section-number-5">3.4.3.7.</span> <span class="todo TODO">TODO</span> 告警（Alerts）</h5>
 </div>
-<div id="outline-container-org07b6f0d" class="outline-5">
-<h5 id="org07b6f0d"><span class="section-number-5">3.4.3.8.</span> <span class="todo TODO">TODO</span> 查询目标元数据</h5>
+<div id="outline-container-org21c7436" class="outline-5">
+<h5 id="org21c7436"><span class="section-number-5">3.4.3.8.</span> <span class="todo TODO">TODO</span> 查询目标元数据</h5>
 </div>
-<div id="outline-container-orgab8c995" class="outline-5">
-<h5 id="orgab8c995"><span class="section-number-5">3.4.3.9.</span> <span class="todo TODO">TODO</span> 查询 metric 元数据</h5>
+<div id="outline-container-org44f1cd2" class="outline-5">
+<h5 id="org44f1cd2"><span class="section-number-5">3.4.3.9.</span> <span class="todo TODO">TODO</span> 查询 metric 元数据</h5>
 </div>
-<div id="outline-container-org5484e0a" class="outline-5">
-<h5 id="org5484e0a"><span class="section-number-5">3.4.3.10.</span> <span class="todo TODO">TODO</span> Alertmanagers</h5>
+<div id="outline-container-orgc23983a" class="outline-5">
+<h5 id="orgc23983a"><span class="section-number-5">3.4.3.10.</span> <span class="todo TODO">TODO</span> Alertmanagers</h5>
 </div>
-<div id="outline-container-org7f4efb4" class="outline-5">
-<h5 id="org7f4efb4"><span class="section-number-5">3.4.3.11.</span> <span class="todo TODO">TODO</span> 状态（status）</h5>
+<div id="outline-container-orgef1f6d2" class="outline-5">
+<h5 id="orgef1f6d2"><span class="section-number-5">3.4.3.11.</span> <span class="todo TODO">TODO</span> 状态（status）</h5>
 </div>
-<div id="outline-container-org5ce9b0e" class="outline-5">
-<h5 id="org5ce9b0e"><span class="section-number-5">3.4.3.12.</span> <span class="todo TODO">TODO</span> TSDB 管理 APIs</h5>
-</div>
-</div>
-</div>
-<div id="outline-container-orgbfc26fc" class="outline-3">
-<h3 id="orgbfc26fc"><span class="section-number-3">3.5.</span> <span class="todo TODO">TODO</span> 存储</h3>
-</div>
-<div id="outline-container-orgfb47f57" class="outline-3">
-<h3 id="orgfb47f57"><span class="section-number-3">3.6.</span> <span class="todo TODO">TODO</span> Federation</h3>
-</div>
-<div id="outline-container-org7262f8c" class="outline-3">
-<h3 id="org7262f8c"><span class="section-number-3">3.7.</span> <span class="todo TODO">TODO</span> 管理 API</h3>
+<div id="outline-container-org4826db6" class="outline-5">
+<h5 id="org4826db6"><span class="section-number-5">3.4.3.12.</span> <span class="todo TODO">TODO</span> TSDB 管理 APIs</h5>
 </div>
 </div>
-<div id="outline-container-org38ca87c" class="outline-2">
-<h2 id="org38ca87c"><span class="section-number-2">4.</span> <span class="todo TODO">TODO</span> 可视化</h2>
 </div>
-<div id="outline-container-orgc1abd52" class="outline-2">
-<h2 id="orgc1abd52"><span class="section-number-2">5.</span> <span class="todo TODO">TODO</span> Instrumenting</h2>
+<div id="outline-container-orgcced92b" class="outline-3">
+<h3 id="orgcced92b"><span class="section-number-3">3.5.</span> <span class="todo TODO">TODO</span> 存储</h3>
 </div>
-<div id="outline-container-orga584679" class="outline-2">
-<h2 id="orga584679"><span class="section-number-2">6.</span> <span class="todo TODO">TODO</span> Operating</h2>
+<div id="outline-container-orgfff11e6" class="outline-3">
+<h3 id="orgfff11e6"><span class="section-number-3">3.6.</span> <span class="todo TODO">TODO</span> Federation</h3>
 </div>
-<div id="outline-container-org9306fe7" class="outline-2">
-<h2 id="org9306fe7"><span class="section-number-2">7.</span> <span class="todo TODO">TODO</span> 告警（Alerting）</h2>
+<div id="outline-container-orge0c8f4b" class="outline-3">
+<h3 id="orge0c8f4b"><span class="section-number-3">3.7.</span> <span class="todo TODO">TODO</span> 管理 API</h3>
+</div>
+</div>
+<div id="outline-container-org338dd84" class="outline-2">
+<h2 id="org338dd84"><span class="section-number-2">4.</span> <span class="todo TODO">TODO</span> 可视化</h2>
+</div>
+<div id="outline-container-org1196230" class="outline-2">
+<h2 id="org1196230"><span class="section-number-2">5.</span> <span class="todo TODO">TODO</span> Instrumenting</h2>
+</div>
+<div id="outline-container-org759a565" class="outline-2">
+<h2 id="org759a565"><span class="section-number-2">6.</span> <span class="todo TODO">TODO</span> Operating</h2>
+</div>
+<div id="outline-container-org6b8a467" class="outline-2">
+<h2 id="org6b8a467"><span class="section-number-2">7.</span> <span class="todo TODO">TODO</span> 告警（Alerting）</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 告警相对独立，见 <a href="prometheus-alert.html">Prometheus Alert</a>。
@@ -2834,12 +2834,12 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </div>
 </div>
 
-<div id="outline-container-org4f37f22" class="outline-2">
-<h2 id="org4f37f22"><span class="section-number-2">8.</span> <span class="todo TODO">TODO</span> 最佳实践</h2>
+<div id="outline-container-org4b06cea" class="outline-2">
+<h2 id="org4b06cea"><span class="section-number-2">8.</span> <span class="todo TODO">TODO</span> 最佳实践</h2>
 <div class="outline-text-2" id="text-8">
 </div>
-<div id="outline-container-org51a010f" class="outline-3">
-<h3 id="org51a010f"><span class="section-number-3">8.1.</span> <span class="todo TODO">TODO</span> 何时使用 Pushgateway ?</h3>
+<div id="outline-container-org00301b4" class="outline-3">
+<h3 id="org00301b4"><span class="section-number-3">8.1.</span> <span class="todo TODO">TODO</span> 何时使用 Pushgateway ?</h3>
 <div class="outline-text-3" id="text-8-1">
 <p>
 <a href="https://prometheus.io/docs/practices/pushing/">https://prometheus.io/docs/practices/pushing/</a>
@@ -2848,12 +2848,12 @@ $ curl http://localhost:9090/api/v1/label/job/values
 </div>
 </div>
 
-<div id="outline-container-orgdfa6b7f" class="outline-2">
-<h2 id="orgdfa6b7f"><span class="section-number-2">9.</span> <span class="todo TODO">TODO</span> 指南（GUIDES）</h2>
+<div id="outline-container-org7bedc1e" class="outline-2">
+<h2 id="org7bedc1e"><span class="section-number-2">9.</span> <span class="todo TODO">TODO</span> 指南（GUIDES）</h2>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-25 14:42:47 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+<p class="postamble">First created: 2020-02-25 14:42:47 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>

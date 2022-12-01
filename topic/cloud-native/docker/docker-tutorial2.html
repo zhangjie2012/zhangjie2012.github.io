@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-11-30 Wed 16:14 -->
+<!-- 2022-12-01 Thu 14:38 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Docker 官方文档 翻译</title>
-<meta name="author" content="JerryZhang" />
+<meta name="author" content="zhj" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,64 +223,64 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgb965e70">1. Docker 底层技术</a>
+<li><a href="#orge625446">1. Docker 底层技术</a>
 <ul>
-<li><a href="#org5d81cc5">1.1. Namespaces</a></li>
-<li><a href="#org9dc6a3c">1.2. 控制组（Control groups）</a></li>
-<li><a href="#org21af27f">1.3. 联合文件系统（Union file systems）</a></li>
-<li><a href="#org1d72139">1.4. 容器格式</a></li>
+<li><a href="#org9c9bca1">1.1. Namespaces</a></li>
+<li><a href="#orgb1c71eb">1.2. 控制组（Control groups）</a></li>
+<li><a href="#org1ebe4e4">1.3. 联合文件系统（Union file systems）</a></li>
+<li><a href="#org699eaf4">1.4. 容器格式</a></li>
 </ul>
 </li>
-<li><a href="#org9117703">2. Docker 开发最佳实践</a>
+<li><a href="#org141d39c">2. Docker 开发最佳实践</a>
 <ul>
 <li><a href="#如何让构建的镜像足够小">2.1. 如何让构建的镜像足够小</a></li>
-<li><a href="#org532998f">2.2. 在什么地方、怎样持久化应用数据</a></li>
-<li><a href="#org90e5c60">2.3. 尽可能使用 swarm 服务</a></li>
-<li><a href="#orgdca096c">2.4. 使用 CI/CD 进行测试和部署</a></li>
-<li><a href="#orgc7343c6">2.5. 对比开发和生产环境</a></li>
+<li><a href="#org70ff33b">2.2. 在什么地方、怎样持久化应用数据</a></li>
+<li><a href="#org6349472">2.3. 尽可能使用 swarm 服务</a></li>
+<li><a href="#org9c0cdcb">2.4. 使用 CI/CD 进行测试和部署</a></li>
+<li><a href="#org12f953c">2.5. 对比开发和生产环境</a></li>
 </ul>
 </li>
-<li><a href="#orgf5b1d50">3. Docker 网络概览</a>
+<li><a href="#org13faabd">3. Docker 网络概览</a>
 <ul>
-<li><a href="#org250f3a8">3.1. 网络驱动程序</a>
+<li><a href="#org453eaf4">3.1. 网络驱动程序</a>
 <ul>
-<li><a href="#org39dd542">3.1.1. 总结</a></li>
+<li><a href="#org5473bdd">3.1.1. 总结</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org28ec847">4. 使用桥接网络</a>
+<li><a href="#org5f387c5">4. 使用桥接网络</a>
 <ul>
 <li><a href="#用户自定义的桥接和默认的桥接网络之间的区别">4.1. 用户自定义的桥接和默认的桥接网络之间的区别</a></li>
 <li><a href="#管理用户定义桥接网络">4.2. 管理用户定义桥接网络</a></li>
 <li><a href="#连接容器到用户定义桥接网络">4.3. 连接容器到用户定义桥接网络</a></li>
 </ul>
 </li>
-<li><a href="#org9596ba7">5. 禁用容器网络</a></li>
-<li><a href="#orgc026b01">6. 管理应用数据：Volumes</a>
+<li><a href="#orga45bd0e">5. 禁用容器网络</a></li>
+<li><a href="#orgc0269e2">6. 管理应用数据：Volumes</a>
 <ul>
-<li><a href="#org3919bbf">6.1. <code>-v</code> 和 <code>--mount</code> 的差异</a></li>
+<li><a href="#orgf9ec1dc">6.1. <code>-v</code> 和 <code>--mount</code> 的差异</a></li>
 <li><a href="#创建和管理-volumes">6.2. 创建和管理 volumes</a></li>
-<li><a href="#org0f38c80">6.3. 启动一个有 volume 的容器</a></li>
-<li><a href="#orgbf57c99">6.4. 使用只读的 volume</a></li>
+<li><a href="#orgf979e66">6.3. 启动一个有 volume 的容器</a></li>
+<li><a href="#orgcdf2756">6.4. 使用只读的 volume</a></li>
 </ul>
 </li>
 <li><a href="#管理应用数据bind-mounts">7. 管理应用数据：bind mounts</a></li>
-<li><a href="#org7131704">8. 管理应用数据：使用 tmpfs mounts</a></li>
+<li><a href="#orgc6022fd">8. 管理应用数据：使用 tmpfs mounts</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb965e70" class="outline-2">
-<h2 id="orgb965e70"><span class="section-number-2">1.</span> Docker 底层技术</h2>
+<div id="outline-container-orge625446" class="outline-2">
+<h2 id="orge625446"><span class="section-number-2">1.</span> Docker 底层技术</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 来自：<a href="https://docs.docker.com/engine/docker-overview/#the-underlying-technology">https://docs.docker.com/engine/docker-overview/#the-underlying-technology</a>
 </p>
 </div>
 
-<div id="outline-container-org5d81cc5" class="outline-3">
-<h3 id="org5d81cc5"><span class="section-number-3">1.1.</span> Namespaces</h3>
+<div id="outline-container-org9c9bca1" class="outline-3">
+<h3 id="org9c9bca1"><span class="section-number-3">1.1.</span> Namespaces</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Docker 使用 <code>namespaces</code> 技术来处理容器的隔离工作空间。当创建容器时，Docker 会创建容器的一组 <i>namespaces</i> 。
@@ -304,8 +304,8 @@ Docker 引擎在 Linux 上使用以下 namesspaces：
 </div>
 </div>
 
-<div id="outline-container-org9dc6a3c" class="outline-3">
-<h3 id="org9dc6a3c"><span class="section-number-3">1.2.</span> 控制组（Control groups）</h3>
+<div id="outline-container-orgb1c71eb" class="outline-3">
+<h3 id="orgb1c71eb"><span class="section-number-3">1.2.</span> 控制组（Control groups）</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Linux 上的 Docker 引擎依赖的另外一项技术叫 <i>control groups</i> （ <code>cgroups</code> ）。cgroup 将应用程序限制为一组特定的一组资源。cgroups 允许 Docker 引擎将可用的硬件资源共享给容器，并可选择强制执限制和约束。比如，你可以限制指定容器的可用内存。
@@ -313,8 +313,8 @@ Linux 上的 Docker 引擎依赖的另外一项技术叫 <i>control groups</i> �
 </div>
 </div>
 
-<div id="outline-container-org21af27f" class="outline-3">
-<h3 id="org21af27f"><span class="section-number-3">1.3.</span> 联合文件系统（Union file systems）</h3>
+<div id="outline-container-org1ebe4e4" class="outline-3">
+<h3 id="org1ebe4e4"><span class="section-number-3">1.3.</span> 联合文件系统（Union file systems）</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 Union file systems，或者称为 UnionFS，是一种分层文件系统，非常轻量级而且快速。Docker 引擎使用 UnionFS 为容器创建块。Docker 引擎可以使用多个 UnionFS 的变种，包括 AUFS，btrfs，vfs 和 DeviceMapper。
@@ -322,8 +322,8 @@ Union file systems，或者称为 UnionFS，是一种分层文件系统，非常
 </div>
 </div>
 
-<div id="outline-container-org1d72139" class="outline-3">
-<h3 id="org1d72139"><span class="section-number-3">1.4.</span> 容器格式</h3>
+<div id="outline-container-org699eaf4" class="outline-3">
+<h3 id="org699eaf4"><span class="section-number-3">1.4.</span> 容器格式</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 Docker 引擎把 namespaces，cgroups 和 UnionFS 组合到一个称为容器格式的包装器中。默认的容器格式是 <code>libcontainer</code> 。在未来，Docker 可能会通过 BSD Jails 或者 Solaris Zones 等技术集成来支持其他容器格式。
@@ -332,8 +332,8 @@ Docker 引擎把 namespaces，cgroups 和 UnionFS 组合到一个称为容器格
 </div>
 </div>
 
-<div id="outline-container-org9117703" class="outline-2">
-<h2 id="org9117703"><span class="section-number-2">2.</span> Docker 开发最佳实践</h2>
+<div id="outline-container-org141d39c" class="outline-2">
+<h2 id="org141d39c"><span class="section-number-2">2.</span> Docker 开发最佳实践</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 原文档：<a href="https://docs.docker.com/develop/dev-best-practices/">https://docs.docker.com/develop/dev-best-practices/</a>
@@ -355,7 +355,7 @@ Docker 引擎把 namespaces，cgroups 和 UnionFS 组合到一个称为容器格
 <li><p>
 如果你使用到的 Docker 版本不支持多阶段构建，试着减少使用 <code>RUN</code> 命令的数量来减少镜像中的层数。把多个单行执行的 <code>RUN</code> 命令，利用 shell 机制将他们合并到一起来实现此目的。考虑下面两个代码片段，第一个在镜像中创建两个层，而第二个只创建了一个层。
 </p>
-<pre class="example" id="orgd044d51">
+<pre class="example" id="org5d53db5">
 // 版本一
 RUN apt-get -y update
 RUN apt-get install -y python
@@ -370,8 +370,8 @@ RUN apt-get -y update &amp;&amp; apt-get install -y python
 </div>
 </div>
 
-<div id="outline-container-org532998f" class="outline-3">
-<h3 id="org532998f"><span class="section-number-3">2.2.</span> 在什么地方、怎样持久化应用数据</h3>
+<div id="outline-container-org70ff33b" class="outline-3">
+<h3 id="org70ff33b"><span class="section-number-3">2.2.</span> 在什么地方、怎样持久化应用数据</h3>
 <div class="outline-text-3" id="text-2-2">
 <ul class="org-ul">
 <li><b>避免</b> 使用存储驱动程序把应用数据存储在可写层中。这会不断的增加容器的大小，从 I/O 角度来看，相比卷或者绑定挂载效率要低很多。</li>
@@ -383,8 +383,8 @@ RUN apt-get -y update &amp;&amp; apt-get install -y python
 </div>
 </div>
 
-<div id="outline-container-org90e5c60" class="outline-3">
-<h3 id="org90e5c60"><span class="section-number-3">2.3.</span> 尽可能使用 swarm 服务</h3>
+<div id="outline-container-org6349472" class="outline-3">
+<h3 id="org6349472"><span class="section-number-3">2.3.</span> 尽可能使用 swarm 服务</h3>
 <div class="outline-text-3" id="text-2-3">
 <ul class="org-ul">
 <li>如果可能的话，使用 swarm 服务设计应用程序支持横向扩展。</li>
@@ -396,8 +396,8 @@ RUN apt-get -y update &amp;&amp; apt-get install -y python
 </div>
 </div>
 
-<div id="outline-container-orgdca096c" class="outline-3">
-<h3 id="orgdca096c"><span class="section-number-3">2.4.</span> 使用 CI/CD 进行测试和部署</h3>
+<div id="outline-container-org9c0cdcb" class="outline-3">
+<h3 id="org9c0cdcb"><span class="section-number-3">2.4.</span> 使用 CI/CD 进行测试和部署</h3>
 <div class="outline-text-3" id="text-2-4">
 <ul class="org-ul">
 <li>当你检查源代码管理的改动或者创建拉取请求时，使用 docker hub 或者另外一种 CI/CD 方式来自动构建，为 Docker 镜像打 Tag，然后测试。</li>
@@ -406,8 +406,8 @@ RUN apt-get -y update &amp;&amp; apt-get install -y python
 </div>
 </div>
 
-<div id="outline-container-orgc7343c6" class="outline-3">
-<h3 id="orgc7343c6"><span class="section-number-3">2.5.</span> 对比开发和生产环境</h3>
+<div id="outline-container-org12f953c" class="outline-3">
+<h3 id="org12f953c"><span class="section-number-3">2.5.</span> 对比开发和生产环境</h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 开发环境：
@@ -432,12 +432,12 @@ RUN apt-get -y update &amp;&amp; apt-get install -y python
 </div>
 </div>
 
-<div id="outline-container-orgf5b1d50" class="outline-2">
-<h2 id="orgf5b1d50"><span class="section-number-2">3.</span> Docker 网络概览</h2>
+<div id="outline-container-org13faabd" class="outline-2">
+<h2 id="org13faabd"><span class="section-number-2">3.</span> Docker 网络概览</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org250f3a8" class="outline-3">
-<h3 id="org250f3a8"><span class="section-number-3">3.1.</span> 网络驱动程序</h3>
+<div id="outline-container-org453eaf4" class="outline-3">
+<h3 id="org453eaf4"><span class="section-number-3">3.1.</span> 网络驱动程序</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Docker 的子网络是可插拔的，默认支持几种驱动程序，提供核心网络功能。
@@ -454,8 +454,8 @@ Docker 的子网络是可插拔的，默认支持几种驱动程序，提供核�
 </ul>
 </div>
 
-<div id="outline-container-org39dd542" class="outline-4">
-<h4 id="org39dd542"><span class="section-number-4">3.1.1.</span> 总结</h4>
+<div id="outline-container-org5473bdd" class="outline-4">
+<h4 id="org5473bdd"><span class="section-number-4">3.1.1.</span> 总结</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <ul class="org-ul">
 <li>当需要在同一个 Docker 主机上多个容器通信时，*使用用户定义的 bridge网络* 。</li>
@@ -469,8 +469,8 @@ Docker 的子网络是可插拔的，默认支持几种驱动程序，提供核�
 </div>
 </div>
 
-<div id="outline-container-org28ec847" class="outline-2">
-<h2 id="org28ec847"><span class="section-number-2">4.</span> 使用桥接网络</h2>
+<div id="outline-container-org5f387c5" class="outline-2">
+<h2 id="org5f387c5"><span class="section-number-2">4.</span> 使用桥接网络</h2>
 <div class="outline-text-2" id="text-4">
 <blockquote>
 <p>
@@ -617,7 +617,7 @@ MTU 和 iptables 规则。此外，因为配置默认桥接网络是在 Docker
 当你创建容器的时候，你可以指定一个或者多个 <code>--network</code> 标识。下面的例子将 Nginx 容器连接到 <code>my-net</code> 网络，并且将容器内部的 80 端口映射到宿主机的 8080 端口，任何连接到 <code>my-net</code> 的网络都可以连接 <code>my-nginx</code> 的所有端口，反之亦然。
 </p>
 
-<pre class="example" id="org027886c">
+<pre class="example" id="org971306d">
 $ docker create --name my-nginx \
 --network my-net \
 --publish 8080:80 \
@@ -628,7 +628,7 @@ nginx:latest
 正在运行的容器也可以连接到自定义的桥接网络，使用 <code>docker network connect</code> 命令。下面的命令连接已经运行的 <code>my-nginx</code> 容器到已经存在的 <code>my-net</code> 网络。
 </p>
 
-<pre class="example" id="orgd0fd738">
+<pre class="example" id="org5b3e4bf">
 $ docker network connect my-net my-nginx
 </pre>
 
@@ -639,8 +639,8 @@ $ docker network connect my-net my-nginx
 </div>
 </div>
 
-<div id="outline-container-org9596ba7" class="outline-2">
-<h2 id="org9596ba7"><span class="section-number-2">5.</span> 禁用容器网络</h2>
+<div id="outline-container-orga45bd0e" class="outline-2">
+<h2 id="orga45bd0e"><span class="section-number-2">5.</span> 禁用容器网络</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 创建容器时，将 <code>--network</code> 设置为 =none=。
@@ -648,8 +648,8 @@ $ docker network connect my-net my-nginx
 </div>
 </div>
 
-<div id="outline-container-orgc026b01" class="outline-2">
-<h2 id="orgc026b01"><span class="section-number-2">6.</span> 管理应用数据：Volumes</h2>
+<div id="outline-container-orgc0269e2" class="outline-2">
+<h2 id="orgc0269e2"><span class="section-number-2">6.</span> 管理应用数据：Volumes</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 起初，=-v= 或者 <code>--volume</code> 标识只用作独立容器， <code>--mount</code> 标识用作集群（swarm）服务。然而，在 Docker 17.06 之后，你也可以在单独的容器上使用 <code>--mount</code> 选项， <code>--mount</code> 表达的更为明确。
@@ -687,8 +687,8 @@ $ docker network connect my-net my-nginx
 </ul>
 </div>
 
-<div id="outline-container-org3919bbf" class="outline-3">
-<h3 id="org3919bbf"><span class="section-number-3">6.1.</span> <code>-v</code> 和 <code>--mount</code> 的差异</h3>
+<div id="outline-container-orgf9ec1dc" class="outline-3">
+<h3 id="orgf9ec1dc"><span class="section-number-3">6.1.</span> <code>-v</code> 和 <code>--mount</code> 的差异</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 与 bind mounts 不同，volumes 的所有选项对于 <code>--mount</code> 和 <code>-v</code> 都是可用的。当和服务（services）一起使用时，只支持 <code>--mount</code> 。
@@ -707,7 +707,7 @@ $ docker network connect my-net my-nginx
 <b>创建 volume</b>
 </p>
 
-<pre class="example" id="org1b358cf">
+<pre class="example" id="org49f31a2">
 docker volume create my-vol
 </pre>
 
@@ -715,7 +715,7 @@ docker volume create my-vol
 <b>列出 volumes</b>
 </p>
 
-<pre class="example" id="orgde64e22">
+<pre class="example" id="org2088987">
 $ docker volume ls
 
 local               my-vol
@@ -725,7 +725,7 @@ local               my-vol
 <b>查看单个 volume</b>
 </p>
 
-<pre class="example" id="org3412877">
+<pre class="example" id="orgc1d5f71">
 $ docker volume inspect my-vol
 [
     {
@@ -743,14 +743,14 @@ $ docker volume inspect my-vol
 <b>移除一个 volume</b>
 </p>
 
-<pre class="example" id="orgafffe00">
+<pre class="example" id="org7b4821c">
 $ docker volume rm my-vol
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org0f38c80" class="outline-3">
-<h3 id="org0f38c80"><span class="section-number-3">6.3.</span> 启动一个有 volume 的容器</h3>
+<div id="outline-container-orgf979e66" class="outline-3">
+<h3 id="orgf979e66"><span class="section-number-3">6.3.</span> 启动一个有 volume 的容器</h3>
 <div class="outline-text-3" id="text-6-3">
 <p>
 如果启动一个尚不存在的 volume 的容器，Docker 会自动创建为你创建一个。下面的例子会将 volume <code>myvol2</code> 关联到容器中的 <code>/app/</code> 。
@@ -760,7 +760,7 @@ $ docker volume rm my-vol
 下面的例子中 <code>-v</code> 和 <code>--mount</code> 是相同的：
 </p>
 
-<pre class="example" id="orgeea00ef">
+<pre class="example" id="orgaeb82f3">
 $ docker run -d \
     --name devtest \
     --mount source=myvol2,target=/app \
@@ -782,8 +782,8 @@ $ docker run -d \
 </div>
 </div>
 
-<div id="outline-container-orgbf57c99" class="outline-3">
-<h3 id="orgbf57c99"><span class="section-number-3">6.4.</span> 使用只读的 volume</h3>
+<div id="outline-container-orgcdf2756" class="outline-3">
+<h3 id="orgcdf2756"><span class="section-number-3">6.4.</span> 使用只读的 volume</h3>
 <div class="outline-text-3" id="text-6-4">
 <p>
 对于某些应用，服务需要将一些变动会写到 Docker
@@ -796,7 +796,7 @@ volume，再同一时间内，一些应用「读写」数据，另外一些应�
 选项，如果存在多个选项，请用逗号分隔。
 </p>
 
-<pre class="example" id="org70a3404">
+<pre class="example" id="org0bf80b7">
 $ docker run -d \
     --name=nginxtest \
     --mount source=nginx-vol,destination=/usr/share/nginx/html,readonly \
@@ -845,8 +845,8 @@ bind mounts 的 target 如果是一个非空的目录则会覆盖掉容器中的
 </div>
 </div>
 
-<div id="outline-container-org7131704" class="outline-2">
-<h2 id="org7131704"><span class="section-number-2">8.</span> 管理应用数据：使用 tmpfs mounts</h2>
+<div id="outline-container-orgc6022fd" class="outline-2">
+<h2 id="orgc6022fd"><span class="section-number-2">8.</span> 管理应用数据：使用 tmpfs mounts</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 tmpfs 和 volumes/bind mounts 不同的地方在于，tmpfs 是临时的，并且只存在于主机的内存中。容器停止时，tmpfs 挂载会被删除，数据也就不存在了。
@@ -877,7 +877,7 @@ tmpfs 使用时没有 source 选项，只有 target 选项。tmpfs 支持两个�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-03-04 18:05 <br />Last updated: 2022-11-27 Sun 15:02 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.5.5)</p>
+<p class="postamble">First created: 2019-03-04 18:05 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>
