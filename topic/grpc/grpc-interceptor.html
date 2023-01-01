@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:38 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>gRPC 拦截器</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,15 +223,15 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org1f5524f">1. 拦截器</a></li>
-<li><a href="#org342da01">2. Session 与认证</a></li>
-<li><a href="#org152e2b6">3. go-grpc-middleware</a></li>
+<li><a href="#orgb33ce18">1. 拦截器</a></li>
+<li><a href="#orgbb02fc8">2. Session 与认证</a></li>
+<li><a href="#org8613ed3">3. go-grpc-middleware</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1f5524f" class="outline-2">
-<h2 id="org1f5524f"><span class="section-number-2">1.</span> 拦截器</h2>
+<div id="outline-container-orgb33ce18" class="outline-2">
+<h2 id="orgb33ce18"><span class="section-number-2">1.</span> 拦截器</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 一个生产化的后端服务是少不了中间件的，做一些认证、tracing、度量指标统计等操作。gRPC 提供了 interceptor 特性，可以用来实现服务中间件。
@@ -246,14 +246,14 @@
 <code>UnaryServerInterceptor</code>
 </p>
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">func</span><span style="color: #000000;">(</span><span style="color: #00538b;">ctx</span> <span style="color: #005a5f;">context.Context</span>, <span style="color: #00538b;">req</span> <span style="color: #5317ac;">interface</span><span style="color: #a8007f;">{}</span>, <span style="color: #00538b;">info</span> *<span style="color: #005a5f;">UnaryServerInfo</span>, <span style="color: #00538b;">handler</span> <span style="color: #005a5f;">UnaryHandler</span><span style="color: #000000;">)</span> <span style="color: #000000;">(</span><span style="color: #00538b;">resp</span> <span style="color: #5317ac;">interface</span><span style="color: #a8007f;">{}</span>, <span style="color: #00538b;">err</span> <span style="color: #005a5f;">error</span><span style="color: #000000;">)</span>
+<pre class="src src-go"><span style="color: #e45649;">func</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">ctx</span> <span style="color: #986801;">context.Context</span>, <span style="color: #6a1868;">req</span> <span style="color: #e45649;">interface</span><span style="color: #a626a4;">{}</span>, <span style="color: #6a1868;">info</span> *<span style="color: #986801;">UnaryServerInfo</span>, <span style="color: #6a1868;">handler</span> <span style="color: #986801;">UnaryHandler</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">resp</span> <span style="color: #e45649;">interface</span><span style="color: #a626a4;">{}</span>, <span style="color: #6a1868;">err</span> <span style="color: #986801;">error</span><span style="color: #4078f2;">)</span>
 </pre>
 </div></li>
 <li><p>
 <code>StreamServerInterceptor</code>
 </p>
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">func</span><span style="color: #000000;">(</span><span style="color: #00538b;">srv</span> <span style="color: #5317ac;">interface</span><span style="color: #a8007f;">{}</span>, <span style="color: #00538b;">ss</span> <span style="color: #005a5f;">ServerStream</span>, <span style="color: #00538b;">info</span> *<span style="color: #005a5f;">StreamServerInfo</span>, <span style="color: #00538b;">handler</span> <span style="color: #005a5f;">StreamHandler</span><span style="color: #000000;">)</span> <span style="color: #005a5f;">error</span>
+<pre class="src src-go"><span style="color: #e45649;">func</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">srv</span> <span style="color: #e45649;">interface</span><span style="color: #a626a4;">{}</span>, <span style="color: #6a1868;">ss</span> <span style="color: #986801;">ServerStream</span>, <span style="color: #6a1868;">info</span> *<span style="color: #986801;">StreamServerInfo</span>, <span style="color: #6a1868;">handler</span> <span style="color: #986801;">StreamHandler</span><span style="color: #4078f2;">)</span> <span style="color: #986801;">error</span>
 </pre>
 </div></li>
 </ul>
@@ -273,8 +273,8 @@
 </div>
 </div>
 
-<div id="outline-container-org342da01" class="outline-2">
-<h2 id="org342da01"><span class="section-number-2">2.</span> Session 与认证</h2>
+<div id="outline-container-orgbb02fc8" class="outline-2">
+<h2 id="orgbb02fc8"><span class="section-number-2">2.</span> Session 与认证</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 拦截器配合 <a href="https://pkg.go.dev/google.golang.org/grpc@v1.29.1/metadata?tab=doc">metadata</a> 做认证。
@@ -288,8 +288,8 @@
 </div>
 </div>
 
-<div id="outline-container-org152e2b6" class="outline-2">
-<h2 id="org152e2b6"><span class="section-number-2">3.</span> <a href="https://github.com/grpc-ecosystem/go-grpc-middleware">go-grpc-middleware</a></h2>
+<div id="outline-container-org8613ed3" class="outline-2">
+<h2 id="org8613ed3"><span class="section-number-2">3.</span> <a href="https://github.com/grpc-ecosystem/go-grpc-middleware">go-grpc-middleware</a></h2>
 <div class="outline-text-2" id="text-3">
 <p>
 官方封装了一些常用的 middlware：auth、log、monitor、recovery，可以开箱即用。
@@ -302,7 +302,7 @@
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-05-29 15:52:54 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2020-05-29 15:52:54 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

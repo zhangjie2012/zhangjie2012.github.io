@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:37 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Rate Limiting</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,26 +223,26 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org1cbec20">1. 定义</a></li>
-<li><a href="#orge524520">2. 限流算法</a>
+<li><a href="#orgd345ab6">1. 定义</a></li>
+<li><a href="#org705651e">2. 限流算法</a>
 <ul>
-<li><a href="#org3af4457">2.1. 令牌桶（Token bucket）</a></li>
-<li><a href="#org1c67969">2.2. 漏桶法（Leaky bucket）</a></li>
-<li><a href="#orgd0444a4">2.3. 固定窗口（Fixed Window）</a></li>
-<li><a href="#org07bc110">2.4. 滑动日志（Sliding log）</a></li>
-<li><a href="#org58b1299">2.5. 滑动窗口（Sliding Window）</a></li>
+<li><a href="#orge6fe1b1">2.1. 令牌桶（Token bucket）</a></li>
+<li><a href="#org7fe68e8">2.2. 漏桶法（Leaky bucket）</a></li>
+<li><a href="#orgef09d58">2.3. 固定窗口（Fixed Window）</a></li>
+<li><a href="#org793bb9e">2.4. 滑动日志（Sliding log）</a></li>
+<li><a href="#org24de01a">2.5. 滑动窗口（Sliding Window）</a></li>
 </ul>
 </li>
-<li><a href="#orgdb872c1">3. 算法的开源实现</a></li>
-<li><a href="#orgdc3afed">4. 我自己的实现</a></li>
-<li><a href="#orgb8411e7">5. 总评</a></li>
-<li><a href="#org4ae3f64">6. 扩展资料</a></li>
+<li><a href="#org36ad925">3. 算法的开源实现</a></li>
+<li><a href="#org5e1f885">4. 我自己的实现</a></li>
+<li><a href="#org2b7e8e8">5. 总评</a></li>
+<li><a href="#org970ce16">6. 扩展资料</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1cbec20" class="outline-2">
-<h2 id="org1cbec20"><span class="section-number-2">1.</span> 定义</h2>
+<div id="outline-container-orgd345ab6" class="outline-2">
+<h2 id="orgd345ab6"><span class="section-number-2">1.</span> 定义</h2>
 <div class="outline-text-2" id="text-1">
 <blockquote>
 <p>
@@ -279,23 +279,23 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 
-<div id="outline-container-orge524520" class="outline-2">
-<h2 id="orge524520"><span class="section-number-2">2.</span> 限流算法</h2>
+<div id="outline-container-org705651e" class="outline-2">
+<h2 id="org705651e"><span class="section-number-2">2.</span> 限流算法</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 有 5 种限流算法，各有优劣势。
 </p>
 </div>
 
-<div id="outline-container-org3af4457" class="outline-3">
-<h3 id="org3af4457"><span class="section-number-3">2.1.</span> 令牌桶（Token bucket）</h3>
+<div id="outline-container-orge6fe1b1" class="outline-3">
+<h3 id="orge6fe1b1"><span class="section-number-3">2.1.</span> 令牌桶（Token bucket）</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 <a href="https://dev.to/satrobit/rate-limiting-using-the-token-bucket-algorithm-3cjh">Rate limiting using the Token Bucket algorithm</a> 这篇文章讲的比较清晰，我直接搬过来了。
 </p>
 
 
-<div id="org521e2d1" class="figure">
+<div id="org4821b58" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2022/token_bucket.png" alt="token_bucket.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>image via <a href="https://dev.to/satrobit/rate-limiting-using-the-token-bucket-algorithm-3cjh">https://dev.to/satrobit/rate-limiting-using-the-token-bucket-algorithm-3cjh</a></p>
@@ -316,11 +316,11 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 
-<div id="outline-container-org1c67969" class="outline-3">
-<h3 id="org1c67969"><span class="section-number-3">2.2.</span> 漏桶法（Leaky bucket）</h3>
+<div id="outline-container-org7fe68e8" class="outline-3">
+<h3 id="org7fe68e8"><span class="section-number-3">2.2.</span> 漏桶法（Leaky bucket）</h3>
 <div class="outline-text-3" id="text-2-2">
 
-<div id="org40d8154" class="figure">
+<div id="org1fdaee0" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2022/leaky_bucket.png" alt="leaky_bucket.png" />
 </p>
 <p><span class="figure-number">Figure 2: </span>image via <a href="https://betterprogramming.pub/4-rate-limit-algorithms-every-developer-should-know-7472cb482f48">https://betterprogramming.pub/4-rate-limit-algorithms-every-developer-should-know-7472cb482f48</a></p>
@@ -338,15 +338,15 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 
-<div id="outline-container-orgd0444a4" class="outline-3">
-<h3 id="orgd0444a4"><span class="section-number-3">2.3.</span> 固定窗口（Fixed Window）</h3>
+<div id="outline-container-orgef09d58" class="outline-3">
+<h3 id="orgef09d58"><span class="section-number-3">2.3.</span> 固定窗口（Fixed Window）</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 <a href="https://dev.to/satrobit/rate-limiting-using-the-fixed-window-algorithm-2hgm">Rate limiting using the Fixed Window algorithm</a> 这篇文章讲的比较清晰，我直接搬过来了。
 </p>
 
 
-<div id="org8d324c3" class="figure">
+<div id="org74b26d0" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2022/fixed_window.png" alt="fixed_window.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>image via <a href="https://dev.to/satrobit/rate-limiting-using-the-fixed-window-algorithm-2hgm">https://dev.to/satrobit/rate-limiting-using-the-fixed-window-algorithm-2hgm</a></p>
@@ -358,11 +358,11 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 
-<div id="outline-container-org07bc110" class="outline-3">
-<h3 id="org07bc110"><span class="section-number-3">2.4.</span> 滑动日志（Sliding log）</h3>
+<div id="outline-container-org793bb9e" class="outline-3">
+<h3 id="org793bb9e"><span class="section-number-3">2.4.</span> 滑动日志（Sliding log）</h3>
 <div class="outline-text-3" id="text-2-4">
 
-<div id="org13191c7" class="figure">
+<div id="org2a3c380" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2022/sliding_log.png" alt="sliding_log.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>image via <a href="https://www.quinbay.com/blog/rate-limiter-implementation-sliding-log-algorithm">https://www.quinbay.com/blog/rate-limiter-implementation-sliding-log-algorithm</a></p>
@@ -374,11 +374,11 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 
-<div id="outline-container-org58b1299" class="outline-3">
-<h3 id="org58b1299"><span class="section-number-3">2.5.</span> 滑动窗口（Sliding Window）</h3>
+<div id="outline-container-org24de01a" class="outline-3">
+<h3 id="org24de01a"><span class="section-number-3">2.5.</span> 滑动窗口（Sliding Window）</h3>
 <div class="outline-text-3" id="text-2-5">
 
-<div id="org9088fe5" class="figure">
+<div id="org8e8cc8d" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2022/sliding_window.png" alt="sliding_window.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>image via <a href="https://dev.to/satrobit/rate-limiting-using-the-sliding-window-algorithm-5fjn">https://dev.to/satrobit/rate-limiting-using-the-sliding-window-algorithm-5fjn</a></p>
@@ -405,8 +405,8 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 
-<div id="outline-container-orgdb872c1" class="outline-2">
-<h2 id="orgdb872c1"><span class="section-number-2">3.</span> 算法的开源实现</h2>
+<div id="outline-container-org36ad925" class="outline-2">
+<h2 id="org36ad925"><span class="section-number-2">3.</span> 算法的开源实现</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 主要选取基于 go 的实现：
@@ -421,8 +421,8 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 
-<div id="outline-container-orgdc3afed" class="outline-2">
-<h2 id="orgdc3afed"><span class="section-number-2">4.</span> 我自己的实现</h2>
+<div id="outline-container-org5e1f885" class="outline-2">
+<h2 id="org5e1f885"><span class="section-number-2">4.</span> 我自己的实现</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 <a href="https://github.com/zhangjie2012/yo-ratelimit">https://github.com/zhangjie2012/yo-ratelimit</a>
@@ -435,8 +435,8 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 
-<div id="outline-container-orgb8411e7" class="outline-2">
-<h2 id="orgb8411e7"><span class="section-number-2">5.</span> 总评</h2>
+<div id="outline-container-org2b7e8e8" class="outline-2">
+<h2 id="org2b7e8e8"><span class="section-number-2">5.</span> 总评</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>漏桶的好处是任何时候流量都是非常均匀的，问题是无法处理流量不均匀或者突发（burst）情况（会被阻塞），特定场景才会使用；</li>
@@ -452,8 +452,8 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 
-<div id="outline-container-org4ae3f64" class="outline-2">
-<h2 id="org4ae3f64"><span class="section-number-2">6.</span> 扩展资料</h2>
+<div id="outline-container-org970ce16" class="outline-2">
+<h2 id="org970ce16"><span class="section-number-2">6.</span> 扩展资料</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li><a href="https://hechao.li/2018/06/25/Rate-Limiter-Part1/">Rate limiting Part 1</a>，<a href="https://hechao.li/2018/06/27/Rate-Limiter-Part2/">Rate limiting Part 2</a> 推荐这两篇文章</li>
@@ -467,7 +467,7 @@ rate limiting，通常叫做“速率限制”，“流量限制”。用于控�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2022-11-22 14:17:55 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2022-11-22 14:17:55 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-12-01 Thu 14:38 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>理解 Kubernetes 对象</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,19 +223,19 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org388b121">1. 理解 Kubernetes 对象</a>
+<li><a href="#orgb40e6bd">1. 理解 Kubernetes 对象</a>
 <ul>
-<li><a href="#orga26e76a">1.1. 对象规约（Spec）和状态（Status）</a></li>
-<li><a href="#org8174e3d">1.2. 描述 Kubernetes 对象</a></li>
-<li><a href="#org3e64b85">1.3. 必须的字段</a></li>
+<li><a href="#org345a4e6">1.1. 对象规约（Spec）和状态（Status）</a></li>
+<li><a href="#org43153f4">1.2. 描述 Kubernetes 对象</a></li>
+<li><a href="#orgc1b3117">1.3. 必须的字段</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org388b121" class="outline-2">
-<h2 id="org388b121"><span class="section-number-2">1.</span> 理解 Kubernetes 对象</h2>
+<div id="outline-container-orgb40e6bd" class="outline-2">
+<h2 id="orgb40e6bd"><span class="section-number-2">1.</span> 理解 Kubernetes 对象</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 <i>Kubernetes 对象</i> 是 Kubernetes 系统的持久化实体，Kubernetes 使用这些实体来表示整个集群的状态。
@@ -264,8 +264,8 @@ Kubernetes 对象的操作（CRUD） 都需要使用 <a href="https://kubernetes
 </p>
 </div>
 
-<div id="outline-container-orga26e76a" class="outline-3">
-<h3 id="orga26e76a"><span class="section-number-3">1.1.</span> 对象规约（Spec）和状态（Status）</h3>
+<div id="outline-container-org345a4e6" class="outline-3">
+<h3 id="org345a4e6"><span class="section-number-3">1.1.</span> 对象规约（Spec）和状态（Status）</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 每个 Kubernetes 对象包含两个嵌套的字段，它们负责管理对象的配置：一个是对象 <code>Spec</code> ；一个是 <code>Status</code> ；
@@ -294,8 +294,8 @@ Kubernetes 控制平面持续的管理每个对象的实际状态，来满足你
 </div>
 </div>
 
-<div id="outline-container-org8174e3d" class="outline-3">
-<h3 id="org8174e3d"><span class="section-number-3">1.2.</span> 描述 Kubernetes 对象</h3>
+<div id="outline-container-org43153f4" class="outline-3">
+<h3 id="org43153f4"><span class="section-number-3">1.2.</span> 描述 Kubernetes 对象</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 创建 Kubernetes 对象时，必须提供对象的 Spec，描述对象的期望状态，以及关于对象的一些基本信息（名称，空间等）。
@@ -303,25 +303,25 @@ API 请求必须在 body 中包含 JSON 信息，kubectl 使用 yaml 格式，�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml"><span style="color: #00538b;">apiVersion</span>: apps/v1
-<span style="color: #00538b;">kind</span>: Deployment
-<span style="color: #00538b;">metadata</span>:
-  <span style="color: #00538b;">name</span>: nginx-deployment
-<span style="color: #00538b;">spec</span>:
-  <span style="color: #00538b;">selector</span>:
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">matchLabels</span>:
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  app</span>: nginx
-  <span style="color: #00538b;">replicas</span>: 2 <span style="color: #505050;"># </span><span style="color: #505050;">tells deployment to run 2 pods matching the template</span>
-  <span style="color: #00538b;">template</span>:
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">metadata</span>:
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  labels</span>:
-<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">app</span>: nginx
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">spec</span>:
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  containers</span>:
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">  - name</span>: nginx
-<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">image</span>: nginx:1.14.2
-<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">ports</span>:
-<span style="color: #000000; background-color: #ff9f9f;">        </span><span style="color: #00538b;">- containerPort</span>: 80
+<pre class="src src-yaml"><span style="color: #6a1868;">apiVersion</span>: apps/v1
+<span style="color: #6a1868;">kind</span>: Deployment
+<span style="color: #6a1868;">metadata</span>:
+  <span style="color: #6a1868;">name</span>: nginx-deployment
+<span style="color: #6a1868;">spec</span>:
+  <span style="color: #6a1868;">selector</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">matchLabels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">  app</span>: nginx
+  <span style="color: #6a1868;">replicas</span>: 2 <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">tells deployment to run 2 pods matching the template</span>
+  <span style="color: #6a1868;">template</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">metadata</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">  labels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #6a1868;">app</span>: nginx
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">spec</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">  containers</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">  - name</span>: nginx
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #6a1868;">image</span>: nginx:1.14.2
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #6a1868;">ports</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #6a1868;">- containerPort</span>: 80
 </pre>
 </div>
 
@@ -338,8 +338,8 @@ deployment.apps/nginx-deployment created
 </div>
 </div>
 
-<div id="outline-container-org3e64b85" class="outline-3">
-<h3 id="org3e64b85"><span class="section-number-3">1.3.</span> 必须的字段</h3>
+<div id="outline-container-orgc1b3117" class="outline-3">
+<h3 id="orgc1b3117"><span class="section-number-3">1.3.</span> 必须的字段</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 创建 Kubernetes 对象中对应的 <code>.yaml</code> 文件，需要配置如下字段：
@@ -362,7 +362,7 @@ deployment.apps/nginx-deployment created
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-05 12:25:24 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2020-02-05 12:25:24 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>

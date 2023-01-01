@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:37 -->
+<!-- 2023-01-01 Sun 17:16 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ingress-nginx 工作原理（上）：服务初始化</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,7 +223,7 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org3754923">1. 服务初始化</a></li>
+<li><a href="#org772d58f">1. 服务初始化</a></li>
 </ul>
 </div>
 </div>
@@ -243,7 +243,7 @@ cmd 是入口（main），internal 按依赖组件分别进行了二次封装（
 </p>
 
 
-<div id="org58b19d5" class="figure">
+<div id="org0288c99" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/nginx-ingress/ingress-nginx-1-1.svg" alt="ingress-nginx-1-1.svg" class="org-svg" />
 </p>
 </div>
@@ -259,53 +259,53 @@ cmd 是入口（main），internal 按依赖组件分别进行了二次封装（
 
 <hr />
 
-<div id="outline-container-org3754923" class="outline-2">
-<h2 id="org3754923"><span class="section-number-2">1.</span> 服务初始化</h2>
+<div id="outline-container-org772d58f" class="outline-2">
+<h2 id="org772d58f"><span class="section-number-2">1.</span> 服务初始化</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 服务初始化，可以拆分成 K8s 客户端创建、NGINXController、对外 HTTP 服务、启动服务几块。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #505050;">// </span><span style="color: #505050;">cmd/nginx/main.go</span>
-<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-    <span style="color: #505050;">// </span><span style="color: #505050;">(1)</span>
-    <span style="color: #00538b;">showVersion</span>, <span style="color: #00538b;">conf</span>, <span style="color: #00538b;">err</span> := <span style="color: #721045;">parseFlags</span><span style="color: #a8007f;">()</span>
-    <span style="color: #5317ac;">if</span> showVersion <span style="color: #a8007f;">{</span>
-        os.<span style="color: #721045;">Exit</span><span style="color: #005f88;">(</span>0<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
+<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">cmd/nginx/main.go</span>
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">main</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(1)</span>
+    <span style="color: #6a1868;">showVersion</span>, <span style="color: #6a1868;">conf</span>, <span style="color: #6a1868;">err</span> := <span style="color: #a626a4;">parseFlags</span><span style="color: #a626a4;">()</span>
+    <span style="color: #e45649;">if</span> showVersion <span style="color: #a626a4;">{</span>
+        os.<span style="color: #a626a4;">Exit</span><span style="color: #50a14f;">(</span>0<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">(2)</span>
-    <span style="color: #00538b;">kubeClient</span>, <span style="color: #00538b;">err</span> := <span style="color: #721045;">createApiserverClient</span><span style="color: #a8007f;">(</span>conf.APIServerHost, conf.KubeConfigFile<span style="color: #a8007f;">)</span>
-    <span style="color: #5317ac;">if</span> err != <span style="color: #0000c0;">nil</span> <span style="color: #a8007f;">{</span>
-        <span style="color: #721045;">handleFatalInitError</span><span style="color: #005f88;">(</span>err<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(2)</span>
+    <span style="color: #6a1868;">kubeClient</span>, <span style="color: #6a1868;">err</span> := <span style="color: #a626a4;">createApiserverClient</span><span style="color: #a626a4;">(</span>conf.APIServerHost, conf.KubeConfigFile<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #a626a4;">handleFatalInitError</span><span style="color: #50a14f;">(</span>err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">(3)</span>
-    <span style="color: #5317ac;">if</span> conf.Namespace != <span style="color: #2544bb;">""</span> <span style="color: #a8007f;">{</span>
-        _, err = kubeClient.<span style="color: #721045;">CoreV1</span><span style="color: #005f88;">()</span>.<span style="color: #721045;">Namespaces</span><span style="color: #005f88;">()</span>.<span style="color: #721045;">Get</span><span style="color: #005f88;">(</span>conf.Namespace, <span style="color: #005a5f;">metav1.GetOptions</span><span style="color: #904200;">{}</span><span style="color: #005f88;">)</span>
-        <span style="color: #5317ac;">if</span> err != <span style="color: #0000c0;">nil</span> <span style="color: #005f88;">{</span>
-            glog.<span style="color: #721045;">Fatalf</span><span style="color: #904200;">(</span><span style="color: #2544bb;">"no namespace with name %v found: %v"</span>, conf.Namespace, err<span style="color: #904200;">)</span>
-        <span style="color: #005f88;">}</span>
-    <span style="color: #a8007f;">}</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(3)</span>
+    <span style="color: #e45649;">if</span> conf.Namespace != <span style="color: #50a14f;">""</span> <span style="color: #a626a4;">{</span>
+        _, err = kubeClient.<span style="color: #a626a4;">CoreV1</span><span style="color: #50a14f;">()</span>.<span style="color: #a626a4;">Namespaces</span><span style="color: #50a14f;">()</span>.<span style="color: #a626a4;">Get</span><span style="color: #50a14f;">(</span>conf.Namespace, <span style="color: #986801;">metav1.GetOptions</span><span style="color: #b751b6;">{}</span><span style="color: #50a14f;">)</span>
+        <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #50a14f;">{</span>
+            glog.<span style="color: #a626a4;">Fatalf</span><span style="color: #b751b6;">(</span><span style="color: #50a14f;">"no namespace with name %v found: %v"</span>, conf.Namespace, err<span style="color: #b751b6;">)</span>
+        <span style="color: #50a14f;">}</span>
+    <span style="color: #a626a4;">}</span>
 
     conf.Client = kubeClient
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">(4)</span>
-    <span style="color: #00538b;">ngx</span> := controller.<span style="color: #721045;">NewNGINXController</span><span style="color: #a8007f;">(</span>conf, fs<span style="color: #a8007f;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4)</span>
+    <span style="color: #6a1868;">ngx</span> := controller.<span style="color: #a626a4;">NewNGINXController</span><span style="color: #a626a4;">(</span>conf, fs<span style="color: #a626a4;">)</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">(7)</span>
-    <span style="color: #5317ac;">go</span> <span style="color: #721045;">handleSigterm</span><span style="color: #a8007f;">(</span>ngx, <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span><span style="color: #00538b;">code</span> <span style="color: #005a5f;">int</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
-        os.<span style="color: #721045;">Exit</span><span style="color: #904200;">(</span>code<span style="color: #904200;">)</span>
-    <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(7)</span>
+    <span style="color: #e45649;">go</span> <span style="color: #a626a4;">handleSigterm</span><span style="color: #a626a4;">(</span>ngx, <span style="color: #e45649;">func</span><span style="color: #50a14f;">(</span><span style="color: #6a1868;">code</span> <span style="color: #986801;">int</span><span style="color: #50a14f;">)</span> <span style="color: #50a14f;">{</span>
+        os.<span style="color: #a626a4;">Exit</span><span style="color: #b751b6;">(</span>code<span style="color: #b751b6;">)</span>
+    <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">(5)</span>
-    <span style="color: #00538b;">mux</span> := http.<span style="color: #721045;">NewServeMux</span><span style="color: #a8007f;">()</span>
-    <span style="color: #5317ac;">go</span> <span style="color: #721045;">registerHandlers</span><span style="color: #a8007f;">(</span>conf.EnableProfiling, conf.ListenPorts.Health, ngx, mux<span style="color: #a8007f;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(5)</span>
+    <span style="color: #6a1868;">mux</span> := http.<span style="color: #a626a4;">NewServeMux</span><span style="color: #a626a4;">()</span>
+    <span style="color: #e45649;">go</span> <span style="color: #a626a4;">registerHandlers</span><span style="color: #a626a4;">(</span>conf.EnableProfiling, conf.ListenPorts.Health, ngx, mux<span style="color: #a626a4;">)</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">(6)</span>
-    ngx.<span style="color: #721045;">Start</span><span style="color: #a8007f;">()</span>
-<span style="color: #000000;">}</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(6)</span>
+    ngx.<span style="color: #a626a4;">Start</span><span style="color: #a626a4;">()</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -317,35 +317,35 @@ K8s APIServer相关配置参数</li>
 是否可以正常连接。因为<a href="https://github.com/kubernetes/ingress-nginx/issues/1968">在一些环境中第一次可能连不上 API Server</a>，所以这里有重试策略。
 </p>
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #505050;">// </span><span style="color: #505050;">cmd/nginx/main.go</span>
-<span style="color: #5317ac;">func</span> <span style="color: #721045;">createApiserverClient</span><span style="color: #000000;">(</span><span style="color: #00538b;">apiserverHost</span> <span style="color: #005a5f;">string</span>, <span style="color: #00538b;">kubeConfig</span> <span style="color: #005a5f;">string</span><span style="color: #000000;">)</span> <span style="color: #000000;">(</span>*<span style="color: #005a5f;">kubernetes.Clientset</span>, <span style="color: #005a5f;">error</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">var</span> <span style="color: #00538b;">v</span> *<span style="color: #005a5f;">discovery.Info</span>
+<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">cmd/nginx/main.go</span>
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">createApiserverClient</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">apiserverHost</span> <span style="color: #986801;">string</span>, <span style="color: #6a1868;">kubeConfig</span> <span style="color: #986801;">string</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">(</span>*<span style="color: #986801;">kubernetes.Clientset</span>, <span style="color: #986801;">error</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">var</span> <span style="color: #6a1868;">v</span> *<span style="color: #986801;">discovery.Info</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">https://github.com/kubernetes/ingress-nginx/issues/1968</span>
-    <span style="color: #505050;">// </span><span style="color: #505050;">&#22312;&#19968;&#20123;&#29615;&#22659;&#20013;&#21487;&#33021;&#31532;&#19968;&#27425;&#36830;&#19981;&#19978; API server</span>
-    <span style="color: #00538b;">defaultRetry</span> := <span style="color: #005a5f;">wait.Backoff</span><span style="color: #a8007f;">{</span>
-        <span style="color: #0000c0;">Steps</span>:    10,              <span style="color: #505050;">// </span><span style="color: #505050;">&#23581;&#35797;&#27425;&#25968;</span>
-        <span style="color: #0000c0;">Duration</span>: 1 * time.Second, <span style="color: #505050;">// </span><span style="color: #505050;">&#22522;&#20934;&#30340;&#23581;&#35797;&#26102;&#38388;</span>
-        <span style="color: #0000c0;">Factor</span>:   1.5,             <span style="color: #505050;">// </span><span style="color: #505050;">&#25345;&#32493;&#26102;&#38388; = &#36845;&#20195;&#27425;&#25968; * &#22240;&#23376;</span>
-        <span style="color: #0000c0;">Jitter</span>:   0.1,             <span style="color: #505050;">// </span><span style="color: #505050;">&#27599;&#27425;&#36845;&#20195;&#24212;&#29992;&#30340;&#25238;&#21160;&#37327;</span>
-    <span style="color: #a8007f;">}</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">https://github.com/kubernetes/ingress-nginx/issues/1968</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#22312;&#19968;&#20123;&#29615;&#22659;&#20013;&#21487;&#33021;&#31532;&#19968;&#27425;&#36830;&#19981;&#19978; API server</span>
+    <span style="color: #6a1868;">defaultRetry</span> := <span style="color: #986801;">wait.Backoff</span><span style="color: #a626a4;">{</span>
+        <span style="color: #b751b6;">Steps</span>:    10,              <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#23581;&#35797;&#27425;&#25968;</span>
+        <span style="color: #b751b6;">Duration</span>: 1 * time.Second, <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#22522;&#20934;&#30340;&#23581;&#35797;&#26102;&#38388;</span>
+        <span style="color: #b751b6;">Factor</span>:   1.5,             <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#25345;&#32493;&#26102;&#38388; = &#36845;&#20195;&#27425;&#25968; * &#22240;&#23376;</span>
+        <span style="color: #b751b6;">Jitter</span>:   0.1,             <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#27599;&#27425;&#36845;&#20195;&#24212;&#29992;&#30340;&#25238;&#21160;&#37327;</span>
+    <span style="color: #a626a4;">}</span>
 
-    <span style="color: #5317ac;">var</span> <span style="color: #00538b;">lastErr</span> <span style="color: #005a5f;">error</span>
-    <span style="color: #00538b;">retries</span> := 0
-    glog.<span style="color: #721045;">V</span><span style="color: #a8007f;">(</span>2<span style="color: #a8007f;">)</span>.<span style="color: #721045;">Info</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"trying to discover Kubernetes version"</span><span style="color: #a8007f;">)</span>
-    err = wait.<span style="color: #721045;">ExponentialBackoff</span><span style="color: #a8007f;">(</span>defaultRetry, <span style="color: #5317ac;">func</span><span style="color: #005f88;">()</span> <span style="color: #005f88;">(</span><span style="color: #005a5f;">bool</span>, <span style="color: #005a5f;">error</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
-        v, err = client.<span style="color: #721045;">Discovery</span><span style="color: #904200;">()</span>.<span style="color: #721045;">ServerVersion</span><span style="color: #904200;">()</span> <span style="color: #505050;">// </span><span style="color: #505050;">&#26597;&#30475;&#29256;&#26412;&#21495;</span>
+    <span style="color: #e45649;">var</span> <span style="color: #6a1868;">lastErr</span> <span style="color: #986801;">error</span>
+    <span style="color: #6a1868;">retries</span> := 0
+    glog.<span style="color: #a626a4;">V</span><span style="color: #a626a4;">(</span>2<span style="color: #a626a4;">)</span>.<span style="color: #a626a4;">Info</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"trying to discover Kubernetes version"</span><span style="color: #a626a4;">)</span>
+    err = wait.<span style="color: #a626a4;">ExponentialBackoff</span><span style="color: #a626a4;">(</span>defaultRetry, <span style="color: #e45649;">func</span><span style="color: #50a14f;">()</span> <span style="color: #50a14f;">(</span><span style="color: #986801;">bool</span>, <span style="color: #986801;">error</span><span style="color: #50a14f;">)</span> <span style="color: #50a14f;">{</span>
+        v, err = client.<span style="color: #a626a4;">Discovery</span><span style="color: #b751b6;">()</span>.<span style="color: #a626a4;">ServerVersion</span><span style="color: #b751b6;">()</span> <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#26597;&#30475;&#29256;&#26412;&#21495;</span>
 
-        <span style="color: #5317ac;">if</span> err == <span style="color: #0000c0;">nil</span> <span style="color: #904200;">{</span>
-            <span style="color: #5317ac;">return</span> <span style="color: #0000c0;">true</span>, <span style="color: #0000c0;">nil</span>
-        <span style="color: #904200;">}</span>
+        <span style="color: #e45649;">if</span> err == <span style="color: #b751b6;">nil</span> <span style="color: #b751b6;">{</span>
+            <span style="color: #e45649;">return</span> <span style="color: #b751b6;">true</span>, <span style="color: #b751b6;">nil</span>
+        <span style="color: #b751b6;">}</span>
 
         lastErr = err
 
         retries++
-        <span style="color: #5317ac;">return</span> <span style="color: #0000c0;">false</span>, <span style="color: #0000c0;">nil</span>
-    <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span>
+        <span style="color: #e45649;">return</span> <span style="color: #b751b6;">false</span>, <span style="color: #b751b6;">nil</span>
+    <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
 
 </pre>
 </div>
@@ -358,94 +358,94 @@ K8s APIServer相关配置参数</li>
 创建 NGINXController，根据名字就知道了，NGINXController 是 ingress-controller 的 controller。
 </p>
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #505050;">// </span><span style="color: #505050;">internal/ingress/controller/nginx.go</span>
-<span style="color: #5317ac;">func</span> <span style="color: #721045;">NewNGINXController</span><span style="color: #000000;">(</span><span style="color: #00538b;">config</span> *<span style="color: #005a5f;">Configuration</span>, <span style="color: #00538b;">fs</span> <span style="color: #005a5f;">file.Filesystem</span><span style="color: #000000;">)</span> *<span style="color: #005a5f;">NGINXController</span> <span style="color: #000000;">{</span>
-    <span style="color: #505050;">// </span><span style="color: #505050;">&#29615;&#22659;&#21464;&#37327;&#26597;&#30475; NGINX_BINARY&#65292;&#22914;&#26524;&#26410;&#35774;&#32622;&#21017;&#20351;&#29992; nginxBinary = "/usr/sbin/nginx"</span>
-    <span style="color: #00538b;">ngx</span> := os.<span style="color: #721045;">Getenv</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"NGINX_BINARY"</span><span style="color: #a8007f;">)</span>
-    <span style="color: #5317ac;">if</span> ngx == <span style="color: #2544bb;">""</span> <span style="color: #a8007f;">{</span>
+<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">internal/ingress/controller/nginx.go</span>
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">NewNGINXController</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">config</span> *<span style="color: #986801;">Configuration</span>, <span style="color: #6a1868;">fs</span> <span style="color: #986801;">file.Filesystem</span><span style="color: #4078f2;">)</span> *<span style="color: #986801;">NGINXController</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#29615;&#22659;&#21464;&#37327;&#26597;&#30475; NGINX_BINARY&#65292;&#22914;&#26524;&#26410;&#35774;&#32622;&#21017;&#20351;&#29992; nginxBinary = "/usr/sbin/nginx"</span>
+    <span style="color: #6a1868;">ngx</span> := os.<span style="color: #a626a4;">Getenv</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"NGINX_BINARY"</span><span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">if</span> ngx == <span style="color: #50a14f;">""</span> <span style="color: #a626a4;">{</span>
         ngx = nginxBinary
-    <span style="color: #a8007f;">}</span>
+    <span style="color: #a626a4;">}</span>
 
-    <span style="color: #00538b;">n</span> := &amp;<span style="color: #005a5f;">NGINXController</span><span style="color: #a8007f;">{</span>
-        <span style="color: #0000c0;">binary</span>: ngx,
-        <span style="color: #0000c0;">resolver</span>:        h,
-        <span style="color: #0000c0;">cfg</span>:             config,
-        <span style="color: #505050;">// </span><span style="color: #505050;">(4.1)</span>
-        <span style="color: #0000c0;">stopCh</span>:   <span style="color: #8f0075;">make</span><span style="color: #005f88;">(</span><span style="color: #5317ac;">chan</span> <span style="color: #5317ac;">struct</span><span style="color: #904200;">{}</span><span style="color: #005f88;">)</span>,
-        <span style="color: #505050;">// </span><span style="color: #505050;">(4.2)</span>
-        <span style="color: #0000c0;">updateCh</span>: channels.<span style="color: #721045;">NewRingChannel</span><span style="color: #005f88;">(</span>1024<span style="color: #005f88;">)</span>,
-        <span style="color: #505050;">// </span><span style="color: #505050;">(4.3)</span>
-        <span style="color: #0000c0;">fileSystem</span>: fs,
-        <span style="color: #505050;">// </span><span style="color: #505050;">(4.4)</span>
-        <span style="color: #0000c0;">runningConfig</span>: &amp;<span style="color: #005a5f;">ingress.Configuration</span><span style="color: #005f88;">{}</span>,
-    <span style="color: #a8007f;">}</span>
+    <span style="color: #6a1868;">n</span> := &amp;<span style="color: #986801;">NGINXController</span><span style="color: #a626a4;">{</span>
+        <span style="color: #b751b6;">binary</span>: ngx,
+        <span style="color: #b751b6;">resolver</span>:        h,
+        <span style="color: #b751b6;">cfg</span>:             config,
+        <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.1)</span>
+        <span style="color: #b751b6;">stopCh</span>:   <span style="color: #a626a4;">make</span><span style="color: #50a14f;">(</span><span style="color: #e45649;">chan</span> <span style="color: #e45649;">struct</span><span style="color: #b751b6;">{}</span><span style="color: #50a14f;">)</span>,
+        <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.2)</span>
+        <span style="color: #b751b6;">updateCh</span>: channels.<span style="color: #a626a4;">NewRingChannel</span><span style="color: #50a14f;">(</span>1024<span style="color: #50a14f;">)</span>,
+        <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.3)</span>
+        <span style="color: #b751b6;">fileSystem</span>: fs,
+        <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.4)</span>
+        <span style="color: #b751b6;">runningConfig</span>: &amp;<span style="color: #986801;">ingress.Configuration</span><span style="color: #50a14f;">{}</span>,
+    <span style="color: #a626a4;">}</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">(4.5)</span>
-    n.store = store.<span style="color: #721045;">New</span><span style="color: #a8007f;">(</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.5)</span>
+    n.store = store.<span style="color: #a626a4;">New</span><span style="color: #a626a4;">(</span>
         fs,
-        n.updateCh<span style="color: #a8007f;">)</span>
+        n.updateCh<span style="color: #a626a4;">)</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">(4.6)</span>
-    n.syncQueue = task.<span style="color: #721045;">NewTaskQueue</span><span style="color: #a8007f;">(</span>n.syncIngress<span style="color: #a8007f;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.6)</span>
+    n.syncQueue = task.<span style="color: #a626a4;">NewTaskQueue</span><span style="color: #a626a4;">(</span>n.syncIngress<span style="color: #a626a4;">)</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">(4.7)</span>
-    <span style="color: #00538b;">onTemplateChange</span> := <span style="color: #5317ac;">func</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
-        <span style="color: #00538b;">template</span>, <span style="color: #00538b;">err</span> := ngx_template.<span style="color: #721045;">NewTemplate</span><span style="color: #005f88;">(</span>tmplPath, fs<span style="color: #005f88;">)</span>
-        <span style="color: #5317ac;">if</span> err != <span style="color: #0000c0;">nil</span> <span style="color: #005f88;">{</span>
-            <span style="color: #505050;">// </span><span style="color: #505050;">this error is different from the rest because it must be clear why nginx is not working</span>
-            glog.<span style="color: #721045;">Errorf</span><span style="color: #904200;">(</span><span style="color: #2544bb;">`</span>
-<span style="color: #2544bb;">-------------------------------------------------------------------------------</span>
-<span style="color: #2544bb;">Error loading new template : %v</span>
-<span style="color: #2544bb;">-------------------------------------------------------------------------------</span>
-<span style="color: #2544bb;">`</span>, err<span style="color: #904200;">)</span>
-            <span style="color: #5317ac;">return</span>
-        <span style="color: #005f88;">}</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.7)</span>
+    <span style="color: #6a1868;">onTemplateChange</span> := <span style="color: #e45649;">func</span><span style="color: #a626a4;">()</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #6a1868;">template</span>, <span style="color: #6a1868;">err</span> := ngx_template.<span style="color: #a626a4;">NewTemplate</span><span style="color: #50a14f;">(</span>tmplPath, fs<span style="color: #50a14f;">)</span>
+        <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #50a14f;">{</span>
+            <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">this error is different from the rest because it must be clear why nginx is not working</span>
+            glog.<span style="color: #a626a4;">Errorf</span><span style="color: #b751b6;">(</span><span style="color: #50a14f;">`</span>
+<span style="color: #50a14f;">-------------------------------------------------------------------------------</span>
+<span style="color: #50a14f;">Error loading new template : %v</span>
+<span style="color: #50a14f;">-------------------------------------------------------------------------------</span>
+<span style="color: #50a14f;">`</span>, err<span style="color: #b751b6;">)</span>
+            <span style="color: #e45649;">return</span>
+        <span style="color: #50a14f;">}</span>
 
         n.t = template
-        glog.<span style="color: #721045;">Info</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"new NGINX template loaded"</span><span style="color: #005f88;">)</span>
-        n.<span style="color: #721045;">SetForceReload</span><span style="color: #005f88;">(</span><span style="color: #0000c0;">true</span><span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
+        glog.<span style="color: #a626a4;">Info</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"new NGINX template loaded"</span><span style="color: #50a14f;">)</span>
+        n.<span style="color: #a626a4;">SetForceReload</span><span style="color: #50a14f;">(</span><span style="color: #b751b6;">true</span><span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
 
-    <span style="color: #00538b;">ngxTpl</span>, <span style="color: #00538b;">err</span> := ngx_template.<span style="color: #721045;">NewTemplate</span><span style="color: #a8007f;">(</span>tmplPath, fs<span style="color: #a8007f;">)</span>
-    <span style="color: #5317ac;">if</span> err != <span style="color: #0000c0;">nil</span> <span style="color: #a8007f;">{</span>
-        glog.<span style="color: #721045;">Fatalf</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"invalid NGINX template: %v"</span>, err<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
+    <span style="color: #6a1868;">ngxTpl</span>, <span style="color: #6a1868;">err</span> := ngx_template.<span style="color: #a626a4;">NewTemplate</span><span style="color: #a626a4;">(</span>tmplPath, fs<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #a626a4;">{</span>
+        glog.<span style="color: #a626a4;">Fatalf</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"invalid NGINX template: %v"</span>, err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
 
     n.t = ngxTpl
 
-    _, err = watch.<span style="color: #721045;">NewFileWatcher</span><span style="color: #a8007f;">(</span>tmplPath, onTemplateChange<span style="color: #a8007f;">)</span>
-    <span style="color: #5317ac;">if</span> err != <span style="color: #0000c0;">nil</span> <span style="color: #a8007f;">{</span>
-        glog.<span style="color: #721045;">Fatalf</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"unexpected error creating file watcher: %v"</span>, err<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
+    _, err = watch.<span style="color: #a626a4;">NewFileWatcher</span><span style="color: #a626a4;">(</span>tmplPath, onTemplateChange<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #a626a4;">{</span>
+        glog.<span style="color: #a626a4;">Fatalf</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"unexpected error creating file watcher: %v"</span>, err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
 
-    <span style="color: #00538b;">filesToWatch</span> := <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">string</span><span style="color: #a8007f;">{}</span>
-    <span style="color: #00538b;">err</span> := filepath.<span style="color: #721045;">Walk</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"/etc/nginx/geoip/"</span>, <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span><span style="color: #00538b;">path</span> <span style="color: #005a5f;">string</span>, <span style="color: #00538b;">info</span> <span style="color: #005a5f;">os.FileInfo</span>, <span style="color: #00538b;">err</span> <span style="color: #005a5f;">error</span><span style="color: #005f88;">)</span> <span style="color: #005a5f;">error</span> <span style="color: #005f88;">{</span>
-        <span style="color: #5317ac;">if</span> err != <span style="color: #0000c0;">nil</span> <span style="color: #904200;">{</span>
-            <span style="color: #5317ac;">return</span> err
-        <span style="color: #904200;">}</span>
+    <span style="color: #6a1868;">filesToWatch</span> := <span style="color: #a626a4;">[]</span><span style="color: #986801;">string</span><span style="color: #a626a4;">{}</span>
+    <span style="color: #6a1868;">err</span> := filepath.<span style="color: #a626a4;">Walk</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"/etc/nginx/geoip/"</span>, <span style="color: #e45649;">func</span><span style="color: #50a14f;">(</span><span style="color: #6a1868;">path</span> <span style="color: #986801;">string</span>, <span style="color: #6a1868;">info</span> <span style="color: #986801;">os.FileInfo</span>, <span style="color: #6a1868;">err</span> <span style="color: #986801;">error</span><span style="color: #50a14f;">)</span> <span style="color: #986801;">error</span> <span style="color: #50a14f;">{</span>
+        <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #b751b6;">{</span>
+            <span style="color: #e45649;">return</span> err
+        <span style="color: #b751b6;">}</span>
 
-        <span style="color: #5317ac;">if</span> info.<span style="color: #721045;">IsDir</span><span style="color: #904200;">()</span> <span style="color: #904200;">{</span>
-            <span style="color: #5317ac;">return</span> <span style="color: #0000c0;">nil</span>
-        <span style="color: #904200;">}</span>
+        <span style="color: #e45649;">if</span> info.<span style="color: #a626a4;">IsDir</span><span style="color: #b751b6;">()</span> <span style="color: #b751b6;">{</span>
+            <span style="color: #e45649;">return</span> <span style="color: #b751b6;">nil</span>
+        <span style="color: #b751b6;">}</span>
 
-        filesToWatch = <span style="color: #8f0075;">append</span><span style="color: #904200;">(</span>filesToWatch, path<span style="color: #904200;">)</span>
-        <span style="color: #5317ac;">return</span> <span style="color: #0000c0;">nil</span>
-    <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
+        filesToWatch = <span style="color: #a626a4;">append</span><span style="color: #b751b6;">(</span>filesToWatch, path<span style="color: #b751b6;">)</span>
+        <span style="color: #e45649;">return</span> <span style="color: #b751b6;">nil</span>
+    <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
 
-    <span style="color: #5317ac;">if</span> err != <span style="color: #0000c0;">nil</span> <span style="color: #a8007f;">{</span>
-        glog.<span style="color: #721045;">Fatalf</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"unexpected error creating file watcher: %v"</span>, err<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
+    <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #a626a4;">{</span>
+        glog.<span style="color: #a626a4;">Fatalf</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"unexpected error creating file watcher: %v"</span>, err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
 
-    <span style="color: #5317ac;">for</span> <span style="color: #00538b;">_</span>, <span style="color: #00538b;">f</span> := <span style="color: #5317ac;">range</span> filesToWatch <span style="color: #a8007f;">{</span>
-        _, err = watch.<span style="color: #721045;">NewFileWatcher</span><span style="color: #005f88;">(</span>f, <span style="color: #5317ac;">func</span><span style="color: #904200;">()</span> <span style="color: #904200;">{</span>
-            glog.<span style="color: #721045;">Info</span><span style="color: #7f10d0;">(</span><span style="color: #2544bb;">"file %v changed. Reloading NGINX"</span>, f<span style="color: #7f10d0;">)</span>
-            n.<span style="color: #721045;">SetForceReload</span><span style="color: #7f10d0;">(</span><span style="color: #0000c0;">true</span><span style="color: #7f10d0;">)</span>
-        <span style="color: #904200;">}</span><span style="color: #005f88;">)</span>
-        <span style="color: #5317ac;">if</span> err != <span style="color: #0000c0;">nil</span> <span style="color: #005f88;">{</span>
-            glog.<span style="color: #721045;">Fatalf</span><span style="color: #904200;">(</span><span style="color: #2544bb;">"unexpected error creating file watcher: %v"</span>, err<span style="color: #904200;">)</span>
-        <span style="color: #005f88;">}</span>
-    <span style="color: #a8007f;">}</span>
-<span style="color: #000000;">}</span>
+    <span style="color: #e45649;">for</span> <span style="color: #6a1868;">_</span>, <span style="color: #6a1868;">f</span> := <span style="color: #e45649;">range</span> filesToWatch <span style="color: #a626a4;">{</span>
+        _, err = watch.<span style="color: #a626a4;">NewFileWatcher</span><span style="color: #50a14f;">(</span>f, <span style="color: #e45649;">func</span><span style="color: #b751b6;">()</span> <span style="color: #b751b6;">{</span>
+            glog.<span style="color: #a626a4;">Info</span><span style="color: #4db5bd;">(</span><span style="color: #50a14f;">"file %v changed. Reloading NGINX"</span>, f<span style="color: #4db5bd;">)</span>
+            n.<span style="color: #a626a4;">SetForceReload</span><span style="color: #4db5bd;">(</span><span style="color: #b751b6;">true</span><span style="color: #4db5bd;">)</span>
+        <span style="color: #b751b6;">}</span><span style="color: #50a14f;">)</span>
+        <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #50a14f;">{</span>
+            glog.<span style="color: #a626a4;">Fatalf</span><span style="color: #b751b6;">(</span><span style="color: #50a14f;">"unexpected error creating file watcher: %v"</span>, err<span style="color: #b751b6;">)</span>
+        <span style="color: #50a14f;">}</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}</span>
 
 </pre>
 </div>
@@ -462,81 +462,81 @@ store 对应的是 K8sStore 的实现，封装了 K8s 的 <code>Informer</code> 
 是同一个（指针）。创建 Store 做了很多事情，需要注意（代码比较长，我进行了精简，只看思路）：
 </p>
 <div class="org-src-container">
-<pre class="src src-go">      <span style="color: #505050;">// </span><span style="color: #505050;">ingress/controller/store/store.go</span>
-<span style="color: #505050;">// </span><span style="color: #505050;">&#21442;&#25968;&#30465;&#30053;&#20102;</span>
-<span style="color: #5317ac;">func</span> <span style="color: #721045;">New</span><span style="color: #000000;">()</span> <span style="color: #005a5f;">Storer</span> <span style="color: #000000;">{</span>
-    <span style="color: #00538b;">store</span> := &amp;<span style="color: #005a5f;">k8sStore</span><span style="color: #a8007f;">{</span>
-        <span style="color: #0000c0;">informers</span>: &amp;<span style="color: #005a5f;">Informer</span><span style="color: #005f88;">{}</span>,
-        <span style="color: #0000c0;">listers</span>:   &amp;<span style="color: #005a5f;">Lister</span><span style="color: #005f88;">{}</span>,
-        <span style="color: #0000c0;">updateCh</span>:  updateCh,
-    <span style="color: #a8007f;">}</span>
+<pre class="src src-go">      <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">ingress/controller/store/store.go</span>
+<span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#21442;&#25968;&#30465;&#30053;&#20102;</span>
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">New</span><span style="color: #4078f2;">()</span> <span style="color: #986801;">Storer</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #6a1868;">store</span> := &amp;<span style="color: #986801;">k8sStore</span><span style="color: #a626a4;">{</span>
+        <span style="color: #b751b6;">informers</span>: &amp;<span style="color: #986801;">Informer</span><span style="color: #50a14f;">{}</span>,
+        <span style="color: #b751b6;">listers</span>:   &amp;<span style="color: #986801;">Lister</span><span style="color: #50a14f;">{}</span>,
+        <span style="color: #b751b6;">updateCh</span>:  updateCh,
+    <span style="color: #a626a4;">}</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">(4.5.1)</span>
-    <span style="color: #00538b;">eventBroadcaster</span> := record.<span style="color: #721045;">NewBroadcaster</span><span style="color: #a8007f;">()</span>
-    eventBroadcaster.<span style="color: #721045;">StartLogging</span><span style="color: #a8007f;">(</span>glog.Infof<span style="color: #a8007f;">)</span>
-    eventBroadcaster.<span style="color: #721045;">StartRecordingToSink</span><span style="color: #a8007f;">(</span>&amp;<span style="color: #005a5f;">clientcorev1.EventSinkImpl</span><span style="color: #005f88;">{</span>
-        <span style="color: #0000c0;">Interface</span>: client.<span style="color: #721045;">CoreV1</span><span style="color: #904200;">()</span>.<span style="color: #721045;">Events</span><span style="color: #904200;">(</span>namespace<span style="color: #904200;">)</span>,
-    <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
-    <span style="color: #00538b;">recorder</span> := eventBroadcaster.<span style="color: #721045;">NewRecorder</span><span style="color: #a8007f;">(</span>scheme.Scheme, <span style="color: #005a5f;">corev1.EventSource</span><span style="color: #005f88;">{</span>
-        <span style="color: #0000c0;">Component</span>: <span style="color: #2544bb;">"nginx-ingress-controller"</span>,
-    <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.5.1)</span>
+    <span style="color: #6a1868;">eventBroadcaster</span> := record.<span style="color: #a626a4;">NewBroadcaster</span><span style="color: #a626a4;">()</span>
+    eventBroadcaster.<span style="color: #a626a4;">StartLogging</span><span style="color: #a626a4;">(</span>glog.Infof<span style="color: #a626a4;">)</span>
+    eventBroadcaster.<span style="color: #a626a4;">StartRecordingToSink</span><span style="color: #a626a4;">(</span>&amp;<span style="color: #986801;">clientcorev1.EventSinkImpl</span><span style="color: #50a14f;">{</span>
+        <span style="color: #b751b6;">Interface</span>: client.<span style="color: #a626a4;">CoreV1</span><span style="color: #b751b6;">()</span>.<span style="color: #a626a4;">Events</span><span style="color: #b751b6;">(</span>namespace<span style="color: #b751b6;">)</span>,
+    <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
+    <span style="color: #6a1868;">recorder</span> := eventBroadcaster.<span style="color: #a626a4;">NewRecorder</span><span style="color: #a626a4;">(</span>scheme.Scheme, <span style="color: #986801;">corev1.EventSource</span><span style="color: #50a14f;">{</span>
+        <span style="color: #b751b6;">Component</span>: <span style="color: #50a14f;">"nginx-ingress-controller"</span>,
+    <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">(4.5.2)</span>
-    <span style="color: #505050;">// </span><span style="color: #505050;">create informers factory, enable and assign required informers</span>
-    <span style="color: #00538b;">infFactory</span> := informers.<span style="color: #721045;">NewFilteredSharedInformerFactory</span><span style="color: #a8007f;">(</span>client, resyncPeriod, namespace, <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span>*<span style="color: #005a5f;">metav1.ListOptions</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{}</span><span style="color: #a8007f;">)</span>
-    store.informers.Ingress = infFactory.<span style="color: #721045;">Extensions</span><span style="color: #a8007f;">()</span>.<span style="color: #721045;">V1beta1</span><span style="color: #a8007f;">()</span>.<span style="color: #721045;">Ingresses</span><span style="color: #a8007f;">()</span>.<span style="color: #721045;">Informer</span><span style="color: #a8007f;">()</span>
-    store.listers.Ingress.Store = store.informers.Ingress.<span style="color: #721045;">GetStore</span><span style="color: #a8007f;">()</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.5.2)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">create informers factory, enable and assign required informers</span>
+    <span style="color: #6a1868;">infFactory</span> := informers.<span style="color: #a626a4;">NewFilteredSharedInformerFactory</span><span style="color: #a626a4;">(</span>client, resyncPeriod, namespace, <span style="color: #e45649;">func</span><span style="color: #50a14f;">(</span>*<span style="color: #986801;">metav1.ListOptions</span><span style="color: #50a14f;">)</span> <span style="color: #50a14f;">{}</span><span style="color: #a626a4;">)</span>
+    store.informers.Ingress = infFactory.<span style="color: #a626a4;">Extensions</span><span style="color: #a626a4;">()</span>.<span style="color: #a626a4;">V1beta1</span><span style="color: #a626a4;">()</span>.<span style="color: #a626a4;">Ingresses</span><span style="color: #a626a4;">()</span>.<span style="color: #a626a4;">Informer</span><span style="color: #a626a4;">()</span>
+    store.listers.Ingress.Store = store.informers.Ingress.<span style="color: #a626a4;">GetStore</span><span style="color: #a626a4;">()</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">Endpoint, Secret, ConfigMap, Service &#21644; Ingress &#24046;&#19981;&#22810;&#65292;&#20195;&#30721;&#30465;&#30053;&#20102;</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">Endpoint, Secret, ConfigMap, Service &#21644; Ingress &#24046;&#19981;&#22810;&#65292;&#20195;&#30721;&#30465;&#30053;&#20102;</span>
 
-    <span style="color: #00538b;">ingEventHandler</span> := <span style="color: #005a5f;">cache.ResourceEventHandlerFuncs</span><span style="color: #a8007f;">{</span>
-        <span style="color: #0000c0;">AddFunc</span>: <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span><span style="color: #00538b;">obj</span> <span style="color: #5317ac;">interface</span><span style="color: #904200;">{}</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
-            <span style="color: #00538b;">ing</span> := obj.<span style="color: #904200;">(</span>*<span style="color: #005a5f;">extensions.Ingress</span><span style="color: #904200;">)</span>
-            <span style="color: #5317ac;">if</span> <span style="color: #813e00;">!</span>class.<span style="color: #721045;">IsValid</span><span style="color: #904200;">(</span>ing<span style="color: #904200;">)</span> <span style="color: #904200;">{</span>
-                <span style="color: #00538b;">a</span>, <span style="color: #00538b;">_</span> := parser.<span style="color: #721045;">GetStringAnnotation</span><span style="color: #7f10d0;">(</span>class.IngressKey, ing<span style="color: #7f10d0;">)</span>
-                <span style="color: #5317ac;">return</span>
-            <span style="color: #904200;">}</span>
-            recorder.<span style="color: #721045;">Eventf</span><span style="color: #904200;">(</span>ing, corev1.EventTypeNormal, <span style="color: #2544bb;">"CREATE"</span>, fmt.<span style="color: #721045;">Sprintf</span><span style="color: #7f10d0;">(</span><span style="color: #2544bb;">"Ingress %s/%s"</span>, ing.Namespace, ing.Name<span style="color: #7f10d0;">)</span><span style="color: #904200;">)</span>
+    <span style="color: #6a1868;">ingEventHandler</span> := <span style="color: #986801;">cache.ResourceEventHandlerFuncs</span><span style="color: #a626a4;">{</span>
+        <span style="color: #b751b6;">AddFunc</span>: <span style="color: #e45649;">func</span><span style="color: #50a14f;">(</span><span style="color: #6a1868;">obj</span> <span style="color: #e45649;">interface</span><span style="color: #b751b6;">{}</span><span style="color: #50a14f;">)</span> <span style="color: #50a14f;">{</span>
+            <span style="color: #6a1868;">ing</span> := obj.<span style="color: #b751b6;">(</span>*<span style="color: #986801;">extensions.Ingress</span><span style="color: #b751b6;">)</span>
+            <span style="color: #e45649;">if</span> <span style="color: #4078f2; font-weight: bold;">!</span>class.<span style="color: #a626a4;">IsValid</span><span style="color: #b751b6;">(</span>ing<span style="color: #b751b6;">)</span> <span style="color: #b751b6;">{</span>
+                <span style="color: #6a1868;">a</span>, <span style="color: #6a1868;">_</span> := parser.<span style="color: #a626a4;">GetStringAnnotation</span><span style="color: #4db5bd;">(</span>class.IngressKey, ing<span style="color: #4db5bd;">)</span>
+                <span style="color: #e45649;">return</span>
+            <span style="color: #b751b6;">}</span>
+            recorder.<span style="color: #a626a4;">Eventf</span><span style="color: #b751b6;">(</span>ing, corev1.EventTypeNormal, <span style="color: #50a14f;">"CREATE"</span>, fmt.<span style="color: #a626a4;">Sprintf</span><span style="color: #4db5bd;">(</span><span style="color: #50a14f;">"Ingress %s/%s"</span>, ing.Namespace, ing.Name<span style="color: #4db5bd;">)</span><span style="color: #b751b6;">)</span>
 
-            <span style="color: #505050;">// </span><span style="color: #505050;">(4.5.3)</span>
-            updateCh.<span style="color: #721045;">In</span><span style="color: #904200;">()</span> &lt;- <span style="color: #005a5f;">Event</span><span style="color: #904200;">{</span>
-                <span style="color: #0000c0;">Type</span>: CreateEvent,
-                <span style="color: #0000c0;">Obj</span>:  obj,
-            <span style="color: #904200;">}</span>
-        <span style="color: #005f88;">}</span>,
-        <span style="color: #0000c0;">DeleteFunc</span>: <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span><span style="color: #00538b;">obj</span> <span style="color: #5317ac;">interface</span><span style="color: #904200;">{}</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
-            <span style="color: #00538b;">ing</span>, <span style="color: #00538b;">ok</span> := obj.<span style="color: #904200;">(</span>*<span style="color: #005a5f;">extensions.Ingress</span><span style="color: #904200;">)</span>
-            recorder.<span style="color: #721045;">Eventf</span><span style="color: #904200;">(</span>ing, corev1.EventTypeNormal, <span style="color: #2544bb;">"DELETE"</span>, fmt.<span style="color: #721045;">Sprintf</span><span style="color: #7f10d0;">(</span><span style="color: #2544bb;">"Ingress %s/%s"</span>, ing.Namespace, ing.Name<span style="color: #7f10d0;">)</span><span style="color: #904200;">)</span>
+            <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.5.3)</span>
+            updateCh.<span style="color: #a626a4;">In</span><span style="color: #b751b6;">()</span> &lt;- <span style="color: #986801;">Event</span><span style="color: #b751b6;">{</span>
+                <span style="color: #b751b6;">Type</span>: CreateEvent,
+                <span style="color: #b751b6;">Obj</span>:  obj,
+            <span style="color: #b751b6;">}</span>
+        <span style="color: #50a14f;">}</span>,
+        <span style="color: #b751b6;">DeleteFunc</span>: <span style="color: #e45649;">func</span><span style="color: #50a14f;">(</span><span style="color: #6a1868;">obj</span> <span style="color: #e45649;">interface</span><span style="color: #b751b6;">{}</span><span style="color: #50a14f;">)</span> <span style="color: #50a14f;">{</span>
+            <span style="color: #6a1868;">ing</span>, <span style="color: #6a1868;">ok</span> := obj.<span style="color: #b751b6;">(</span>*<span style="color: #986801;">extensions.Ingress</span><span style="color: #b751b6;">)</span>
+            recorder.<span style="color: #a626a4;">Eventf</span><span style="color: #b751b6;">(</span>ing, corev1.EventTypeNormal, <span style="color: #50a14f;">"DELETE"</span>, fmt.<span style="color: #a626a4;">Sprintf</span><span style="color: #4db5bd;">(</span><span style="color: #50a14f;">"Ingress %s/%s"</span>, ing.Namespace, ing.Name<span style="color: #4db5bd;">)</span><span style="color: #b751b6;">)</span>
 
-            <span style="color: #505050;">// </span><span style="color: #505050;">(4.5.3)</span>
-            updateCh.<span style="color: #721045;">In</span><span style="color: #904200;">()</span> &lt;- <span style="color: #005a5f;">Event</span><span style="color: #904200;">{</span>
-                <span style="color: #0000c0;">Type</span>: DeleteEvent,
-                <span style="color: #0000c0;">Obj</span>:  obj,
-            <span style="color: #904200;">}</span>
-        <span style="color: #005f88;">}</span>,
-        <span style="color: #0000c0;">UpdateFunc</span>: <span style="color: #5317ac;">func</span><span style="color: #005f88;">(</span><span style="color: #00538b;">old</span>, <span style="color: #00538b;">cur</span> <span style="color: #5317ac;">interface</span><span style="color: #904200;">{}</span><span style="color: #005f88;">)</span> <span style="color: #005f88;">{</span>
-            <span style="color: #00538b;">oldIng</span> := old.<span style="color: #904200;">(</span>*<span style="color: #005a5f;">extensions.Ingress</span><span style="color: #904200;">)</span>
-            <span style="color: #00538b;">curIng</span> := cur.<span style="color: #904200;">(</span>*<span style="color: #005a5f;">extensions.Ingress</span><span style="color: #904200;">)</span>
-            <span style="color: #00538b;">validOld</span> := class.<span style="color: #721045;">IsValid</span><span style="color: #904200;">(</span>oldIng<span style="color: #904200;">)</span>
-            <span style="color: #00538b;">validCur</span> := class.<span style="color: #721045;">IsValid</span><span style="color: #904200;">(</span>curIng<span style="color: #904200;">)</span>
-            <span style="color: #5317ac;">if</span> <span style="color: #813e00;">!</span>validOld &amp;&amp; validCur <span style="color: #904200;">{</span>
-                recorder.<span style="color: #721045;">Eventf</span><span style="color: #7f10d0;">(</span>curIng, corev1.EventTypeNormal, <span style="color: #2544bb;">"CREATE"</span>, fmt.<span style="color: #721045;">Sprintf</span><span style="color: #006800;">(</span><span style="color: #2544bb;">"Ingress %s/%s"</span>, curIng.Namespace, curIng.Name<span style="color: #006800;">)</span><span style="color: #7f10d0;">)</span>
-            <span style="color: #904200;">}</span> <span style="color: #5317ac;">else</span> <span style="color: #5317ac;">if</span> validOld &amp;&amp; <span style="color: #813e00;">!</span>validCur <span style="color: #904200;">{</span>
-                recorder.<span style="color: #721045;">Eventf</span><span style="color: #7f10d0;">(</span>curIng, corev1.EventTypeNormal, <span style="color: #2544bb;">"DELETE"</span>, fmt.<span style="color: #721045;">Sprintf</span><span style="color: #006800;">(</span><span style="color: #2544bb;">"Ingress %s/%s"</span>, curIng.Namespace, curIng.Name<span style="color: #006800;">)</span><span style="color: #7f10d0;">)</span>
-            <span style="color: #904200;">}</span> <span style="color: #5317ac;">else</span> <span style="color: #5317ac;">if</span> validCur &amp;&amp; <span style="color: #813e00;">!</span>reflect.<span style="color: #721045;">DeepEqual</span><span style="color: #904200;">(</span>old, cur<span style="color: #904200;">)</span> <span style="color: #904200;">{</span>
-                recorder.<span style="color: #721045;">Eventf</span><span style="color: #7f10d0;">(</span>curIng, corev1.EventTypeNormal, <span style="color: #2544bb;">"UPDATE"</span>, fmt.<span style="color: #721045;">Sprintf</span><span style="color: #006800;">(</span><span style="color: #2544bb;">"Ingress %s/%s"</span>, curIng.Namespace, curIng.Name<span style="color: #006800;">)</span><span style="color: #7f10d0;">)</span>
-            <span style="color: #904200;">}</span>
+            <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.5.3)</span>
+            updateCh.<span style="color: #a626a4;">In</span><span style="color: #b751b6;">()</span> &lt;- <span style="color: #986801;">Event</span><span style="color: #b751b6;">{</span>
+                <span style="color: #b751b6;">Type</span>: DeleteEvent,
+                <span style="color: #b751b6;">Obj</span>:  obj,
+            <span style="color: #b751b6;">}</span>
+        <span style="color: #50a14f;">}</span>,
+        <span style="color: #b751b6;">UpdateFunc</span>: <span style="color: #e45649;">func</span><span style="color: #50a14f;">(</span><span style="color: #6a1868;">old</span>, <span style="color: #6a1868;">cur</span> <span style="color: #e45649;">interface</span><span style="color: #b751b6;">{}</span><span style="color: #50a14f;">)</span> <span style="color: #50a14f;">{</span>
+            <span style="color: #6a1868;">oldIng</span> := old.<span style="color: #b751b6;">(</span>*<span style="color: #986801;">extensions.Ingress</span><span style="color: #b751b6;">)</span>
+            <span style="color: #6a1868;">curIng</span> := cur.<span style="color: #b751b6;">(</span>*<span style="color: #986801;">extensions.Ingress</span><span style="color: #b751b6;">)</span>
+            <span style="color: #6a1868;">validOld</span> := class.<span style="color: #a626a4;">IsValid</span><span style="color: #b751b6;">(</span>oldIng<span style="color: #b751b6;">)</span>
+            <span style="color: #6a1868;">validCur</span> := class.<span style="color: #a626a4;">IsValid</span><span style="color: #b751b6;">(</span>curIng<span style="color: #b751b6;">)</span>
+            <span style="color: #e45649;">if</span> <span style="color: #4078f2; font-weight: bold;">!</span>validOld &amp;&amp; validCur <span style="color: #b751b6;">{</span>
+                recorder.<span style="color: #a626a4;">Eventf</span><span style="color: #4db5bd;">(</span>curIng, corev1.EventTypeNormal, <span style="color: #50a14f;">"CREATE"</span>, fmt.<span style="color: #a626a4;">Sprintf</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"Ingress %s/%s"</span>, curIng.Namespace, curIng.Name<span style="color: #4078f2;">)</span><span style="color: #4db5bd;">)</span>
+            <span style="color: #b751b6;">}</span> <span style="color: #e45649;">else</span> <span style="color: #e45649;">if</span> validOld &amp;&amp; <span style="color: #4078f2; font-weight: bold;">!</span>validCur <span style="color: #b751b6;">{</span>
+                recorder.<span style="color: #a626a4;">Eventf</span><span style="color: #4db5bd;">(</span>curIng, corev1.EventTypeNormal, <span style="color: #50a14f;">"DELETE"</span>, fmt.<span style="color: #a626a4;">Sprintf</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"Ingress %s/%s"</span>, curIng.Namespace, curIng.Name<span style="color: #4078f2;">)</span><span style="color: #4db5bd;">)</span>
+            <span style="color: #b751b6;">}</span> <span style="color: #e45649;">else</span> <span style="color: #e45649;">if</span> validCur &amp;&amp; <span style="color: #4078f2; font-weight: bold;">!</span>reflect.<span style="color: #a626a4;">DeepEqual</span><span style="color: #b751b6;">(</span>old, cur<span style="color: #b751b6;">)</span> <span style="color: #b751b6;">{</span>
+                recorder.<span style="color: #a626a4;">Eventf</span><span style="color: #4db5bd;">(</span>curIng, corev1.EventTypeNormal, <span style="color: #50a14f;">"UPDATE"</span>, fmt.<span style="color: #a626a4;">Sprintf</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"Ingress %s/%s"</span>, curIng.Namespace, curIng.Name<span style="color: #4078f2;">)</span><span style="color: #4db5bd;">)</span>
+            <span style="color: #b751b6;">}</span>
 
-            <span style="color: #505050;">// </span><span style="color: #505050;">(4.5.3)</span>
-            updateCh.<span style="color: #721045;">In</span><span style="color: #904200;">()</span> &lt;- <span style="color: #005a5f;">Event</span><span style="color: #904200;">{</span>
-                <span style="color: #0000c0;">Type</span>: UpdateEvent,
-                <span style="color: #0000c0;">Obj</span>:  cur,
-            <span style="color: #904200;">}</span>
-        <span style="color: #005f88;">}</span>,
-    <span style="color: #a8007f;">}</span>
-    store.informers.Ingress.<span style="color: #721045;">AddEventHandler</span><span style="color: #a8007f;">(</span>ingEventHandler<span style="color: #a8007f;">)</span>
-    <span style="color: #5317ac;">return</span> store
-<span style="color: #000000;">}</span>
+            <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4.5.3)</span>
+            updateCh.<span style="color: #a626a4;">In</span><span style="color: #b751b6;">()</span> &lt;- <span style="color: #986801;">Event</span><span style="color: #b751b6;">{</span>
+                <span style="color: #b751b6;">Type</span>: UpdateEvent,
+                <span style="color: #b751b6;">Obj</span>:  cur,
+            <span style="color: #b751b6;">}</span>
+        <span style="color: #50a14f;">}</span>,
+    <span style="color: #a626a4;">}</span>
+    store.informers.Ingress.<span style="color: #a626a4;">AddEventHandler</span><span style="color: #a626a4;">(</span>ingEventHandler<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">return</span> store
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 <ol class="org-ol">
@@ -563,7 +563,7 @@ resource 的创建、更新和删除三种事件类型，回调函数只需要�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

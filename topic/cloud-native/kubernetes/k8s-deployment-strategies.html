@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-12-01 Thu 14:38 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>K8s 部署策略</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,12 +223,12 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgbf19ed9">1. recreate - 重新创建</a></li>
-<li><a href="#orgeb30106">2. ramped(rolling-update or incremental) - 滚动更新</a></li>
-<li><a href="#org44a4f6c">3. blue/green - 蓝绿发布</a></li>
-<li><a href="#orge0e6ec0">4. canary - 金丝雀发布</a></li>
-<li><a href="#orgb40c65a">5. (A/B testing using Istio) A/B 测试</a></li>
-<li><a href="#orga4830ae">6. shadow 影子发布</a></li>
+<li><a href="#org117225b">1. recreate - 重新创建</a></li>
+<li><a href="#orgedc0d68">2. ramped(rolling-update or incremental) - 滚动更新</a></li>
+<li><a href="#org3156675">3. blue/green - 蓝绿发布</a></li>
+<li><a href="#org4cd9523">4. canary - 金丝雀发布</a></li>
+<li><a href="#org505af64">5. (A/B testing using Istio) A/B 测试</a></li>
+<li><a href="#orgefaf372">6. shadow 影子发布</a></li>
 </ul>
 </div>
 </div>
@@ -245,11 +245,11 @@ via K8s 中的部署策略解释：
 <i>没有全部翻译，目的是为了了解几种发布策略术语，而不是实现层。</i>
 </p>
 
-<div id="outline-container-orgbf19ed9" class="outline-2">
-<h2 id="orgbf19ed9"><span class="section-number-2">1.</span> recreate - 重新创建</h2>
+<div id="outline-container-org117225b" class="outline-2">
+<h2 id="org117225b"><span class="section-number-2">1.</span> recreate - 重新创建</h2>
 <div class="outline-text-2" id="text-1">
 
-<div id="org803075a" class="figure">
+<div id="org2856173" class="figure">
 <p><img src="https://raw.githubusercontent.com/ContainerSolutions/k8s-deployment-strategies/master/recreate/grafana-recreate.png" alt="grafana-recreate.png" />
 </p>
 </div>
@@ -260,11 +260,11 @@ via K8s 中的部署策略解释：
 </div>
 </div>
 
-<div id="outline-container-orgeb30106" class="outline-2">
-<h2 id="orgeb30106"><span class="section-number-2">2.</span> ramped(rolling-update or incremental) - 滚动更新</h2>
+<div id="outline-container-orgedc0d68" class="outline-2">
+<h2 id="orgedc0d68"><span class="section-number-2">2.</span> ramped(rolling-update or incremental) - 滚动更新</h2>
 <div class="outline-text-2" id="text-2">
 
-<div id="org2cc23d4" class="figure">
+<div id="org3f4456a" class="figure">
 <p><img src="https://raw.githubusercontent.com/ContainerSolutions/k8s-deployment-strategies/master/ramped/grafana-ramped.png" alt="grafana-ramped.png" />
 </p>
 </div>
@@ -284,7 +284,7 @@ via K8s 中的部署策略解释：
 </ul>
 
 
-<div id="org8ff8909" class="figure">
+<div id="org4eed8b3" class="figure">
 <p><img src="https://blog.container-solutions.com/hs-fs/hubfs/Imported_Blog_Media/kubernetes-deployment-strategy-ramped-1024x634-1.png?width=500&amp;name=kubernetes-deployment-strategy-ramped-1024x634-1.png" alt="kubernetes-deployment-strategy-ramped-1024x634-1.png?width=500&amp;name=kubernetes-deployment-strategy-ramped-1024x634-1.png" />
 </p>
 </div>
@@ -295,11 +295,11 @@ via K8s 中的部署策略解释：
 </div>
 </div>
 
-<div id="outline-container-org44a4f6c" class="outline-2">
-<h2 id="org44a4f6c"><span class="section-number-2">3.</span> blue/green - 蓝绿发布</h2>
+<div id="outline-container-org3156675" class="outline-2">
+<h2 id="org3156675"><span class="section-number-2">3.</span> blue/green - 蓝绿发布</h2>
 <div class="outline-text-2" id="text-3">
 
-<div id="orgeffe72f" class="figure">
+<div id="org658ac83" class="figure">
 <p><img src="https://raw.githubusercontent.com/ContainerSolutions/k8s-deployment-strategies/master/blue-green/grafana-blue-green.png" alt="grafana-blue-green.png" />
 </p>
 </div>
@@ -309,7 +309,7 @@ via K8s 中的部署策略解释：
 </p>
 
 
-<div id="org3c2d4f3" class="figure">
+<div id="org5235689" class="figure">
 <p><img src="https://info.container-solutions.com/hubfs/Imported_Blog_Media/kubernetes-deployment-strategy-blue-green-1.png" alt="kubernetes-deployment-strategy-blue-green-1.png" />
 </p>
 </div>
@@ -320,11 +320,11 @@ via K8s 中的部署策略解释：
 </div>
 </div>
 
-<div id="outline-container-orge0e6ec0" class="outline-2">
-<h2 id="orge0e6ec0"><span class="section-number-2">4.</span> canary - 金丝雀发布</h2>
+<div id="outline-container-org4cd9523" class="outline-2">
+<h2 id="org4cd9523"><span class="section-number-2">4.</span> canary - 金丝雀发布</h2>
 <div class="outline-text-2" id="text-4">
 
-<div id="orgde5b57e" class="figure">
+<div id="org893dc28" class="figure">
 <p><img src="https://raw.githubusercontent.com/ContainerSolutions/k8s-deployment-strategies/master/canary/grafana-canary.png" alt="grafana-canary.png" />
 </p>
 </div>
@@ -334,7 +334,7 @@ via K8s 中的部署策略解释：
 </p>
 
 
-<div id="org5d14159" class="figure">
+<div id="org3ef3988" class="figure">
 <p><img src="https://info.container-solutions.com/hubfs/Imported_Blog_Media/kubernetes-deployment-strategy-canary-1.png" alt="kubernetes-deployment-strategy-canary-1.png" />
 </p>
 </div>
@@ -350,11 +350,11 @@ via K8s 中的部署策略解释：
 </div>
 </div>
 
-<div id="outline-container-orgb40c65a" class="outline-2">
-<h2 id="orgb40c65a"><span class="section-number-2">5.</span> (A/B testing using Istio) A/B 测试</h2>
+<div id="outline-container-org505af64" class="outline-2">
+<h2 id="org505af64"><span class="section-number-2">5.</span> (A/B testing using Istio) A/B 测试</h2>
 <div class="outline-text-2" id="text-5">
 
-<div id="org92daaa0" class="figure">
+<div id="orgf6b95a1" class="figure">
 <p><img src="https://raw.githubusercontent.com/ContainerSolutions/k8s-deployment-strategies/master/ab-testing/grafana-ab-testing.png" alt="grafana-ab-testing.png" />
 </p>
 </div>
@@ -365,7 +365,7 @@ via K8s 中的部署策略解释：
 </p>
 
 
-<div id="orge747dc9" class="figure">
+<div id="org2dc964d" class="figure">
 <p><img src="https://info.container-solutions.com/hubfs/Imported_Blog_Media/kubernetes-deployment-strategy-a-b-testing-3.png" alt="kubernetes-deployment-strategy-a-b-testing-3.png" />
 </p>
 </div>
@@ -376,11 +376,11 @@ via K8s 中的部署策略解释：
 </div>
 </div>
 
-<div id="outline-container-orga4830ae" class="outline-2">
-<h2 id="orga4830ae"><span class="section-number-2">6.</span> shadow 影子发布</h2>
+<div id="outline-container-orgefaf372" class="outline-2">
+<h2 id="orgefaf372"><span class="section-number-2">6.</span> shadow 影子发布</h2>
 <div class="outline-text-2" id="text-6">
 
-<div id="orgbe9e7b1" class="figure">
+<div id="org6e04562" class="figure">
 <p><img src="https://raw.githubusercontent.com/ContainerSolutions/k8s-deployment-strategies/master/shadow/grafana-shadow.png" alt="grafana-shadow.png" />
 </p>
 </div>
@@ -392,7 +392,7 @@ via K8s 中的部署策略解释：
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-01-03 10:37:34 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2020-01-03 10:37:34 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>

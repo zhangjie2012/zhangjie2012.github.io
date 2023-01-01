@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-12-01 Thu 14:38 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 工作负载：Pod - Init Containers</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,28 +223,28 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org98e3eb2">1. 理解 init containers</a>
+<li><a href="#org38a66be">1. 理解 init containers</a>
 <ul>
-<li><a href="#org5217955">1.1. 与普通容器的不同</a></li>
+<li><a href="#orgd52a75f">1.1. 与普通容器的不同</a></li>
 </ul>
 </li>
-<li><a href="#org54a8b86">2. 使用 init containers</a>
+<li><a href="#org8a03d98">2. 使用 init containers</a>
 <ul>
-<li><a href="#orgccb3a70">2.1. 例子</a>
+<li><a href="#org1269aee">2.1. 例子</a>
 <ul>
-<li><a href="#org9d6ff78">2.1.1. 使用中的 Init containers</a></li>
+<li><a href="#org1c51e42">2.1.1. 使用中的 Init containers</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org7a5a80d">3. 详细行为</a>
+<li><a href="#org9458ba7">3. 详细行为</a>
 <ul>
-<li><a href="#org87f6d31">3.1. 资源</a></li>
-<li><a href="#orgc58d8a7">3.2. Pod 重启原因</a></li>
+<li><a href="#org7bc5e1d">3.1. 资源</a></li>
+<li><a href="#orgec903e2">3.2. Pod 重启原因</a></li>
 </ul>
 </li>
-<li><a href="#org5af9510">4. 下一步</a></li>
-<li><a href="#orgb67713d">5. 其他资料</a></li>
+<li><a href="#org2305ef4">4. 下一步</a></li>
+<li><a href="#org28f248b">5. 其他资料</a></li>
 </ul>
 </div>
 </div>
@@ -260,8 +260,8 @@ Init containers 是在 Pod 中的应用容器之前运行的专有容器；Init 
 你可以在 Pod 规范（Spec）中与 <code>containers</code> 数组一起指定 init containers。
 </p>
 
-<div id="outline-container-org98e3eb2" class="outline-2">
-<h2 id="org98e3eb2"><span class="section-number-2">1.</span> 理解 init containers</h2>
+<div id="outline-container-org38a66be" class="outline-2">
+<h2 id="org38a66be"><span class="section-number-2">1.</span> 理解 init containers</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Pod 中可以有多个运行应用程序的容器，同时也可以有一个或者多个 init containers，它们会在应用容器启动之前运行。
@@ -287,8 +287,8 @@ Never，并且在 Pod 启动期间 init container 失败了，Kubernetes 会将�
 </p>
 </div>
 
-<div id="outline-container-org5217955" class="outline-3">
-<h3 id="org5217955"><span class="section-number-3">1.1.</span> 与普通容器的不同</h3>
+<div id="outline-container-orgd52a75f" class="outline-3">
+<h3 id="orgd52a75f"><span class="section-number-3">1.1.</span> 与普通容器的不同</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Init containers 支持应用程序容器的所有字段和功能，包括资源限制，卷和安全设置。但是，如 <a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#resources">资源</a> 文档中所说，init container 的资源请求（requests）
@@ -308,8 +308,8 @@ Init containers 支持应用程序容器的所有字段和功能，包括资源�
 </div>
 </div>
 
-<div id="outline-container-org54a8b86" class="outline-2">
-<h2 id="org54a8b86"><span class="section-number-2">2.</span> 使用 init containers</h2>
+<div id="outline-container-org8a03d98" class="outline-2">
+<h2 id="org8a03d98"><span class="section-number-2">2.</span> 使用 init containers</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 由于 init containers 和应用容器的镜像是分开的，所以它们在启动相关代码的时候有一些优点：
@@ -327,8 +327,8 @@ Init containers 支持应用程序容器的所有字段和功能，包括资源�
 </ul>
 </div>
 
-<div id="outline-container-orgccb3a70" class="outline-3">
-<h3 id="orgccb3a70"><span class="section-number-3">2.1.</span> 例子</h3>
+<div id="outline-container-org1269aee" class="outline-3">
+<h3 id="org1269aee"><span class="section-number-3">2.1.</span> 例子</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 以下是如何使用初始化容器的一些想法：
@@ -339,14 +339,14 @@ Init containers 支持应用程序容器的所有字段和功能，包括资源�
 等待 Service 被创建，使用像这样的一行 shell 命令：
 </p>
 <div class="org-src-container">
-<pre class="src src-sh"><span style="color: #5317ac;">for</span> i<span style="color: #5317ac;"> in</span> <span style="color: #000000;">{</span>1..100<span style="color: #000000;">}</span>; <span style="color: #5317ac;">do</span> sleep 1; <span style="color: #5317ac;">if</span> dig myservice; <span style="color: #5317ac;">then exit</span> 0; <span style="color: #5317ac;">fi</span>; <span style="color: #5317ac;">done</span>; <span style="color: #5317ac;">exit</span> 1
+<pre class="src src-sh"><span style="color: #e45649;">for</span> i<span style="color: #e45649;"> in</span> <span style="color: #4078f2;">{</span>1..100<span style="color: #4078f2;">}</span>; <span style="color: #e45649;">do</span> sleep 1; <span style="color: #e45649;">if</span> dig myservice; <span style="color: #e45649;">then exit</span> 0; <span style="color: #e45649;">fi</span>; <span style="color: #e45649;">done</span>; <span style="color: #e45649;">exit</span> 1
 </pre>
 </div></li>
 <li><p>
 使用这样一行命令从远端的 downward API 注册该 Pods：
 </p>
 <div class="org-src-container">
-<pre class="src src-sh">curl -X POST http://$<span style="color: #00538b;">MANAGEMENT_SERVICE_HOST</span>:$<span style="color: #00538b;">MANAGEMENT_SERVICE_PORT</span>/register -d <span style="color: #2544bb;">'instance=$(&lt;POD_NAME&gt;)&amp;ip=$(&lt;POD_IP&gt;)'</span>
+<pre class="src src-sh">curl -X POST http://$<span style="color: #6a1868;">MANAGEMENT_SERVICE_HOST</span>:$<span style="color: #6a1868;">MANAGEMENT_SERVICE_PORT</span>/register -d <span style="color: #50a14f;">'instance=$(&lt;POD_NAME&gt;)&amp;ip=$(&lt;POD_IP&gt;)'</span>
 </pre>
 </div></li>
 <li><p>
@@ -362,8 +362,8 @@ Init containers 支持应用程序容器的所有字段和功能，包括资源�
 </ul>
 </div>
 
-<div id="outline-container-org9d6ff78" class="outline-4">
-<h4 id="org9d6ff78"><span class="section-number-4">2.1.1.</span> 使用中的 Init containers</h4>
+<div id="outline-container-org1c51e42" class="outline-4">
+<h4 id="org1c51e42"><span class="section-number-4">2.1.1.</span> 使用中的 Init containers</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 本示例定义了一个简单的 Pod 包含两个 init containers。第一个等待 <code>myservice</code> ，第二个等待 <code>myapp</code> 。一旦两个初始化容器都完成，
@@ -371,24 +371,24 @@ Pod 按照 <code>spec</code> 开始运行应用容器。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml"><span style="color: #00538b;">apiVersion</span>: v1
-<span style="color: #00538b;">kind</span>: Pod
-<span style="color: #00538b;">metadata</span>:
-  <span style="color: #00538b;">name</span>: myapp-pod
-  <span style="color: #00538b;">labels</span>:
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">app</span>: myapp
-<span style="color: #00538b;">spec</span>:
-  <span style="color: #00538b;">containers</span>:
-  - <span style="color: #00538b;">name</span>: myapp-container
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">image</span>: busybox:1.28
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">command</span>: [<span style="color: #2544bb;">'sh'</span>, <span style="color: #2544bb;">'-c'</span>, <span style="color: #2544bb;">'echo The app is running! &amp;&amp; sleep 3600'</span>]
-  <span style="color: #00538b;">initContainers</span>:
-  - <span style="color: #00538b;">name</span>: init-myservice
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">image</span>: busybox:1.28
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">command</span>: [<span style="color: #2544bb;">'sh'</span>, <span style="color: #2544bb;">'-c'</span>, <span style="color: #2544bb;">"until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"</span>]
-  - <span style="color: #00538b;">name</span>: init-mydb
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">image</span>: busybox:1.28
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">command</span>: [<span style="color: #2544bb;">'sh'</span>, <span style="color: #2544bb;">'-c'</span>, <span style="color: #2544bb;">"until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done"</span>]
+<pre class="src src-yaml"><span style="color: #6a1868;">apiVersion</span>: v1
+<span style="color: #6a1868;">kind</span>: Pod
+<span style="color: #6a1868;">metadata</span>:
+  <span style="color: #6a1868;">name</span>: myapp-pod
+  <span style="color: #6a1868;">labels</span>:
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">app</span>: myapp
+<span style="color: #6a1868;">spec</span>:
+  <span style="color: #6a1868;">containers</span>:
+  - <span style="color: #6a1868;">name</span>: myapp-container
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">image</span>: busybox:1.28
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">command</span>: [<span style="color: #50a14f;">'sh'</span>, <span style="color: #50a14f;">'-c'</span>, <span style="color: #50a14f;">'echo The app is running! &amp;&amp; sleep 3600'</span>]
+  <span style="color: #6a1868;">initContainers</span>:
+  - <span style="color: #6a1868;">name</span>: init-myservice
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">image</span>: busybox:1.28
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">command</span>: [<span style="color: #50a14f;">'sh'</span>, <span style="color: #50a14f;">'-c'</span>, <span style="color: #50a14f;">"until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"</span>]
+  - <span style="color: #6a1868;">name</span>: init-mydb
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">image</span>: busybox:1.28
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">command</span>: [<span style="color: #50a14f;">'sh'</span>, <span style="color: #50a14f;">'-c'</span>, <span style="color: #50a14f;">"until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done"</span>]
 </pre>
 </div>
 
@@ -445,37 +445,37 @@ myapp-pod   0/1       Init:0/2   0          6m
 <div class="org-src-container">
 <pre class="src src-sh">Name:          myapp-pod
 Namespace:     default
-<span style="color: #000000;">[</span>...<span style="color: #000000;">]</span>
-Labels:        <span style="color: #00538b;">app</span>=myapp
+<span style="color: #4078f2;">[</span>...<span style="color: #4078f2;">]</span>
+Labels:        <span style="color: #6a1868;">app</span>=myapp
 Status:        Pending
-<span style="color: #000000;">[</span>...<span style="color: #000000;">]</span>
+<span style="color: #4078f2;">[</span>...<span style="color: #4078f2;">]</span>
 Init Containers:
   init-myservice:
-<span style="color: #000000;">[</span>...<span style="color: #000000;">]</span>
+<span style="color: #4078f2;">[</span>...<span style="color: #4078f2;">]</span>
     State:         Running
-<span style="color: #000000;">[</span>...<span style="color: #000000;">]</span>
+<span style="color: #4078f2;">[</span>...<span style="color: #4078f2;">]</span>
   init-mydb:
-<span style="color: #000000;">[</span>...<span style="color: #000000;">]</span>
+<span style="color: #4078f2;">[</span>...<span style="color: #4078f2;">]</span>
     State:         Waiting
       Reason:      PodInitializing
     Ready:         False
-<span style="color: #000000;">[</span>...<span style="color: #000000;">]</span>
+<span style="color: #4078f2;">[</span>...<span style="color: #4078f2;">]</span>
 Containers:
   myapp-container:
-<span style="color: #000000;">[</span>...<span style="color: #000000;">]</span>
+<span style="color: #4078f2;">[</span>...<span style="color: #4078f2;">]</span>
     State:         Waiting
       Reason:      PodInitializing
     Ready:         False
-<span style="color: #000000;">[</span>...<span style="color: #000000;">]</span>
+<span style="color: #4078f2;">[</span>...<span style="color: #4078f2;">]</span>
 Events:
   FirstSeen    LastSeen    Count    From                      SubObjectPath                           Type          Reason        Message
   ---------    --------    -----    ----                      -------------                           --------      ------        -------
-  16s          16s         1        <span style="color: #000000;">{</span>default-scheduler <span style="color: #000000;">}</span>                                              Normal        Scheduled     Successfully assigned myapp-pod to 172.17.4.201
-  16s          16s         1        <span style="color: #000000;">{</span>kubelet 172.17.4.201<span style="color: #000000;">}</span>    spec.initContainers<span style="color: #000000;">{</span>init-myservice<span style="color: #000000;">}</span>     Normal        Pulling       pulling image <span style="color: #2544bb;">"busybox"</span>
-  13s          13s         1        <span style="color: #000000;">{</span>kubelet 172.17.4.201<span style="color: #000000;">}</span>    spec.initContainers<span style="color: #000000;">{</span>init-myservice<span style="color: #000000;">}</span>     Normal        Pulled        Successfully pulled image <span style="color: #2544bb;">"busybox"</span>
-  13s          13s         1        <span style="color: #000000;">{</span>kubelet 172.17.4.201<span style="color: #000000;">}</span>    spec.initContainers<span style="color: #000000;">{</span>init-myservice<span style="color: #000000;">}</span>     Normal        Created       Created container with docker id 5ced34a04634; Security:<span style="color: #000000;">[</span><span style="color: #00538b;">seccomp</span>=unconfined<span style="color: #000000;">]</span>
-  13s          13s         1        <span style="color: #000000;">{</span>kubelet 172.17.4.201<span style="color: #000000;">}</span>    spec.initContainers<span style="color: #000000;">{</span>init-myservice<span style="color: #000000;">}</span>     Normal        Started       Started container with docker id 5ced34a04634
-To see logs for the init containers<span style="color: #5317ac;"> in</span> this Pod, run:
+  16s          16s         1        <span style="color: #4078f2;">{</span>default-scheduler <span style="color: #4078f2;">}</span>                                              Normal        Scheduled     Successfully assigned myapp-pod to 172.17.4.201
+  16s          16s         1        <span style="color: #4078f2;">{</span>kubelet 172.17.4.201<span style="color: #4078f2;">}</span>    spec.initContainers<span style="color: #4078f2;">{</span>init-myservice<span style="color: #4078f2;">}</span>     Normal        Pulling       pulling image <span style="color: #50a14f;">"busybox"</span>
+  13s          13s         1        <span style="color: #4078f2;">{</span>kubelet 172.17.4.201<span style="color: #4078f2;">}</span>    spec.initContainers<span style="color: #4078f2;">{</span>init-myservice<span style="color: #4078f2;">}</span>     Normal        Pulled        Successfully pulled image <span style="color: #50a14f;">"busybox"</span>
+  13s          13s         1        <span style="color: #4078f2;">{</span>kubelet 172.17.4.201<span style="color: #4078f2;">}</span>    spec.initContainers<span style="color: #4078f2;">{</span>init-myservice<span style="color: #4078f2;">}</span>     Normal        Created       Created container with docker id 5ced34a04634; Security:<span style="color: #4078f2;">[</span><span style="color: #6a1868;">seccomp</span>=unconfined<span style="color: #4078f2;">]</span>
+  13s          13s         1        <span style="color: #4078f2;">{</span>kubelet 172.17.4.201<span style="color: #4078f2;">}</span>    spec.initContainers<span style="color: #4078f2;">{</span>init-myservice<span style="color: #4078f2;">}</span>     Normal        Started       Started container with docker id 5ced34a04634
+To see logs for the init containers<span style="color: #e45649;"> in</span> this Pod, run:
 </pre>
 </div>
 
@@ -484,8 +484,8 @@ To see logs for the init containers<span style="color: #5317ac;"> in</span> this
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">kubectl logs myapp-pod -c init-myservice <span style="color: #505050;"># </span><span style="color: #505050;">Inspect the first init container</span>
-kubectl logs myapp-pod -c init-mydb      <span style="color: #505050;"># </span><span style="color: #505050;">Inspect the second init container</span>
+<pre class="src src-sh">kubectl logs myapp-pod -c init-myservice <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">Inspect the first init container</span>
+kubectl logs myapp-pod -c init-mydb      <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">Inspect the second init container</span>
 </pre>
 </div>
 
@@ -499,26 +499,26 @@ kubectl logs myapp-pod -c init-mydb      <span style="color: #505050;"># </span>
 
 <div class="org-src-container">
 <pre class="src src-yaml">
-<span style="color: #505050;">---</span>
-<span style="color: #00538b;">apiVersion</span>: v1
-<span style="color: #00538b;">kind</span>: Service
-<span style="color: #00538b;">metadata</span>:
-  <span style="color: #00538b;">name</span>: myservice
-<span style="color: #00538b;">spec</span>:
-  <span style="color: #00538b;">ports</span>:
-  - <span style="color: #00538b;">protocol</span>: TCP
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">port</span>: 80
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">targetPort</span>: 9376
-<span style="color: #505050;">---</span>
-<span style="color: #00538b;">apiVersion</span>: v1
-<span style="color: #00538b;">kind</span>: Service
-<span style="color: #00538b;">metadata</span>:
-  <span style="color: #00538b;">name</span>: mydb
-<span style="color: #00538b;">spec</span>:
-  <span style="color: #00538b;">ports</span>:
-  - <span style="color: #00538b;">protocol</span>: TCP
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">port</span>: 80
-<span style="color: #000000; background-color: #ff9f9f;">    </span><span style="color: #00538b;">targetPort</span>: 9377
+<span style="color: #9ca0a4;">---</span>
+<span style="color: #6a1868;">apiVersion</span>: v1
+<span style="color: #6a1868;">kind</span>: Service
+<span style="color: #6a1868;">metadata</span>:
+  <span style="color: #6a1868;">name</span>: myservice
+<span style="color: #6a1868;">spec</span>:
+  <span style="color: #6a1868;">ports</span>:
+  - <span style="color: #6a1868;">protocol</span>: TCP
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">port</span>: 80
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">targetPort</span>: 9376
+<span style="color: #9ca0a4;">---</span>
+<span style="color: #6a1868;">apiVersion</span>: v1
+<span style="color: #6a1868;">kind</span>: Service
+<span style="color: #6a1868;">metadata</span>:
+  <span style="color: #6a1868;">name</span>: mydb
+<span style="color: #6a1868;">spec</span>:
+  <span style="color: #6a1868;">ports</span>:
+  - <span style="color: #6a1868;">protocol</span>: TCP
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">port</span>: 80
+<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">targetPort</span>: 9377
 </pre>
 </div>
 
@@ -560,8 +560,8 @@ myapp-pod   1/1       Running   0          9m
 </div>
 </div>
 
-<div id="outline-container-org7a5a80d" class="outline-2">
-<h2 id="org7a5a80d"><span class="section-number-2">3.</span> 详细行为</h2>
+<div id="outline-container-org9458ba7" class="outline-2">
+<h2 id="org9458ba7"><span class="section-number-2">3.</span> 详细行为</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 在 Pod 启动期间，kubelet 会延迟运行 init containers 直到网络和存储就绪。然后，kubelet 按照 Pod spec 中出现的顺序运行 Pod
@@ -606,8 +606,8 @@ Pod 中的每个应用和 init container 的名称必须唯一；任何一个名
 </p>
 </div>
 
-<div id="outline-container-org87f6d31" class="outline-3">
-<h3 id="org87f6d31"><span class="section-number-3">3.1.</span> 资源</h3>
+<div id="outline-container-org7bc5e1d" class="outline-3">
+<h3 id="org7bc5e1d"><span class="section-number-3">3.1.</span> 资源</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 考虑到 init container 的有序执行，适用于以下资源的使用规则：
@@ -636,8 +636,8 @@ Pod level control groups (cgroups) are based on the effective Pod request and li
 </div>
 </div>
 
-<div id="outline-container-orgc58d8a7" class="outline-3">
-<h3 id="orgc58d8a7"><span class="section-number-3">3.2.</span> Pod 重启原因</h3>
+<div id="outline-container-orgec903e2" class="outline-3">
+<h3 id="orgec903e2"><span class="section-number-3">3.2.</span> Pod 重启原因</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 A Pod can restart, causing re-execution of init containers, for the following reasons:
@@ -658,8 +658,8 @@ consult the documentation for the version you are using.
 </div>
 </div>
 
-<div id="outline-container-org5af9510" class="outline-2">
-<h2 id="org5af9510"><span class="section-number-2">4.</span> 下一步</h2>
+<div id="outline-container-org2305ef4" class="outline-2">
+<h2 id="org2305ef4"><span class="section-number-2">4.</span> 下一步</h2>
 <div class="outline-text-2" id="text-4">
 <ul class="org-ul">
 <li>阅读 <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-initialization/#create-a-pod-that-has-an-init-container">Create a Pod that has an Init Container</a></li>
@@ -669,8 +669,8 @@ consult the documentation for the version you are using.
 </div>
 
 
-<div id="outline-container-orgb67713d" class="outline-2">
-<h2 id="orgb67713d"><span class="section-number-2">5.</span> 其他资料</h2>
+<div id="outline-container-org28f248b" class="outline-2">
+<h2 id="org28f248b"><span class="section-number-2">5.</span> 其他资料</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li><a href="https://medium.com/bb-tutorials-and-thoughts/kubernetes-learn-init-container-pattern-7a757742de6b">https://medium.com/bb-tutorials-and-thoughts/kubernetes-learn-init-container-pattern-7a757742de6b</a></li>
@@ -679,7 +679,7 @@ consult the documentation for the version you are using.
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-25 21:11:40 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2021-04-25 21:11:40 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>

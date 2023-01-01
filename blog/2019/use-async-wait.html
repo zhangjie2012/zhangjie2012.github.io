@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:37 -->
+<!-- 2023-01-01 Sun 17:16 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>使用 async&#x2026;wait</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -229,45 +229,45 @@
 <code>dispatch</code> 发出请求
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #5317ac;">function</span> <span style="color: #721045;">queryUsers</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-  <span style="color: #0000c0;">this</span>.props.dispatch<span style="color: #a8007f;">(</span><span style="color: #005f88;">{</span>
-    type: <span style="color: #2544bb;">'user/queryUsers'</span>,
-  <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span>
+<pre class="src src-javascript"><span style="color: #e45649;">function</span> <span style="color: #a626a4;">queryUsers</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+  <span style="color: #b751b6;">this</span>.props.dispatch<span style="color: #a626a4;">(</span><span style="color: #50a14f;">{</span>
+    type: <span style="color: #50a14f;">'user/queryUsers'</span>,
+  <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div></li>
 <li><p>
 写 <code>model/effects</code>
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript">*queryUsers<span style="color: #000000;">(</span>_, <span style="color: #a8007f;">{</span> call, put <span style="color: #a8007f;">}</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-  <span style="color: #5317ac;">const</span> <span style="color: #00538b;">resp</span> = <span style="color: #5317ac;">yield</span> call<span style="color: #a8007f;">(</span>queryUsers<span style="color: #a8007f;">)</span>;
-  <span style="color: #5317ac;">yield</span> put<span style="color: #a8007f;">(</span><span style="color: #005f88;">{</span>
-    type: <span style="color: #2544bb;">'saveUsers'</span>,
+<pre class="src src-javascript">*queryUsers<span style="color: #4078f2;">(</span>_, <span style="color: #a626a4;">{</span> call, put <span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+  <span style="color: #e45649;">const</span> <span style="color: #6a1868;">resp</span> = <span style="color: #e45649;">yield</span> call<span style="color: #a626a4;">(</span>queryUsers<span style="color: #a626a4;">)</span>;
+  <span style="color: #e45649;">yield</span> put<span style="color: #a626a4;">(</span><span style="color: #50a14f;">{</span>
+    type: <span style="color: #50a14f;">'saveUsers'</span>,
     data: resp.data,
-  <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>;
-<span style="color: #000000;">}</span>,
+  <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>;
+<span style="color: #4078f2;">}</span>,
 </pre>
 </div></li>
 <li><p>
 写 <code>services</code>
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #5317ac;">export</span> <span style="color: #5317ac;">async</span> <span style="color: #5317ac;">function</span> queryUsers<span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-  <span style="color: #5317ac;">return</span> request<span style="color: #a8007f;">(</span><span style="color: #2544bb;">'/api/v1/users'</span><span style="color: #a8007f;">)</span>;
-<span style="color: #000000;">}</span>
+<pre class="src src-javascript"><span style="color: #e45649;">export</span> <span style="color: #e45649;">async</span> <span style="color: #e45649;">function</span> queryUsers<span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+  <span style="color: #e45649;">return</span> request<span style="color: #a626a4;">(</span><span style="color: #50a14f;">'/api/v1/users'</span><span style="color: #a626a4;">)</span>;
+<span style="color: #4078f2;">}</span>
 </pre>
 </div></li>
 <li><p>
 最后再写 <code>model/reducers</code>
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript">saveUsers<span style="color: #000000;">(</span>state, <span style="color: #a8007f;">{</span> data <span style="color: #a8007f;">}</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-  <span style="color: #5317ac;">return</span> <span style="color: #a8007f;">{</span>
+<pre class="src src-javascript">saveUsers<span style="color: #4078f2;">(</span>state, <span style="color: #a626a4;">{</span> data <span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+  <span style="color: #e45649;">return</span> <span style="color: #a626a4;">{</span>
     ...state,
     users: data
-  <span style="color: #a8007f;">}</span>;
-<span style="color: #000000;">}</span>,
+  <span style="color: #a626a4;">}</span>;
+<span style="color: #4078f2;">}</span>,
 </pre>
 </div></li>
 <li>实际上还需要将 models.js 与 Component <code>connect()</code> 起来</li>
@@ -304,19 +304,19 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript">request<span style="color: #000000;">(</span><span style="color: #2544bb;">'/api/v1/users'</span><span style="color: #000000;">)</span>.
-  then<span style="color: #000000;">(</span>resp =&gt; <span style="color: #a8007f;">{</span>
-    <span style="color: #0000c0;">this</span>.setState<span style="color: #005f88;">(</span><span style="color: #904200;">{</span>
+<pre class="src src-javascript">request<span style="color: #4078f2;">(</span><span style="color: #50a14f;">'/api/v1/users'</span><span style="color: #4078f2;">)</span>.
+  then<span style="color: #4078f2;">(</span>resp =&gt; <span style="color: #a626a4;">{</span>
+    <span style="color: #b751b6;">this</span>.setState<span style="color: #50a14f;">(</span><span style="color: #b751b6;">{</span>
       userDetail: resp.data,
-    <span style="color: #904200;">}</span><span style="color: #005f88;">)</span>;
+    <span style="color: #b751b6;">}</span><span style="color: #50a14f;">)</span>;
 
-    request<span style="color: #005f88;">(</span><span style="color: #2544bb;">`/api/v1/user/${resp.data.username}/orders`</span><span style="color: #005f88;">)</span>.
-      then<span style="color: #005f88;">(</span>resp =&gt; <span style="color: #904200;">{</span>
-        <span style="color: #0000c0;">this</span>.setState<span style="color: #7f10d0;">(</span><span style="color: #006800;">{</span>
+    request<span style="color: #50a14f;">(</span><span style="color: #50a14f;">`/api/v1/user/${resp.data.username}/orders`</span><span style="color: #50a14f;">)</span>.
+      then<span style="color: #50a14f;">(</span>resp =&gt; <span style="color: #b751b6;">{</span>
+        <span style="color: #b751b6;">this</span>.setState<span style="color: #4db5bd;">(</span><span style="color: #4078f2;">{</span>
           userOrders: resp.data,
-        <span style="color: #006800;">}</span><span style="color: #7f10d0;">)</span>;
-      <span style="color: #904200;">}</span><span style="color: #005f88;">)</span>
-  <span style="color: #a8007f;">}</span><span style="color: #000000;">)</span>
+        <span style="color: #4078f2;">}</span><span style="color: #4db5bd;">)</span>;
+      <span style="color: #b751b6;">}</span><span style="color: #50a14f;">)</span>
+  <span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span>
 </pre>
 </div>
 
@@ -333,19 +333,19 @@ ES6 之后引入了 <code>async...await</code> 的调用方式，上面可以改
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript">queryUsers = <span style="color: #5317ac;">async</span> <span style="color: #000000;">()</span> =&gt; <span style="color: #000000;">{</span>
-  <span style="color: #5317ac;">const</span> <span style="color: #00538b;">resp</span> = <span style="color: #5317ac;">await</span> request<span style="color: #a8007f;">(</span><span style="color: #2544bb;">'/api/v1/users'</span><span style="color: #a8007f;">)</span>;
-  <span style="color: #0000c0;">this</span>.setState<span style="color: #a8007f;">(</span><span style="color: #005f88;">{</span>
+<pre class="src src-javascript">queryUsers = <span style="color: #e45649;">async</span> <span style="color: #4078f2;">()</span> =&gt; <span style="color: #4078f2;">{</span>
+  <span style="color: #e45649;">const</span> <span style="color: #6a1868;">resp</span> = <span style="color: #e45649;">await</span> request<span style="color: #a626a4;">(</span><span style="color: #50a14f;">'/api/v1/users'</span><span style="color: #a626a4;">)</span>;
+  <span style="color: #b751b6;">this</span>.setState<span style="color: #a626a4;">(</span><span style="color: #50a14f;">{</span>
     userDetail: resp.data,
-  <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
-  <span style="color: #0000c0;">this</span>.queryOrders<span style="color: #a8007f;">(</span>resp.data.id<span style="color: #a8007f;">)</span>;
-<span style="color: #000000;">}</span>
-queryOrders = <span style="color: #5317ac;">async</span> <span style="color: #000000;">(</span>userId<span style="color: #000000;">)</span> =&gt; <span style="color: #000000;">{</span>
-  <span style="color: #5317ac;">const</span> <span style="color: #00538b;">resp</span> = <span style="color: #5317ac;">await</span> request<span style="color: #a8007f;">(</span><span style="color: #2544bb;">`/api/v1/user/${userId}/orders`</span><span style="color: #a8007f;">)</span>;
-  <span style="color: #0000c0;">this</span>.setState<span style="color: #a8007f;">(</span><span style="color: #005f88;">{</span>
+  <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
+  <span style="color: #b751b6;">this</span>.queryOrders<span style="color: #a626a4;">(</span>resp.data.id<span style="color: #a626a4;">)</span>;
+<span style="color: #4078f2;">}</span>
+queryOrders = <span style="color: #e45649;">async</span> <span style="color: #4078f2;">(</span>userId<span style="color: #4078f2;">)</span> =&gt; <span style="color: #4078f2;">{</span>
+  <span style="color: #e45649;">const</span> <span style="color: #6a1868;">resp</span> = <span style="color: #e45649;">await</span> request<span style="color: #a626a4;">(</span><span style="color: #50a14f;">`/api/v1/user/${userId}/orders`</span><span style="color: #a626a4;">)</span>;
+  <span style="color: #b751b6;">this</span>.setState<span style="color: #a626a4;">(</span><span style="color: #50a14f;">{</span>
     userOrders: resp.data,
-  <span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span>
+  <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -354,9 +354,9 @@ queryOrders = <span style="color: #5317ac;">async</span> <span style="color: #00
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><span style="color: #5317ac;">const</span> <span style="color: #00538b;">a</span> = <span style="color: #5317ac;">await</span> fetchA<span style="color: #000000;">()</span>;
-<span style="color: #5317ac;">const</span> <span style="color: #00538b;">b</span> = <span style="color: #5317ac;">await</span> fetchB<span style="color: #000000;">()</span>;
-console.log<span style="color: #000000;">(</span>a, b<span style="color: #000000;">)</span>;
+<pre class="src src-javascript"><span style="color: #e45649;">const</span> <span style="color: #6a1868;">a</span> = <span style="color: #e45649;">await</span> fetchA<span style="color: #4078f2;">()</span>;
+<span style="color: #e45649;">const</span> <span style="color: #6a1868;">b</span> = <span style="color: #e45649;">await</span> fetchB<span style="color: #4078f2;">()</span>;
+console.log<span style="color: #4078f2;">(</span>a, b<span style="color: #4078f2;">)</span>;
 </pre>
 </div>
 
@@ -387,7 +387,7 @@ console.log<span style="color: #000000;">(</span>a, b<span style="color: #000000
 </ul>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-12-12 11:45:31 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2019-12-12 11:45:31 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

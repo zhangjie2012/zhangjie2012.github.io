@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-12-01 Thu 14:38 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>使用 Go 构建 Web 服务技术栈</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,30 +223,30 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org22d501a">1. 框架选择</a>
+<li><a href="#orgd69f445">1. 框架选择</a>
 <ul>
-<li><a href="#org87e341c">1.1. 原生</a></li>
-<li><a href="#org2d11b84">1.2. gin</a></li>
-<li><a href="#orgb7e7253">1.3. 结论</a></li>
+<li><a href="#org0bd996a">1.1. 原生</a></li>
+<li><a href="#orgd1c0319">1.2. gin</a></li>
+<li><a href="#orgdcc1d4e">1.3. 结论</a></li>
 </ul>
 </li>
-<li><a href="#org2761150">2. 最佳实践</a>
+<li><a href="#orgb54bf8d">2. 最佳实践</a>
 <ul>
-<li><a href="#org48087f7">2.1. 日志</a></li>
-<li><a href="#org1acf8a4">2.2. 监控：使用 prometheus_client 暴露 API metrics</a></li>
+<li><a href="#orgc0b2efe">2.1. 日志</a></li>
+<li><a href="#org28f4e5f">2.2. 监控：使用 prometheus_client 暴露 API metrics</a></li>
 </ul>
 </li>
-<li><a href="#org21cb259">3. 常用库选型</a>
+<li><a href="#orged90fbe">3. 常用库选型</a>
 <ul>
-<li><a href="#org84810cc">3.1. MongoDB</a></li>
+<li><a href="#org53015a6">3.1. MongoDB</a></li>
 </ul>
 </li>
-<li><a href="#org20e76e1">4. 打包</a></li>
-<li><a href="#orgf404358">5. 部署</a>
+<li><a href="#orgc0a5dab">4. 打包</a></li>
+<li><a href="#org0288201">5. 部署</a>
 <ul>
-<li><a href="#orga165ef8">5.1. 直接部署到主机上</a></li>
-<li><a href="#org01a206e">5.2. 部署到容器环境下</a></li>
-<li><a href="#org03ded22">5.3. 版本号</a></li>
+<li><a href="#org36b694f">5.1. 直接部署到主机上</a></li>
+<li><a href="#org003d647">5.2. 部署到容器环境下</a></li>
+<li><a href="#orge77374c">5.3. 版本号</a></li>
 </ul>
 </li>
 </ul>
@@ -256,62 +256,62 @@
 <i>本文将梳理使用 Go 构建一个 Web server 的方方面面，随时更新.</i>
 </p>
 
-<div id="outline-container-org22d501a" class="outline-2">
-<h2 id="org22d501a"><span class="section-number-2">1.</span> 框架选择</h2>
+<div id="outline-container-orgd69f445" class="outline-2">
+<h2 id="orgd69f445"><span class="section-number-2">1.</span> 框架选择</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org87e341c" class="outline-3">
-<h3 id="org87e341c"><span class="section-number-3">1.1.</span> 原生</h3>
+<div id="outline-container-org0bd996a" class="outline-3">
+<h3 id="org0bd996a"><span class="section-number-3">1.1.</span> 原生</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Go 的 <code>net/http</code> 库比较丰富，借助 <a href="https://github.com/gorilla/mux">mux</a> 即可自己完成一个 server 基本需求。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #00538b;">router</span> := mux.<span style="color: #721045;">NewRouter</span><span style="color: #000000;">()</span>
-router.<span style="color: #721045;">HandleFunc</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"/"</span>, <span style="color: #5317ac;">func</span><span style="color: #a8007f;">(</span><span style="color: #00538b;">resp</span> <span style="color: #005a5f;">http.ResponseWriter</span>, <span style="color: #00538b;">req</span> *<span style="color: #005a5f;">http.Request</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
-    resp.<span style="color: #721045;">Write</span><span style="color: #005f88;">(</span><span style="color: #904200;">[]</span><span style="color: #721045;">byte</span><span style="color: #904200;">(</span><span style="color: #2544bb;">"ok"</span><span style="color: #904200;">)</span><span style="color: #005f88;">)</span>
-<span style="color: #a8007f;">}</span><span style="color: #000000;">)</span>
+<pre class="src src-go"><span style="color: #6a1868;">router</span> := mux.<span style="color: #a626a4;">NewRouter</span><span style="color: #4078f2;">()</span>
+router.<span style="color: #a626a4;">HandleFunc</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/"</span>, <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span><span style="color: #6a1868;">resp</span> <span style="color: #986801;">http.ResponseWriter</span>, <span style="color: #6a1868;">req</span> *<span style="color: #986801;">http.Request</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+    resp.<span style="color: #a626a4;">Write</span><span style="color: #50a14f;">(</span><span style="color: #b751b6;">[]</span><span style="color: #a626a4;">byte</span><span style="color: #b751b6;">(</span><span style="color: #50a14f;">"ok"</span><span style="color: #b751b6;">)</span><span style="color: #50a14f;">)</span>
+<span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span>
 
-<span style="color: #00538b;">httpServer</span> := &amp;<span style="color: #005a5f;">http.Server</span><span style="color: #000000;">{</span>
-    <span style="color: #0000c0;">Addr</span>:    <span style="color: #2544bb;">":8080"</span>,
-    <span style="color: #0000c0;">Handler</span>: router,
-<span style="color: #000000;">}</span>
+<span style="color: #6a1868;">httpServer</span> := &amp;<span style="color: #986801;">http.Server</span><span style="color: #4078f2;">{</span>
+    <span style="color: #b751b6;">Addr</span>:    <span style="color: #50a14f;">":8080"</span>,
+    <span style="color: #b751b6;">Handler</span>: router,
+<span style="color: #4078f2;">}</span>
 
-<span style="color: #5317ac;">go</span> <span style="color: #5317ac;">func</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">if</span> <span style="color: #00538b;">err</span> := s.HTTPServer.<span style="color: #721045;">ListenAndServe</span><span style="color: #a8007f;">()</span>; err != <span style="color: #0000c0;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a8007f;">{</span>
-        log.<span style="color: #721045;">Fatalf</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"server error, %s\n"</span>, err<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
-<span style="color: #000000;">}()</span>
+<span style="color: #e45649;">go</span> <span style="color: #e45649;">func</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">if</span> <span style="color: #6a1868;">err</span> := s.HTTPServer.<span style="color: #a626a4;">ListenAndServe</span><span style="color: #a626a4;">()</span>; err != <span style="color: #b751b6;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a626a4;">{</span>
+        log.<span style="color: #a626a4;">Fatalf</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"server error, %s\n"</span>, err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}()</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org2d11b84" class="outline-3">
-<h3 id="org2d11b84"><span class="section-number-3">1.2.</span> gin</h3>
+<div id="outline-container-orgd1c0319" class="outline-3">
+<h3 id="orgd1c0319"><span class="section-number-3">1.2.</span> gin</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 <a href="https://github.com/gin-gonic/gin">gin</a> 是一个 Go 的 Web 框架，当然很多的其它框架。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #00538b;">router</span> := gin.<span style="color: #721045;">New</span><span style="color: #000000;">()</span>
+<pre class="src src-go"><span style="color: #6a1868;">router</span> := gin.<span style="color: #a626a4;">New</span><span style="color: #4078f2;">()</span>
 
-router.<span style="color: #721045;">GET</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"/"</span>, <span style="color: #5317ac;">func</span><span style="color: #a8007f;">(</span><span style="color: #00538b;">c</span> *<span style="color: #005a5f;">gin.Context</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
-    c.<span style="color: #721045;">String</span><span style="color: #005f88;">(</span>http.StatusOK, <span style="color: #2544bb;">"ok"</span><span style="color: #005f88;">)</span>
-<span style="color: #a8007f;">}</span><span style="color: #000000;">)</span>
+router.<span style="color: #a626a4;">GET</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/"</span>, <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span><span style="color: #6a1868;">c</span> *<span style="color: #986801;">gin.Context</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+    c.<span style="color: #a626a4;">String</span><span style="color: #50a14f;">(</span>http.StatusOK, <span style="color: #50a14f;">"ok"</span><span style="color: #50a14f;">)</span>
+<span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span>
 
-<span style="color: #00538b;">srv</span> := &amp;<span style="color: #005a5f;">http.Server</span><span style="color: #000000;">{</span>
-    <span style="color: #0000c0;">Addr</span>:    <span style="color: #2544bb;">":8080"</span>,
-    <span style="color: #0000c0;">Handler</span>: router,
-<span style="color: #000000;">}</span>
+<span style="color: #6a1868;">srv</span> := &amp;<span style="color: #986801;">http.Server</span><span style="color: #4078f2;">{</span>
+    <span style="color: #b751b6;">Addr</span>:    <span style="color: #50a14f;">":8080"</span>,
+    <span style="color: #b751b6;">Handler</span>: router,
+<span style="color: #4078f2;">}</span>
 
-<span style="color: #5317ac;">go</span> <span style="color: #5317ac;">func</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">if</span> <span style="color: #00538b;">err</span> := server.HttpServer.<span style="color: #721045;">ListenAndServe</span><span style="color: #a8007f;">()</span>; err != <span style="color: #0000c0;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a8007f;">{</span>
-        log.<span style="color: #721045;">Fatalf</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"server failure : %s\n"</span>, err<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
-<span style="color: #000000;">}()</span>
+<span style="color: #e45649;">go</span> <span style="color: #e45649;">func</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">if</span> <span style="color: #6a1868;">err</span> := server.HttpServer.<span style="color: #a626a4;">ListenAndServe</span><span style="color: #a626a4;">()</span>; err != <span style="color: #b751b6;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a626a4;">{</span>
+        log.<span style="color: #a626a4;">Fatalf</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"server failure : %s\n"</span>, err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}()</span>
 
 </pre>
 </div>
@@ -325,30 +325,30 @@ router.<span style="color: #721045;">GET</span><span style="color: #000000;">(</
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">AuthRequired</span><span style="color: #000000;">()</span> <span style="color: #005a5f;">gin.HandlerFunc</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">return</span> <span style="color: #5317ac;">func</span><span style="color: #a8007f;">(</span><span style="color: #00538b;">c</span> *<span style="color: #005a5f;">gin.Context</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
-        <span style="color: #00538b;">token</span> := c.Request.Header.<span style="color: #721045;">Get</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"X-Login-Token"</span><span style="color: #005f88;">)</span>
-        <span style="color: #5317ac;">if</span> token != <span style="color: #2544bb;">"xxx"</span> <span style="color: #005f88;">{</span>
-            c.<span style="color: #721045;">String</span><span style="color: #904200;">(</span>http.StatusUnauthorized, <span style="color: #2544bb;">"login required"</span><span style="color: #904200;">)</span>
-            c.<span style="color: #721045;">Abort</span><span style="color: #904200;">()</span> <span style="color: #505050;">// </span><span style="color: #505050;">must abort to next handler</span>
-            <span style="color: #5317ac;">return</span>
-        <span style="color: #005f88;">}</span>
+<pre class="src src-go"><span style="color: #e45649;">func</span> <span style="color: #a626a4;">AuthRequired</span><span style="color: #4078f2;">()</span> <span style="color: #986801;">gin.HandlerFunc</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">return</span> <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span><span style="color: #6a1868;">c</span> *<span style="color: #986801;">gin.Context</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #6a1868;">token</span> := c.Request.Header.<span style="color: #a626a4;">Get</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"X-Login-Token"</span><span style="color: #50a14f;">)</span>
+        <span style="color: #e45649;">if</span> token != <span style="color: #50a14f;">"xxx"</span> <span style="color: #50a14f;">{</span>
+            c.<span style="color: #a626a4;">String</span><span style="color: #b751b6;">(</span>http.StatusUnauthorized, <span style="color: #50a14f;">"login required"</span><span style="color: #b751b6;">)</span>
+            c.<span style="color: #a626a4;">Abort</span><span style="color: #b751b6;">()</span> <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">must abort to next handler</span>
+            <span style="color: #e45649;">return</span>
+        <span style="color: #50a14f;">}</span>
 
-        c.<span style="color: #721045;">Set</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"username"</span>, <span style="color: #2544bb;">"xxx"</span><span style="color: #005f88;">)</span>
+        c.<span style="color: #a626a4;">Set</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"username"</span>, <span style="color: #50a14f;">"xxx"</span><span style="color: #50a14f;">)</span>
 
-        c.<span style="color: #721045;">Next</span><span style="color: #005f88;">()</span>
-    <span style="color: #a8007f;">}</span>
-<span style="color: #000000;">}</span>
+        c.<span style="color: #a626a4;">Next</span><span style="color: #50a14f;">()</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}</span>
 
-<span style="color: #00538b;">apiv1</span> := r.<span style="color: #721045;">Group</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"/api/v1"</span><span style="color: #000000;">)</span>
-apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</span><span style="color: #721045;">AuthRequired</span><span style="color: #a8007f;">()</span><span style="color: #000000;">)</span>
+<span style="color: #6a1868;">apiv1</span> := r.<span style="color: #a626a4;">Group</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/api/v1"</span><span style="color: #4078f2;">)</span>
+apiv1.<span style="color: #a626a4;">Use</span><span style="color: #4078f2;">(</span><span style="color: #a626a4;">AuthRequired</span><span style="color: #a626a4;">()</span><span style="color: #4078f2;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgb7e7253" class="outline-3">
-<h3 id="orgb7e7253"><span class="section-number-3">1.3.</span> 结论</h3>
+<div id="outline-container-orgdcc1d4e" class="outline-3">
+<h3 id="orgdcc1d4e"><span class="section-number-3">1.3.</span> 结论</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 使用原生的库还是框架，我的思路是：
@@ -369,12 +369,12 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </div>
 
 
-<div id="outline-container-org2761150" class="outline-2">
-<h2 id="org2761150"><span class="section-number-2">2.</span> 最佳实践</h2>
+<div id="outline-container-orgb54bf8d" class="outline-2">
+<h2 id="orgb54bf8d"><span class="section-number-2">2.</span> 最佳实践</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org48087f7" class="outline-3">
-<h3 id="org48087f7"><span class="section-number-3">2.1.</span> 日志</h3>
+<div id="outline-container-orgc0b2efe" class="outline-3">
+<h3 id="orgc0b2efe"><span class="section-number-3">2.1.</span> 日志</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 根据云原生倡导，日志统一打印到标准输出。 日志收集和查看是基建需要做的事情，程序应与此解耦。
@@ -382,8 +382,8 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </div>
 </div>
 
-<div id="outline-container-org1acf8a4" class="outline-3">
-<h3 id="org1acf8a4"><span class="section-number-3">2.2.</span> 监控：使用 prometheus_client 暴露 API metrics</h3>
+<div id="outline-container-org28f4e5f" class="outline-3">
+<h3 id="org28f4e5f"><span class="section-number-3">2.2.</span> 监控：使用 prometheus_client 暴露 API metrics</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 对接 promethues 之后可以很方便的监控 API 调用情况，调用耗时、状态码等等。因为 Prometheus 是 pull 的模式，所以服务很好解耦，
@@ -395,45 +395,45 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">var</span> <span style="color: #000000;">(</span>
-    <span style="color: #00538b;">APICalledLatency</span> = prometheus.<span style="color: #721045;">NewSummaryVec</span><span style="color: #a8007f;">(</span>
-        <span style="color: #005a5f;">prometheus.SummaryOpts</span><span style="color: #005f88;">{</span>
-            <span style="color: #0000c0;">Name</span>: <span style="color: #2544bb;">"metaserver_api_called_latency"</span>,
-            <span style="color: #0000c0;">Help</span>: <span style="color: #2544bb;">"Latency in microseconds"</span>,
-        <span style="color: #005f88;">}</span>,
-        <span style="color: #005f88;">[]</span><span style="color: #005a5f;">string</span><span style="color: #005f88;">{</span><span style="color: #2544bb;">"api"</span>, <span style="color: #2544bb;">"method"</span>, <span style="color: #2544bb;">"status_code"</span><span style="color: #005f88;">}</span>,
-    <span style="color: #a8007f;">)</span>
-<span style="color: #000000;">)</span>
+<pre class="src src-go"><span style="color: #e45649;">var</span> <span style="color: #4078f2;">(</span>
+    <span style="color: #6a1868;">APICalledLatency</span> = prometheus.<span style="color: #a626a4;">NewSummaryVec</span><span style="color: #a626a4;">(</span>
+        <span style="color: #986801;">prometheus.SummaryOpts</span><span style="color: #50a14f;">{</span>
+            <span style="color: #b751b6;">Name</span>: <span style="color: #50a14f;">"metaserver_api_called_latency"</span>,
+            <span style="color: #b751b6;">Help</span>: <span style="color: #50a14f;">"Latency in microseconds"</span>,
+        <span style="color: #50a14f;">}</span>,
+        <span style="color: #50a14f;">[]</span><span style="color: #986801;">string</span><span style="color: #50a14f;">{</span><span style="color: #50a14f;">"api"</span>, <span style="color: #50a14f;">"method"</span>, <span style="color: #50a14f;">"status_code"</span><span style="color: #50a14f;">}</span>,
+    <span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">)</span>
 
-<span style="color: #5317ac;">func</span> <span style="color: #721045;">init</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-    prometheus.<span style="color: #721045;">MustRegister</span><span style="color: #a8007f;">(</span>APICalledLatency<span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span>
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">init</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    prometheus.<span style="color: #a626a4;">MustRegister</span><span style="color: #a626a4;">(</span>APICalledLatency<span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
 
-<span style="color: #5317ac;">func</span> <span style="color: #721045;">SinceInMicroseconds</span><span style="color: #000000;">(</span><span style="color: #00538b;">start</span> <span style="color: #005a5f;">time.Time</span><span style="color: #000000;">)</span> <span style="color: #005a5f;">float64</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">return</span> <span style="color: #721045;">float64</span><span style="color: #a8007f;">(</span>time.<span style="color: #721045;">Since</span><span style="color: #005f88;">(</span>start<span style="color: #005f88;">)</span>.<span style="color: #721045;">Nanoseconds</span><span style="color: #005f88;">()</span> / time.Microsecond.<span style="color: #721045;">Nanoseconds</span><span style="color: #005f88;">()</span><span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span>
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">SinceInMicroseconds</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">start</span> <span style="color: #986801;">time.Time</span><span style="color: #4078f2;">)</span> <span style="color: #986801;">float64</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">return</span> <span style="color: #a626a4;">float64</span><span style="color: #a626a4;">(</span>time.<span style="color: #a626a4;">Since</span><span style="color: #50a14f;">(</span>start<span style="color: #50a14f;">)</span>.<span style="color: #a626a4;">Nanoseconds</span><span style="color: #50a14f;">()</span> / time.Microsecond.<span style="color: #a626a4;">Nanoseconds</span><span style="color: #50a14f;">()</span><span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
 
-<span style="color: #5317ac;">func</span> <span style="color: #721045;">metricsExport</span><span style="color: #000000;">()</span> <span style="color: #005a5f;">gin.HandlerFunc</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">return</span> <span style="color: #5317ac;">func</span><span style="color: #a8007f;">(</span><span style="color: #00538b;">c</span> *<span style="color: #005a5f;">gin.Context</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
-        <span style="color: #00538b;">start</span> := time.<span style="color: #721045;">Now</span><span style="color: #005f88;">()</span>
-        <span style="color: #5317ac;">defer</span> <span style="color: #5317ac;">func</span><span style="color: #005f88;">()</span> <span style="color: #005f88;">{</span>
-            <span style="color: #00538b;">cost</span> := <span style="color: #721045;">SinceInMicroseconds</span><span style="color: #904200;">(</span>start<span style="color: #904200;">)</span>
-            <span style="color: #00538b;">api</span> := c.Request.URL.Path
-            <span style="color: #00538b;">method</span> := c.Request.Method
-            <span style="color: #00538b;">status</span> := strconv.<span style="color: #721045;">Itoa</span><span style="color: #904200;">(</span>c.Writer.<span style="color: #721045;">Status</span><span style="color: #7f10d0;">()</span><span style="color: #904200;">)</span>
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">metricsExport</span><span style="color: #4078f2;">()</span> <span style="color: #986801;">gin.HandlerFunc</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">return</span> <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span><span style="color: #6a1868;">c</span> *<span style="color: #986801;">gin.Context</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #6a1868;">start</span> := time.<span style="color: #a626a4;">Now</span><span style="color: #50a14f;">()</span>
+        <span style="color: #e45649;">defer</span> <span style="color: #e45649;">func</span><span style="color: #50a14f;">()</span> <span style="color: #50a14f;">{</span>
+            <span style="color: #6a1868;">cost</span> := <span style="color: #a626a4;">SinceInMicroseconds</span><span style="color: #b751b6;">(</span>start<span style="color: #b751b6;">)</span>
+            <span style="color: #6a1868;">api</span> := c.Request.URL.Path
+            <span style="color: #6a1868;">method</span> := c.Request.Method
+            <span style="color: #6a1868;">status</span> := strconv.<span style="color: #a626a4;">Itoa</span><span style="color: #b751b6;">(</span>c.Writer.<span style="color: #a626a4;">Status</span><span style="color: #4db5bd;">()</span><span style="color: #b751b6;">)</span>
 
-            <span style="color: #505050;">// </span><span style="color: #505050;">set ignore itself in here</span>
-            <span style="color: #5317ac;">if</span> api == <span style="color: #2544bb;">"/metrics"</span> <span style="color: #904200;">{</span>
-                <span style="color: #5317ac;">return</span>
-            <span style="color: #904200;">}</span>
+            <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">set ignore itself in here</span>
+            <span style="color: #e45649;">if</span> api == <span style="color: #50a14f;">"/metrics"</span> <span style="color: #b751b6;">{</span>
+                <span style="color: #e45649;">return</span>
+            <span style="color: #b751b6;">}</span>
 
-            APICalledLatency.<span style="color: #721045;">WithLabelValues</span><span style="color: #904200;">(</span>api, method, status<span style="color: #904200;">)</span>.<span style="color: #721045;">Observe</span><span style="color: #904200;">(</span>cost<span style="color: #904200;">)</span>
-            logrus.<span style="color: #721045;">Tracef</span><span style="color: #904200;">(</span><span style="color: #2544bb;">"api run time, api=%s, method=%s, status=%s, time=%f(ms)"</span>, api, method, status, cost/1000<span style="color: #904200;">)</span>
-        <span style="color: #005f88;">}()</span>
+            APICalledLatency.<span style="color: #a626a4;">WithLabelValues</span><span style="color: #b751b6;">(</span>api, method, status<span style="color: #b751b6;">)</span>.<span style="color: #a626a4;">Observe</span><span style="color: #b751b6;">(</span>cost<span style="color: #b751b6;">)</span>
+            logrus.<span style="color: #a626a4;">Tracef</span><span style="color: #b751b6;">(</span><span style="color: #50a14f;">"api run time, api=%s, method=%s, status=%s, time=%f(ms)"</span>, api, method, status, cost/1000<span style="color: #b751b6;">)</span>
+        <span style="color: #50a14f;">}()</span>
 
-        c.<span style="color: #721045;">Next</span><span style="color: #005f88;">()</span>
-    <span style="color: #a8007f;">}</span>
-<span style="color: #000000;">}</span>
+        c.<span style="color: #a626a4;">Next</span><span style="color: #50a14f;">()</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -442,7 +442,7 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go">r.<span style="color: #721045;">GET</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"/metrics"</span>, gin.<span style="color: #721045;">WrapH</span><span style="color: #a8007f;">(</span>promhttp.<span style="color: #721045;">Handler</span><span style="color: #005f88;">()</span><span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>
+<pre class="src src-go">r.<span style="color: #a626a4;">GET</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/metrics"</span>, gin.<span style="color: #a626a4;">WrapH</span><span style="color: #a626a4;">(</span>promhttp.<span style="color: #a626a4;">Handler</span><span style="color: #50a14f;">()</span><span style="color: #a626a4;">)</span><span style="color: #4078f2;">)</span>
 </pre>
 </div>
 </div>
@@ -450,8 +450,8 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </div>
 
 
-<div id="outline-container-org21cb259" class="outline-2">
-<h2 id="org21cb259"><span class="section-number-2">3.</span> 常用库选型</h2>
+<div id="outline-container-orged90fbe" class="outline-2">
+<h2 id="orged90fbe"><span class="section-number-2">3.</span> 常用库选型</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 <a href="packages.html">Go 包选择与对比</a> 中有一些列举，说到的这里就不赘述了。
@@ -460,8 +460,8 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 
 
 
-<div id="outline-container-org84810cc" class="outline-3">
-<h3 id="org84810cc"><span class="section-number-3">3.1.</span> MongoDB</h3>
+<div id="outline-container-org53015a6" class="outline-3">
+<h3 id="org53015a6"><span class="section-number-3">3.1.</span> MongoDB</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 建议使用官方提供的库：<a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a>，开发已经一两年了，正式版本发布有六七个月了。
@@ -472,8 +472,8 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </div>
 </div>
 
-<div id="outline-container-org20e76e1" class="outline-2">
-<h2 id="org20e76e1"><span class="section-number-2">4.</span> 打包</h2>
+<div id="outline-container-orgc0a5dab" class="outline-2">
+<h2 id="orgc0a5dab"><span class="section-number-2">4.</span> 打包</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Go 支持跨平台编译，参考 <a href="build-env.html">构建环境</a> 中的说明。
@@ -484,14 +484,14 @@ Go 支持跨平台编译，参考 <a href="build-env.html">构建环境</a> 中�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-makefile"><span style="color: #721045;">FROM Ubuntu</span>:18.04
+<pre class="src src-makefile"><span style="color: #4078f2;">FROM Ubuntu</span>:18.04
 
 COPY hello /hello
 COPY config.yaml /etc/hello/config.yaml
 
 EXPOSE 8080
 
-CMD <span style="color: #000000;">[</span><span style="color: #2544bb;">"/hello"</span>, <span style="color: #2544bb;">"-config-file"</span>, <span style="color: #2544bb;">"/etc/hello/config.yaml"</span><span style="color: #000000;">]</span>
+CMD <span style="color: #4078f2;">[</span><span style="color: #50a14f;">"/hello"</span>, <span style="color: #50a14f;">"-config-file"</span>, <span style="color: #50a14f;">"/etc/hello/config.yaml"</span><span style="color: #4078f2;">]</span>
 </pre>
 </div>
 
@@ -500,32 +500,32 @@ CMD <span style="color: #000000;">[</span><span style="color: #2544bb;">"/hello"
 </p>
 
 <div class="org-src-container">
-<pre class="src src-makefile"><span style="color: #00538b;">OUTPUT</span>=hello
-<span style="color: #00538b;">TAG</span>=<span style="color: #2544bb;">`git rev-parse --short HEAD`</span>
+<pre class="src src-makefile"><span style="color: #6a1868;">OUTPUT</span>=hello
+<span style="color: #6a1868;">TAG</span>=<span style="color: #50a14f;">`git rev-parse --short HEAD`</span>
 
-<span style="color: #721045;">build</span>:
-go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
+<span style="color: #4078f2;">build</span>:
+go build -o $<span style="color: #4078f2;">{</span><span style="color: #6a1868;">OUTPUT</span><span style="color: #4078f2;">}</span> cmd/main.go
 
-<span style="color: #721045;">build-linux</span>:
-<span style="color: #00538b;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
+<span style="color: #4078f2;">build-linux</span>:
+<span style="color: #6a1868;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #4078f2;">{</span><span style="color: #6a1868;">OUTPUT</span><span style="color: #4078f2;">}</span> cmd/main.go
 
-<span style="color: #721045;">build-docker</span>:
-<span style="color: #00538b;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;">OUTPUT</span><span style="color: #000000;">}</span> cmd/main.go
-<span style="color: #721045;">docker build -t &lt;your docker registry addr&gt;/$</span><span style="color: #000000;">{</span><span style="color: #721045;">OUTPUT</span><span style="color: #000000;">}</span>:$<span style="color: #000000;">{</span><span style="color: #00538b;">TAG</span><span style="color: #000000;">}</span> .
+<span style="color: #4078f2;">build-docker</span>:
+<span style="color: #6a1868;">GOOS</span>=linux GOARCH=amd64 go build -o $<span style="color: #4078f2;">{</span><span style="color: #6a1868;">OUTPUT</span><span style="color: #4078f2;">}</span> cmd/main.go
+<span style="color: #4078f2;">docker build -t &lt;your docker registry addr&gt;/$</span><span style="color: #4078f2;">{</span><span style="color: #4078f2;">OUTPUT</span><span style="color: #4078f2;">}</span>:$<span style="color: #4078f2;">{</span><span style="color: #6a1868;">TAG</span><span style="color: #4078f2;">}</span> .
 
-<span style="color: #721045;">push-docker</span>:
-<span style="color: #721045;">docker push &lt;your docker registry addr&gt;/$</span><span style="color: #000000;">{</span><span style="color: #721045;">OUTPUT</span><span style="color: #000000;">}</span>:$<span style="color: #000000;">{</span><span style="color: #00538b;">TAG</span><span style="color: #000000;">}</span>
+<span style="color: #4078f2;">push-docker</span>:
+<span style="color: #4078f2;">docker push &lt;your docker registry addr&gt;/$</span><span style="color: #4078f2;">{</span><span style="color: #4078f2;">OUTPUT</span><span style="color: #4078f2;">}</span>:$<span style="color: #4078f2;">{</span><span style="color: #6a1868;">TAG</span><span style="color: #4078f2;">}</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgf404358" class="outline-2">
-<h2 id="orgf404358"><span class="section-number-2">5.</span> 部署</h2>
+<div id="outline-container-org0288201" class="outline-2">
+<h2 id="org0288201"><span class="section-number-2">5.</span> 部署</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-orga165ef8" class="outline-3">
-<h3 id="orga165ef8"><span class="section-number-3">5.1.</span> 直接部署到主机上</h3>
+<div id="outline-container-org36b694f" class="outline-3">
+<h3 id="org36b694f"><span class="section-number-3">5.1.</span> 直接部署到主机上</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 构建对应平台的二进制包，Ubuntu 15.04 之后，以及 CentOS7 之后都使用 <a href="https://wiki.archlinux.org/index.php/Systemd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">systemd</a> 作为默认的系统和服务管理器了。
@@ -540,7 +540,7 @@ go build -o $<span style="color: #000000;">{</span><span style="color: #00538b;"
 比如：
 </p>
 
-<pre class="example" id="org02f8264">
+<pre class="example" id="org27d32ce">
 [Unit]
 Description=Command Scheduler
 After=auditd.service systemd-user-sessions.service time-sync.target
@@ -566,8 +566,8 @@ WantedBy=multi-user.target
 </div>
 </div>
 
-<div id="outline-container-org01a206e" class="outline-3">
-<h3 id="org01a206e"><span class="section-number-3">5.2.</span> 部署到容器环境下</h3>
+<div id="outline-container-org003d647" class="outline-3">
+<h3 id="org003d647"><span class="section-number-3">5.2.</span> 部署到容器环境下</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 在有容器运行时的情况下，建议使用容器部署。
@@ -575,8 +575,8 @@ WantedBy=multi-user.target
 </div>
 </div>
 
-<div id="outline-container-org03ded22" class="outline-3">
-<h3 id="org03ded22"><span class="section-number-3">5.3.</span> 版本号</h3>
+<div id="outline-container-orge77374c" class="outline-3">
+<h3 id="orge77374c"><span class="section-number-3">5.3.</span> 版本号</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 如果使用 Docker 部署时，版本号通常放到 docker tag 中。如果使用二进制文件直接部署的话，把版本号放在二进制名称上是一种办法，
@@ -621,7 +621,7 @@ BuildTime string = ""
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>

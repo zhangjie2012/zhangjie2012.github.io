@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:37 -->
+<!-- 2023-01-01 Sun 17:16 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go MySQL 报错 closing bad idle connection: EOF</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -268,22 +268,22 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #505050;">// </span><span style="color: #505050;">ExecContext executes a query without returning any rows.</span>
-<span style="color: #505050;">// </span><span style="color: #505050;">The args are for any placeholder parameters in the query.</span>
-<span style="color: #5317ac;">func</span> <span style="color: #000000;">(</span><span style="color: #00538b;">db</span> *<span style="color: #005a5f;">DB</span><span style="color: #000000;">)</span> <span style="color: #721045;">ExecContext</span><span style="color: #000000;">(</span><span style="color: #00538b;">ctx</span> <span style="color: #005a5f;">context.Context</span>, <span style="color: #00538b;">query</span> <span style="color: #005a5f;">string</span>, <span style="color: #00538b;">args</span> ...<span style="color: #5317ac;">interface</span><span style="color: #a8007f;">{}</span><span style="color: #000000;">)</span> <span style="color: #000000;">(</span><span style="color: #005a5f;">Result</span>, <span style="color: #005a5f;">error</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">var</span> <span style="color: #00538b;">res</span> <span style="color: #005a5f;">Result</span>
-    <span style="color: #5317ac;">var</span> <span style="color: #00538b;">err</span> <span style="color: #005a5f;">error</span>
-    <span style="color: #5317ac;">for</span> <span style="color: #00538b;">i</span> := 0; i &lt; maxBadConnRetries; i++ <span style="color: #a8007f;">{</span>
-        res, err = db.<span style="color: #721045;">exec</span><span style="color: #005f88;">(</span>ctx, query, args, cachedOrNewConn<span style="color: #005f88;">)</span>
-        <span style="color: #5317ac;">if</span> err != driver.ErrBadConn <span style="color: #005f88;">{</span>
-            <span style="color: #5317ac;">break</span>
-        <span style="color: #005f88;">}</span>
-    <span style="color: #a8007f;">}</span>
-    <span style="color: #5317ac;">if</span> err == driver.ErrBadConn <span style="color: #a8007f;">{</span>
-        <span style="color: #5317ac;">return</span> db.<span style="color: #721045;">exec</span><span style="color: #005f88;">(</span>ctx, query, args, alwaysNewConn<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
-    <span style="color: #5317ac;">return</span> res, err
-<span style="color: #000000;">}</span>
+<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">ExecContext executes a query without returning any rows.</span>
+<span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">The args are for any placeholder parameters in the query.</span>
+<span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">db</span> *<span style="color: #986801;">DB</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">ExecContext</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">ctx</span> <span style="color: #986801;">context.Context</span>, <span style="color: #6a1868;">query</span> <span style="color: #986801;">string</span>, <span style="color: #6a1868;">args</span> ...<span style="color: #e45649;">interface</span><span style="color: #a626a4;">{}</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">(</span><span style="color: #986801;">Result</span>, <span style="color: #986801;">error</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">var</span> <span style="color: #6a1868;">res</span> <span style="color: #986801;">Result</span>
+    <span style="color: #e45649;">var</span> <span style="color: #6a1868;">err</span> <span style="color: #986801;">error</span>
+    <span style="color: #e45649;">for</span> <span style="color: #6a1868;">i</span> := 0; i &lt; maxBadConnRetries; i++ <span style="color: #a626a4;">{</span>
+        res, err = db.<span style="color: #a626a4;">exec</span><span style="color: #50a14f;">(</span>ctx, query, args, cachedOrNewConn<span style="color: #50a14f;">)</span>
+        <span style="color: #e45649;">if</span> err != driver.ErrBadConn <span style="color: #50a14f;">{</span>
+            <span style="color: #e45649;">break</span>
+        <span style="color: #50a14f;">}</span>
+    <span style="color: #a626a4;">}</span>
+    <span style="color: #e45649;">if</span> err == driver.ErrBadConn <span style="color: #a626a4;">{</span>
+        <span style="color: #e45649;">return</span> db.<span style="color: #a626a4;">exec</span><span style="color: #50a14f;">(</span>ctx, query, args, alwaysNewConn<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+    <span style="color: #e45649;">return</span> res, err
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -312,27 +312,27 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #505050;">// </span><span style="color: #505050;">SetConnMaxLifetime sets the maximum amount of time a connection may be reused.</span>
-<span style="color: #505050;">//</span>
-<span style="color: #505050;">// </span><span style="color: #505050;">Expired connections may be closed lazily before reuse.</span>
-<span style="color: #505050;">//</span>
-<span style="color: #505050;">// </span><span style="color: #505050;">If d &lt;= 0, connections are reused forever.</span>
-<span style="color: #5317ac;">func</span> <span style="color: #000000;">(</span><span style="color: #00538b;">db</span> *<span style="color: #005a5f;">DB</span><span style="color: #000000;">)</span> <span style="color: #721045;">SetConnMaxLifetime</span><span style="color: #000000;">(</span><span style="color: #00538b;">d</span> <span style="color: #005a5f;">time.Duration</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">if</span> d &lt; 0 <span style="color: #a8007f;">{</span>
+<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">SetConnMaxLifetime sets the maximum amount of time a connection may be reused.</span>
+<span style="color: #9ca0a4;">//</span>
+<span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">Expired connections may be closed lazily before reuse.</span>
+<span style="color: #9ca0a4;">//</span>
+<span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">If d &lt;= 0, connections are reused forever.</span>
+<span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">db</span> *<span style="color: #986801;">DB</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">SetConnMaxLifetime</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">d</span> <span style="color: #986801;">time.Duration</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">if</span> d &lt; 0 <span style="color: #a626a4;">{</span>
         d = 0
-    <span style="color: #a8007f;">}</span>
-    db.mu.<span style="color: #721045;">Lock</span><span style="color: #a8007f;">()</span>
-    <span style="color: #505050;">// </span><span style="color: #505050;">wake cleaner up when lifetime is shortened.</span>
-    <span style="color: #5317ac;">if</span> d &gt; 0 &amp;&amp; d &lt; db.maxLifetime &amp;&amp; db.cleanerCh != <span style="color: #0000c0;">nil</span> <span style="color: #a8007f;">{</span>
-        <span style="color: #5317ac;">select</span> <span style="color: #005f88;">{</span>
-        <span style="color: #5317ac;">case</span> db.cleanerCh &lt;- <span style="color: #5317ac;">struct</span><span style="color: #904200;">{}{}</span>:
-        <span style="color: #5317ac;">default</span>:
-        <span style="color: #005f88;">}</span>
-    <span style="color: #a8007f;">}</span>
+    <span style="color: #a626a4;">}</span>
+    db.mu.<span style="color: #a626a4;">Lock</span><span style="color: #a626a4;">()</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">wake cleaner up when lifetime is shortened.</span>
+    <span style="color: #e45649;">if</span> d &gt; 0 &amp;&amp; d &lt; db.maxLifetime &amp;&amp; db.cleanerCh != <span style="color: #b751b6;">nil</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #e45649;">select</span> <span style="color: #50a14f;">{</span>
+        <span style="color: #e45649;">case</span> db.cleanerCh &lt;- <span style="color: #e45649;">struct</span><span style="color: #b751b6;">{}{}</span>:
+        <span style="color: #e45649;">default</span>:
+        <span style="color: #50a14f;">}</span>
+    <span style="color: #a626a4;">}</span>
     db.maxLifetime = d
-    db.<span style="color: #721045;">startCleanerLocked</span><span style="color: #a8007f;">()</span>
-    db.mu.<span style="color: #721045;">Unlock</span><span style="color: #a8007f;">()</span>
-<span style="color: #000000;">}</span>
+    db.<span style="color: #a626a4;">startCleanerLocked</span><span style="color: #a626a4;">()</span>
+    db.mu.<span style="color: #a626a4;">Unlock</span><span style="color: #a626a4;">()</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -370,7 +370,7 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go">mysql.<span style="color: #721045;">SetLogger</span><span style="color: #000000;">(</span>logrus.<span style="color: #721045;">StandardLogger</span><span style="color: #a8007f;">()</span><span style="color: #000000;">)</span>
+<pre class="src src-go">mysql.<span style="color: #a626a4;">SetLogger</span><span style="color: #4078f2;">(</span>logrus.<span style="color: #a626a4;">StandardLogger</span><span style="color: #a626a4;">()</span><span style="color: #4078f2;">)</span>
 </pre>
 </div>
 
@@ -393,7 +393,7 @@ MySQL server 默认与客户端的连接交互时间是 <code>28800s</code> ，8
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-06-01 18:07:52 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2020-06-01 18:07:52 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

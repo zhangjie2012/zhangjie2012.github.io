@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-12-01 Thu 14:38 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Prometheus 运维</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,23 +223,23 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org5fd513a">1. 安装</a>
+<li><a href="#org2473f5c">1. 安装</a>
 <ul>
-<li><a href="#orgd607c08">1.1. CentOS 7</a></li>
+<li><a href="#org113af52">1.1. CentOS 7</a></li>
 </ul>
 </li>
-<li><a href="#org8763272">2. 常用参数</a></li>
-<li><a href="#orgc163f55">3. 配置</a></li>
+<li><a href="#org97ed9a5">2. 常用参数</a></li>
+<li><a href="#orgf1233d9">3. 配置</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5fd513a" class="outline-2">
-<h2 id="org5fd513a"><span class="section-number-2">1.</span> 安装</h2>
+<div id="outline-container-org2473f5c" class="outline-2">
+<h2 id="org2473f5c"><span class="section-number-2">1.</span> 安装</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgd607c08" class="outline-3">
-<h3 id="orgd607c08"><span class="section-number-3">1.1.</span> CentOS 7</h3>
+<div id="outline-container-org113af52" class="outline-3">
+<h3 id="org113af52"><span class="section-number-3">1.1.</span> CentOS 7</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 下载页面，找最新稳定版：<a href="https://prometheus.io/download/">https://prometheus.io/download/</a>
@@ -260,11 +260,11 @@ tar zxvf prometheus-2.35.0.linux-amd64.tar.gz
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">/data/opt/prometheus-2.35.0.linux-amd64/prometheus <span style="color: #2544bb;">\</span>
-    --config.file=/data/opt/prometheus-2.35.0.linux-amd64/prometheus.yml <span style="color: #2544bb;">\</span>
-    --web.listen-address=<span style="color: #2544bb;">"127.0.0.1:9090"</span> <span style="color: #2544bb;">\</span>
-    --web.enable-lifecycle <span style="color: #2544bb;">\</span>
-    --storage.tsdb.path=<span style="color: #2544bb;">"/data/storage/prometheus/"</span>
+<pre class="src src-sh">/data/opt/prometheus-2.35.0.linux-amd64/prometheus <span style="color: #50a14f;">\</span>
+    --config.file=/data/opt/prometheus-2.35.0.linux-amd64/prometheus.yml <span style="color: #50a14f;">\</span>
+    --web.listen-address=<span style="color: #50a14f;">"127.0.0.1:9090"</span> <span style="color: #50a14f;">\</span>
+    --web.enable-lifecycle <span style="color: #50a14f;">\</span>
+    --storage.tsdb.path=<span style="color: #50a14f;">"/data/storage/prometheus/"</span>
 </pre>
 </div>
 
@@ -298,22 +298,22 @@ nginx 配置：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-conf"><span style="color: #005a5f;">server</span> {
+<pre class="src src-conf"><span style="color: #986801;">server</span> {
         listen       80;
         server_name  _;
 
-        <span style="color: #005a5f;">location /</span> {
+        <span style="color: #986801;">location /</span> {
                 proxy_pass http://127.0.0.1:9090/;
                 root   html;
                 index  index.html index.htm;
         }
 
-        <span style="color: #505050;">#</span><span style="color: #505050;">error_page  404              /404.html;</span>
+        <span style="color: #9ca0a4;">#</span><span style="color: #9ca0a4;">error_page  404              /404.html;</span>
 
-        <span style="color: #505050;"># </span><span style="color: #505050;">redirect server error pages to the static page /50x.html</span>
-        <span style="color: #505050;">#</span>
+        <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">redirect server error pages to the static page /50x.html</span>
+        <span style="color: #9ca0a4;">#</span>
         error_page   500 502 503 504  /50x.html;
-        <span style="color: #00538b;">location</span> = /50x.html {
+        <span style="color: #6a1868;">location</span> = /50x.html {
                 root   html;
         }
 }
@@ -327,8 +327,8 @@ nginx 配置：
 </div>
 </div>
 
-<div id="outline-container-org8763272" class="outline-2">
-<h2 id="org8763272"><span class="section-number-2">2.</span> 常用参数</h2>
+<div id="outline-container-org97ed9a5" class="outline-2">
+<h2 id="org97ed9a5"><span class="section-number-2">2.</span> 常用参数</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li><code>--config.file="prometheus.yml"</code> 指定配置文件</li>
@@ -339,8 +339,8 @@ nginx 配置：
 </div>
 </div>
 
-<div id="outline-container-orgc163f55" class="outline-2">
-<h2 id="orgc163f55"><span class="section-number-2">3.</span> 配置</h2>
+<div id="outline-container-orgf1233d9" class="outline-2">
+<h2 id="orgf1233d9"><span class="section-number-2">3.</span> 配置</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 热加载配置： <code>curl -X POST http://localhost:9090/-/reload</code>
@@ -349,7 +349,7 @@ nginx 配置：
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2022-05-06 16:07:26 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2022-05-06 16:07:26 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>

@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:37 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C++ const 数据存储位置</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -224,12 +224,12 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #5317ac;">class</span> <span style="color: #005a5f;">GamePlayer</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">private</span>:
-        <span style="color: #5317ac;">static</span> <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">NumTurns</span> = 5; <span style="color: #505050;">// </span><span style="color: #505050;">&#24120;&#37327;&#22768;&#26126;&#24335;</span>
-        <span style="color: #005a5f;">int</span> <span style="color: #00538b;">scores</span><span style="color: #a8007f;">[</span>NumTurns<span style="color: #a8007f;">]</span>;          <span style="color: #505050;">// </span><span style="color: #505050;">&#20351;&#29992;&#35813;&#24120;&#37327;</span>
+<pre class="src src-cpp"><span style="color: #e45649;">class</span> <span style="color: #986801;">GamePlayer</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">private</span>:
+        <span style="color: #e45649;">static</span> <span style="color: #e45649;">const</span> <span style="color: #986801;">int</span> <span style="color: #6a1868;">NumTurns</span> = 5; <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#24120;&#37327;&#22768;&#26126;&#24335;</span>
+        <span style="color: #986801;">int</span> <span style="color: #6a1868;">scores</span><span style="color: #a626a4;">[</span>NumTurns<span style="color: #a626a4;">]</span>;          <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#20351;&#29992;&#35813;&#24120;&#37327;</span>
         ...
-<span style="color: #000000;">}</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -241,8 +241,8 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #0000c0;">GamePlayer</span>::<span style="color: #00538b;">NumTurns</span>; <span style="color: #505050;">// </span><span style="color: #505050;">NumTurns &#30340;&#23450;&#20041;&#65307;</span>
-                                <span style="color: #505050;">// </span><span style="color: #505050;">&#19979;&#38754;&#21578;&#35785;&#20320;&#20026;&#20160;&#20040;&#32473;&#20104;&#25968;&#20540;</span>
+<pre class="src src-cpp"><span style="color: #e45649;">const</span> <span style="color: #986801;">int</span> <span style="color: #b751b6;">GamePlayer</span>::<span style="color: #6a1868;">NumTurns</span>; <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">NumTurns &#30340;&#23450;&#20041;&#65307;</span>
+                                <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#19979;&#38754;&#21578;&#35785;&#20320;&#20026;&#20160;&#20040;&#32473;&#20104;&#25968;&#20540;</span>
 </pre>
 </div>
 
@@ -261,20 +261,20 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">iostream</span><span style="color: #000000;">&gt;</span>
-<span style="color: #5317ac;">class</span> <span style="color: #005a5f;">GamePlayer</span> <span style="color: #000000;">{</span>
-<span style="color: #5317ac;">public</span>:
-    <span style="color: #5317ac;">static</span> <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">NumTurns</span> = 5; <span style="color: #505050;">// </span><span style="color: #505050;">&#24120;&#37327;&#22768;&#26126;&#24335;</span>
-<span style="color: #000000;">}</span>;
-<span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #0000c0;">GamePlayer</span>::<span style="color: #00538b;">NumTurns</span>;
-<span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span>
-<span style="color: #000000;">{</span>
-    <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">cout</span> &amp;<span style="color: #00538b;">lt</span>;&amp;lt; <span style="color: #0000c0;">GamePlayer</span>::<span style="color: #005a5f;">NumTurns</span> &amp;<span style="color: #00538b;">lt</span>;&amp;lt; <span style="color: #0000c0;">std</span>::endl;
-    <span style="color: #505050;">// </span><span style="color: #505050;">&#22914;&#26524;&#27809;&#26377;&#21152;&#19978; const int GamePlayer::NumTurns; &#23545; NumTurns &#36827;&#34892;&#23450;&#20041;&#65292;&#19979;&#38754;&#36825;&#26679;&#35821;&#21477;&#20250;&#25253;&#38169;&#65306;</span>
-    <span style="color: #505050;">//   </span><span style="color: #505050;">undefined reference to `GamePlayer::NumTurns</span>
-    <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">cout</span> &amp;<span style="color: #00538b;">lt</span>;&amp;lt; &amp;amp;<span style="color: #a8007f;">(</span><span style="color: #0000c0;">GamePlayer</span>::<span style="color: #005a5f;">NumTurns</span><span style="color: #a8007f;">)</span> &amp;lt;&amp;lt; <span style="color: #0000c0;">std</span>::endl;
-    <span style="color: #5317ac;">return</span> 0;
-<span style="color: #000000;">}</span>
+<pre class="src src-cpp"><span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">iostream</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #e45649;">class</span> <span style="color: #986801;">GamePlayer</span> <span style="color: #4078f2;">{</span>
+<span style="color: #e45649;">public</span>:
+    <span style="color: #e45649;">static</span> <span style="color: #e45649;">const</span> <span style="color: #986801;">int</span> <span style="color: #6a1868;">NumTurns</span> = 5; <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#24120;&#37327;&#22768;&#26126;&#24335;</span>
+<span style="color: #4078f2;">}</span>;
+<span style="color: #e45649;">const</span> <span style="color: #986801;">int</span> <span style="color: #b751b6;">GamePlayer</span>::<span style="color: #6a1868;">NumTurns</span>;
+<span style="color: #986801;">int</span> <span style="color: #a626a4;">main</span><span style="color: #4078f2;">()</span>
+<span style="color: #4078f2;">{</span>
+    <span style="color: #b751b6;">std</span>::<span style="color: #986801;">cout</span> &amp;<span style="color: #6a1868;">lt</span>;&amp;lt; <span style="color: #b751b6;">GamePlayer</span>::<span style="color: #986801;">NumTurns</span> &amp;<span style="color: #6a1868;">lt</span>;&amp;lt; <span style="color: #b751b6;">std</span>::endl;
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#22914;&#26524;&#27809;&#26377;&#21152;&#19978; const int GamePlayer::NumTurns; &#23545; NumTurns &#36827;&#34892;&#23450;&#20041;&#65292;&#19979;&#38754;&#36825;&#26679;&#35821;&#21477;&#20250;&#25253;&#38169;&#65306;</span>
+    <span style="color: #9ca0a4;">//   </span><span style="color: #9ca0a4;">undefined reference to `GamePlayer::NumTurns</span>
+    <span style="color: #b751b6;">std</span>::<span style="color: #986801;">cout</span> &amp;<span style="color: #6a1868;">lt</span>;&amp;lt; &amp;amp;<span style="color: #a626a4;">(</span><span style="color: #b751b6;">GamePlayer</span>::<span style="color: #986801;">NumTurns</span><span style="color: #a626a4;">)</span> &amp;lt;&amp;lt; <span style="color: #b751b6;">std</span>::endl;
+    <span style="color: #e45649;">return</span> 0;
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -325,7 +325,7 @@ Watch 窗口可以找到 <code>GamePlayer::NumTurns</code> 这个符号并且值
 </ul>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2013-03-07 00:00:00 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2013-03-07 00:00:00 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

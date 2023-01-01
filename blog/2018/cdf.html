@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:37 -->
+<!-- 2023-01-01 Sun 17:16 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>CDF 累积分布函数</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -241,64 +241,64 @@ CDF，即累积分布函数，反映随机变量的概率分布，专业的定�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #505050;">#</span><span style="color: #505050;">!/usr/bin/env python3</span>
+<pre class="src src-python"><span style="color: #9ca0a4;">#</span><span style="color: #9ca0a4;">!/usr/bin/env python3</span>
 
-<span style="color: #5317ac;">import</span> matplotlib.pyplot <span style="color: #5317ac;">as</span> plt
+<span style="color: #e45649;">import</span> matplotlib.pyplot <span style="color: #e45649;">as</span> plt
 
-<span style="color: #505050;"># </span><span style="color: #505050;">&#26679;&#26412;</span>
-<span style="color: #00538b;">data</span> = <span style="color: #000000;">[</span>
-        1, 2, 3, 1, 5, 6, 7, 8, 9, 10, <span style="color: #505050;"># </span><span style="color: #505050;">10</span>
-        2, 2, 5, 4, 1, 1, 7, 8, 9, 1,  <span style="color: #505050;"># </span><span style="color: #505050;">20</span>
-        2, 2, 1, 2, 1, 1, 7, 1, 8, 15, <span style="color: #505050;"># </span><span style="color: #505050;">30</span>
-        4, 2, 1, 2, 1, 2, 4, 1, 8, 2,  <span style="color: #505050;"># </span><span style="color: #505050;">40</span>
-        8, 1, 2, 2, 1, 2, 4, 1, 9, 3,  <span style="color: #505050;"># </span><span style="color: #505050;">50</span>
-        7, 1, 1, 1, 1, 2, 4, 1, 7, 5,  <span style="color: #505050;"># </span><span style="color: #505050;">60</span>
-        10, 2, 3, 1, 5, 2, 1, 1, 9, 8, <span style="color: #505050;"># </span><span style="color: #505050;">70</span>
-        9, 1, 3, 1, 5, 6, 7, 1, 4, 7,  <span style="color: #505050;"># </span><span style="color: #505050;">80</span>
-        1, 2, 2, 2, 3, 6, 1, 1, 4, 1,  <span style="color: #505050;"># </span><span style="color: #505050;">90</span>
-        1, 1, 1, 2, 3, 6, 7, 1, 9, 3,  <span style="color: #505050;"># </span><span style="color: #505050;">100</span>
-        5, 1, 2, 2, 1, 4, 2, 8, 3, 2,  <span style="color: #505050;"># </span><span style="color: #505050;">110</span>
-        4, 1, 1, 2, 2, 4, 7, 8, 2, 8,  <span style="color: #505050;"># </span><span style="color: #505050;">120</span>
-        3, 2, 1, 2, 3, 4, 7, 3, 1, 20, <span style="color: #505050;"># </span><span style="color: #505050;">130</span>
-        2, 2, 1, 3, 1, 6, 2, 3, 1, 4,  <span style="color: #505050;"># </span><span style="color: #505050;">140</span>
-        1, 2, 1, 3, 2, 6, 2, 3, 1, 3,  <span style="color: #505050;"># </span><span style="color: #505050;">150</span>
-        2, 1, 1, 4, 3, 6, 2, 3, 1, 2,  <span style="color: #505050;"># </span><span style="color: #505050;">160</span>
-        3, 1, 1, 3, 1, 1, 1, 8, 2, 1,  <span style="color: #505050;"># </span><span style="color: #505050;">170</span>
-        4, 1, 1, 1, 1, 1, 1, 1, 2, 1,  <span style="color: #505050;"># </span><span style="color: #505050;">180</span>
-        4, 2, 3, 1, 10, 1, 1, 1, 2, 3, <span style="color: #505050;"># </span><span style="color: #505050;">190</span>
-        4, 2, 3, 1, 10, 1, 1, 1, 2, 5, <span style="color: #505050;"># </span><span style="color: #505050;">200</span>
-<span style="color: #000000;">]</span>
+<span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">&#26679;&#26412;</span>
+<span style="color: #6a1868;">data</span> = <span style="color: #4078f2;">[</span>
+        1, 2, 3, 1, 5, 6, 7, 8, 9, 10, <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">10</span>
+        2, 2, 5, 4, 1, 1, 7, 8, 9, 1,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">20</span>
+        2, 2, 1, 2, 1, 1, 7, 1, 8, 15, <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">30</span>
+        4, 2, 1, 2, 1, 2, 4, 1, 8, 2,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">40</span>
+        8, 1, 2, 2, 1, 2, 4, 1, 9, 3,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">50</span>
+        7, 1, 1, 1, 1, 2, 4, 1, 7, 5,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">60</span>
+        10, 2, 3, 1, 5, 2, 1, 1, 9, 8, <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">70</span>
+        9, 1, 3, 1, 5, 6, 7, 1, 4, 7,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">80</span>
+        1, 2, 2, 2, 3, 6, 1, 1, 4, 1,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">90</span>
+        1, 1, 1, 2, 3, 6, 7, 1, 9, 3,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">100</span>
+        5, 1, 2, 2, 1, 4, 2, 8, 3, 2,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">110</span>
+        4, 1, 1, 2, 2, 4, 7, 8, 2, 8,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">120</span>
+        3, 2, 1, 2, 3, 4, 7, 3, 1, 20, <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">130</span>
+        2, 2, 1, 3, 1, 6, 2, 3, 1, 4,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">140</span>
+        1, 2, 1, 3, 2, 6, 2, 3, 1, 3,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">150</span>
+        2, 1, 1, 4, 3, 6, 2, 3, 1, 2,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">160</span>
+        3, 1, 1, 3, 1, 1, 1, 8, 2, 1,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">170</span>
+        4, 1, 1, 1, 1, 1, 1, 1, 2, 1,  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">180</span>
+        4, 2, 3, 1, 10, 1, 1, 1, 2, 3, <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">190</span>
+        4, 2, 3, 1, 10, 1, 1, 1, 2, 5, <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">200</span>
+<span style="color: #4078f2;">]</span>
 
-<span style="color: #505050;"># </span><span style="color: #505050;">&#20174;&#23567;&#21040;&#22823;&#25490;&#24207;</span>
-data.sort<span style="color: #000000;">()</span>
-<span style="color: #5317ac;">print</span><span style="color: #000000;">(</span>data<span style="color: #000000;">)</span>
+<span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">&#20174;&#23567;&#21040;&#22823;&#25490;&#24207;</span>
+data.sort<span style="color: #4078f2;">()</span>
+<span style="color: #e45649;">print</span><span style="color: #4078f2;">(</span>data<span style="color: #4078f2;">)</span>
 
-<span style="color: #505050;"># </span><span style="color: #505050;">&#35745;&#31639;&#21344;&#27604;</span>
-<span style="color: #00538b;">sample</span> = <span style="color: #000000;">[</span>x <span style="color: #5317ac;">for</span> x <span style="color: #5317ac;">in</span> <span style="color: #8f0075;">range</span><span style="color: #a8007f;">(</span>data<span style="color: #005f88;">[</span>0<span style="color: #005f88;">]</span>, data<span style="color: #005f88;">[</span>-1<span style="color: #005f88;">]</span>+1<span style="color: #a8007f;">)</span><span style="color: #000000;">]</span>
-<span style="color: #00538b;">it</span> = 0
-<span style="color: #00538b;">x</span>, <span style="color: #00538b;">y</span> = <span style="color: #000000;">[]</span>, <span style="color: #000000;">[]</span>
-<span style="color: #5317ac;">for</span> idx <span style="color: #5317ac;">in</span> <span style="color: #8f0075;">range</span><span style="color: #000000;">(</span><span style="color: #8f0075;">len</span><span style="color: #a8007f;">(</span>sample<span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>:
-        <span style="color: #5317ac;">while</span> it &lt; <span style="color: #8f0075;">len</span><span style="color: #000000;">(</span>data<span style="color: #000000;">)</span>:
-                <span style="color: #5317ac;">if</span> data<span style="color: #000000;">[</span>it<span style="color: #000000;">]</span> &gt; sample<span style="color: #000000;">[</span>idx<span style="color: #000000;">]</span>:
-                        <span style="color: #5317ac;">break</span>
-                <span style="color: #00538b;">it</span> += 1
-        x.append<span style="color: #000000;">(</span>sample<span style="color: #a8007f;">[</span>idx<span style="color: #a8007f;">]</span><span style="color: #000000;">)</span>
-        y.append<span style="color: #000000;">(</span>it/<span style="color: #8f0075;">len</span><span style="color: #a8007f;">(</span>data<span style="color: #a8007f;">)</span>*100<span style="color: #000000;">)</span>
+<span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">&#35745;&#31639;&#21344;&#27604;</span>
+<span style="color: #6a1868;">sample</span> = <span style="color: #4078f2;">[</span>x <span style="color: #e45649;">for</span> x <span style="color: #e45649;">in</span> <span style="color: #a626a4;">range</span><span style="color: #a626a4;">(</span>data<span style="color: #50a14f;">[</span>0<span style="color: #50a14f;">]</span>, data<span style="color: #50a14f;">[</span>-1<span style="color: #50a14f;">]</span>+1<span style="color: #a626a4;">)</span><span style="color: #4078f2;">]</span>
+<span style="color: #6a1868;">it</span> = 0
+<span style="color: #6a1868;">x</span>, <span style="color: #6a1868;">y</span> = <span style="color: #4078f2;">[]</span>, <span style="color: #4078f2;">[]</span>
+<span style="color: #e45649;">for</span> idx <span style="color: #e45649;">in</span> <span style="color: #a626a4;">range</span><span style="color: #4078f2;">(</span><span style="color: #a626a4;">len</span><span style="color: #a626a4;">(</span>sample<span style="color: #a626a4;">)</span><span style="color: #4078f2;">)</span>:
+        <span style="color: #e45649;">while</span> it &lt; <span style="color: #a626a4;">len</span><span style="color: #4078f2;">(</span>data<span style="color: #4078f2;">)</span>:
+                <span style="color: #e45649;">if</span> data<span style="color: #4078f2;">[</span>it<span style="color: #4078f2;">]</span> &gt; sample<span style="color: #4078f2;">[</span>idx<span style="color: #4078f2;">]</span>:
+                        <span style="color: #e45649;">break</span>
+                <span style="color: #6a1868;">it</span> += 1
+        x.append<span style="color: #4078f2;">(</span>sample<span style="color: #a626a4;">[</span>idx<span style="color: #a626a4;">]</span><span style="color: #4078f2;">)</span>
+        y.append<span style="color: #4078f2;">(</span>it/<span style="color: #a626a4;">len</span><span style="color: #a626a4;">(</span>data<span style="color: #a626a4;">)</span>*100<span style="color: #4078f2;">)</span>
 
-<span style="color: #5317ac;">print</span><span style="color: #000000;">(</span>x, y<span style="color: #000000;">)</span>
+<span style="color: #e45649;">print</span><span style="color: #4078f2;">(</span>x, y<span style="color: #4078f2;">)</span>
 
-<span style="color: #505050;"># </span><span style="color: #505050;">&#30011;&#22270;</span>
-<span style="color: #00538b;">fig</span>, <span style="color: #00538b;">ax</span> = plt.subplots<span style="color: #000000;">()</span>
-ax.plot<span style="color: #000000;">(</span>x, y<span style="color: #000000;">)</span>
-ax.fill_between<span style="color: #000000;">(</span>x, y<span style="color: #000000;">)</span>
-ax.<span style="color: #8f0075;">set</span><span style="color: #000000;">(</span>xlabel=<span style="color: #2544bb;">'count'</span>, ylabel=<span style="color: #2544bb;">'percent(%)'</span>,
-           title=<span style="color: #2544bb;">'pre shopping CDF'</span><span style="color: #000000;">)</span>
+<span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">&#30011;&#22270;</span>
+<span style="color: #6a1868;">fig</span>, <span style="color: #6a1868;">ax</span> = plt.subplots<span style="color: #4078f2;">()</span>
+ax.plot<span style="color: #4078f2;">(</span>x, y<span style="color: #4078f2;">)</span>
+ax.fill_between<span style="color: #4078f2;">(</span>x, y<span style="color: #4078f2;">)</span>
+ax.<span style="color: #a626a4;">set</span><span style="color: #4078f2;">(</span>xlabel=<span style="color: #50a14f;">'count'</span>, ylabel=<span style="color: #50a14f;">'percent(%)'</span>,
+           title=<span style="color: #50a14f;">'pre shopping CDF'</span><span style="color: #4078f2;">)</span>
 
-plt.xlim<span style="color: #000000;">(</span>x<span style="color: #a8007f;">[</span>0<span style="color: #a8007f;">]</span>, x<span style="color: #a8007f;">[</span>-1<span style="color: #a8007f;">]</span><span style="color: #000000;">)</span>
-plt.xticks<span style="color: #000000;">(</span>x<span style="color: #000000;">)</span>
-plt.ylim<span style="color: #000000;">(</span>0, 100<span style="color: #000000;">)</span>
-plt.grid<span style="color: #000000;">()</span>
-plt.show<span style="color: #000000;">()</span>
+plt.xlim<span style="color: #4078f2;">(</span>x<span style="color: #a626a4;">[</span>0<span style="color: #a626a4;">]</span>, x<span style="color: #a626a4;">[</span>-1<span style="color: #a626a4;">]</span><span style="color: #4078f2;">)</span>
+plt.xticks<span style="color: #4078f2;">(</span>x<span style="color: #4078f2;">)</span>
+plt.ylim<span style="color: #4078f2;">(</span>0, 100<span style="color: #4078f2;">)</span>
+plt.grid<span style="color: #4078f2;">()</span>
+plt.show<span style="color: #4078f2;">()</span>
 </pre>
 </div>
 
@@ -307,7 +307,7 @@ plt.show<span style="color: #000000;">()</span>
 </p>
 
 
-<div id="org6e28043" class="figure">
+<div id="org8ce80d5" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2018/cdf.png" alt="cdf.png" />
 </p>
 </div>
@@ -334,7 +334,7 @@ CDF 表示的概率分布，比如上面的两个标注：
 </p>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-10-19 16:10:00 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-10-19 16:10:00 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

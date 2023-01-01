@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:37 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>=sprintf_s= 和 =swprintf_s= 在 Release 和 Debug 不同模式表现不同</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -220,8 +220,8 @@
 <div id="content" class="content">
 <h1 class="title"><code>sprintf_s</code> 和 <code>swprintf_s</code> 在 Release 和 Debug 不同模式表现不同</h1>
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #005a5f;">int</span> <span style="color: #721045;">sprintf_s</span><span style="color: #000000;">(</span> <span style="color: #005a5f;">char</span> /buffer, <span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">sizeOfBuffer</span>, <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">char</span> /format <span style="color: #a8007f;">[</span>, argument<span style="color: #a8007f;">]</span> ... <span style="color: #000000;">)</span>;
-<span style="color: #005a5f;">int</span> <span style="color: #721045;">swprintf_s</span><span style="color: #000000;">(</span> <span style="color: #005a5f;">wchar_t</span> /buffer, <span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">sizeOfBuffer</span>, <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">wchar_t</span> /format <span style="color: #a8007f;">[</span>, argument<span style="color: #a8007f;">]</span>... <span style="color: #000000;">)</span>;
+<pre class="src src-cpp"><span style="color: #986801;">int</span> <span style="color: #a626a4;">sprintf_s</span><span style="color: #4078f2;">(</span> <span style="color: #986801;">char</span> /buffer, <span style="color: #986801;">size_t</span> <span style="color: #6a1868;">sizeOfBuffer</span>, <span style="color: #e45649;">const</span> <span style="color: #986801;">char</span> /format <span style="color: #a626a4;">[</span>, argument<span style="color: #a626a4;">]</span> ... <span style="color: #4078f2;">)</span>;
+<span style="color: #986801;">int</span> <span style="color: #a626a4;">swprintf_s</span><span style="color: #4078f2;">(</span> <span style="color: #986801;">wchar_t</span> /buffer, <span style="color: #986801;">size_t</span> <span style="color: #6a1868;">sizeOfBuffer</span>, <span style="color: #e45649;">const</span> <span style="color: #986801;">wchar_t</span> /format <span style="color: #a626a4;">[</span>, argument<span style="color: #a626a4;">]</span>... <span style="color: #4078f2;">)</span>;
 </pre>
 </div>
 
@@ -254,21 +254,21 @@ Debug 模式：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">iostream</span><span style="color: #000000;">&gt;</span>
-<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">cstdio</span><span style="color: #000000;">&gt;</span>
+<pre class="src src-cpp"><span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">iostream</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">cstdio</span><span style="color: #4078f2;">&gt;</span>
 
-<span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span>
-<span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">buf_size</span> = 32;
+<span style="color: #986801;">int</span> <span style="color: #a626a4;">main</span><span style="color: #4078f2;">()</span>
+<span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">const</span> <span style="color: #986801;">int</span> <span style="color: #6a1868;">buf_size</span> = 32;
 
-    <span style="color: #005a5f;">char</span> <span style="color: #00538b;">buf1</span><span style="color: #a8007f;">[</span>buf_size<span style="color: #a8007f;">]</span>;
-    memset<span style="color: #a8007f;">(</span>buf1, 0, buf_size<span style="color: #a8007f;">)</span>;
-    <span style="color: #005a5f;">char</span> <span style="color: #00538b;">buf2</span><span style="color: #a8007f;">[</span>buf_size<span style="color: #a8007f;">]</span>;
-    memset<span style="color: #a8007f;">(</span>buf2, 1, buf_size<span style="color: #a8007f;">)</span>;
-    <span style="color: #505050;">// </span><span style="color: #505050;">breakpoint1</span>
-    sprintf_s<span style="color: #a8007f;">(</span>buf2, buf_size*2, <span style="color: #2544bb;">"%s"</span>, <span style="color: #2544bb;">"hello, world!"</span><span style="color: #a8007f;">)</span>;
-    <span style="color: #505050;">// </span><span style="color: #505050;">breakpoint2</span>
-<span style="color: #000000;">}</span>
+    <span style="color: #986801;">char</span> <span style="color: #6a1868;">buf1</span><span style="color: #a626a4;">[</span>buf_size<span style="color: #a626a4;">]</span>;
+    memset<span style="color: #a626a4;">(</span>buf1, 0, buf_size<span style="color: #a626a4;">)</span>;
+    <span style="color: #986801;">char</span> <span style="color: #6a1868;">buf2</span><span style="color: #a626a4;">[</span>buf_size<span style="color: #a626a4;">]</span>;
+    memset<span style="color: #a626a4;">(</span>buf2, 1, buf_size<span style="color: #a626a4;">)</span>;
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">breakpoint1</span>
+    sprintf_s<span style="color: #a626a4;">(</span>buf2, buf_size*2, <span style="color: #50a14f;">"%s"</span>, <span style="color: #50a14f;">"hello, world!"</span><span style="color: #a626a4;">)</span>;
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">breakpoint2</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -314,22 +314,22 @@ Release 验证代码：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">iostream</span><span style="color: #000000;">&gt;</span>
-<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">cstdio</span><span style="color: #000000;">&gt;</span>
+<pre class="src src-cpp"><span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">iostream</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">cstdio</span><span style="color: #4078f2;">&gt;</span>
 
-<span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span>
-<span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">buf_size</span> = 32;
+<span style="color: #986801;">int</span> <span style="color: #a626a4;">main</span><span style="color: #4078f2;">()</span>
+<span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">const</span> <span style="color: #986801;">int</span> <span style="color: #6a1868;">buf_size</span> = 32;
 
-    <span style="color: #005a5f;">char</span> <span style="color: #00538b;">buf1</span><span style="color: #a8007f;">[</span>buf_size<span style="color: #a8007f;">]</span>;
-    memset<span style="color: #a8007f;">(</span>buf1, 0, buf_size<span style="color: #a8007f;">)</span>;
-    <span style="color: #0000c0;">std</span>::cout &lt;&lt; buf1 &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
-    <span style="color: #005a5f;">char</span> <span style="color: #00538b;">buf2</span><span style="color: #a8007f;">[</span>buf_size<span style="color: #a8007f;">]</span>;
-    memset<span style="color: #a8007f;">(</span>buf2, 1, buf_size<span style="color: #a8007f;">)</span>;
+    <span style="color: #986801;">char</span> <span style="color: #6a1868;">buf1</span><span style="color: #a626a4;">[</span>buf_size<span style="color: #a626a4;">]</span>;
+    memset<span style="color: #a626a4;">(</span>buf1, 0, buf_size<span style="color: #a626a4;">)</span>;
+    <span style="color: #b751b6;">std</span>::cout &lt;&lt; buf1 &lt;&lt; <span style="color: #b751b6;">std</span>::endl;
+    <span style="color: #986801;">char</span> <span style="color: #6a1868;">buf2</span><span style="color: #a626a4;">[</span>buf_size<span style="color: #a626a4;">]</span>;
+    memset<span style="color: #a626a4;">(</span>buf2, 1, buf_size<span style="color: #a626a4;">)</span>;
 
-    <span style="color: #005a5f;">int</span> <span style="color: #00538b;">ret_size</span> = sprintf_s<span style="color: #a8007f;">(</span>buf2, buf_size*4, <span style="color: #2544bb;">"%s"</span>, <span style="color: #2544bb;">"hello, world!"</span><span style="color: #a8007f;">)</span>;
-    <span style="color: #0000c0;">std</span>::cout &lt;&lt; ret_size &lt;&lt; <span style="color: #0000c0;">std</span>::endl;
-<span style="color: #000000;">}</span>
+    <span style="color: #986801;">int</span> <span style="color: #6a1868;">ret_size</span> = sprintf_s<span style="color: #a626a4;">(</span>buf2, buf_size*4, <span style="color: #50a14f;">"%s"</span>, <span style="color: #50a14f;">"hello, world!"</span><span style="color: #a626a4;">)</span>;
+    <span style="color: #b751b6;">std</span>::cout &lt;&lt; ret_size &lt;&lt; <span style="color: #b751b6;">std</span>::endl;
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -376,18 +376,18 @@ Release 验证代码：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #005a5f;">int</span> <span style="color: #721045;">sprintf_s</span><span style="color: #000000;">(</span>
-   <span style="color: #005a5f;">char</span> *<span style="color: #00538b;">buffer</span>,
-   <span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">sizeOfBuffer</span>,
-   <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">char</span> *<span style="color: #00538b;">format</span> <span style="color: #a8007f;">[</span>,
-      argument<span style="color: #a8007f;">]</span> ...
-<span style="color: #000000;">)</span>;
-<span style="color: #005a5f;">int</span> <span style="color: #721045;">swprintf_s</span><span style="color: #000000;">(</span>
-   <span style="color: #005a5f;">wchar_t</span> *<span style="color: #00538b;">buffer</span>,
-   <span style="color: #005a5f;">size_t</span> <span style="color: #00538b;">sizeOfBuffer</span>,
-   <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">wchar_t</span> *<span style="color: #00538b;">format</span> <span style="color: #a8007f;">[</span>,
-      argument<span style="color: #a8007f;">]</span>...
-<span style="color: #000000;">)</span>;
+<pre class="src src-cpp"><span style="color: #986801;">int</span> <span style="color: #a626a4;">sprintf_s</span><span style="color: #4078f2;">(</span>
+   <span style="color: #986801;">char</span> *<span style="color: #6a1868;">buffer</span>,
+   <span style="color: #986801;">size_t</span> <span style="color: #6a1868;">sizeOfBuffer</span>,
+   <span style="color: #e45649;">const</span> <span style="color: #986801;">char</span> *<span style="color: #6a1868;">format</span> <span style="color: #a626a4;">[</span>,
+      argument<span style="color: #a626a4;">]</span> ...
+<span style="color: #4078f2;">)</span>;
+<span style="color: #986801;">int</span> <span style="color: #a626a4;">swprintf_s</span><span style="color: #4078f2;">(</span>
+   <span style="color: #986801;">wchar_t</span> *<span style="color: #6a1868;">buffer</span>,
+   <span style="color: #986801;">size_t</span> <span style="color: #6a1868;">sizeOfBuffer</span>,
+   <span style="color: #e45649;">const</span> <span style="color: #986801;">wchar_t</span> *<span style="color: #6a1868;">format</span> <span style="color: #a626a4;">[</span>,
+      argument<span style="color: #a626a4;">]</span>...
+<span style="color: #4078f2;">)</span>;
 </pre>
 </div>
 
@@ -451,7 +451,7 @@ PS: 如果有不同的理解，或者找到了源码，欢迎追加。
 </p>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2013-03-24 08:33:08 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2013-03-24 08:33:08 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

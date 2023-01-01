@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:37 -->
+<!-- 2023-01-01 Sun 17:16 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>[译] C++ 如何切分字符串</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -252,25 +252,25 @@ C++ 切分字符串的最优雅的方式是什么？我们假定字符串中每�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">iostream</span><span style="color: #000000;">&gt;</span>
-<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">sstream</span><span style="color: #000000;">&gt;</span>
-<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">string</span><span style="color: #000000;">&gt;</span>
-<span style="color: #5317ac;">using</span> <span style="color: #5317ac;">namespace</span> <span style="color: #0000c0;">std</span>;
+<pre class="src src-cpp"><span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">iostream</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">sstream</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">string</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #e45649;">using</span> <span style="color: #e45649;">namespace</span> <span style="color: #b751b6;">std</span>;
 
-<span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span>
-<span style="color: #000000;">{</span>
-    <span style="color: #005a5f;">string</span> <span style="color: #00538b;">s</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"Somewhere down the road"</span><span style="color: #a8007f;">)</span>;
-    <span style="color: #005a5f;">istringstream</span> <span style="color: #00538b;">iss</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>;
+<span style="color: #986801;">int</span> <span style="color: #a626a4;">main</span><span style="color: #4078f2;">()</span>
+<span style="color: #4078f2;">{</span>
+    <span style="color: #986801;">string</span> <span style="color: #6a1868;">s</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"Somewhere down the road"</span><span style="color: #a626a4;">)</span>;
+    <span style="color: #986801;">istringstream</span> <span style="color: #6a1868;">iss</span><span style="color: #a626a4;">(</span>s<span style="color: #a626a4;">)</span>;
 
-    <span style="color: #5317ac;">do</span>
-    <span style="color: #a8007f;">{</span>
-        <span style="color: #005a5f;">string</span> <span style="color: #00538b;">sub</span>;
+    <span style="color: #e45649;">do</span>
+    <span style="color: #a626a4;">{</span>
+        <span style="color: #986801;">string</span> <span style="color: #6a1868;">sub</span>;
         iss &gt;&gt; sub;
-        cout &lt;&lt; <span style="color: #2544bb;">"Substring: "</span> &lt;&lt; sub &lt;&lt; endl;
-    <span style="color: #a8007f;">}</span> <span style="color: #5317ac;">while</span> <span style="color: #a8007f;">(</span>iss<span style="color: #a8007f;">)</span>;
+        cout &lt;&lt; <span style="color: #50a14f;">"Substring: "</span> &lt;&lt; sub &lt;&lt; endl;
+    <span style="color: #a626a4;">}</span> <span style="color: #e45649;">while</span> <span style="color: #a626a4;">(</span>iss<span style="color: #a626a4;">)</span>;
 
-    <span style="color: #5317ac;">return</span> 0;
-<span style="color: #000000;">}</span>
+    <span style="color: #e45649;">return</span> 0;
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -279,20 +279,20 @@ C++ 切分字符串的最优雅的方式是什么？我们假定字符串中每�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">iostream</span><span style="color: #000000;">&gt;</span>
-<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">string</span><span style="color: #000000;">&gt;</span>
-<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">sstream</span><span style="color: #000000;">&gt;</span>
-<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">algorithm</span><span style="color: #000000;">&gt;</span>
-<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">iterator</span><span style="color: #000000;">&gt;</span>
+<pre class="src src-cpp"><span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">iostream</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">string</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">sstream</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">algorithm</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">iterator</span><span style="color: #4078f2;">&gt;</span>
 
-<span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">using</span> <span style="color: #5317ac;">namespace</span> <span style="color: #0000c0;">std</span>;
-    <span style="color: #005a5f;">string</span> <span style="color: #00538b;">sentence</span> = <span style="color: #2544bb;">"Something in the way she moves..."</span>;
-    <span style="color: #005a5f;">istringstream</span> <span style="color: #00538b;">iss</span><span style="color: #a8007f;">(</span>sentence<span style="color: #a8007f;">)</span>;
-    copy<span style="color: #a8007f;">(</span>istream_iterator<span style="color: #005f88;">&lt;</span><span style="color: #005a5f;">string</span><span style="color: #005f88;">&gt;(</span>iss<span style="color: #005f88;">)</span>,
-             istream_iterator<span style="color: #005f88;">&lt;</span><span style="color: #005a5f;">string</span><span style="color: #005f88;">&gt;()</span>,
-             ostream_iterator<span style="color: #005f88;">&lt;</span><span style="color: #005a5f;">string</span><span style="color: #005f88;">&gt;(</span>cout, <span style="color: #2544bb;">"\n"</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>;
-<span style="color: #000000;">}</span>
+<span style="color: #986801;">int</span> <span style="color: #a626a4;">main</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">using</span> <span style="color: #e45649;">namespace</span> <span style="color: #b751b6;">std</span>;
+    <span style="color: #986801;">string</span> <span style="color: #6a1868;">sentence</span> = <span style="color: #50a14f;">"Something in the way she moves..."</span>;
+    <span style="color: #986801;">istringstream</span> <span style="color: #6a1868;">iss</span><span style="color: #a626a4;">(</span>sentence<span style="color: #a626a4;">)</span>;
+    copy<span style="color: #a626a4;">(</span>istream_iterator<span style="color: #50a14f;">&lt;</span><span style="color: #986801;">string</span><span style="color: #50a14f;">&gt;(</span>iss<span style="color: #50a14f;">)</span>,
+             istream_iterator<span style="color: #50a14f;">&lt;</span><span style="color: #986801;">string</span><span style="color: #50a14f;">&gt;()</span>,
+             ostream_iterator<span style="color: #50a14f;">&lt;</span><span style="color: #986801;">string</span><span style="color: #50a14f;">&gt;(</span>cout, <span style="color: #50a14f;">"\n"</span><span style="color: #50a14f;">)</span><span style="color: #a626a4;">)</span>;
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -301,10 +301,10 @@ C++ 切分字符串的最优雅的方式是什么？我们假定字符串中每�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #005a5f;">vector</span> <span style="color: #00538b;">tokens</span>;
-    copy<span style="color: #000000;">(</span>istream_iterator<span style="color: #a8007f;">(</span>iss<span style="color: #a8007f;">)</span>,
-         istream_iterator<span style="color: #a8007f;">()</span>,
-         back_inserter &gt;<span style="color: #a8007f;">(</span>tokens<span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>;<span style="color: #000000;">[</span>/c<span style="color: #000000;">]</span>
+<pre class="src src-cpp"><span style="color: #986801;">vector</span> <span style="color: #6a1868;">tokens</span>;
+    copy<span style="color: #4078f2;">(</span>istream_iterator<span style="color: #a626a4;">(</span>iss<span style="color: #a626a4;">)</span>,
+         istream_iterator<span style="color: #a626a4;">()</span>,
+         back_inserter &gt;<span style="color: #a626a4;">(</span>tokens<span style="color: #a626a4;">)</span><span style="color: #4078f2;">)</span>;<span style="color: #4078f2;">[</span>/c<span style="color: #4078f2;">]</span>
 </pre>
 </div>
 
@@ -319,8 +319,8 @@ C++ 切分字符串的最优雅的方式是什么？我们假定字符串中每�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">vector</span> <span style="color: #00538b;">strs</span>;
-<span style="color: #0000c0;">boost</span>::split<span style="color: #000000;">(</span>strs, <span style="color: #2544bb;">"string to split"</span>, <span style="color: #0000c0;">boost</span>::is_any_of<span style="color: #a8007f;">(</span><span style="color: #2544bb;">"\t "</span><span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>;
+<pre class="src src-cpp"><span style="color: #b751b6;">std</span>::<span style="color: #986801;">vector</span> <span style="color: #6a1868;">strs</span>;
+<span style="color: #b751b6;">boost</span>::split<span style="color: #4078f2;">(</span>strs, <span style="color: #50a14f;">"string to split"</span>, <span style="color: #b751b6;">boost</span>::is_any_of<span style="color: #a626a4;">(</span><span style="color: #50a14f;">"\t "</span><span style="color: #a626a4;">)</span><span style="color: #4078f2;">)</span>;
 </pre>
 </div>
 
@@ -340,20 +340,20 @@ C++ 切分字符串的最优雅的方式是什么？我们假定字符串中每�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">vector</span> &amp;<span style="color: #721045;">split</span><span style="color: #000000;">(</span><span style="color: #5317ac;">const</span> <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">string</span> &amp;<span style="color: #00538b;">s</span>, <span style="color: #005a5f;">char</span> <span style="color: #00538b;">delim</span>, <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">vector</span> &amp;<span style="color: #00538b;">elems</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-    <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">stringstream</span> <span style="color: #00538b;">ss</span><span style="color: #a8007f;">(</span>s<span style="color: #a8007f;">)</span>;
-    <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">string</span> <span style="color: #00538b;">item</span>;
-    <span style="color: #5317ac;">while</span><span style="color: #a8007f;">(</span><span style="color: #0000c0;">std</span>::getline<span style="color: #005f88;">(</span>ss, item, delim<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
-        elems.push_back<span style="color: #005f88;">(</span>item<span style="color: #005f88;">)</span>;
-    <span style="color: #a8007f;">}</span>
-    <span style="color: #5317ac;">return</span> elems;
-<span style="color: #000000;">}</span>
+<pre class="src src-cpp"><span style="color: #b751b6;">std</span>::<span style="color: #986801;">vector</span> &amp;<span style="color: #a626a4;">split</span><span style="color: #4078f2;">(</span><span style="color: #e45649;">const</span> <span style="color: #b751b6;">std</span>::<span style="color: #986801;">string</span> &amp;<span style="color: #6a1868;">s</span>, <span style="color: #986801;">char</span> <span style="color: #6a1868;">delim</span>, <span style="color: #b751b6;">std</span>::<span style="color: #986801;">vector</span> &amp;<span style="color: #6a1868;">elems</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #b751b6;">std</span>::<span style="color: #986801;">stringstream</span> <span style="color: #6a1868;">ss</span><span style="color: #a626a4;">(</span>s<span style="color: #a626a4;">)</span>;
+    <span style="color: #b751b6;">std</span>::<span style="color: #986801;">string</span> <span style="color: #6a1868;">item</span>;
+    <span style="color: #e45649;">while</span><span style="color: #a626a4;">(</span><span style="color: #b751b6;">std</span>::getline<span style="color: #50a14f;">(</span>ss, item, delim<span style="color: #50a14f;">)</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+        elems.push_back<span style="color: #50a14f;">(</span>item<span style="color: #50a14f;">)</span>;
+    <span style="color: #a626a4;">}</span>
+    <span style="color: #e45649;">return</span> elems;
+<span style="color: #4078f2;">}</span>
 
-<span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">vector</span> <span style="color: #721045;">split</span><span style="color: #000000;">(</span><span style="color: #5317ac;">const</span> <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">string</span> &amp;<span style="color: #00538b;">s</span>, <span style="color: #005a5f;">char</span> <span style="color: #00538b;">delim</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-    <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">vector</span> <span style="color: #00538b;">elems</span>;
-    <span style="color: #5317ac;">return</span> split<span style="color: #a8007f;">(</span>s, delim, elems<span style="color: #a8007f;">)</span>;
+<span style="color: #b751b6;">std</span>::<span style="color: #986801;">vector</span> <span style="color: #a626a4;">split</span><span style="color: #4078f2;">(</span><span style="color: #e45649;">const</span> <span style="color: #b751b6;">std</span>::<span style="color: #986801;">string</span> &amp;<span style="color: #6a1868;">s</span>, <span style="color: #986801;">char</span> <span style="color: #6a1868;">delim</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #b751b6;">std</span>::<span style="color: #986801;">vector</span> <span style="color: #6a1868;">elems</span>;
+    <span style="color: #e45649;">return</span> split<span style="color: #a626a4;">(</span>s, delim, elems<span style="color: #a626a4;">)</span>;
 
-<span style="color: #000000;">}</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -362,65 +362,65 @@ C++ 切分字符串的最优雅的方式是什么？我们假定字符串中每�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">vector</span> <span style="color: #00538b;">x</span> = split<span style="color: #000000;">(</span><span style="color: #2544bb;">"one:two::three"</span>, <span style="color: #2544bb;">':'</span><span style="color: #000000;">)</span>;
+<pre class="src src-cpp"><span style="color: #b751b6;">std</span>::<span style="color: #986801;">vector</span> <span style="color: #6a1868;">x</span> = split<span style="color: #4078f2;">(</span><span style="color: #50a14f;">"one:two::three"</span>, <span style="color: #50a14f;">':'</span><span style="color: #4078f2;">)</span>;
 </pre>
 </div>
 
 <hr />
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #5317ac;">template</span> <span style="color: #000000;">&lt;</span> <span style="color: #5317ac;">class</span> <span style="color: #005a5f;">ContainerT</span> <span style="color: #000000;">&gt;</span>
-<span style="color: #005a5f;">void</span> <span style="color: #721045;">tokenize</span><span style="color: #000000;">(</span><span style="color: #5317ac;">const</span> <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">string</span>&amp; <span style="color: #00538b;">str</span>, <span style="color: #005a5f;">ContainerT</span>&amp; <span style="color: #00538b;">tokens</span>,
-              <span style="color: #5317ac;">const</span> <span style="color: #0000c0;">std</span>::<span style="color: #005a5f;">string</span>&amp; <span style="color: #00538b;">delimiters</span> = <span style="color: #2544bb;">" "</span>, <span style="color: #5317ac;">const</span> <span style="color: #005a5f;">bool</span> <span style="color: #00538b;">trimEmpty</span> = <span style="color: #0000c0;">false</span><span style="color: #000000;">)</span>
-<span style="color: #000000;">{</span>
-   <span style="color: #0000c0;">std</span>::<span style="color: #0000c0;">string</span>::<span style="color: #005a5f;">size_type</span> <span style="color: #00538b;">pos</span>, <span style="color: #00538b;">lastPos</span> = 0;
-   <span style="color: #5317ac;">while</span><span style="color: #a8007f;">(</span><span style="color: #0000c0;">true</span><span style="color: #a8007f;">)</span>
-   <span style="color: #a8007f;">{</span>
-      pos = str.find_first_of<span style="color: #005f88;">(</span>delimiters, lastPos<span style="color: #005f88;">)</span>;
-      <span style="color: #5317ac;">if</span><span style="color: #005f88;">(</span>pos == <span style="color: #0000c0;">std</span>::<span style="color: #0000c0;">string</span>::npos<span style="color: #005f88;">)</span>
-      <span style="color: #005f88;">{</span>
-         pos = str.length<span style="color: #904200;">()</span>;
+<pre class="src src-cpp"><span style="color: #e45649;">template</span> <span style="color: #4078f2;">&lt;</span> <span style="color: #e45649;">class</span> <span style="color: #986801;">ContainerT</span> <span style="color: #4078f2;">&gt;</span>
+<span style="color: #986801;">void</span> <span style="color: #a626a4;">tokenize</span><span style="color: #4078f2;">(</span><span style="color: #e45649;">const</span> <span style="color: #b751b6;">std</span>::<span style="color: #986801;">string</span>&amp; <span style="color: #6a1868;">str</span>, <span style="color: #986801;">ContainerT</span>&amp; <span style="color: #6a1868;">tokens</span>,
+              <span style="color: #e45649;">const</span> <span style="color: #b751b6;">std</span>::<span style="color: #986801;">string</span>&amp; <span style="color: #6a1868;">delimiters</span> = <span style="color: #50a14f;">" "</span>, <span style="color: #e45649;">const</span> <span style="color: #986801;">bool</span> <span style="color: #6a1868;">trimEmpty</span> = <span style="color: #b751b6;">false</span><span style="color: #4078f2;">)</span>
+<span style="color: #4078f2;">{</span>
+   <span style="color: #b751b6;">std</span>::<span style="color: #b751b6;">string</span>::<span style="color: #986801;">size_type</span> <span style="color: #6a1868;">pos</span>, <span style="color: #6a1868;">lastPos</span> = 0;
+   <span style="color: #e45649;">while</span><span style="color: #a626a4;">(</span><span style="color: #b751b6;">true</span><span style="color: #a626a4;">)</span>
+   <span style="color: #a626a4;">{</span>
+      pos = str.find_first_of<span style="color: #50a14f;">(</span>delimiters, lastPos<span style="color: #50a14f;">)</span>;
+      <span style="color: #e45649;">if</span><span style="color: #50a14f;">(</span>pos == <span style="color: #b751b6;">std</span>::<span style="color: #b751b6;">string</span>::npos<span style="color: #50a14f;">)</span>
+      <span style="color: #50a14f;">{</span>
+         pos = str.length<span style="color: #b751b6;">()</span>;
 
-         <span style="color: #5317ac;">if</span><span style="color: #904200;">(</span>pos != lastPos || <span style="color: #813e00;">!</span>trimEmpty<span style="color: #904200;">)</span>
-            tokens.push_back<span style="color: #904200;">(</span><span style="color: #0000c0;">ContainerT</span>::value_type<span style="color: #7f10d0;">(</span>str.data<span style="color: #006800;">()</span>+lastPos,
-                  <span style="color: #006800;">(</span><span style="color: #0000c0;">ContainerT</span>::<span style="color: #0000c0;">value_type</span>::<span style="color: #005a5f;">size_type</span><span style="color: #006800;">)</span>pos-lastPos <span style="color: #7f10d0;">)</span><span style="color: #904200;">)</span>;
+         <span style="color: #e45649;">if</span><span style="color: #b751b6;">(</span>pos != lastPos || <span style="color: #4078f2; font-weight: bold;">!</span>trimEmpty<span style="color: #b751b6;">)</span>
+            tokens.push_back<span style="color: #b751b6;">(</span><span style="color: #b751b6;">ContainerT</span>::value_type<span style="color: #4db5bd;">(</span>str.data<span style="color: #4078f2;">()</span>+lastPos,
+                  <span style="color: #4078f2;">(</span><span style="color: #b751b6;">ContainerT</span>::<span style="color: #b751b6;">value_type</span>::<span style="color: #986801;">size_type</span><span style="color: #4078f2;">)</span>pos-lastPos <span style="color: #4db5bd;">)</span><span style="color: #b751b6;">)</span>;
 
-         <span style="color: #5317ac;">break</span>;
-      <span style="color: #005f88;">}</span>
-      <span style="color: #5317ac;">else</span>
-      <span style="color: #005f88;">{</span>
-         <span style="color: #5317ac;">if</span><span style="color: #904200;">(</span>pos != lastPos || <span style="color: #813e00;">!</span>trimEmpty<span style="color: #904200;">)</span>
-            tokens.push_back<span style="color: #904200;">(</span><span style="color: #0000c0;">ContainerT</span>::value_type<span style="color: #7f10d0;">(</span>str.data<span style="color: #006800;">()</span>+lastPos,
-                  <span style="color: #006800;">(</span><span style="color: #0000c0;">ContainerT</span>::<span style="color: #0000c0;">value_type</span>::<span style="color: #005a5f;">size_type</span><span style="color: #006800;">)</span>pos-lastPos <span style="color: #7f10d0;">)</span><span style="color: #904200;">)</span>;
-      <span style="color: #005f88;">}</span>
+         <span style="color: #e45649;">break</span>;
+      <span style="color: #50a14f;">}</span>
+      <span style="color: #e45649;">else</span>
+      <span style="color: #50a14f;">{</span>
+         <span style="color: #e45649;">if</span><span style="color: #b751b6;">(</span>pos != lastPos || <span style="color: #4078f2; font-weight: bold;">!</span>trimEmpty<span style="color: #b751b6;">)</span>
+            tokens.push_back<span style="color: #b751b6;">(</span><span style="color: #b751b6;">ContainerT</span>::value_type<span style="color: #4db5bd;">(</span>str.data<span style="color: #4078f2;">()</span>+lastPos,
+                  <span style="color: #4078f2;">(</span><span style="color: #b751b6;">ContainerT</span>::<span style="color: #b751b6;">value_type</span>::<span style="color: #986801;">size_type</span><span style="color: #4078f2;">)</span>pos-lastPos <span style="color: #4db5bd;">)</span><span style="color: #b751b6;">)</span>;
+      <span style="color: #50a14f;">}</span>
 
       lastPos = pos + 1;
-   <span style="color: #a8007f;">}</span>
-<span style="color: #000000;">}</span>;
+   <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}</span>;
 </pre>
 </div>
 
 <hr />
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">vector</span><span style="color: #000000;">&gt;</span>
-<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">string</span><span style="color: #000000;">&gt;</span>
-<span style="color: #a0132f;">#include</span> <span style="color: #000000;">&lt;</span><span style="color: #2544bb;">sstream</span><span style="color: #000000;">&gt;</span>
+<pre class="src src-cpp"><span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">vector</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">string</span><span style="color: #4078f2;">&gt;</span>
+<span style="color: #4078f2; font-weight: bold;">#include</span> <span style="color: #4078f2;">&lt;</span><span style="color: #50a14f;">sstream</span><span style="color: #4078f2;">&gt;</span>
 
-<span style="color: #5317ac;">using</span> <span style="color: #5317ac;">namespace</span> <span style="color: #0000c0;">std</span>;
+<span style="color: #e45649;">using</span> <span style="color: #e45649;">namespace</span> <span style="color: #b751b6;">std</span>;
 
-<span style="color: #005a5f;">int</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span>
-<span style="color: #000000;">{</span>
-    <span style="color: #005a5f;">string</span> <span style="color: #00538b;">str</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"Split me by whitespaces"</span><span style="color: #a8007f;">)</span>;
-    <span style="color: #005a5f;">string</span> <span style="color: #00538b;">buf</span>; <span style="color: #505050;">// </span><span style="color: #505050;">Have a buffer string</span>
-    <span style="color: #005a5f;">stringstream</span> <span style="color: #00538b;">ss</span><span style="color: #a8007f;">(</span>str<span style="color: #a8007f;">)</span>; <span style="color: #505050;">// </span><span style="color: #505050;">Insert the string into a stream</span>
+<span style="color: #986801;">int</span> <span style="color: #a626a4;">main</span><span style="color: #4078f2;">()</span>
+<span style="color: #4078f2;">{</span>
+    <span style="color: #986801;">string</span> <span style="color: #6a1868;">str</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"Split me by whitespaces"</span><span style="color: #a626a4;">)</span>;
+    <span style="color: #986801;">string</span> <span style="color: #6a1868;">buf</span>; <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">Have a buffer string</span>
+    <span style="color: #986801;">stringstream</span> <span style="color: #6a1868;">ss</span><span style="color: #a626a4;">(</span>str<span style="color: #a626a4;">)</span>; <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">Insert the string into a stream</span>
 
-    <span style="color: #005a5f;">vector</span><span style="color: #a8007f;">&lt;</span><span style="color: #005a5f;">string</span><span style="color: #a8007f;">&gt;</span> <span style="color: #00538b;">tokens</span>; <span style="color: #505050;">// </span><span style="color: #505050;">Create vector to hold our words</span>
+    <span style="color: #986801;">vector</span><span style="color: #a626a4;">&lt;</span><span style="color: #986801;">string</span><span style="color: #a626a4;">&gt;</span> <span style="color: #6a1868;">tokens</span>; <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">Create vector to hold our words</span>
 
-    <span style="color: #5317ac;">while</span> <span style="color: #a8007f;">(</span>ss &gt;&gt; buf<span style="color: #a8007f;">)</span>
-        tokens.push_back<span style="color: #a8007f;">(</span>buf<span style="color: #a8007f;">)</span>;
+    <span style="color: #e45649;">while</span> <span style="color: #a626a4;">(</span>ss &gt;&gt; buf<span style="color: #a626a4;">)</span>
+        tokens.push_back<span style="color: #a626a4;">(</span>buf<span style="color: #a626a4;">)</span>;
 
-<span style="color: #000000;">}</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -437,7 +437,7 @@ C++ 切分字符串的最优雅的方式是什么？我们假定字符串中每�
 </ul>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-04-12 01:33:44 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2012-04-12 01:33:44 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-12-01 Thu 14:38 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go Web 框架</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,65 +223,65 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org1f1bb40">1. 原生</a></li>
-<li><a href="#org356afc9">2. gin</a></li>
-<li><a href="#org47d4b84">3. 结论</a></li>
+<li><a href="#org412426c">1. 原生</a></li>
+<li><a href="#org3415576">2. gin</a></li>
+<li><a href="#orgbb5009f">3. 结论</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1f1bb40" class="outline-2">
-<h2 id="org1f1bb40"><span class="section-number-2">1.</span> 原生</h2>
+<div id="outline-container-org412426c" class="outline-2">
+<h2 id="org412426c"><span class="section-number-2">1.</span> 原生</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Go 的 <code>net/http</code> 库比较丰富，借助 <a href="https://github.com/gorilla/mux">mux</a> 即可自己完成一个 server 基本需求。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #00538b;">router</span> := mux.<span style="color: #721045;">NewRouter</span><span style="color: #000000;">()</span>
-router.<span style="color: #721045;">HandleFunc</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"/"</span>, <span style="color: #5317ac;">func</span><span style="color: #a8007f;">(</span><span style="color: #00538b;">resp</span> <span style="color: #005a5f;">http.ResponseWriter</span>, <span style="color: #00538b;">req</span> *<span style="color: #005a5f;">http.Request</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
-    resp.<span style="color: #721045;">Write</span><span style="color: #005f88;">(</span><span style="color: #904200;">[]</span><span style="color: #721045;">byte</span><span style="color: #904200;">(</span><span style="color: #2544bb;">"ok"</span><span style="color: #904200;">)</span><span style="color: #005f88;">)</span>
-<span style="color: #a8007f;">}</span><span style="color: #000000;">)</span>
+<pre class="src src-go"><span style="color: #6a1868;">router</span> := mux.<span style="color: #a626a4;">NewRouter</span><span style="color: #4078f2;">()</span>
+router.<span style="color: #a626a4;">HandleFunc</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/"</span>, <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span><span style="color: #6a1868;">resp</span> <span style="color: #986801;">http.ResponseWriter</span>, <span style="color: #6a1868;">req</span> *<span style="color: #986801;">http.Request</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+    resp.<span style="color: #a626a4;">Write</span><span style="color: #50a14f;">(</span><span style="color: #b751b6;">[]</span><span style="color: #a626a4;">byte</span><span style="color: #b751b6;">(</span><span style="color: #50a14f;">"ok"</span><span style="color: #b751b6;">)</span><span style="color: #50a14f;">)</span>
+<span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span>
 
-<span style="color: #00538b;">httpServer</span> := &amp;<span style="color: #005a5f;">http.Server</span><span style="color: #000000;">{</span>
-    <span style="color: #0000c0;">Addr</span>:    <span style="color: #2544bb;">":8080"</span>,
-    <span style="color: #0000c0;">Handler</span>: router,
-<span style="color: #000000;">}</span>
+<span style="color: #6a1868;">httpServer</span> := &amp;<span style="color: #986801;">http.Server</span><span style="color: #4078f2;">{</span>
+    <span style="color: #b751b6;">Addr</span>:    <span style="color: #50a14f;">":8080"</span>,
+    <span style="color: #b751b6;">Handler</span>: router,
+<span style="color: #4078f2;">}</span>
 
-<span style="color: #5317ac;">go</span> <span style="color: #5317ac;">func</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">if</span> <span style="color: #00538b;">err</span> := s.HTTPServer.<span style="color: #721045;">ListenAndServe</span><span style="color: #a8007f;">()</span>; err != <span style="color: #0000c0;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a8007f;">{</span>
-        log.<span style="color: #721045;">Fatalf</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"server error, %s\n"</span>, err<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
-<span style="color: #000000;">}()</span>
+<span style="color: #e45649;">go</span> <span style="color: #e45649;">func</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">if</span> <span style="color: #6a1868;">err</span> := s.HTTPServer.<span style="color: #a626a4;">ListenAndServe</span><span style="color: #a626a4;">()</span>; err != <span style="color: #b751b6;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a626a4;">{</span>
+        log.<span style="color: #a626a4;">Fatalf</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"server error, %s\n"</span>, err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}()</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org356afc9" class="outline-2">
-<h2 id="org356afc9"><span class="section-number-2">2.</span> gin</h2>
+<div id="outline-container-org3415576" class="outline-2">
+<h2 id="org3415576"><span class="section-number-2">2.</span> gin</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 <a href="https://github.com/gin-gonic/gin">gin</a> 是一个 Go 的 Web 框架，当然很多的其它框架。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #00538b;">router</span> := gin.<span style="color: #721045;">New</span><span style="color: #000000;">()</span>
+<pre class="src src-go"><span style="color: #6a1868;">router</span> := gin.<span style="color: #a626a4;">New</span><span style="color: #4078f2;">()</span>
 
-router.<span style="color: #721045;">GET</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"/"</span>, <span style="color: #5317ac;">func</span><span style="color: #a8007f;">(</span><span style="color: #00538b;">c</span> *<span style="color: #005a5f;">gin.Context</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
-    c.<span style="color: #721045;">String</span><span style="color: #005f88;">(</span>http.StatusOK, <span style="color: #2544bb;">"ok"</span><span style="color: #005f88;">)</span>
-<span style="color: #a8007f;">}</span><span style="color: #000000;">)</span>
+router.<span style="color: #a626a4;">GET</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/"</span>, <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span><span style="color: #6a1868;">c</span> *<span style="color: #986801;">gin.Context</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+    c.<span style="color: #a626a4;">String</span><span style="color: #50a14f;">(</span>http.StatusOK, <span style="color: #50a14f;">"ok"</span><span style="color: #50a14f;">)</span>
+<span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span>
 
-<span style="color: #00538b;">srv</span> := &amp;<span style="color: #005a5f;">http.Server</span><span style="color: #000000;">{</span>
-    <span style="color: #0000c0;">Addr</span>:    <span style="color: #2544bb;">":8080"</span>,
-    <span style="color: #0000c0;">Handler</span>: router,
-<span style="color: #000000;">}</span>
+<span style="color: #6a1868;">srv</span> := &amp;<span style="color: #986801;">http.Server</span><span style="color: #4078f2;">{</span>
+    <span style="color: #b751b6;">Addr</span>:    <span style="color: #50a14f;">":8080"</span>,
+    <span style="color: #b751b6;">Handler</span>: router,
+<span style="color: #4078f2;">}</span>
 
-<span style="color: #5317ac;">go</span> <span style="color: #5317ac;">func</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">if</span> <span style="color: #00538b;">err</span> := server.HttpServer.<span style="color: #721045;">ListenAndServe</span><span style="color: #a8007f;">()</span>; err != <span style="color: #0000c0;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a8007f;">{</span>
-        log.<span style="color: #721045;">Fatalf</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"server failure : %s\n"</span>, err<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
-<span style="color: #000000;">}()</span>
+<span style="color: #e45649;">go</span> <span style="color: #e45649;">func</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">if</span> <span style="color: #6a1868;">err</span> := server.HttpServer.<span style="color: #a626a4;">ListenAndServe</span><span style="color: #a626a4;">()</span>; err != <span style="color: #b751b6;">nil</span> &amp;&amp; err != http.ErrServerClosed <span style="color: #a626a4;">{</span>
+        log.<span style="color: #a626a4;">Fatalf</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"server failure : %s\n"</span>, err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}()</span>
 
 </pre>
 </div>
@@ -295,30 +295,30 @@ router.<span style="color: #721045;">GET</span><span style="color: #000000;">(</
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">AuthRequired</span><span style="color: #000000;">()</span> <span style="color: #005a5f;">gin.HandlerFunc</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">return</span> <span style="color: #5317ac;">func</span><span style="color: #a8007f;">(</span><span style="color: #00538b;">c</span> *<span style="color: #005a5f;">gin.Context</span><span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
-        <span style="color: #00538b;">token</span> := c.Request.Header.<span style="color: #721045;">Get</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"X-Login-Token"</span><span style="color: #005f88;">)</span>
-        <span style="color: #5317ac;">if</span> token != <span style="color: #2544bb;">"xxx"</span> <span style="color: #005f88;">{</span>
-            c.<span style="color: #721045;">String</span><span style="color: #904200;">(</span>http.StatusUnauthorized, <span style="color: #2544bb;">"login required"</span><span style="color: #904200;">)</span>
-            c.<span style="color: #721045;">Abort</span><span style="color: #904200;">()</span> <span style="color: #505050;">// </span><span style="color: #505050;">must abort to next handler</span>
-            <span style="color: #5317ac;">return</span>
-        <span style="color: #005f88;">}</span>
+<pre class="src src-go"><span style="color: #e45649;">func</span> <span style="color: #a626a4;">AuthRequired</span><span style="color: #4078f2;">()</span> <span style="color: #986801;">gin.HandlerFunc</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">return</span> <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span><span style="color: #6a1868;">c</span> *<span style="color: #986801;">gin.Context</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #6a1868;">token</span> := c.Request.Header.<span style="color: #a626a4;">Get</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"X-Login-Token"</span><span style="color: #50a14f;">)</span>
+        <span style="color: #e45649;">if</span> token != <span style="color: #50a14f;">"xxx"</span> <span style="color: #50a14f;">{</span>
+            c.<span style="color: #a626a4;">String</span><span style="color: #b751b6;">(</span>http.StatusUnauthorized, <span style="color: #50a14f;">"login required"</span><span style="color: #b751b6;">)</span>
+            c.<span style="color: #a626a4;">Abort</span><span style="color: #b751b6;">()</span> <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">must abort to next handler</span>
+            <span style="color: #e45649;">return</span>
+        <span style="color: #50a14f;">}</span>
 
-        c.<span style="color: #721045;">Set</span><span style="color: #005f88;">(</span><span style="color: #2544bb;">"username"</span>, <span style="color: #2544bb;">"xxx"</span><span style="color: #005f88;">)</span>
+        c.<span style="color: #a626a4;">Set</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"username"</span>, <span style="color: #50a14f;">"xxx"</span><span style="color: #50a14f;">)</span>
 
-        c.<span style="color: #721045;">Next</span><span style="color: #005f88;">()</span>
-    <span style="color: #a8007f;">}</span>
-<span style="color: #000000;">}</span>
+        c.<span style="color: #a626a4;">Next</span><span style="color: #50a14f;">()</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}</span>
 
-<span style="color: #00538b;">apiv1</span> := r.<span style="color: #721045;">Group</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"/api/v1"</span><span style="color: #000000;">)</span>
-apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</span><span style="color: #721045;">AuthRequired</span><span style="color: #a8007f;">()</span><span style="color: #000000;">)</span>
+<span style="color: #6a1868;">apiv1</span> := r.<span style="color: #a626a4;">Group</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/api/v1"</span><span style="color: #4078f2;">)</span>
+apiv1.<span style="color: #a626a4;">Use</span><span style="color: #4078f2;">(</span><span style="color: #a626a4;">AuthRequired</span><span style="color: #a626a4;">()</span><span style="color: #4078f2;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org47d4b84" class="outline-2">
-<h2 id="org47d4b84"><span class="section-number-2">3.</span> 结论</h2>
+<div id="outline-container-orgbb5009f" class="outline-2">
+<h2 id="orgbb5009f"><span class="section-number-2">3.</span> 结论</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 使用原生的库还是框架，我的思路是：
@@ -336,7 +336,7 @@ apiv1.<span style="color: #721045;">Use</span><span style="color: #000000;">(</s
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>

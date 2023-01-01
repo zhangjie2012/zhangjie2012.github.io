@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-12-01 Thu 14:38 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>构建 Go 项目最佳实践</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,23 +223,23 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org65e8246">1. 语言</a></li>
-<li><a href="#orgeb5ff48">2. 工程实践</a>
+<li><a href="#org74a124b">1. 语言</a></li>
+<li><a href="#org6d3c4e1">2. 工程实践</a>
 <ul>
-<li><a href="#org5db6a06">2.1. 项目结构</a></li>
-<li><a href="#orgf330e60">2.2. 技术选型</a></li>
-<li><a href="#orge6b9296">2.3. 编码规范</a></li>
-<li><a href="#org825bdc0">2.4. 代码质量</a></li>
-<li><a href="#org75a3aa9">2.5. 服务质量</a></li>
+<li><a href="#orgbbbb50a">2.1. 项目结构</a></li>
+<li><a href="#org6c8de5e">2.2. 技术选型</a></li>
+<li><a href="#org148f6e9">2.3. 编码规范</a></li>
+<li><a href="#org3ec7c34">2.4. 代码质量</a></li>
+<li><a href="#org7a6edd4">2.5. 服务质量</a></li>
 </ul>
 </li>
-<li><a href="#org80c3a88">3. 上线</a></li>
+<li><a href="#orgd9e3c72">3. 上线</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org65e8246" class="outline-2">
-<h2 id="org65e8246"><span class="section-number-2">1.</span> 语言</h2>
+<div id="outline-container-org74a124b" class="outline-2">
+<h2 id="org74a124b"><span class="section-number-2">1.</span> 语言</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>语言学习
@@ -255,21 +255,56 @@
 <li><a href="learn-resource.html">外部资源</a> 汇总</li>
 </ul></li>
 <li><a href="dev-env.html">安装和卸载</a></li>
-<li>package
+<li>package 管理
 <ul class="org-ul">
 <li><a href="package-manager.html">包管理工具</a> 以前用 govender，go 1.11 之后统一使用 module 了</li>
 <li><a href="package-release.html">包的发布</a> 将自己的 package 发布成三方包</li>
+</ul></li>
+<li>package 推荐
+<ul class="org-ul">
+<li><a href="https://threedots.tech/post/list-of-recommended-libraries/">The Go libraries that never failed us: 22 libraries you need to know</a> 22 个高质量库
+<ul class="org-ul">
+<li>Router: Echo, chi</li>
+<li>OpenAPI: deepmap/oapi-codegen, openapi-generator-cli</li>
+<li>Communication: gRPC, protoc</li>
+<li>Messaging: Watermill</li>
+<li>Database:
+<ul class="org-ul">
+<li>SQL: sqlx, SQLBoiler, Migrations(sql-migrate, goose)</li>
+</ul></li>
+<li>Observability:
+<ul class="org-ul">
+<li>Logging: logrus, zap</li>
+<li>Metrics and tracing: opencensus-go,</li>
+</ul></li>
+<li>Configuration: caarlos0/env, koanf</li>
+<li>Build CLI: urfave/cli</li>
+<li>Testing:
+<ul class="org-ul">
+<li>Assertions: testify, go-cmp, gofakeit</li>
+<li>Mocking:</li>
+</ul></li>
+<li>Misc:
+<ul class="org-ul">
+<li>Extra types support: google/uuid, oklog/ulid, shopspring/decimal,</li>
+<li>Errors: hashicorp/go-multierror</li>
+<li>Useful tools: samber/lo, Task</li>
+<li>Live code reloading: reflex</li>
+<li>Linter: golangci-lint, go-cleanarch</li>
+<li>Formatters: go fmt, goimports, gofumpt</li>
+</ul></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgeb5ff48" class="outline-2">
-<h2 id="orgeb5ff48"><span class="section-number-2">2.</span> 工程实践</h2>
+<div id="outline-container-org6d3c4e1" class="outline-2">
+<h2 id="org6d3c4e1"><span class="section-number-2">2.</span> 工程实践</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org5db6a06" class="outline-3">
-<h3 id="org5db6a06"><span class="section-number-3">2.1.</span> 项目结构</h3>
+<div id="outline-container-orgbbbb50a" class="outline-3">
+<h3 id="orgbbbb50a"><span class="section-number-3">2.1.</span> 项目结构</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Go 目前没有一个权威性质的 Web framework（类似 Python 的 Django/Flask，Java 的 SprintBoot 等），大部分 Web 框架所做的事情
@@ -288,8 +323,8 @@ Go 目前没有一个权威性质的 Web framework（类似 Python 的 Django/Fl
 </div>
 </div>
 
-<div id="outline-container-orgf330e60" class="outline-3">
-<h3 id="orgf330e60"><span class="section-number-3">2.2.</span> 技术选型</h3>
+<div id="outline-container-org6c8de5e" class="outline-3">
+<h3 id="org6c8de5e"><span class="section-number-3">2.2.</span> 技术选型</h3>
 <div class="outline-text-3" id="text-2-2">
 <ul class="org-ul">
 <li><a href="go-web-framework.html">Web 框架</a> 用 gin</li>
@@ -303,8 +338,8 @@ Go 目前没有一个权威性质的 Web framework（类似 Python 的 Django/Fl
 </div>
 </div>
 
-<div id="outline-container-orge6b9296" class="outline-3">
-<h3 id="orge6b9296"><span class="section-number-3">2.3.</span> 编码规范</h3>
+<div id="outline-container-org148f6e9" class="outline-3">
+<h3 id="org148f6e9"><span class="section-number-3">2.3.</span> 编码规范</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 基本上 Go programming language 已经说的挺清楚了，Effective Go 里又有补充，加之 Go 的社区命名都比较统一，日常命名应该没啥疑惑。
@@ -316,8 +351,8 @@ Go 目前没有一个权威性质的 Web framework（类似 Python 的 Django/Fl
 </div>
 </div>
 
-<div id="outline-container-org825bdc0" class="outline-3">
-<h3 id="org825bdc0"><span class="section-number-3">2.4.</span> 代码质量</h3>
+<div id="outline-container-org3ec7c34" class="outline-3">
+<h3 id="org3ec7c34"><span class="section-number-3">2.4.</span> 代码质量</h3>
 <div class="outline-text-3" id="text-2-4">
 <ul class="org-ul">
 <li><a href="write-go-testing.html">单元测试</a></li>
@@ -326,8 +361,8 @@ Go 目前没有一个权威性质的 Web framework（类似 Python 的 Django/Fl
 </div>
 </div>
 
-<div id="outline-container-org75a3aa9" class="outline-3">
-<h3 id="org75a3aa9"><span class="section-number-3">2.5.</span> 服务质量</h3>
+<div id="outline-container-org7a6edd4" class="outline-3">
+<h3 id="org7a6edd4"><span class="section-number-3">2.5.</span> 服务质量</h3>
 <div class="outline-text-3" id="text-2-5">
 <ul class="org-ul">
 <li><a href="monitor.html">Prometheus</a> 使用 Prometheus 监控 web server</li>
@@ -337,8 +372,8 @@ Go 目前没有一个权威性质的 Web framework（类似 Python 的 Django/Fl
 </div>
 </div>
 
-<div id="outline-container-org80c3a88" class="outline-2">
-<h2 id="org80c3a88"><span class="section-number-2">3.</span> 上线</h2>
+<div id="outline-container-orgd9e3c72" class="outline-2">
+<h2 id="orgd9e3c72"><span class="section-number-2">3.</span> 上线</h2>
 <div class="outline-text-2" id="text-3">
 <ul class="org-ul">
 <li><a href="build-deploy.html">构建和部署</a></li>
@@ -347,7 +382,7 @@ Go 目前没有一个权威性质的 Web framework（类似 Python 的 Django/Fl
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-27 15:33:45 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2021-04-27 15:33:45 <br />Last updated: 2022-12-31 Sat 16:41 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>

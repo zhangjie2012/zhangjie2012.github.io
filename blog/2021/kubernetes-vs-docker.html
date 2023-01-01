@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:37 -->
+<!-- 2023-01-01 Sun 17:16 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes vs Docker: 了解 2021 的容器</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,14 +223,14 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orge447950">1. 什么是容器 ？</a></li>
-<li><a href="#org5f181d4">2. 什么是 Docker ？</a></li>
-<li><a href="#org1731aef">3. 什么是 Kubernetes ？</a></li>
-<li><a href="#orgbb70f96">4. 容器格式</a></li>
-<li><a href="#orged45625">5. Docker Vs. Kubernetes</a></li>
-<li><a href="#orgfd277b8">6. Dockershim 的弃用</a></li>
-<li><a href="#org9d1a336">7. 弃用 Docker 之后对你有什么影响？</a></li>
-<li><a href="#orgf4a5af4">8. 结论</a></li>
+<li><a href="#org3f0666a">1. 什么是容器 ？</a></li>
+<li><a href="#org2d959da">2. 什么是 Docker ？</a></li>
+<li><a href="#orgd2226b1">3. 什么是 Kubernetes ？</a></li>
+<li><a href="#orgf14a010">4. 容器格式</a></li>
+<li><a href="#orgc02b3fc">5. Docker Vs. Kubernetes</a></li>
+<li><a href="#orgc6f7a9a">6. Dockershim 的弃用</a></li>
+<li><a href="#orga9f50e2">7. 弃用 Docker 之后对你有什么影响？</a></li>
+<li><a href="#org4e22eee">8. 结论</a></li>
 </ul>
 </div>
 </div>
@@ -259,8 +259,8 @@ Docker 的前世今生。但是 Docker 与 Kubernetes 的恩怨情仇并没有�
 该怎么运行自己的应用程序？现在应该怎么办？ 今天，我们会研究所有这些的疑问和更多的问题。
 </p>
 
-<div id="outline-container-orge447950" class="outline-2">
-<h2 id="orge447950"><span class="section-number-2">1.</span> 什么是容器 ？</h2>
+<div id="outline-container-org3f0666a" class="outline-2">
+<h2 id="org3f0666a"><span class="section-number-2">1.</span> 什么是容器 ？</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 在 Docker 作为容器的代名词之前，事实上容器在很久之前就已经存在了。在 70 年代后期引入 <a href="https://man7.org/linux/man-pages/man2/chroot.2.html">chroot</a> 之后，容器就已某种形式存在了。
@@ -276,7 +276,7 @@ Chroot 允许系统管理员在一种不是真正隔离的文件系统中运行�
 </p>
 
 
-<div id="org7c09af6" class="figure">
+<div id="orgd51cafa" class="figure">
 <p><img src="https://wpblog.semaphoreci.com/wp-content/uploads/2021/01/container-arch.png" alt="container-arch.png" />
 </p>
 </div>
@@ -292,8 +292,8 @@ Chroot 允许系统管理员在一种不是真正隔离的文件系统中运行�
 </div>
 </div>
 
-<div id="outline-container-org5f181d4" class="outline-2">
-<h2 id="org5f181d4"><span class="section-number-2">2.</span> 什么是 Docker ？</h2>
+<div id="outline-container-org2d959da" class="outline-2">
+<h2 id="org2d959da"><span class="section-number-2">2.</span> 什么是 Docker ？</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 从长远来看，Docker 是一个最受欢迎的容器运行时。因为 Docker，容器的概念才成为主流，后来启发了诸如 Kubernetes 之类的平台的诞生。
@@ -324,15 +324,15 @@ Chroot 允许系统管理员在一种不是真正隔离的文件系统中运行�
 </ul>
 
 
-<div id="org591e753" class="figure">
+<div id="org131d5c8" class="figure">
 <p><img src="https://wpblog.semaphoreci.com/wp-content/uploads/2021/01/docker-arch.png" alt="docker-arch.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org1731aef" class="outline-2">
-<h2 id="org1731aef"><span class="section-number-2">3.</span> 什么是 Kubernetes ？</h2>
+<div id="outline-container-orgd2226b1" class="outline-2">
+<h2 id="orgd2226b1"><span class="section-number-2">3.</span> 什么是 Kubernetes ？</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Kubernetes 利用了容器的概念并且提升了一个级别。Kubernetes 不在单个服务器上运行容器化的应用程序，而是将他们分布在一个集群中。
@@ -363,7 +363,7 @@ Kubernetes 的架构是两个平面的组合：
 </ul>
 
 
-<div id="org6c9ce5d" class="figure">
+<div id="org99b2cc4" class="figure">
 <p><img src="https://wpblog.semaphoreci.com/wp-content/uploads/2021/01/k8s-arch.png" alt="k8s-arch.png" />
 </p>
 </div>
@@ -371,8 +371,8 @@ Kubernetes 的架构是两个平面的组合：
 </div>
 
 
-<div id="outline-container-orgbb70f96" class="outline-2">
-<h2 id="orgbb70f96"><span class="section-number-2">4.</span> 容器格式</h2>
+<div id="outline-container-orgf14a010" class="outline-2">
+<h2 id="orgf14a010"><span class="section-number-2">4.</span> 容器格式</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 在启动容器之前，我们首先要构建或者下载一个 <i>容器镜像</i> ，它是一个打包了应用程序所需一切的文件系统：代码，二进制，配置文件，库和依赖。
@@ -393,7 +393,7 @@ OCI 标准使得不同的容器解决方案之间可以相互操作。在系统�
 </p>
 
 
-<div id="orgf1c5757" class="figure">
+<div id="org7a48c30" class="figure">
 <p><img src="https://wpblog.semaphoreci.com/wp-content/uploads/2021/01/oci-interoperability.png" alt="oci-interoperability.png" />
 </p>
 </div>
@@ -401,8 +401,8 @@ OCI 标准使得不同的容器解决方案之间可以相互操作。在系统�
 </div>
 
 
-<div id="outline-container-orged45625" class="outline-2">
-<h2 id="orged45625"><span class="section-number-2">5.</span> Docker Vs. Kubernetes</h2>
+<div id="outline-container-orgc02b3fc" class="outline-2">
+<h2 id="orgc02b3fc"><span class="section-number-2">5.</span> Docker Vs. Kubernetes</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 事情有点复杂。我之前说过 Kubernetes 工作节点需要一个容器运行时。在 <a href="https://github.com/kubernetes/kubernetes/blob/release-0.4/DESIGN.md">第一个初始设计</a> 中，Docker 和 Kubernetes 是密不可分的，
@@ -415,7 +415,7 @@ OCI 标准使得不同的容器解决方案之间可以相互操作。在系统�
 </p>
 
 
-<div id="org6e02f4d" class="figure">
+<div id="org9ecfe15" class="figure">
 <p><img src="https://wpblog.semaphoreci.com/wp-content/uploads/2021/01/cri.png" alt="cri.png" />
 </p>
 </div>
@@ -427,8 +427,8 @@ OCI 标准使得不同的容器解决方案之间可以相互操作。在系统�
 </div>
 </div>
 
-<div id="outline-container-orgfd277b8" class="outline-2">
-<h2 id="orgfd277b8"><span class="section-number-2">6.</span> Dockershim 的弃用</h2>
+<div id="outline-container-orgc6f7a9a" class="outline-2">
+<h2 id="orgc6f7a9a"><span class="section-number-2">6.</span> Dockershim 的弃用</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 尽管 Docker 是第一个也是唯一一个被支持的引擎，但是它从未列入长期规划中。<a href="https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.20.md#deprecation">Kubernetes 1.20 版本废弃了 Dockershim</a>，从 Docker 开始平滑转换。
@@ -439,7 +439,7 @@ OCI 标准使得不同的容器解决方案之间可以相互操作。在系统�
 </p>
 
 
-<div id="org6f370dc" class="figure">
+<div id="org259fb40" class="figure">
 <p><img src="https://wpblog.semaphoreci.com/wp-content/uploads/2021/01/kubelet-dockershim.png" alt="kubelet-dockershim.png" />
 </p>
 </div>
@@ -449,7 +449,7 @@ OCI 标准使得不同的容器解决方案之间可以相互操作。在系统�
 </p>
 
 
-<div id="org5a3abb7" class="figure">
+<div id="orgf4ec50e" class="figure">
 <p><img src="https://wpblog.semaphoreci.com/wp-content/uploads/2021/01/kubelet-containerd.png" alt="kubelet-containerd.png" />
 </p>
 </div>
@@ -474,8 +474,8 @@ OCI 标准使得不同的容器解决方案之间可以相互操作。在系统�
 </div>
 </div>
 
-<div id="outline-container-org9d1a336" class="outline-2">
-<h2 id="org9d1a336"><span class="section-number-2">7.</span> 弃用 Docker 之后对你有什么影响？</h2>
+<div id="outline-container-orga9f50e2" class="outline-2">
+<h2 id="orga9f50e2"><span class="section-number-2">7.</span> 弃用 Docker 之后对你有什么影响？</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 事情并不像听起来那样有戏剧性。我们开始说的一句话，v1.20 的唯一变化是，只有在运行 Docker 时，你才会收到弃用的警告。就这些。
@@ -555,8 +555,8 @@ Docker 的运行时更改成 containerd，但是你仍然可以选择使用 Dock
 </div>
 </div>
 
-<div id="outline-container-orgf4a5af4" class="outline-2">
-<h2 id="orgf4a5af4"><span class="section-number-2">8.</span> 结论</h2>
+<div id="outline-container-org4e22eee" class="outline-2">
+<h2 id="org4e22eee"><span class="section-number-2">8.</span> 结论</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 Kubernetes 正在不断的壮大，但是这种变化不一定是一种痛苦的经历。大多数用户不需要采取任何措施。对于那些人，仍然有时间进行测试和计划。
@@ -576,7 +576,7 @@ Kubernetes 正在不断的壮大，但是这种变化不一定是一种痛苦的
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-02-08 10:27:59 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2021-02-08 10:27:59 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

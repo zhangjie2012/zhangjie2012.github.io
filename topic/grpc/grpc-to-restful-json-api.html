@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:38 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>gRPC 转 RESTful JSON API</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,18 +223,18 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org96d0a16">1. 安装</a></li>
-<li><a href="#orgbdf2e6a">2. 书写规则</a></li>
-<li><a href="#org2b970af">3. 生成 stub</a></li>
-<li><a href="#orge31585e">4. http 服务</a></li>
-<li><a href="#org8fc4b7f">5. 和 gRPC 服务整合</a></li>
-<li><a href="#org0fa6944">6. 关联的资料汇总</a></li>
-<li><a href="#orge2d11a0">7. FAQ</a>
+<li><a href="#orgca0b754">1. 安装</a></li>
+<li><a href="#orgd486bad">2. 书写规则</a></li>
+<li><a href="#org9438af8">3. 生成 stub</a></li>
+<li><a href="#orgec4790f">4. http 服务</a></li>
+<li><a href="#org7874693">5. 和 gRPC 服务整合</a></li>
+<li><a href="#org5903681">6. 关联的资料汇总</a></li>
+<li><a href="#orgbd8a153">7. FAQ</a>
 <ul>
-<li><a href="#org71acde5">7.1. 编译报错 <code>cannot use myFilter (type func(context.Context, http.ResponseWriter, protoreflect.ProtoMessage) error) as type func(context.Context, http.ResponseWriter, protoiface.MessageV1) error in argument to "github.com/grpc-ecosystem/grpc-gateway/runtime".WithForwardResponseOption</code></a></li>
-<li><a href="#org4537561">7.2. 自定义返回 body 格式</a></li>
-<li><a href="#org9164a7a">7.3. 跨域问题</a></li>
-<li><a href="#orgf7544d4">7.4. 解决返回数据时空字段不返回的问题</a></li>
+<li><a href="#org04091b6">7.1. 编译报错 <code>cannot use myFilter (type func(context.Context, http.ResponseWriter, protoreflect.ProtoMessage) error) as type func(context.Context, http.ResponseWriter, protoiface.MessageV1) error in argument to "github.com/grpc-ecosystem/grpc-gateway/runtime".WithForwardResponseOption</code></a></li>
+<li><a href="#orgc492ce4">7.2. 自定义返回 body 格式</a></li>
+<li><a href="#orgb6f6ef7">7.3. 跨域问题</a></li>
+<li><a href="#orgc06f2ff">7.4. 解决返回数据时空字段不返回的问题</a></li>
 </ul>
 </li>
 </ul>
@@ -252,8 +252,8 @@ gRPC 很诱人，它兼具了易用性和高效，同时支持多重编程语言
 本文档偏向于实操和最佳实践，而且假定读者了解了 protobuf、gRPC、gRPC-go 相关的知识（如果不知道可以查看 <a href="index.html">gRPC 专题</a>）。
 </p>
 
-<div id="outline-container-org96d0a16" class="outline-2">
-<h2 id="org96d0a16"><span class="section-number-2">1.</span> 安装</h2>
+<div id="outline-container-orgca0b754" class="outline-2">
+<h2 id="orgca0b754"><span class="section-number-2">1.</span> 安装</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
@@ -266,8 +266,8 @@ gRPC 很诱人，它兼具了易用性和高效，同时支持多重编程语言
 </div>
 </div>
 
-<div id="outline-container-orgbdf2e6a" class="outline-2">
-<h2 id="orgbdf2e6a"><span class="section-number-2">2.</span> 书写规则</h2>
+<div id="outline-container-orgd486bad" class="outline-2">
+<h2 id="orgd486bad"><span class="section-number-2">2.</span> 书写规则</h2>
 <div class="outline-text-2" id="text-2">
 <pre class="example">
 service Messaging {
@@ -317,8 +317,8 @@ import "google/api/annotations.proto";
 </div>
 </div>
 
-<div id="outline-container-org2b970af" class="outline-2">
-<h2 id="org2b970af"><span class="section-number-2">3.</span> 生成 stub</h2>
+<div id="outline-container-org9438af8" class="outline-2">
+<h2 id="org9438af8"><span class="section-number-2">3.</span> 生成 stub</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 以上全部操作完毕之后，生成 gRPC 和 gateway stub，比如：
@@ -335,46 +335,46 @@ protoc -I=libproto -I=googleapis --grpc-gateway_out=logtostderr=true,paths=sourc
 </div>
 </div>
 
-<div id="outline-container-orge31585e" class="outline-2">
-<h2 id="orge31585e"><span class="section-number-2">4.</span> http 服务</h2>
+<div id="outline-container-orgec4790f" class="outline-2">
+<h2 id="orgec4790f"><span class="section-number-2">4.</span> http 服务</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 需要另外起一个 http：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">import</span> <span style="color: #000000;">(</span>
-    <span style="color: #2544bb;">"context"</span>
-    <span style="color: #2544bb;">"log"</span>
-    <span style="color: #2544bb;">"net/http"</span>
+<pre class="src src-go"><span style="color: #e45649;">import</span> <span style="color: #4078f2;">(</span>
+    <span style="color: #50a14f;">"context"</span>
+    <span style="color: #50a14f;">"log"</span>
+    <span style="color: #50a14f;">"net/http"</span>
 
-    <span style="color: #2544bb;">"github.com/grpc-ecosystem/grpc-gateway/runtime"</span>
-    <span style="color: #2544bb;">"google.golang.org/grpc"</span>
+    <span style="color: #50a14f;">"github.com/grpc-ecosystem/grpc-gateway/runtime"</span>
+    <span style="color: #50a14f;">"google.golang.org/grpc"</span>
 
-    gw <span style="color: #2544bb;">"/gateway/code/path"</span>
-<span style="color: #000000;">)</span>
+    gw <span style="color: #50a14f;">"/gateway/code/path"</span>
+<span style="color: #4078f2;">)</span>
 
-<span style="color: #5317ac;">func</span> <span style="color: #721045;">main</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-    <span style="color: #00538b;">ctx</span> := context.<span style="color: #721045;">Background</span><span style="color: #a8007f;">()</span>
-    <span style="color: #00538b;">ctx</span>, <span style="color: #00538b;">cancel</span> := context.<span style="color: #721045;">WithCancel</span><span style="color: #a8007f;">(</span>ctx<span style="color: #a8007f;">)</span>
-    <span style="color: #5317ac;">defer</span> <span style="color: #721045;">cancel</span><span style="color: #a8007f;">()</span>
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">main</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #6a1868;">ctx</span> := context.<span style="color: #a626a4;">Background</span><span style="color: #a626a4;">()</span>
+    <span style="color: #6a1868;">ctx</span>, <span style="color: #6a1868;">cancel</span> := context.<span style="color: #a626a4;">WithCancel</span><span style="color: #a626a4;">(</span>ctx<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">defer</span> <span style="color: #a626a4;">cancel</span><span style="color: #a626a4;">()</span>
 
-    <span style="color: #00538b;">mux</span> := runtime.<span style="color: #721045;">NewServeMux</span><span style="color: #a8007f;">()</span>
-    <span style="color: #00538b;">opts</span> := <span style="color: #a8007f;">[]</span><span style="color: #005a5f;">grpc.DialOption</span><span style="color: #a8007f;">{</span>grpc.<span style="color: #721045;">WithInsecure</span><span style="color: #005f88;">()</span><span style="color: #a8007f;">}</span>
-    <span style="color: #00538b;">err</span> := gw.<span style="color: #721045;">RegisterStaffRPCHandlerFromEndpoint</span><span style="color: #a8007f;">(</span>ctx, mux, <span style="color: #2544bb;">"localhost:50051"</span>, opts<span style="color: #a8007f;">)</span>
-    <span style="color: #5317ac;">if</span> err != <span style="color: #0000c0;">nil</span> <span style="color: #a8007f;">{</span>
-        log.<span style="color: #721045;">Fatal</span><span style="color: #005f88;">(</span>err<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
+    <span style="color: #6a1868;">mux</span> := runtime.<span style="color: #a626a4;">NewServeMux</span><span style="color: #a626a4;">()</span>
+    <span style="color: #6a1868;">opts</span> := <span style="color: #a626a4;">[]</span><span style="color: #986801;">grpc.DialOption</span><span style="color: #a626a4;">{</span>grpc.<span style="color: #a626a4;">WithInsecure</span><span style="color: #50a14f;">()</span><span style="color: #a626a4;">}</span>
+    <span style="color: #6a1868;">err</span> := gw.<span style="color: #a626a4;">RegisterStaffRPCHandlerFromEndpoint</span><span style="color: #a626a4;">(</span>ctx, mux, <span style="color: #50a14f;">"localhost:50051"</span>, opts<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">if</span> err != <span style="color: #b751b6;">nil</span> <span style="color: #a626a4;">{</span>
+        log.<span style="color: #a626a4;">Fatal</span><span style="color: #50a14f;">(</span>err<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
 
-    http.<span style="color: #721045;">ListenAndServe</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">":8080"</span>, mux<span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span>
+    http.<span style="color: #a626a4;">ListenAndServe</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">":8080"</span>, mux<span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org8fc4b7f" class="outline-2">
-<h2 id="org8fc4b7f"><span class="section-number-2">5.</span> 和 gRPC 服务整合</h2>
+<div id="outline-container-org7874693" class="outline-2">
+<h2 id="org7874693"><span class="section-number-2">5.</span> 和 gRPC 服务整合</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 上面的方法虽然可行，但部署的时候是两个进程，一个 gateway 服务进程，一个 rpc 服务进程。这样在生产化部署时，会有一定的部署成本（容器化之后，一个容器只能有一起服务在前台运行）。
@@ -389,12 +389,12 @@ protoc -I=libproto -I=googleapis --grpc-gateway_out=logtostderr=true,paths=sourc
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">if</span> r.ProtoMajor == 2 &amp;&amp; strings.<span style="color: #721045;">HasPrefix</span><span style="color: #000000;">(</span>
-  r.Header.<span style="color: #721045;">Get</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"Content-Type"</span><span style="color: #a8007f;">)</span>, <span style="color: #2544bb;">"application/grpc"</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-  grpcServer.<span style="color: #721045;">ServeHTTP</span><span style="color: #a8007f;">(</span>w, r<span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span> <span style="color: #5317ac;">else</span> <span style="color: #000000;">{</span>
-  yourMux.<span style="color: #721045;">ServeHTTP</span><span style="color: #a8007f;">(</span>w, r<span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span>
+<pre class="src src-go"><span style="color: #e45649;">if</span> r.ProtoMajor == 2 &amp;&amp; strings.<span style="color: #a626a4;">HasPrefix</span><span style="color: #4078f2;">(</span>
+  r.Header.<span style="color: #a626a4;">Get</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"Content-Type"</span><span style="color: #a626a4;">)</span>, <span style="color: #50a14f;">"application/grpc"</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+  grpcServer.<span style="color: #a626a4;">ServeHTTP</span><span style="color: #a626a4;">(</span>w, r<span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span> <span style="color: #e45649;">else</span> <span style="color: #4078f2;">{</span>
+  yourMux.<span style="color: #a626a4;">ServeHTTP</span><span style="color: #a626a4;">(</span>w, r<span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -404,8 +404,8 @@ protoc -I=libproto -I=googleapis --grpc-gateway_out=logtostderr=true,paths=sourc
 </div>
 </div>
 
-<div id="outline-container-org0fa6944" class="outline-2">
-<h2 id="org0fa6944"><span class="section-number-2">6.</span> 关联的资料汇总</h2>
+<div id="outline-container-org5903681" class="outline-2">
+<h2 id="org5903681"><span class="section-number-2">6.</span> 关联的资料汇总</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>grcp-gateway <a href="https://github.com/grpc-ecosystem/grpc-gateway">https://github.com/grpc-ecosystem/grpc-gateway</a></li>
@@ -416,12 +416,12 @@ protoc -I=libproto -I=googleapis --grpc-gateway_out=logtostderr=true,paths=sourc
 </div>
 </div>
 
-<div id="outline-container-orge2d11a0" class="outline-2">
-<h2 id="orge2d11a0"><span class="section-number-2">7.</span> FAQ</h2>
+<div id="outline-container-orgbd8a153" class="outline-2">
+<h2 id="orgbd8a153"><span class="section-number-2">7.</span> FAQ</h2>
 <div class="outline-text-2" id="text-7">
 </div>
-<div id="outline-container-org71acde5" class="outline-3">
-<h3 id="org71acde5"><span class="section-number-3">7.1.</span> 编译报错 <code>cannot use myFilter (type func(context.Context, http.ResponseWriter, protoreflect.ProtoMessage) error) as type func(context.Context, http.ResponseWriter, protoiface.MessageV1) error in argument to "github.com/grpc-ecosystem/grpc-gateway/runtime".WithForwardResponseOption</code></h3>
+<div id="outline-container-org04091b6" class="outline-3">
+<h3 id="org04091b6"><span class="section-number-3">7.1.</span> 编译报错 <code>cannot use myFilter (type func(context.Context, http.ResponseWriter, protoreflect.ProtoMessage) error) as type func(context.Context, http.ResponseWriter, protoiface.MessageV1) error in argument to "github.com/grpc-ecosystem/grpc-gateway/runtime".WithForwardResponseOption</code></h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 因为 gateway 用的是 <code>github.com/golang/protobuf/proto</code> ，而 proto 一般默认引入的是 <code>google.golang.org/protobuf/proto</code> .
@@ -437,8 +437,8 @@ protoc -I=libproto -I=googleapis --grpc-gateway_out=logtostderr=true,paths=sourc
 </div>
 </div>
 
-<div id="outline-container-org4537561" class="outline-3">
-<h3 id="org4537561"><span class="section-number-3">7.2.</span> 自定义返回 body 格式</h3>
+<div id="outline-container-orgc492ce4" class="outline-3">
+<h3 id="orgc492ce4"><span class="section-number-3">7.2.</span> 自定义返回 body 格式</h3>
 <div class="outline-text-3" id="text-7-2">
 <p>
 gRPC gateway 默认情况下返回的是 Resp Struct 对应的 JSON，出错时返回 <code>code,error,message</code> 三个字段。如果想要统一返回值，则需要自定义返回 body。
@@ -463,50 +463,50 @@ gRPC gateway 默认情况下返回的是 Resp Struct 对应的 JSON，出错时�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">type</span> <span style="color: #005a5f;">StandardResp</span> <span style="color: #5317ac;">struct</span> <span style="color: #000000;">{</span>
-    Code  <span style="color: #005a5f;">int</span>         <span style="color: #2544bb;">`json:"code"`</span>
-    Data  <span style="color: #5317ac;">interface</span><span style="color: #a8007f;">{}</span> <span style="color: #2544bb;">`json:"data"`</span>
-    Error <span style="color: #005a5f;">string</span>      <span style="color: #2544bb;">`json:"error"`</span>
-<span style="color: #000000;">}</span>
+<pre class="src src-go"><span style="color: #e45649;">type</span> <span style="color: #986801;">StandardResp</span> <span style="color: #e45649;">struct</span> <span style="color: #4078f2;">{</span>
+    Code  <span style="color: #986801;">int</span>         <span style="color: #50a14f;">`json:"code"`</span>
+    Data  <span style="color: #e45649;">interface</span><span style="color: #a626a4;">{}</span> <span style="color: #50a14f;">`json:"data"`</span>
+    Error <span style="color: #986801;">string</span>      <span style="color: #50a14f;">`json:"error"`</span>
+<span style="color: #4078f2;">}</span>
 
-<span style="color: #5317ac;">const</span> <span style="color: #000000;">(</span>
-    <span style="color: #0000c0;">proxyFlag</span> = <span style="color: #2544bb;">"__succ__"</span>
-<span style="color: #000000;">)</span>
+<span style="color: #e45649;">const</span> <span style="color: #4078f2;">(</span>
+    <span style="color: #b751b6;">proxyFlag</span> = <span style="color: #50a14f;">"__succ__"</span>
+<span style="color: #4078f2;">)</span>
 
-<span style="color: #5317ac;">func</span> <span style="color: #721045;">HttpSuccHandler</span><span style="color: #000000;">(</span><span style="color: #00538b;">ctx</span> <span style="color: #005a5f;">context.Context</span>, <span style="color: #00538b;">w</span> <span style="color: #005a5f;">http.ResponseWriter</span>, <span style="color: #00538b;">p</span> <span style="color: #005a5f;">proto.Message</span><span style="color: #000000;">)</span> <span style="color: #005a5f;">error</span> <span style="color: #000000;">{</span>
-    <span style="color: #00538b;">resp</span> := <span style="color: #005a5f;">StandardResp</span><span style="color: #a8007f;">{</span>
-        <span style="color: #0000c0;">Code</span>:  0,
-        <span style="color: #0000c0;">Data</span>:  p,
-        <span style="color: #0000c0;">Error</span>: <span style="color: #2544bb;">""</span>,
-    <span style="color: #a8007f;">}</span>
-    <span style="color: #00538b;">bs</span>, <span style="color: #00538b;">_</span> := json.<span style="color: #721045;">Marshal</span><span style="color: #a8007f;">(</span>&amp;resp<span style="color: #a8007f;">)</span>
-    <span style="color: #5317ac;">return</span> errors.<span style="color: #721045;">New</span><span style="color: #a8007f;">(</span>proxyFlag + <span style="color: #721045;">string</span><span style="color: #005f88;">(</span>bs<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span>
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">HttpSuccHandler</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">ctx</span> <span style="color: #986801;">context.Context</span>, <span style="color: #6a1868;">w</span> <span style="color: #986801;">http.ResponseWriter</span>, <span style="color: #6a1868;">p</span> <span style="color: #986801;">proto.Message</span><span style="color: #4078f2;">)</span> <span style="color: #986801;">error</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #6a1868;">resp</span> := <span style="color: #986801;">StandardResp</span><span style="color: #a626a4;">{</span>
+        <span style="color: #b751b6;">Code</span>:  0,
+        <span style="color: #b751b6;">Data</span>:  p,
+        <span style="color: #b751b6;">Error</span>: <span style="color: #50a14f;">""</span>,
+    <span style="color: #a626a4;">}</span>
+    <span style="color: #6a1868;">bs</span>, <span style="color: #6a1868;">_</span> := json.<span style="color: #a626a4;">Marshal</span><span style="color: #a626a4;">(</span>&amp;resp<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">return</span> errors.<span style="color: #a626a4;">New</span><span style="color: #a626a4;">(</span>proxyFlag + <span style="color: #a626a4;">string</span><span style="color: #50a14f;">(</span>bs<span style="color: #50a14f;">)</span><span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
 
-<span style="color: #5317ac;">func</span> <span style="color: #721045;">HttpErrorHandler</span><span style="color: #000000;">(</span><span style="color: #00538b;">ctx</span> <span style="color: #005a5f;">context.Context</span>, <span style="color: #00538b;">mux</span> *<span style="color: #005a5f;">runtime.ServeMux</span>, <span style="color: #00538b;">m</span> <span style="color: #005a5f;">runtime.Marshaler</span>, <span style="color: #00538b;">w</span> <span style="color: #005a5f;">http.ResponseWriter</span>, <span style="color: #00538b;">r</span> *<span style="color: #005a5f;">http.Request</span>, <span style="color: #00538b;">err</span> <span style="color: #005a5f;">error</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-    w.<span style="color: #721045;">Header</span><span style="color: #a8007f;">()</span>.<span style="color: #721045;">Set</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"Content-Type"</span>, <span style="color: #2544bb;">"application/json"</span><span style="color: #a8007f;">)</span>
+<span style="color: #e45649;">func</span> <span style="color: #a626a4;">HttpErrorHandler</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">ctx</span> <span style="color: #986801;">context.Context</span>, <span style="color: #6a1868;">mux</span> *<span style="color: #986801;">runtime.ServeMux</span>, <span style="color: #6a1868;">m</span> <span style="color: #986801;">runtime.Marshaler</span>, <span style="color: #6a1868;">w</span> <span style="color: #986801;">http.ResponseWriter</span>, <span style="color: #6a1868;">r</span> *<span style="color: #986801;">http.Request</span>, <span style="color: #6a1868;">err</span> <span style="color: #986801;">error</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+    w.<span style="color: #a626a4;">Header</span><span style="color: #a626a4;">()</span>.<span style="color: #a626a4;">Set</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"Content-Type"</span>, <span style="color: #50a14f;">"application/json"</span><span style="color: #a626a4;">)</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">success proxy</span>
-    <span style="color: #00538b;">raw</span> := err.<span style="color: #721045;">Error</span><span style="color: #a8007f;">()</span>
-    <span style="color: #5317ac;">if</span> strings.<span style="color: #721045;">HasPrefix</span><span style="color: #a8007f;">(</span>raw, proxyFlag<span style="color: #a8007f;">)</span> <span style="color: #a8007f;">{</span>
-        raw = raw<span style="color: #005f88;">[</span><span style="color: #8f0075;">len</span><span style="color: #904200;">(</span>proxyFlag<span style="color: #904200;">)</span>:<span style="color: #005f88;">]</span>
-        w.<span style="color: #721045;">Write</span><span style="color: #005f88;">(</span><span style="color: #904200;">[]</span><span style="color: #721045;">byte</span><span style="color: #904200;">(</span>raw<span style="color: #904200;">)</span><span style="color: #005f88;">)</span>
-        <span style="color: #5317ac;">return</span>
-    <span style="color: #a8007f;">}</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">success proxy</span>
+    <span style="color: #6a1868;">raw</span> := err.<span style="color: #a626a4;">Error</span><span style="color: #a626a4;">()</span>
+    <span style="color: #e45649;">if</span> strings.<span style="color: #a626a4;">HasPrefix</span><span style="color: #a626a4;">(</span>raw, proxyFlag<span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+        raw = raw<span style="color: #50a14f;">[</span><span style="color: #a626a4;">len</span><span style="color: #b751b6;">(</span>proxyFlag<span style="color: #b751b6;">)</span>:<span style="color: #50a14f;">]</span>
+        w.<span style="color: #a626a4;">Write</span><span style="color: #50a14f;">(</span><span style="color: #b751b6;">[]</span><span style="color: #a626a4;">byte</span><span style="color: #b751b6;">(</span>raw<span style="color: #b751b6;">)</span><span style="color: #50a14f;">)</span>
+        <span style="color: #e45649;">return</span>
+    <span style="color: #a626a4;">}</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">normal error</span>
-    <span style="color: #00538b;">s</span>, <span style="color: #00538b;">ok</span> := status.<span style="color: #721045;">FromError</span><span style="color: #a8007f;">(</span>err<span style="color: #a8007f;">)</span>
-    <span style="color: #5317ac;">if</span> <span style="color: #813e00;">!</span>ok <span style="color: #a8007f;">{</span>
-        s = status.<span style="color: #721045;">New</span><span style="color: #005f88;">(</span>codes.Unknown, err.<span style="color: #721045;">Error</span><span style="color: #904200;">()</span><span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
-    <span style="color: #00538b;">resp</span> := <span style="color: #005a5f;">StandardResp</span><span style="color: #a8007f;">{</span>
-        <span style="color: #0000c0;">Code</span>:  1,
-        <span style="color: #0000c0;">Data</span>:  <span style="color: #0000c0;">nil</span>,
-        <span style="color: #0000c0;">Error</span>: s.<span style="color: #721045;">Message</span><span style="color: #005f88;">()</span>,
-    <span style="color: #a8007f;">}</span>
-    <span style="color: #00538b;">bs</span>, <span style="color: #00538b;">_</span> := json.<span style="color: #721045;">Marshal</span><span style="color: #a8007f;">(</span>&amp;resp<span style="color: #a8007f;">)</span>
-    w.<span style="color: #721045;">Write</span><span style="color: #a8007f;">(</span>bs<span style="color: #a8007f;">)</span>
-<span style="color: #000000;">}</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">normal error</span>
+    <span style="color: #6a1868;">s</span>, <span style="color: #6a1868;">ok</span> := status.<span style="color: #a626a4;">FromError</span><span style="color: #a626a4;">(</span>err<span style="color: #a626a4;">)</span>
+    <span style="color: #e45649;">if</span> <span style="color: #4078f2; font-weight: bold;">!</span>ok <span style="color: #a626a4;">{</span>
+        s = status.<span style="color: #a626a4;">New</span><span style="color: #50a14f;">(</span>codes.Unknown, err.<span style="color: #a626a4;">Error</span><span style="color: #b751b6;">()</span><span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+    <span style="color: #6a1868;">resp</span> := <span style="color: #986801;">StandardResp</span><span style="color: #a626a4;">{</span>
+        <span style="color: #b751b6;">Code</span>:  1,
+        <span style="color: #b751b6;">Data</span>:  <span style="color: #b751b6;">nil</span>,
+        <span style="color: #b751b6;">Error</span>: s.<span style="color: #a626a4;">Message</span><span style="color: #50a14f;">()</span>,
+    <span style="color: #a626a4;">}</span>
+    <span style="color: #6a1868;">bs</span>, <span style="color: #6a1868;">_</span> := json.<span style="color: #a626a4;">Marshal</span><span style="color: #a626a4;">(</span>&amp;resp<span style="color: #a626a4;">)</span>
+    w.<span style="color: #a626a4;">Write</span><span style="color: #a626a4;">(</span>bs<span style="color: #a626a4;">)</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -515,10 +515,10 @@ Mux 代码：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #00538b;">gwMux</span> := runtime.<span style="color: #721045;">NewServeMux</span><span style="color: #000000;">(</span>
-    runtime.<span style="color: #721045;">WithForwardResponseOption</span><span style="color: #a8007f;">(</span>HttpSuccHandler<span style="color: #a8007f;">)</span>,
-    runtime.<span style="color: #721045;">WithProtoErrorHandler</span><span style="color: #a8007f;">(</span>HttpErrorHandler<span style="color: #a8007f;">)</span>,
-<span style="color: #000000;">)</span>
+<pre class="src src-go"><span style="color: #6a1868;">gwMux</span> := runtime.<span style="color: #a626a4;">NewServeMux</span><span style="color: #4078f2;">(</span>
+    runtime.<span style="color: #a626a4;">WithForwardResponseOption</span><span style="color: #a626a4;">(</span>HttpSuccHandler<span style="color: #a626a4;">)</span>,
+    runtime.<span style="color: #a626a4;">WithProtoErrorHandler</span><span style="color: #a626a4;">(</span>HttpErrorHandler<span style="color: #a626a4;">)</span>,
+<span style="color: #4078f2;">)</span>
 </pre>
 </div>
 
@@ -546,24 +546,24 @@ httpError 也就是 <code>WithProtoErrorHandler</code> 。看源码可以知道�
 </div>
 </div>
 
-<div id="outline-container-org9164a7a" class="outline-3">
-<h3 id="org9164a7a"><span class="section-number-3">7.3.</span> 跨域问题</h3>
+<div id="outline-container-orgb6f6ef7" class="outline-3">
+<h3 id="orgb6f6ef7"><span class="section-number-3">7.3.</span> 跨域问题</h3>
 <div class="outline-text-3" id="text-7-3">
 <p>
 gateway 的 server 本质上还是标准的 <code>http.Server</code> ，在 <code>ServeHTTP</code> 之前加一个跨域头即可：
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go">w.<span style="color: #721045;">Header</span><span style="color: #000000;">()</span>.<span style="color: #721045;">Set</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"Access-Control-Allow-Origin"</span>, <span style="color: #2544bb;">"*"</span><span style="color: #000000;">)</span>
-w.<span style="color: #721045;">Header</span><span style="color: #000000;">()</span>.<span style="color: #721045;">Set</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"Access-Control-Request-Method"</span>, <span style="color: #2544bb;">"GET, POST, PUT, OPTIONS"</span><span style="color: #000000;">)</span>
-w.<span style="color: #721045;">Header</span><span style="color: #000000;">()</span>.<span style="color: #721045;">Set</span><span style="color: #000000;">(</span><span style="color: #2544bb;">"Access-Control-Allow-Headers"</span>, <span style="color: #2544bb;">"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"</span><span style="color: #000000;">)</span>
+<pre class="src src-go">w.<span style="color: #a626a4;">Header</span><span style="color: #4078f2;">()</span>.<span style="color: #a626a4;">Set</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"Access-Control-Allow-Origin"</span>, <span style="color: #50a14f;">"*"</span><span style="color: #4078f2;">)</span>
+w.<span style="color: #a626a4;">Header</span><span style="color: #4078f2;">()</span>.<span style="color: #a626a4;">Set</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"Access-Control-Request-Method"</span>, <span style="color: #50a14f;">"GET, POST, PUT, OPTIONS"</span><span style="color: #4078f2;">)</span>
+w.<span style="color: #a626a4;">Header</span><span style="color: #4078f2;">()</span>.<span style="color: #a626a4;">Set</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"Access-Control-Allow-Headers"</span>, <span style="color: #50a14f;">"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"</span><span style="color: #4078f2;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgf7544d4" class="outline-3">
-<h3 id="orgf7544d4"><span class="section-number-3">7.4.</span> 解决返回数据时空字段不返回的问题</h3>
+<div id="outline-container-orgc06f2ff" class="outline-3">
+<h3 id="orgc06f2ff"><span class="section-number-3">7.4.</span> 解决返回数据时空字段不返回的问题</h3>
 <div class="outline-text-3" id="text-7-4">
 <p>
 protobuf 生成的 pb.go 中 struct 字段都是用 <code>json:",omitempty"</code> 修饰，这会导致在 gateway 转发返回时 json marshal 空的字段（初始值，0，空 slice 等）不返回。
@@ -574,11 +574,11 @@ protobuf 生成的 pb.go 中 struct 字段都是用 <code>json:",omitempty"</cod
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">sendProtoMessage</span><span style="color: #000000;">(</span><span style="color: #00538b;">resp</span> <span style="color: #005a5f;">proto.Message</span>, <span style="color: #00538b;">w</span> <span style="color: #005a5f;">http.ResponseWriter</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-    w.<span style="color: #721045;">Header</span><span style="color: #a8007f;">()</span>.<span style="color: #721045;">Set</span><span style="color: #a8007f;">(</span><span style="color: #2544bb;">"Content-Type"</span>, <span style="color: #2544bb;">"application/json; charset=utf-8"</span><span style="color: #a8007f;">)</span>
-    <span style="color: #00538b;">m</span> := <span style="color: #005a5f;">jsonpb.Marshaler</span><span style="color: #a8007f;">{</span><span style="color: #0000c0;">EmitDefaults</span>: <span style="color: #0000c0;">true</span><span style="color: #a8007f;">}</span>
-    m.<span style="color: #721045;">Marshal</span><span style="color: #a8007f;">(</span>w, resp<span style="color: #a8007f;">)</span> <span style="color: #505050;">// </span><span style="color: #505050;">You should check for errors here</span>
-<span style="color: #000000;">}</span>
+<pre class="src src-go"><span style="color: #e45649;">func</span> <span style="color: #a626a4;">sendProtoMessage</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">resp</span> <span style="color: #986801;">proto.Message</span>, <span style="color: #6a1868;">w</span> <span style="color: #986801;">http.ResponseWriter</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+    w.<span style="color: #a626a4;">Header</span><span style="color: #a626a4;">()</span>.<span style="color: #a626a4;">Set</span><span style="color: #a626a4;">(</span><span style="color: #50a14f;">"Content-Type"</span>, <span style="color: #50a14f;">"application/json; charset=utf-8"</span><span style="color: #a626a4;">)</span>
+    <span style="color: #6a1868;">m</span> := <span style="color: #986801;">jsonpb.Marshaler</span><span style="color: #a626a4;">{</span><span style="color: #b751b6;">EmitDefaults</span>: <span style="color: #b751b6;">true</span><span style="color: #a626a4;">}</span>
+    m.<span style="color: #a626a4;">Marshal</span><span style="color: #a626a4;">(</span>w, resp<span style="color: #a626a4;">)</span> <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">You should check for errors here</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -587,7 +587,7 @@ protobuf 生成的 pb.go 中 struct 字段都是用 <code>json:",omitempty"</cod
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #00538b;">gwmux</span> := runtime.<span style="color: #721045;">NewServeMux</span><span style="color: #000000;">(</span>runtime.<span style="color: #721045;">WithMarshalerOption</span><span style="color: #a8007f;">(</span>runtime.MIMEWildcard, &amp;<span style="color: #005a5f;">runtime.JSONPb</span><span style="color: #005f88;">{</span><span style="color: #0000c0;">OrigName</span>: <span style="color: #0000c0;">true</span>, <span style="color: #0000c0;">EmitDefaults</span>: <span style="color: #0000c0;">true</span><span style="color: #005f88;">}</span><span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>
+<pre class="src src-go"><span style="color: #6a1868;">gwmux</span> := runtime.<span style="color: #a626a4;">NewServeMux</span><span style="color: #4078f2;">(</span>runtime.<span style="color: #a626a4;">WithMarshalerOption</span><span style="color: #a626a4;">(</span>runtime.MIMEWildcard, &amp;<span style="color: #986801;">runtime.JSONPb</span><span style="color: #50a14f;">{</span><span style="color: #b751b6;">OrigName</span>: <span style="color: #b751b6;">true</span>, <span style="color: #b751b6;">EmitDefaults</span>: <span style="color: #b751b6;">true</span><span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span><span style="color: #4078f2;">)</span>
 </pre>
 </div>
 
@@ -599,7 +599,7 @@ protobuf 生成的 pb.go 中 struct 字段都是用 <code>json:",omitempty"</cod
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-08-19 14:50:25 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2020-08-19 14:50:25 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

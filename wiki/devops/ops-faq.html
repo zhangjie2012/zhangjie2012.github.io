@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-12-01 Thu 14:38 -->
+<!-- 2023-01-01 Sun 17:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>运维 FAQ</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -223,34 +223,34 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org06c5f8b">1. Shell</a>
+<li><a href="#org338c36a">1. Shell</a>
 <ul>
-<li><a href="#org45dfc24">1.1. 登录读取配置的流程</a>
+<li><a href="#orgfcd26fb">1.1. 登录读取配置的流程</a>
 <ul>
-<li><a href="#orgb6faa85">1.1.1. login shell</a></li>
-<li><a href="#org05b11b0">1.1.2. non-login shell</a></li>
+<li><a href="#org2cfefc4">1.1.1. login shell</a></li>
+<li><a href="#org2458193">1.1.2. non-login shell</a></li>
 </ul>
 </li>
-<li><a href="#org51d73f7">1.2. <code>~/.profile</code> 和 <code>~/.bashrc</code> 的区别</a></li>
-<li><a href="#orgf58e255">1.3. <code>/etc/bashrc</code> 做了哪些事？</a></li>
-<li><a href="#org3e6a6ba">1.4. <code>~/.bash_history</code> 是干嘛的？</a></li>
-<li><a href="#org8b1a246">1.5. <code>~/.bash_logout</code> 是干嘛的？</a></li>
-<li><a href="#orge42ca0a">1.6. 查看当前 shell</a></li>
+<li><a href="#org0696767">1.2. <code>~/.profile</code> 和 <code>~/.bashrc</code> 的区别</a></li>
+<li><a href="#orgf79c506">1.3. <code>/etc/bashrc</code> 做了哪些事？</a></li>
+<li><a href="#orge559080">1.4. <code>~/.bash_history</code> 是干嘛的？</a></li>
+<li><a href="#org0290cc0">1.5. <code>~/.bash_logout</code> 是干嘛的？</a></li>
+<li><a href="#org00c8d3e">1.6. 查看当前 shell</a></li>
 </ul>
 </li>
-<li><a href="#org5f71fc7">2. 如何矫正系统时间</a></li>
-<li><a href="#org47bc12b">3. 如何查看机器基本信息（发行版本，CPU，内存等）</a></li>
-<li><a href="#orgfb88c38">4. apt-get update 和 apt-get upgrade 的区别</a></li>
+<li><a href="#org9494336">2. 如何矫正系统时间</a></li>
+<li><a href="#org94381c7">3. 如何查看机器基本信息（发行版本，CPU，内存等）</a></li>
+<li><a href="#orgf272170">4. apt-get update 和 apt-get upgrade 的区别</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org06c5f8b" class="outline-2">
-<h2 id="org06c5f8b"><span class="section-number-2">1.</span> Shell</h2>
+<div id="outline-container-org338c36a" class="outline-2">
+<h2 id="org338c36a"><span class="section-number-2">1.</span> Shell</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org45dfc24" class="outline-3">
-<h3 id="org45dfc24"><span class="section-number-3">1.1.</span> 登录读取配置的流程</h3>
+<div id="outline-container-orgfcd26fb" class="outline-3">
+<h3 id="orgfcd26fb"><span class="section-number-3">1.1.</span> 登录读取配置的流程</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 广义的 shell 分两种，一种为 login shell（通过终端登录），另外一种为 non-login shell（通过图形界面登录）。
@@ -268,8 +268,8 @@
 </ol>
 </div>
 
-<div id="outline-container-orgb6faa85" class="outline-4">
-<h4 id="orgb6faa85"><span class="section-number-4">1.1.1.</span> login shell</h4>
+<div id="outline-container-org2cfefc4" class="outline-4">
+<h4 id="org2cfefc4"><span class="section-number-4">1.1.1.</span> login shell</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <ol class="org-ol">
 <li><code>~/.bash_profile</code></li>
@@ -281,7 +281,7 @@
 bash 的 login shell 只会读取上面三个文件中的一个，而读取的顺序则是按照上面的顺序。而一般情况下 <code>~/.bash_profile</code> 中会有这样一块代码:
 </p>
 
-<pre class="example" id="org3790c5a">
+<pre class="example" id="org6a3b84b">
 # Get the aliases and functions
 if [ -f ~/.bashrc ]; then
     . ~/.bashrc
@@ -292,7 +292,7 @@ fi
 如果存在 <code>~/.bashrc</code> 则使用它，而 <code>~/.bashrc</code> 中又会包含这样一段代码:
 </p>
 
-<pre class="example" id="org9ba04a0">
+<pre class="example" id="org7c49ca2">
 # Source global definitions
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
@@ -305,8 +305,8 @@ fi
 </div>
 </div>
 
-<div id="outline-container-org05b11b0" class="outline-4">
-<h4 id="org05b11b0"><span class="section-number-4">1.1.2.</span> non-login shell</h4>
+<div id="outline-container-org2458193" class="outline-4">
+<h4 id="org2458193"><span class="section-number-4">1.1.2.</span> non-login shell</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <p>
 仅仅会读 <code>~/.bashrc</code> <code>&gt; =/etc/bashrc</code>
@@ -319,8 +319,8 @@ fi
 </div>
 </div>
 
-<div id="outline-container-org51d73f7" class="outline-3">
-<h3 id="org51d73f7"><span class="section-number-3">1.2.</span> <code>~/.profile</code> 和 <code>~/.bashrc</code> 的区别</h3>
+<div id="outline-container-org0696767" class="outline-3">
+<h3 id="org0696767"><span class="section-number-3">1.2.</span> <code>~/.profile</code> 和 <code>~/.bashrc</code> 的区别</h3>
 <div class="outline-text-3" id="text-1-2">
 <ul class="org-ul">
 <li>这两者都具有个性化定制功能</li>
@@ -330,8 +330,8 @@ fi
 </div>
 </div>
 
-<div id="outline-container-orgf58e255" class="outline-3">
-<h3 id="orgf58e255"><span class="section-number-3">1.3.</span> <code>/etc/bashrc</code> 做了哪些事？</h3>
+<div id="outline-container-orgf79c506" class="outline-3">
+<h3 id="orgf79c506"><span class="section-number-3">1.3.</span> <code>/etc/bashrc</code> 做了哪些事？</h3>
 <div class="outline-text-3" id="text-1-3">
 <ol class="org-ol">
 <li>依据不同的 UID 规定 umask 的值</li>
@@ -341,8 +341,8 @@ fi
 </div>
 </div>
 
-<div id="outline-container-org3e6a6ba" class="outline-3">
-<h3 id="org3e6a6ba"><span class="section-number-3">1.4.</span> <code>~/.bash_history</code> 是干嘛的？</h3>
+<div id="outline-container-orge559080" class="outline-3">
+<h3 id="orge559080"><span class="section-number-3">1.4.</span> <code>~/.bash_history</code> 是干嘛的？</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 历史命令记录，登录之后读入内存。
@@ -350,8 +350,8 @@ fi
 </div>
 </div>
 
-<div id="outline-container-org8b1a246" class="outline-3">
-<h3 id="org8b1a246"><span class="section-number-3">1.5.</span> <code>~/.bash_logout</code> 是干嘛的？</h3>
+<div id="outline-container-org0290cc0" class="outline-3">
+<h3 id="org0290cc0"><span class="section-number-3">1.5.</span> <code>~/.bash_logout</code> 是干嘛的？</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 记录了当我注销 bash 后系统再帮我做完指定的操作才能离开。
@@ -359,8 +359,8 @@ fi
 </div>
 </div>
 
-<div id="outline-container-orge42ca0a" class="outline-3">
-<h3 id="orge42ca0a"><span class="section-number-3">1.6.</span> 查看当前 shell</h3>
+<div id="outline-container-org00c8d3e" class="outline-3">
+<h3 id="org00c8d3e"><span class="section-number-3">1.6.</span> 查看当前 shell</h3>
 <div class="outline-text-3" id="text-1-6">
 <ul class="org-ul">
 <li>所有的系统Shell: <code>cat /etc/shells</code></li>
@@ -370,8 +370,8 @@ fi
 </div>
 </div>
 
-<div id="outline-container-org5f71fc7" class="outline-2">
-<h2 id="org5f71fc7"><span class="section-number-2">2.</span> 如何矫正系统时间</h2>
+<div id="outline-container-org9494336" class="outline-2">
+<h2 id="org9494336"><span class="section-number-2">2.</span> 如何矫正系统时间</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>修改时区: <code>sudo cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</code></li>
@@ -380,8 +380,8 @@ fi
 </div>
 </div>
 
-<div id="outline-container-org47bc12b" class="outline-2">
-<h2 id="org47bc12b"><span class="section-number-2">3.</span> 如何查看机器基本信息（发行版本，CPU，内存等）</h2>
+<div id="outline-container-org94381c7" class="outline-2">
+<h2 id="org94381c7"><span class="section-number-2">3.</span> 如何查看机器基本信息（发行版本，CPU，内存等）</h2>
 <div class="outline-text-2" id="text-3">
 <ul class="org-ul">
 <li><code>cat /etc/os-release</code>: 发行版本</li>
@@ -401,8 +401,8 @@ fi
 </div>
 </div>
 
-<div id="outline-container-orgfb88c38" class="outline-2">
-<h2 id="orgfb88c38"><span class="section-number-2">4.</span> apt-get update 和 apt-get upgrade 的区别</h2>
+<div id="outline-container-orgf272170" class="outline-2">
+<h2 id="orgf272170"><span class="section-number-2">4.</span> apt-get update 和 apt-get upgrade 的区别</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 先运行 <code>update</code> ，然后再运行 <code>upgrade</code> 。它们两个没有包含对方的功能，各自做的事情不同。
@@ -435,7 +435,7 @@ fi
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-09-11 15:29:32 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2018-09-11 15:29:32 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
 </div>
 </body>
 </html>

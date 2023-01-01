@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2022-12-01 Thu 14:37 -->
+<!-- 2023-01-01 Sun 17:16 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 的异常处理：defer，panic，recover</title>
-<meta name="author" content="zhj" />
+<meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
 <style>
@@ -248,27 +248,27 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #505050;">// </span><span style="color: #505050;">go/net/http.go</span>
-<span style="color: #5317ac;">func</span> <span style="color: #000000;">(</span><span style="color: #00538b;">c</span> *<span style="color: #005a5f;">conn</span><span style="color: #000000;">)</span> <span style="color: #721045;">serve</span><span style="color: #000000;">(</span><span style="color: #00538b;">ctx</span> <span style="color: #005a5f;">context.Context</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">defer</span> <span style="color: #5317ac;">func</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span>
-        <span style="color: #5317ac;">if</span> <span style="color: #00538b;">err</span> := <span style="color: #8f0075;">recover</span><span style="color: #005f88;">()</span>; err != <span style="color: #0000c0;">nil</span> &amp;&amp; err != ErrAbortHandler <span style="color: #005f88;">{</span>
-            <span style="color: #5317ac;">const</span> <span style="color: #0000c0;">size</span> = 64 &lt;&lt; 10
-            <span style="color: #00538b;">buf</span> := <span style="color: #8f0075;">make</span><span style="color: #904200;">(</span><span style="color: #7f10d0;">[]</span><span style="color: #005a5f;">byte</span>, size<span style="color: #904200;">)</span>
-            buf = buf<span style="color: #904200;">[</span>:runtime.<span style="color: #721045;">Stack</span><span style="color: #7f10d0;">(</span>buf, <span style="color: #0000c0;">false</span><span style="color: #7f10d0;">)</span><span style="color: #904200;">]</span>
-            c.server.<span style="color: #721045;">logf</span><span style="color: #904200;">(</span><span style="color: #2544bb;">"http: panic serving %v: %v\n%s"</span>, c.remoteAddr, err, buf<span style="color: #904200;">)</span>
-        <span style="color: #005f88;">}</span>
-        <span style="color: #5317ac;">if</span> <span style="color: #813e00;">!</span>c.<span style="color: #721045;">hijacked</span><span style="color: #005f88;">()</span> <span style="color: #005f88;">{</span>
-            c.<span style="color: #8f0075;">close</span><span style="color: #904200;">()</span>
-            c.<span style="color: #721045;">setState</span><span style="color: #904200;">(</span>c.rwc, StateClosed<span style="color: #904200;">)</span>
-        <span style="color: #005f88;">}</span>
-    <span style="color: #a8007f;">}()</span>
+<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">go/net/http.go</span>
+<span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">c</span> *<span style="color: #986801;">conn</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">serve</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">ctx</span> <span style="color: #986801;">context.Context</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">defer</span> <span style="color: #e45649;">func</span><span style="color: #a626a4;">()</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #e45649;">if</span> <span style="color: #6a1868;">err</span> := <span style="color: #a626a4;">recover</span><span style="color: #50a14f;">()</span>; err != <span style="color: #b751b6;">nil</span> &amp;&amp; err != ErrAbortHandler <span style="color: #50a14f;">{</span>
+            <span style="color: #e45649;">const</span> <span style="color: #b751b6;">size</span> = 64 &lt;&lt; 10
+            <span style="color: #6a1868;">buf</span> := <span style="color: #a626a4;">make</span><span style="color: #b751b6;">(</span><span style="color: #4db5bd;">[]</span><span style="color: #986801;">byte</span>, size<span style="color: #b751b6;">)</span>
+            buf = buf<span style="color: #b751b6;">[</span>:runtime.<span style="color: #a626a4;">Stack</span><span style="color: #4db5bd;">(</span>buf, <span style="color: #b751b6;">false</span><span style="color: #4db5bd;">)</span><span style="color: #b751b6;">]</span>
+            c.server.<span style="color: #a626a4;">logf</span><span style="color: #b751b6;">(</span><span style="color: #50a14f;">"http: panic serving %v: %v\n%s"</span>, c.remoteAddr, err, buf<span style="color: #b751b6;">)</span>
+        <span style="color: #50a14f;">}</span>
+        <span style="color: #e45649;">if</span> <span style="color: #4078f2; font-weight: bold;">!</span>c.<span style="color: #a626a4;">hijacked</span><span style="color: #50a14f;">()</span> <span style="color: #50a14f;">{</span>
+            c.<span style="color: #a626a4;">close</span><span style="color: #b751b6;">()</span>
+            c.<span style="color: #a626a4;">setState</span><span style="color: #b751b6;">(</span>c.rwc, StateClosed<span style="color: #b751b6;">)</span>
+        <span style="color: #50a14f;">}</span>
+    <span style="color: #a626a4;">}()</span>
 
-    <span style="color: #505050;">// </span><span style="color: #505050;">...</span>
-    <span style="color: #5317ac;">for</span> <span style="color: #a8007f;">{</span>
-        <span style="color: #505050;">// </span><span style="color: #505050;">&#24403; ServeHTTP(&#22238;&#25481;&#19994;&#21153;&#20013;&#30340; ServeHTTP) &#20986;&#29616;&#23849;&#28291;&#26102;&#65292;&#20250;&#34987;&#21069;&#38754;&#30340; recover() &#25429;&#33719;&#65292;&#24182;&#33719;&#21462;&#23558;&#22534;&#26632;&#20449;&#24687;&#36755;&#20986;&#21040;&#26085;&#24535;&#20013;</span>
-        <span style="color: #005a5f;">serverHandler</span><span style="color: #005f88;">{</span>c.server<span style="color: #005f88;">}</span>.<span style="color: #721045;">ServeHTTP</span><span style="color: #005f88;">(</span>w, w.req<span style="color: #005f88;">)</span>
-    <span style="color: #a8007f;">}</span>
-<span style="color: #000000;">}</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">...</span>
+    <span style="color: #e45649;">for</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#24403; ServeHTTP(&#22238;&#25481;&#19994;&#21153;&#20013;&#30340; ServeHTTP) &#20986;&#29616;&#23849;&#28291;&#26102;&#65292;&#20250;&#34987;&#21069;&#38754;&#30340; recover() &#25429;&#33719;&#65292;&#24182;&#33719;&#21462;&#23558;&#22534;&#26632;&#20449;&#24687;&#36755;&#20986;&#21040;&#26085;&#24535;&#20013;</span>
+        <span style="color: #986801;">serverHandler</span><span style="color: #50a14f;">{</span>c.server<span style="color: #50a14f;">}</span>.<span style="color: #a626a4;">ServeHTTP</span><span style="color: #50a14f;">(</span>w, w.req<span style="color: #50a14f;">)</span>
+    <span style="color: #a626a4;">}</span>
+<span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -298,13 +298,13 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
 <code>defer</code> 函数参数会在 <code>defer</code> 声明的时候求值（笔者：可以简单理解成 C 语言中的宏）；
 </p>
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">a</span><span style="color: #000000;">()</span> <span style="color: #000000;">{</span>
-    <span style="color: #00538b;">i</span> := 0
-    <span style="color: #5317ac;">defer</span> fmt.<span style="color: #721045;">Println</span><span style="color: #a8007f;">(</span>i<span style="color: #a8007f;">)</span>
+<pre class="src src-go"><span style="color: #e45649;">func</span> <span style="color: #a626a4;">a</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #6a1868;">i</span> := 0
+    <span style="color: #e45649;">defer</span> fmt.<span style="color: #a626a4;">Println</span><span style="color: #a626a4;">(</span>i<span style="color: #a626a4;">)</span>
     i++
-    <span style="color: #5317ac;">return</span>
-<span style="color: #000000;">}</span>
-<span style="color: #505050;">// </span><span style="color: #505050;">i &#30340;&#20540;&#26159; 0 &#32780;&#19981;&#26159; 1</span>
+    <span style="color: #e45649;">return</span>
+<span style="color: #4078f2;">}</span>
+<span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">i &#30340;&#20540;&#26159; 0 &#32780;&#19981;&#26159; 1</span>
 </pre>
 </div></li>
 <li><code>defer</code> 函数调用顺序的「后进先出」，即最先声明的最后调用；</li>
@@ -312,17 +312,17 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
 <code>defer</code> 函数可以读写函数的命名返回值；
 </p>
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #5317ac;">func</span> <span style="color: #721045;">c</span><span style="color: #000000;">()</span> <span style="color: #000000;">(</span><span style="color: #00538b;">i</span> <span style="color: #005a5f;">int</span><span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
-    <span style="color: #5317ac;">defer</span> <span style="color: #5317ac;">func</span><span style="color: #a8007f;">()</span> <span style="color: #a8007f;">{</span> i++ <span style="color: #a8007f;">}()</span>
-    <span style="color: #5317ac;">return</span> 1
-<span style="color: #000000;">}</span>
-<span style="color: #505050;">// </span><span style="color: #505050;">&#36820;&#22238;&#20540;&#20013;&#30340; i &#20540;&#20026; 2&#65292;&#32780;&#19981;&#26159; 1</span>
+<pre class="src src-go"><span style="color: #e45649;">func</span> <span style="color: #a626a4;">c</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">i</span> <span style="color: #986801;">int</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #e45649;">defer</span> <span style="color: #e45649;">func</span><span style="color: #a626a4;">()</span> <span style="color: #a626a4;">{</span> i++ <span style="color: #a626a4;">}()</span>
+    <span style="color: #e45649;">return</span> 1
+<span style="color: #4078f2;">}</span>
+<span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#36820;&#22238;&#20540;&#20013;&#30340; i &#20540;&#20026; 2&#65292;&#32780;&#19981;&#26159; 1</span>
 </pre>
 </div></li>
 </ol>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-03-01 17:50:00 <br />Last updated: 2022-12-01 Thu 14:04 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-03-01 17:50:00 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
