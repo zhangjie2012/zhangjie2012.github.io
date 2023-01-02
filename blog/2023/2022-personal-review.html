@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
 <!-- 2023-01-02 Mon 18:52 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MongoDB</title>
+<title>2021-2022 个人总结</title>
 <meta name="author" content="ByteDance" />
 <meta name="description" content="Keep It Simple, Stupid" />
 <meta name="generator" content="Org Mode" />
@@ -194,7 +194,7 @@
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   .org-svg { }
 </style>
-<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<link rel="stylesheet" type="text/css" href="/static/site.css"/>
 <script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
      function CodeHighlightOn(elem, id)
@@ -218,160 +218,164 @@
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">MongoDB</h1>
+<h1 class="title">2021-2022 个人总结</h1>
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org229073a">1. 安装</a></li>
-<li><a href="#orgd98e6eb">2. 常用命令</a>
-<ul>
-<li><a href="#org75be54b">2.1. 库级别命令</a></li>
-<li><a href="#orge747a26">2.2. 表级别命令</a></li>
-<li><a href="#org70c9e9e">2.3. 其它</a></li>
-</ul>
-</li>
-<li><a href="#org5e1c5b4">3. 备份与恢复</a></li>
-<li><a href="#org000d491">4. FAQ</a>
-<ul>
-<li><a href="#org1786f97">4.1. Q: 如何查询嵌套内容？</a></li>
-<li><a href="#org4fa0fe9">4.2. Q: <code>db.stats()</code> 中 <code>dataSize</code> 为什么比 <code>storageSize</code> 要大？</a></li>
-</ul>
-</li>
-<li><a href="#orgb32521e">5. Resource</a></li>
+<li><a href="#orga27c956">1. INTRO</a></li>
+<li><a href="#orge5b7e48">2. 复盘</a></li>
+<li><a href="#orgcdaf71b">3. 读书</a></li>
+<li><a href="#org9b5d31b">4. 最后</a></li>
+<li><a href="#orgd8753ec">5. 历年总结</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org229073a" class="outline-2">
-<h2 id="org229073a"><span class="section-number-2">1.</span> 安装</h2>
+<div id="org864e8dd" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2023/moritz-knoringer-rrw0MtEqQoU-unsplash.jpg" alt="moritz-knoringer-rrw0MtEqQoU-unsplash.jpg" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Photo by Moritz Knöringer on Unsplash</p>
+</div>
+
+<div id="outline-container-orga27c956" class="outline-2">
+<h2 id="orga27c956"><span class="section-number-2">1.</span> INTRO</h2>
 <div class="outline-text-2" id="text-1">
-<ul class="org-ul">
-<li>设置清华大学提供的镜像源：<a href="https://mirror.tuna.tsinghua.edu.cn/help/mongodb/">https://mirror.tuna.tsinghua.edu.cn/help/mongodb/</a>，然后通过包管理工具（yum、apt 等）安装</li>
-<li>也可以使用 Docker 的方式启动，<a href="https://hub.docker.com/_/mongo">这里</a></li>
-</ul>
+<p>
+2022年11月底，离开了挖财，在<a href="https://blog.opskumu.com/">磊磊</a>的内推下，加入了字节跳动，在杭州（这已经是磊磊内推的第三份工作了，由衷感激）。
+</p>
 
 <p>
-推荐使用 Docker，挂载存储到本地。
+当时写了篇文章，最后删掉了，这几年最讨厌的一件事情就是“说教”：被别人“说教”或者“说教”别人。也是不再写文章的一大原因。
+所谓“成长”、“经验”，都只是一时的、片面的感觉。我们只有一个真正的命题是“如何一个人面对这漫长的一生”，这一点是没人可以教的。
+</p>
+
+<p>
+一转眼工作就 10 年了，而这两年最大的不同是工作变得不再那么重要。
+</p>
+
+<p>
+历年的总结中，工作永远是最核心的，仿佛有说不完的“职场经验”想跟大家分享。如何做技术、做工程、做产品，是永恒的几个问题，
+恨不得“授业解惑”。后来才发现我所追求的都太多绝对，对人、对自己都没有“余地”，想的太坏，纠结、迷茫、不甘都源于此，
+总想有一个绝对的方法论来做人做事，导致越来越偏离方向。
+</p>
+
+<p>
+在挖财一共快五年，2021-2022 这个期间有 1.5 年的时间，可能是跑的很偏一段时间，总觉得自己满腹委屈，以最坏的思路来看人看事，
+满脑子都是政治斗争，小聪明和小手段，感觉自己在“快速成长”。好在没有偏离很久，后来明白了做人做事要“行正道、行大道”，
+想事要宏观一点，纯粹一点，不要纠结于太多细节，事情就会变得简单起来。
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd98e6eb" class="outline-2">
-<h2 id="orgd98e6eb"><span class="section-number-2">2.</span> 常用命令</h2>
+<div id="outline-container-orge5b7e48" class="outline-2">
+<h2 id="orge5b7e48"><span class="section-number-2">2.</span> 复盘</h2>
 <div class="outline-text-2" id="text-2">
-</div>
-<div id="outline-container-org75be54b" class="outline-3">
-<h3 id="org75be54b"><span class="section-number-3">2.1.</span> 库级别命令</h3>
-<div class="outline-text-3" id="text-2-1">
-<ul class="org-ul">
-<li><code>user ${db}</code>: 切换数据库</li>
-<li><code>show dbs</code>: 查看所有数据库</li>
-<li><code>show users</code>: 显示用户</li>
-<li><code>db.dropDatabase()</code>: 删除当前数据库</li>
-<li><code>db.getName()</code>: 查看当前数据库（名称）</li>
-<li><code>db.version()</code>: 查看当前 DB 版本</li>
-<li><code>db.stats()</code>: 查看库表状态（表、对象数量，对象大小，数据大小，存储大小，索引数量，索引大小等），默认的单位是 byte，可以指定参数。如 <code>db.stats(1024)</code> 则返回的是 KB。</li>
-</ul>
-</div>
-</div>
 
-<div id="outline-container-orge747a26" class="outline-3">
-<h3 id="orge747a26"><span class="section-number-3">2.2.</span> 表级别命令</h3>
-<div class="outline-text-3" id="text-2-2">
-<ul class="org-ul">
-<li><code>show collections</code>: 查看所有的 collections</li>
-<li><code>db.${collection}.stat()</code>: 查看当前表的状态（大小、数量、索引等）</li>
-<li><code>db.${collection}.count()</code>: 表行数量</li>
-<li><code>db.${collection}.find()</code>: 不设置条件时，查询所有的数据，查询条件为JSON 结构，调用 <code>limit</code> 函数可限制记录条数</li>
-<li><code>db.${collection}.getIndexes()</code>: 查看当前表的所有索引</li>
-<li><code>db.${collection}.dropIndex("${idx_name}")</code>: 删除索引， <code>dropIndexes()</code> 删除所有索引</li>
-<li><code>db.${collection}.distinct(field, query, options)</code>: 字段去重，具体请看 <a href="https://docs.mongodb.com/manual/reference/method/db.collection.distinct/">db.collection.distinct()</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org70c9e9e" class="outline-3">
-<h3 id="org70c9e9e"><span class="section-number-3">2.3.</span> 其它</h3>
-<div class="outline-text-3" id="text-2-3">
-<ul class="org-ul">
-<li><code>help</code>: 万能的帮助命令，可针对库，表等分别调用，用好了基本上不需要查阅手册</li>
-<li><code>pretty()</code>: 友好的显示结果，可与各种查询命令一起使用</li>
-</ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org5e1c5b4" class="outline-2">
-<h2 id="org5e1c5b4"><span class="section-number-2">3.</span> 备份与恢复</h2>
-<div class="outline-text-2" id="text-3">
-<p>
-MongoDB 中常使用 <code>mongodump</code> 来备份数据，使用 <code>mongorestore</code> 来恢复数据。
+<div id="org52fdaed" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2023/reivew.png" alt="reivew.png" />
 </p>
-
-<ul class="org-ul">
-<li>mongodump: <code>mongodump -h &lt;hostname&gt;&lt;:port&gt; -d dbname -o dbdirectory</code></li>
-<li>mongorestore: <code>mongorestore -h &lt;hostname&gt;&lt;:port&gt; -d dbname &lt;path&gt;</code></li>
-</ul>
+<p><span class="figure-number">Figure 2: </span>复盘记录</p>
+</div>
 
 <p>
-<b>注意</b>: 这两个命令特别坑的地方在于，如果不指定路径会自动选择当前目录下文件，一般命令不加任何参数会自动提示 <code>help</code> ，而这两个命令不会。
-所以备份和恢复两个命令一定不能搞混了，有一次我备份数据的时候使用了 mongorestore 导致旧的数据恢复了。
+从 2019 年 7 月份开始至今已有 3 年时间，基本上坚持每周一次复盘（偶尔也会忘，但也不超过一个月）。起初收效是不明显的，等次
+数足够多，加上不断的打磨过程，在 2022 年逐渐有了质的飞跃，也给了自己很多的信心去做“复盘”这件事。
 </p>
 
 <p>
-mongorestore 报错：
+我是怎么复盘的呢？
 </p>
 
-<pre class="example">
-error connecting to host: could not connect to server: connection() : auth error: sasl conversation error:
- unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.=
+<ol class="org-ol">
+<li>设定复盘目标</li>
+<li>设定复盘原则：至少每周一次、不断精炼（抽象、删减控制数量）、坚持回顾</li>
+<li>复盘记录：分为四大块（参考的 CNCF 项目毕业阶段）：
+<ol class="org-ol">
+<li>Graduation “毕业”：Lock 状态，坚持执行，三年后才可变更</li>
+<li>Incubation “孵化”：由 Sandbox 中提炼成一句话，犯错值 +1，一年后毕业（Graduation），一年内可废弃（Deprecated）</li>
+<li>Deprecated “废弃”：Incubation 中发现不合理的，降低成废弃状态， 3 个月后删除</li>
+<li>Sandbox “沙盒”：复盘记录，每周记录一次，提炼成方法论</li>
+</ol></li>
+</ol>
+
+<p>
+状态流转：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">       SandBox
+          |
+      Incubation
+       /     \
+Graduation  Deprecated
 </pre>
+</div>
 
 <p>
-加上 <code>--authenticationDatabase=admin</code> 就可以了，具体原因还未知。
-</p>
-
-<p>
-较新版本的 MongoDB 需要指定 URI 连接，比如 <code>mongorestore "mongodb://&lt;username&gt;:&lt;passwd&gt;@localhost:27017/&lt;dbname&gt;"  --authenticationDatabase=admin --db &lt;dbname&gt; &lt;path&gt;</code> 。
+这套流程很好实操，每周都在 Sandbox 下记录下这周重要的几件事情，做的好或者不好，最后用一句话总结到 Incubation，如果存在
+则 +1，不存在则新建。按照权重排序。其他状态变更都是可选的，看心情，有空就整理一次。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org000d491" class="outline-2">
-<h2 id="org000d491"><span class="section-number-2">4.</span> FAQ</h2>
+<div id="outline-container-orgcdaf71b" class="outline-2">
+<h2 id="orgcdaf71b"><span class="section-number-2">3.</span> 读书</h2>
+<div class="outline-text-2" id="text-3">
+
+<div id="org2e5e0d2" class="figure">
+<p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2023/41672656397_.pic.jpg" alt="41672656397_.pic.jpg" />
+</p>
+<p><span class="figure-number">Figure 1: </span>小程序“i读书笔记”</p>
+</div>
+
+<p>
+从 2019 下半年开始非技术类书，起初只是想找一件与工作完全无关的事来做（打发时间），《大秦帝国》小说 6 部 11 本读完之后，
+便有了通读中国历史的目标。更多说明见 <a href="../../reading/learn-history.html">学习历史</a>。2022 年读了 56 本书，平均一周 1 本，每天坚持一小时左右。读历史刚开始很枯燥，
+也不是每本书都都的认真，直到慢慢的有了自己的体系之后就变的有趣了起来。这是一件令人开心的事。
+</p>
+
+<p>
+成家、年龄变大之后，身上的责任越来越大，人的工具属性也越来越强，生活、工作上自己可以做主的事越来越少，大部分事情
+也都很无奈。但是你只有一生啊，该尽的责任义务要尽，但不能全为了别人来活，总要找一件让自己内心充实、愉悦、有意义的事情去做。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9b5d31b" class="outline-2">
+<h2 id="org9b5d31b"><span class="section-number-2">4.</span> 最后</h2>
 <div class="outline-text-2" id="text-4">
-</div>
-<div id="outline-container-org1786f97" class="outline-3">
-<h3 id="org1786f97"><span class="section-number-3">4.1.</span> Q: 如何查询嵌套内容？</h3>
-<div class="outline-text-3" id="text-4-1">
 <p>
-A: 使用 <code>.</code> 语法，比如 <code>db.xxx.find({"aa.bb": "cc"})</code> 将会查询 <code>xxx</code> 表中 <code>aa</code> 结构中的 <code>bb = cc</code> 的条目。
+最大的一个收获，也可以代表这些年的心境变化，共勉。
 </p>
+
+<blockquote>
+<p>
+人生中遇到的所有事情都不可以用：黑白、对错、好坏来衡量的、也不是灰色的模糊的，而是‘可以转化的’。
+好事可以变成坏事，坏事可以变成好事。一件事太好的时候，往往就会突然糟糕起来；反之在最糟糕的时候，要有信心，很快就会好起来。
+所以，我想最难的事不是怎样越来越好，而是掌握好这一阴一阳的之间的转换。
+</p>
+</blockquote>
 </div>
 </div>
 
-<div id="outline-container-org4fa0fe9" class="outline-3">
-<h3 id="org4fa0fe9"><span class="section-number-3">4.2.</span> Q: <code>db.stats()</code> 中 <code>dataSize</code> 为什么比 <code>storageSize</code> 要大？</h3>
-<div class="outline-text-3" id="text-4-2">
-<p>
-A: <code>storageSize</code> 是实际数据库所有占用大小的总和，不做压缩的情况下，要比 <code>dataSize</code> 要大，因为它还包含未使用的空间。但是如果你使用 <code>WiredTiger</code> 存储引擎，数据在磁盘是上压缩过的，所以比 <code>dataSize</code> 看起来要小。看 <a href="https://stackoverflow.com/questions/34054780/how-can-mongodb-datasize-be-larger-than-storagesize">这里</a>。
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgb32521e" class="outline-2">
-<h2 id="orgb32521e"><span class="section-number-2">5.</span> Resource</h2>
+<div id="outline-container-orgd8753ec" class="outline-2">
+<h2 id="orgd8753ec"><span class="section-number-2">5.</span> 历年总结</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
-<li><a href="https://ruby-china.org/topics/27659">数据库 MongoDB 与 MySQL 深入对比</a></li>
+<li><a href="../2021/2020-personal-review.html">2020 个人总结</a></li>
+<li><a href="../2019/2017-2019-personal-review.html">2017-2019 个人总结</a></li>
+<li><a href="../2019/2018-personal-review.html">2018 个人总结</a></li>
+<li><a href="../2016/2016-personal-review.html">2016 个人总结</a></li>
+<li><a href="../2016/2015-personal-review.html">2015 个人总结</a></li>
+<li><a href="../2015/2014-personal-review.html">2014 个人总结</a></li>
+<li><a href="../2014/2013-personal-review.html">2013 个人总结</a></li>
 </ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-07-09 12:02:46 <br />Last updated: 2023-01-02 Mon 13:00 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2023-01-02 16:21:02 <br />Last updated: 2023-01-02 Mon 18:51 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>
