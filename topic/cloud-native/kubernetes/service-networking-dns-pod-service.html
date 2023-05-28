@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-01-01 Sun 17:15 -->
+<!-- 2023-05-28 Sun 13:54 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Services 和 Pods 的 DNS</title>
@@ -223,32 +223,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgb1817ee">1. 介绍</a>
+<li><a href="#orgbdccfad">1. 介绍</a>
 <ul>
-<li><a href="#org9347741">1.1. Services 的命名空间</a></li>
-<li><a href="#orge72702d">1.2. DNS 记录</a></li>
+<li><a href="#org8afb8f4">1.1. Services 的命名空间</a></li>
+<li><a href="#orgcc0b5bc">1.2. DNS 记录</a></li>
 </ul>
 </li>
-<li><a href="#org27f9ecc">2. Services</a>
+<li><a href="#orgfa83435">2. Services</a>
 <ul>
-<li><a href="#org21e248a">2.1. A/AAAA 记录</a></li>
-<li><a href="#orgb3e6290">2.2. SRV 记录</a></li>
+<li><a href="#orgb5e28c9">2.1. A/AAAA 记录</a></li>
+<li><a href="#org8a56cfd">2.2. SRV 记录</a></li>
 </ul>
 </li>
-<li><a href="#org5be7cc4">3. Pods</a>
+<li><a href="#orgd871b5a">3. Pods</a>
 <ul>
-<li><a href="#orgbe31de8">3.1. A/AAAA 记录</a></li>
-<li><a href="#org33bd498">3.2. Pod 的主机名和子域字段</a></li>
-<li><a href="#orgcfac9b9">3.3. Pod 的 setHostnameAsFQDN 字段</a></li>
-<li><a href="#orgd07d177">3.4. Pod 的 DNS 策略</a></li>
-<li><a href="#org0799ceb">3.5. Pod 的 DNS 配置</a></li>
-<li><a href="#orgbafeb33">3.6. 扩展 DNS 配置</a></li>
-<li><a href="#org80b8555">3.7. 功能可用性</a></li>
+<li><a href="#org54110f7">3.1. A/AAAA 记录</a></li>
+<li><a href="#org8f6fa66">3.2. Pod 的主机名和子域字段</a></li>
+<li><a href="#org0e327fc">3.3. Pod 的 setHostnameAsFQDN 字段</a></li>
+<li><a href="#org508ce8b">3.4. Pod 的 DNS 策略</a></li>
+<li><a href="#org3aad7ed">3.5. Pod 的 DNS 配置</a></li>
+<li><a href="#org57b8307">3.6. 扩展 DNS 配置</a></li>
+<li><a href="#org9580933">3.7. 功能可用性</a></li>
 </ul>
 </li>
-<li><a href="#org09e2145">4. 实践</a>
+<li><a href="#orgd20c091">4. 实践</a>
 <ul>
-<li><a href="#org7fcdc8c">4.1. <code>/etc/resolv.conf</code> 中的 ndots</a></li>
+<li><a href="#org6d59cd8">4.1. <code>/etc/resolv.conf</code> 中的 ndots</a></li>
 </ul>
 </li>
 </ul>
@@ -258,8 +258,8 @@
 Kubernetes 会为 services 和 pods 创建 DNS 记录。你可以通过统一的 DNS 名字代替 IP 地访问 services。
 </p>
 
-<div id="outline-container-orgb1817ee" class="outline-2">
-<h2 id="orgb1817ee"><span class="section-number-2">1.</span> 介绍</h2>
+<div id="outline-container-orgbdccfad" class="outline-2">
+<h2 id="orgbdccfad"><span class="section-number-2">1.</span> 介绍</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Kubernetes DNS 集群上的调度 DNS Pod 和 Service，并配置 kubelet 告诉各个容器使用 DNS 的服务 IP 来解析 DNS 名字。
@@ -270,8 +270,8 @@ Kubernetes DNS 集群上的调度 DNS Pod 和 Service，并配置 kubelet 告诉
 </p>
 </div>
 
-<div id="outline-container-org9347741" class="outline-3">
-<h3 id="org9347741"><span class="section-number-3">1.1.</span> Services 的命名空间</h3>
+<div id="outline-container-org8afb8f4" class="outline-3">
+<h3 id="org8afb8f4"><span class="section-number-3">1.1.</span> Services 的命名空间</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 DNS 的查询结果可能因为 Pod 空间而返回不同。未指定命名空间的 DNS 查询仅限于 Pod 所在空间。在 DNS 查询中指定命名空间来访问其他空间的服务。
@@ -302,8 +302,8 @@ options ndots:5
 </div>
 </div>
 
-<div id="outline-container-orge72702d" class="outline-3">
-<h3 id="orge72702d"><span class="section-number-3">1.2.</span> DNS 记录</h3>
+<div id="outline-container-orgcc0b5bc" class="outline-3">
+<h3 id="orgcc0b5bc"><span class="section-number-3">1.2.</span> DNS 记录</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 哪些对象会获得 DNS 记录？
@@ -322,12 +322,12 @@ options ndots:5
 </div>
 </div>
 
-<div id="outline-container-org27f9ecc" class="outline-2">
-<h2 id="org27f9ecc"><span class="section-number-2">2.</span> Services</h2>
+<div id="outline-container-orgfa83435" class="outline-2">
+<h2 id="orgfa83435"><span class="section-number-2">2.</span> Services</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org21e248a" class="outline-3">
-<h3 id="org21e248a"><span class="section-number-3">2.1.</span> A/AAAA 记录</h3>
+<div id="outline-container-orgb5e28c9" class="outline-3">
+<h3 id="orgb5e28c9"><span class="section-number-3">2.1.</span> A/AAAA 记录</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 “正常的”（不是 headless）Service 会被分配一个 DNS A 或者 AAAA 记录，值取决于 service 的 IP 集合。名字的格式为：
@@ -349,8 +349,8 @@ service 是把集合返回给客户端，客户端需要自己选择。
 </div>
 </div>
 
-<div id="outline-container-orgb3e6290" class="outline-3">
-<h3 id="orgb3e6290"><span class="section-number-3">2.2.</span> SRV 记录</h3>
+<div id="outline-container-org8a56cfd" class="outline-3">
+<h3 id="org8a56cfd"><span class="section-number-3">2.2.</span> SRV 记录</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 SRC 记录是为正常或者 headless service 一部分的命名端口创建的。为每一个命名端口，SRV 记录记录的格式为：
@@ -366,12 +366,12 @@ SRC 记录是为正常或者 headless service 一部分的命名端口创建的�
 </div>
 </div>
 
-<div id="outline-container-org5be7cc4" class="outline-2">
-<h2 id="org5be7cc4"><span class="section-number-2">3.</span> Pods</h2>
+<div id="outline-container-orgd871b5a" class="outline-2">
+<h2 id="orgd871b5a"><span class="section-number-2">3.</span> Pods</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgbe31de8" class="outline-3">
-<h3 id="orgbe31de8"><span class="section-number-3">3.1.</span> A/AAAA 记录</h3>
+<div id="outline-container-org54110f7" class="outline-3">
+<h3 id="org54110f7"><span class="section-number-3">3.1.</span> A/AAAA 记录</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 通常情况下一个 Pod 有如下的 DNS 解析： <code>pod-ip-address.my-namespace.pod.cluster-domain.example</code> 。
@@ -384,8 +384,8 @@ SRC 记录是为正常或者 headless service 一部分的命名端口创建的�
 </div>
 </div>
 
-<div id="outline-container-org33bd498" class="outline-3">
-<h3 id="org33bd498"><span class="section-number-3">3.2.</span> Pod 的主机名和子域字段</h3>
+<div id="outline-container-org8f6fa66" class="outline-3">
+<h3 id="org8f6fa66"><span class="section-number-3">3.2.</span> Pod 的主机名和子域字段</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 当 Pod 被创建的时候， <code>hostname</code> 由 Pod 的 <code>metadata.name</code> 的值来决定。
@@ -406,8 +406,8 @@ Pod 还有一个可选的 <code>subdomain</code> 字段，用来指定他的子�
 </div>
 </div>
 
-<div id="outline-container-orgcfac9b9" class="outline-3">
-<h3 id="orgcfac9b9"><span class="section-number-3">3.3.</span> Pod 的 setHostnameAsFQDN 字段</h3>
+<div id="outline-container-org0e327fc" class="outline-3">
+<h3 id="org0e327fc"><span class="section-number-3">3.3.</span> Pod 的 setHostnameAsFQDN 字段</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 <b><b>FEATURE STATE:</b></b> <code>Kubernetes v1.22 [stable]</code>
@@ -419,8 +419,8 @@ TODO
 </div>
 </div>
 
-<div id="outline-container-orgd07d177" class="outline-3">
-<h3 id="orgd07d177"><span class="section-number-3">3.4.</span> Pod 的 DNS 策略</h3>
+<div id="outline-container-org508ce8b" class="outline-3">
+<h3 id="org508ce8b"><span class="section-number-3">3.4.</span> Pod 的 DNS 策略</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 可以对每一个 Pod 指定 DNS 策略。目前 Kubernetes 支持如下的 pod-specific DNS 策略。策略由 Pod 的 <code>dnsPolicy</code> 字段来指定。
@@ -445,44 +445,44 @@ TODO
   <span style="color: #6a1868;">name</span>: default-subdomain
 <span style="color: #6a1868;">spec</span>:
   <span style="color: #6a1868;">selector</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">name</span>: busybox
+    <span style="color: #6a1868;">name</span>: busybox
   <span style="color: #6a1868;">clusterIP</span>: None
   <span style="color: #6a1868;">ports</span>:
   - <span style="color: #6a1868;">name</span>: foo <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">Actually, no port is needed.</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">port</span>: 1234
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">targetPort</span>: 1234
+    <span style="color: #6a1868;">port</span>: 1234
+    <span style="color: #6a1868;">targetPort</span>: 1234
 <span style="color: #9ca0a4;">---</span>
 <span style="color: #6a1868;">apiVersion</span>: v1
 <span style="color: #6a1868;">kind</span>: Pod
 <span style="color: #6a1868;">metadata</span>:
   <span style="color: #6a1868;">name</span>: busybox1
   <span style="color: #6a1868;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">name</span>: busybox
+    <span style="color: #6a1868;">name</span>: busybox
 <span style="color: #6a1868;">spec</span>:
   <span style="color: #6a1868;">hostname</span>: busybox-1
   <span style="color: #6a1868;">subdomain</span>: default-subdomain
   <span style="color: #6a1868;">containers</span>:
   - <span style="color: #6a1868;">image</span>: busybox:1.28
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">command</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  - sleep
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  - <span style="color: #50a14f;">"3600"</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">name</span>: busybox
+    <span style="color: #6a1868;">command</span>:
+      - sleep
+      - <span style="color: #50a14f;">"3600"</span>
+    <span style="color: #6a1868;">name</span>: busybox
 <span style="color: #9ca0a4;">---</span>
 <span style="color: #6a1868;">apiVersion</span>: v1
 <span style="color: #6a1868;">kind</span>: Pod
 <span style="color: #6a1868;">metadata</span>:
   <span style="color: #6a1868;">name</span>: busybox2
   <span style="color: #6a1868;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">name</span>: busybox
+    <span style="color: #6a1868;">name</span>: busybox
 <span style="color: #6a1868;">spec</span>:
   <span style="color: #6a1868;">hostname</span>: busybox-2
   <span style="color: #6a1868;">subdomain</span>: default-subdomain
   <span style="color: #6a1868;">containers</span>:
   - <span style="color: #6a1868;">image</span>: busybox:1.28
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">command</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  - sleep
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  - <span style="color: #50a14f;">"3600"</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">name</span>: busybox
+    <span style="color: #6a1868;">command</span>:
+      - sleep
+      - <span style="color: #50a14f;">"3600"</span>
+    <span style="color: #6a1868;">name</span>: busybox
 </pre>
 </div>
 
@@ -507,8 +507,8 @@ Endpoints 对象可以制定任何 endpoint 地址的 <code>hostname</code> ，�
 </div>
 </div>
 
-<div id="outline-container-org0799ceb" class="outline-3">
-<h3 id="org0799ceb"><span class="section-number-3">3.5.</span> Pod 的 DNS 配置</h3>
+<div id="outline-container-org3aad7ed" class="outline-3">
+<h3 id="org3aad7ed"><span class="section-number-3">3.5.</span> Pod 的 DNS 配置</h3>
 <div class="outline-text-3" id="text-3-5">
 <p>
 <b>FEATURE STATE:</b> <code>Kubernetes v1.14 [stable]</code>
@@ -538,26 +538,26 @@ Pod 的 DNS 配置允许用户更多的控制 Pod 的 DNS 设置。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-yaml" id="org68f7c19"><span style="color: #6a1868;">apiVersion</span>: v1
+<pre class="src src-yaml" id="orge9c1557"><span style="color: #6a1868;">apiVersion</span>: v1
 <span style="color: #6a1868;">kind</span>: Pod
 <span style="color: #6a1868;">metadata</span>:
   <span style="color: #6a1868;">namespace</span>: default
   <span style="color: #6a1868;">name</span>: dns-example
 <span style="color: #6a1868;">spec</span>:
   <span style="color: #6a1868;">containers</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">- name</span>: test
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">  image</span>: nginx
+    - <span style="color: #6a1868;">name</span>: test
+      <span style="color: #6a1868;">image</span>: nginx
   <span style="color: #6a1868;">dnsPolicy</span>: <span style="color: #50a14f;">"None"</span>
   <span style="color: #6a1868;">dnsConfig</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">nameservers</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  - 1.2.3.4
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">searches</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  - ns1.svc.cluster-domain.example
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  - my.dns.search.suffix
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">options</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">  - name</span>: ndots
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #6a1868;">value</span>: <span style="color: #50a14f;">"2"</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">  - name</span>: edns0
+    <span style="color: #6a1868;">nameservers</span>:
+      - 1.2.3.4
+    <span style="color: #6a1868;">searches</span>:
+      - ns1.svc.cluster-domain.example
+      - my.dns.search.suffix
+    <span style="color: #6a1868;">options</span>:
+      - <span style="color: #6a1868;">name</span>: ndots
+        <span style="color: #6a1868;">value</span>: <span style="color: #50a14f;">"2"</span>
+      - <span style="color: #6a1868;">name</span>: edns0
 </pre>
 </div>
 
@@ -593,8 +593,8 @@ search default.svc.cluster-domain.example svc.cluster-domain.example cluster-dom
 </div>
 </div>
 
-<div id="outline-container-orgbafeb33" class="outline-3">
-<h3 id="orgbafeb33"><span class="section-number-3">3.6.</span> 扩展 DNS 配置</h3>
+<div id="outline-container-org57b8307" class="outline-3">
+<h3 id="org57b8307"><span class="section-number-3">3.6.</span> 扩展 DNS 配置</h3>
 <div class="outline-text-3" id="text-3-6">
 <p>
 <b>FEATURE STATE:</b> <code>Kubernetes 1.22 [alpha]</code>
@@ -610,8 +610,8 @@ search default.svc.cluster-domain.example svc.cluster-domain.example cluster-dom
 </div>
 </div>
 
-<div id="outline-container-org80b8555" class="outline-3">
-<h3 id="org80b8555"><span class="section-number-3">3.7.</span> 功能可用性</h3>
+<div id="outline-container-org9580933" class="outline-3">
+<h3 id="org9580933"><span class="section-number-3">3.7.</span> 功能可用性</h3>
 <div class="outline-text-3" id="text-3-7">
 <p>
 Pod 的 DNS 配置和 DNS 策略 <code>None</code> 可用性如下所示：
@@ -652,12 +652,12 @@ Pod 的 DNS 配置和 DNS 策略 <code>None</code> 可用性如下所示：
 </div>
 </div>
 
-<div id="outline-container-org09e2145" class="outline-2">
-<h2 id="org09e2145"><span class="section-number-2">4.</span> 实践</h2>
+<div id="outline-container-orgd20c091" class="outline-2">
+<h2 id="orgd20c091"><span class="section-number-2">4.</span> 实践</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org7fcdc8c" class="outline-3">
-<h3 id="org7fcdc8c"><span class="section-number-3">4.1.</span> <code>/etc/resolv.conf</code> 中的 ndots</h3>
+<div id="outline-container-org6d59cd8" class="outline-3">
+<h3 id="org6d59cd8"><span class="section-number-3">4.1.</span> <code>/etc/resolv.conf</code> 中的 ndots</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 如上，每个集群中 Pod 的 <code>/etc/resolv.conf</code> 中的内容大概为
@@ -721,7 +721,7 @@ options ndots:5
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-02-09 16:50:29 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2021-02-09 16:50:29 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
 </div>
 </body>
 </html>

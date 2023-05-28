@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2023-01-01 Sun 17:15 -->
+<!-- 2023-05-28 Sun 13:54 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>再谈 new/delete/malloc/free</title>
@@ -418,7 +418,7 @@ delete 与之相似，先调用该对象的析构函数，然后调用 free 来�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #986801;">void</span>* <span style="color: #e45649;">operator</span> <span style="color: #e45649;">new</span><span style="color: #4078f2;">(</span><span style="color: #986801;">size_t</span> <span style="color: #6a1868;">size</span><span style="color: #4078f2;">)</span> <span style="color: #e45649;">throw</span><span style="color: #4078f2;">(</span><span style="color: #b751b6;">std</span>::<span style="color: #986801;">bad_alloc</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+<pre class="src src-cpp"><span style="color: #986801;">void</span>* <span style="color: #e45649;">operator</span> <span style="color: #e45649;">new</span><span style="color: #4078f2;">(</span><span style="color: #986801;">size_t</span> size<span style="color: #4078f2;">)</span> <span style="color: #e45649;">throw</span><span style="color: #4078f2;">(</span><span style="color: #b751b6;">std</span>::<span style="color: #986801;">bad_alloc</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
     <span style="color: #b751b6;">std</span>::cout &lt;&lt; <span style="color: #50a14f;">"in operator new | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #b751b6;">std</span>::endl;
     <span style="color: #986801;">void</span> * <span style="color: #6a1868;">p</span> = malloc<span style="color: #a626a4;">(</span>size<span style="color: #a626a4;">)</span>;
 
@@ -512,14 +512,14 @@ delete[] 与之相似，先分别调用每个数组对象的析构函数，然�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #986801;">void</span>* <span style="color: #e45649;">operator</span> <span style="color: #e45649;">new</span><span style="color: #4078f2;">(</span><span style="color: #986801;">size_t</span> <span style="color: #6a1868;">size</span><span style="color: #4078f2;">)</span> <span style="color: #e45649;">throw</span><span style="color: #4078f2;">(</span><span style="color: #b751b6;">std</span>::<span style="color: #986801;">bad_alloc</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+<pre class="src src-cpp"><span style="color: #986801;">void</span>* <span style="color: #e45649;">operator</span> <span style="color: #e45649;">new</span><span style="color: #4078f2;">(</span><span style="color: #986801;">size_t</span> size<span style="color: #4078f2;">)</span> <span style="color: #e45649;">throw</span><span style="color: #4078f2;">(</span><span style="color: #b751b6;">std</span>::<span style="color: #986801;">bad_alloc</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
     <span style="color: #b751b6;">std</span>::cout &lt;&lt; <span style="color: #50a14f;">"in operator new | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #b751b6;">std</span>::endl;
     <span style="color: #986801;">void</span> * <span style="color: #6a1868;">p</span> = malloc<span style="color: #a626a4;">(</span>size<span style="color: #a626a4;">)</span>;
 
     <span style="color: #e45649;">return</span> p;
 <span style="color: #4078f2;">}</span>
 
-<span style="color: #986801;">void</span>* <span style="color: #e45649;">operator</span> <span style="color: #e45649;">new</span><span style="color: #4078f2;">[](</span><span style="color: #986801;">size_t</span> <span style="color: #6a1868;">size</span><span style="color: #4078f2;">)</span> <span style="color: #e45649;">throw</span><span style="color: #4078f2;">(</span><span style="color: #b751b6;">std</span>::<span style="color: #986801;">bad_alloc</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+<span style="color: #986801;">void</span>* <span style="color: #e45649;">operator</span> <span style="color: #e45649;">new</span><span style="color: #4078f2;">[](</span>size_t size<span style="color: #4078f2;">)</span> <span style="color: #e45649;">throw</span><span style="color: #4078f2;">(</span><span style="color: #b751b6;">std</span>::<span style="color: #986801;">bad_alloc</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
     <span style="color: #b751b6;">std</span>::cout &lt;&lt; <span style="color: #986801;">"</span><span style="color: #50a14f;">in operator new[] | alloc size: &lt;&lt; size &lt;&lt; std::endl;</span>
     <span style="color: #986801;">void</span> * p = malloc<span style="color: #a626a4;">(</span>size<span style="color: #a626a4;">)</span>;
 
@@ -774,7 +774,7 @@ Type of block:
 <h3 id="类对象数组"><span class="section-number-3">3.3.</span> 类对象数组</h3>
 <div class="outline-text-3" id="text-类对象数组">
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #986801;">void</span>* <span style="color: #e45649;">operator</span> <span style="color: #e45649;">new</span><span style="color: #4078f2;">[](</span><span style="color: #986801;">size_t</span> <span style="color: #6a1868;">size</span><span style="color: #4078f2;">)</span> <span style="color: #e45649;">throw</span><span style="color: #4078f2;">(</span><span style="color: #b751b6;">std</span>::<span style="color: #986801;">bad_alloc</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+<pre class="src src-cpp"><span style="color: #986801;">void</span>* <span style="color: #e45649;">operator</span> <span style="color: #e45649;">new</span><span style="color: #4078f2;">[](</span>size_t size<span style="color: #4078f2;">)</span> <span style="color: #e45649;">throw</span><span style="color: #4078f2;">(</span><span style="color: #b751b6;">std</span>::<span style="color: #986801;">bad_alloc</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
     <span style="color: #b751b6;">std</span>::cout &lt;&lt; <span style="color: #50a14f;">"in operator new[] | alloc size: "</span> &lt;&lt; size &lt;&lt; <span style="color: #b751b6;">std</span>::endl;
     <span style="color: #986801;">void</span> * <span style="color: #6a1868;">p</span> = malloc<span style="color: #a626a4;">(</span>size<span style="color: #a626a4;">)</span>;
 

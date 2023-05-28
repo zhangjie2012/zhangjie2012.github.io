@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-01-01 Sun 17:15 -->
+<!-- 2023-05-28 Sun 13:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>基于 Prometheus 监控告警</title>
@@ -223,32 +223,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orga5590bd">1. 监控架构</a>
+<li><a href="#orgdfc2ef7">1. 监控架构</a>
 <ul>
-<li><a href="#org1a5091b">1.1. 生成度量指标（metric）</a></li>
-<li><a href="#orga4618f9">1.2. metrics 收集</a></li>
-<li><a href="#orgdd69ba8">1.3. UI 显示</a></li>
-<li><a href="#org1101a9c">1.4. 告警</a></li>
-<li><a href="#org102de30">1.5. 示例：本机系统监控平台搭建</a>
+<li><a href="#orga72ffad">1.1. 生成度量指标（metric）</a></li>
+<li><a href="#org6df5da4">1.2. metrics 收集</a></li>
+<li><a href="#org57da814">1.3. UI 显示</a></li>
+<li><a href="#org0630e1a">1.4. 告警</a></li>
+<li><a href="#orgc984a1b">1.5. 示例：本机系统监控平台搭建</a>
 <ul>
-<li><a href="#orgca16b5f">1.5.1. node_exporter</a></li>
-<li><a href="#org74a7a80">1.5.2. Prometheus</a></li>
-<li><a href="#org3d52cb5">1.5.3. Grafana</a></li>
+<li><a href="#org223f102">1.5.1. node_exporter</a></li>
+<li><a href="#org5841834">1.5.2. Prometheus</a></li>
+<li><a href="#org2ba505e">1.5.3. Grafana</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgdadf823">2. 对接 Kubernetes</a></li>
-<li><a href="#org661f327">3. 配置与 PromQL</a></li>
+<li><a href="#orgedb93ca">2. 对接 Kubernetes</a></li>
+<li><a href="#orgdafc0ac">3. 配置与 PromQL</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga5590bd" class="outline-2">
-<h2 id="orga5590bd"><span class="section-number-2">1.</span> 监控架构</h2>
+<div id="outline-container-orgdfc2ef7" class="outline-2">
+<h2 id="orgdfc2ef7"><span class="section-number-2">1.</span> 监控架构</h2>
 <div class="outline-text-2" id="text-1">
 
-<div id="orgd556ccc" class="figure">
+<div id="orgf9492cb" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2019/prom.png" alt="prom.png" />
 </p>
 </div>
@@ -258,8 +258,8 @@
 </p>
 </div>
 
-<div id="outline-container-org1a5091b" class="outline-3">
-<h3 id="org1a5091b"><span class="section-number-3">1.1.</span> 生成度量指标（metric）</h3>
+<div id="outline-container-orga72ffad" class="outline-3">
+<h3 id="orga72ffad"><span class="section-number-3">1.1.</span> 生成度量指标（metric）</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Prometheus 提供了各种 <a href="https://prometheus.io/docs/instrumenting/exporters/">exporter</a>，常见的系统和一些开源框架框架都已经支持。
@@ -272,8 +272,8 @@ Prometheus 提供了各种 <a href="https://prometheus.io/docs/instrumenting/exp
 </div>
 </div>
 
-<div id="outline-container-orga4618f9" class="outline-3">
-<h3 id="orga4618f9"><span class="section-number-3">1.2.</span> metrics 收集</h3>
+<div id="outline-container-org6df5da4" class="outline-3">
+<h3 id="org6df5da4"><span class="section-number-3">1.2.</span> metrics 收集</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Prometheus 中包含 TSDB（时间序列 DB），用作数据存储。
@@ -282,8 +282,8 @@ Prometheus 采用的是 pull 的方案，配置之后会按照规则定时获取
 </div>
 </div>
 
-<div id="outline-container-orgdd69ba8" class="outline-3">
-<h3 id="orgdd69ba8"><span class="section-number-3">1.3.</span> UI 显示</h3>
+<div id="outline-container-org57da814" class="outline-3">
+<h3 id="org57da814"><span class="section-number-3">1.3.</span> UI 显示</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 Promethues 有自己的 Web UI，但是比较简陋。业内的做法是对接 Grafana 显示数据。Grafana 提供了丰富的 <a href="https://grafana.com/dashboards">Dashboards</a>，直接导入即可。
@@ -291,8 +291,8 @@ Promethues 有自己的 Web UI，但是比较简陋。业内的做法是对接 G
 </div>
 </div>
 
-<div id="outline-container-org1101a9c" class="outline-3">
-<h3 id="org1101a9c"><span class="section-number-3">1.4.</span> 告警</h3>
+<div id="outline-container-org0630e1a" class="outline-3">
+<h3 id="org0630e1a"><span class="section-number-3">1.4.</span> 告警</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 Grafana 自身是支持告警的，但是比较蛋疼的点在于告警规则不支持模板变量，那就约等于没有了···
@@ -304,16 +304,16 @@ Grafana 自身是支持告警的，但是比较蛋疼的点在于告警规则不
 </div>
 </div>
 
-<div id="outline-container-org102de30" class="outline-3">
-<h3 id="org102de30"><span class="section-number-3">1.5.</span> 示例：本机系统监控平台搭建</h3>
+<div id="outline-container-orgc984a1b" class="outline-3">
+<h3 id="orgc984a1b"><span class="section-number-3">1.5.</span> 示例：本机系统监控平台搭建</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 <i>示例限于 Linux 平台，我使用 Ubuntu 18.04 测试搭建，不同的平台安装方式 node_exporter 安装方式略有不同，但大同小异。</i>
 </p>
 </div>
 
-<div id="outline-container-orgca16b5f" class="outline-4">
-<h4 id="orgca16b5f"><span class="section-number-4">1.5.1.</span> node_exporter</h4>
+<div id="outline-container-org223f102" class="outline-4">
+<h4 id="org223f102"><span class="section-number-4">1.5.1.</span> node_exporter</h4>
 <div class="outline-text-4" id="text-1-5-1">
 <ol class="org-ol">
 <li>下载，在 <a href="https://github.com/prometheus/node_exporter">https://github.com/prometheus/node_exporter</a> release 中找对应系统的安装包下载。
@@ -331,8 +331,8 @@ node_exporter 默认的服务端口是 <code>9100</code> ，浏览器访问：  
 </div>
 </div>
 
-<div id="outline-container-org74a7a80" class="outline-4">
-<h4 id="org74a7a80"><span class="section-number-4">1.5.2.</span> Prometheus</h4>
+<div id="outline-container-org5841834" class="outline-4">
+<h4 id="org5841834"><span class="section-number-4">1.5.2.</span> Prometheus</h4>
 <div class="outline-text-4" id="text-1-5-2">
 <p>
 使用 Docker 部署。下载镜像： <code>docker pull prom/prometheus:v2.16.0</code>
@@ -361,8 +361,8 @@ node_exporter 默认的服务端口是 <code>9100</code> ，浏览器访问：  
 <span style="color: #6a1868;">alerting</span>:
   <span style="color: #6a1868;">alertmanagers</span>:
   - <span style="color: #6a1868;">static_configs</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">- targets</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span>  <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">- alertmanager:9093</span>
+    - <span style="color: #6a1868;">targets</span>:
+      <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">- alertmanager:9093</span>
 
 <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">Load rules once and periodically evaluate them according to the global 'evaluation_interval'.</span>
 <span style="color: #6a1868;">rule_files</span>:
@@ -375,11 +375,11 @@ node_exporter 默认的服务端口是 <code>9100</code> ，浏览器访问：  
   <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span>
   - <span style="color: #6a1868;">job_name</span>: <span style="color: #50a14f;">'prometheus'</span>
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">metrics_path defaults to '/metrics'</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">scheme defaults to 'http'.</span>
+    <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">metrics_path defaults to '/metrics'</span>
+    <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">scheme defaults to 'http'.</span>
 
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">static_configs</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">- targets</span>: [<span style="color: #50a14f;">'localhost:9090'</span>]
+    <span style="color: #6a1868;">static_configs</span>:
+    - <span style="color: #6a1868;">targets</span>: [<span style="color: #50a14f;">'localhost:9090'</span>]
 </pre>
 </div>
 
@@ -406,7 +406,7 @@ node_exporter 默认的服务端口是 <code>9100</code> ，浏览器访问：  
 <div class="org-src-container">
 <pre class="src src-yaml">- <span style="color: #6a1868;">job_name</span>: <span style="color: #50a14f;">'local-node'</span>
   <span style="color: #6a1868;">static_configs</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #6a1868;">  - targets</span>: [<span style="color: #50a14f;">'192.168.2.101:9100'</span>]
+          - <span style="color: #6a1868;">targets</span>: [<span style="color: #50a14f;">'192.168.2.101:9100'</span>]
 </pre>
 </div>
 
@@ -439,8 +439,8 @@ yum install node_exporter
 </div>
 
 
-<div id="outline-container-org3d52cb5" class="outline-4">
-<h4 id="org3d52cb5"><span class="section-number-4">1.5.3.</span> Grafana</h4>
+<div id="outline-container-org2ba505e" class="outline-4">
+<h4 id="org2ba505e"><span class="section-number-4">1.5.3.</span> Grafana</h4>
 <div class="outline-text-4" id="text-1-5-3">
 <p>
 使用 Docker 部署， 下载镜像： <code>sudo docker pull grafana/grafana:6.6.2</code>
@@ -475,8 +475,8 @@ Grafana 官网提供了很多的 <a href="https://grafana.com/grafana/dashboards
 </div>
 </div>
 
-<div id="outline-container-orgdadf823" class="outline-2">
-<h2 id="orgdadf823"><span class="section-number-2">2.</span> 对接 Kubernetes</h2>
+<div id="outline-container-orgedb93ca" class="outline-2">
+<h2 id="orgedb93ca"><span class="section-number-2">2.</span> 对接 Kubernetes</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Kubernetes 原生暴露了很多的集群（节点、Job、Ingress、Namespace 等）的 metric，具体可以看 <a href="https://github.com/kubernetes/kube-state-metrics/">kubernetes/kube-state-metrics</a> 。
@@ -493,8 +493,8 @@ Kubernetes 原生暴露了很多的集群（节点、Job、Ingress、Namespace �
 </div>
 </div>
 
-<div id="outline-container-org661f327" class="outline-2">
-<h2 id="org661f327"><span class="section-number-2">3.</span> 配置与 PromQL</h2>
+<div id="outline-container-orgdafc0ac" class="outline-2">
+<h2 id="orgdafc0ac"><span class="section-number-2">3.</span> 配置与 PromQL</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 多个 metrics JOIN：
@@ -508,7 +508,7 @@ Kubernetes 原生暴露了很多的集群（节点、Job、Ingress、Namespace �
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-04-11 15:46 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2019-04-11 15:46 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
 </div>
 </body>
 </html>

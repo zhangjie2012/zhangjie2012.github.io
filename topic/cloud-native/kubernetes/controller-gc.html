@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-01-01 Sun 17:15 -->
+<!-- 2023-05-28 Sun 13:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Garbage Collection</title>
@@ -223,12 +223,12 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orge735155">1. Owners 和依赖</a></li>
-<li><a href="#org0f960cd">2. 控制垃圾回收器如何删除依赖项</a>
+<li><a href="#org62867aa">1. Owners 和依赖</a></li>
+<li><a href="#org03753dd">2. 控制垃圾回收器如何删除依赖项</a>
 <ul>
-<li><a href="#orgd675aa8">2.1. 前台级联删除</a></li>
-<li><a href="#orgf7edc50">2.2. 后台级联删除</a></li>
-<li><a href="#org0a6079d">2.3. 设置级联删除策略</a></li>
+<li><a href="#org4f66145">2.1. 前台级联删除</a></li>
+<li><a href="#org300fe3f">2.2. 后台级联删除</a></li>
+<li><a href="#orgbed96d1">2.3. 设置级联删除策略</a></li>
 </ul>
 </li>
 </ul>
@@ -238,8 +238,8 @@
 Kubernetes 垃圾回收器的作用是删除曾经有 owner，但是后来没有 owner 的对象。
 </p>
 
-<div id="outline-container-orge735155" class="outline-2">
-<h2 id="orge735155"><span class="section-number-2">1.</span> Owners 和依赖</h2>
+<div id="outline-container-org62867aa" class="outline-2">
+<h2 id="org62867aa"><span class="section-number-2">1.</span> Owners 和依赖</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Kubernetes 中一些对象是另外一些对象的 owner。比如，ReplicaSet 是一组 Pods 的 owner。被 owner 的对象称作 <i>依赖于</i> owner 对象。
@@ -267,11 +267,11 @@ Pod 中 owner 显示一般如下：
   ...
   <span style="color: #6a1868;">ownerReferences</span>:
   - <span style="color: #6a1868;">apiVersion</span>: apps/v1
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">controller</span>: <span style="color: #b751b6;">true</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">blockOwnerDeletion</span>: <span style="color: #b751b6;">true</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">kind</span>: ReplicaSet
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">name</span>: my-repset
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">uid</span>: d9607e19-f88f-11e6-a518-42010a800195
+    <span style="color: #6a1868;">controller</span>: <span style="color: #b751b6;">true</span>
+    <span style="color: #6a1868;">blockOwnerDeletion</span>: <span style="color: #b751b6;">true</span>
+    <span style="color: #6a1868;">kind</span>: ReplicaSet
+    <span style="color: #6a1868;">name</span>: my-repset
+    <span style="color: #6a1868;">uid</span>: d9607e19-f88f-11e6-a518-42010a800195
   ...
 </pre>
 </div>
@@ -288,8 +288,8 @@ Pod 中 owner 显示一般如下：
 </div>
 </div>
 
-<div id="outline-container-org0f960cd" class="outline-2">
-<h2 id="org0f960cd"><span class="section-number-2">2.</span> 控制垃圾回收器如何删除依赖项</h2>
+<div id="outline-container-org03753dd" class="outline-2">
+<h2 id="org03753dd"><span class="section-number-2">2.</span> 控制垃圾回收器如何删除依赖项</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 删除对象的时候，可以指定是否要同时自动删除对象的从属<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>。自动删除依赖称作为 <i>级联删除</i> 。级联删除有两种模式：
@@ -301,8 +301,8 @@ Pod 中 owner 显示一般如下：
 </p>
 </div>
 
-<div id="outline-container-orgd675aa8" class="outline-3">
-<h3 id="orgd675aa8"><span class="section-number-3">2.1.</span> 前台级联删除</h3>
+<div id="outline-container-org4f66145" class="outline-3">
+<h3 id="org4f66145"><span class="section-number-3">2.1.</span> 前台级联删除</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 前台级联删除的情况下，跟对象会进入”正在删除“状态，处于“正在删除”状态，以下情况是正常的：
@@ -332,8 +332,8 @@ Kubernetes 1.7 版本添加了准入控制器，它控制用户访问权限基�
 </div>
 </div>
 
-<div id="outline-container-orgf7edc50" class="outline-3">
-<h3 id="orgf7edc50"><span class="section-number-3">2.2.</span> 后台级联删除</h3>
+<div id="outline-container-org300fe3f" class="outline-3">
+<h3 id="org300fe3f"><span class="section-number-3">2.2.</span> 后台级联删除</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 后台级联删除的情况下，Kubernetes 会理解删除 owner 对象，然后使用垃圾回收期在后台删除依赖项。
@@ -341,8 +341,8 @@ Kubernetes 1.7 版本添加了准入控制器，它控制用户访问权限基�
 </div>
 </div>
 
-<div id="outline-container-org0a6079d" class="outline-3">
-<h3 id="org0a6079d"><span class="section-number-3">2.3.</span> 设置级联删除策略</h3>
+<div id="outline-container-orgbed96d1" class="outline-3">
+<h3 id="orgbed96d1"><span class="section-number-3">2.3.</span> 设置级联删除策略</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 要控制级联删除策略，在删除对象时 <code>deleteOptions</code> 参数上设置 <code>propagationPolicy</code> 字段。可选的值有“Orphan”，“Foreground” 或者
@@ -374,7 +374,7 @@ background 和 forground 直译成背景和前景，但是这里似乎前台和�
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-14 11:04:43 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2020-04-14 11:04:43 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
 </div>
 </body>
 </html>

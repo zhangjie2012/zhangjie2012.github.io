@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-01-01 Sun 17:15 -->
+<!-- 2023-05-28 Sun 13:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - 工作负载：Pods</title>
@@ -223,28 +223,28 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org52f6787">1. 什么是 Pods？</a></li>
-<li><a href="#org4b37b98">2. 使用 Pods</a>
+<li><a href="#org6467a7e">1. 什么是 Pods？</a></li>
+<li><a href="#orga3d616f">2. 使用 Pods</a>
 <ul>
-<li><a href="#orgfe29f91">2.1. Pod 如何管理多个容器</a></li>
+<li><a href="#org0c7a6b8">2.1. Pod 如何管理多个容器</a></li>
 </ul>
 </li>
-<li><a href="#orgf44da22">3. 与 Pods 一起工作</a>
+<li><a href="#org1a648dc">3. 与 Pods 一起工作</a>
 <ul>
-<li><a href="#org0906f85">3.1. Pods 和控制器（controllers）</a></li>
-<li><a href="#org8cc262e">3.2. Pod 模板</a></li>
+<li><a href="#orgdc16d7d">3.1. Pods 和控制器（controllers）</a></li>
+<li><a href="#orgd880680">3.2. Pod 模板</a></li>
 </ul>
 </li>
-<li><a href="#org6536021">4. Pod 的更新和替换</a></li>
-<li><a href="#org7dcdb66">5. 资源共享和通信</a>
+<li><a href="#org8b33deb">4. Pod 的更新和替换</a></li>
+<li><a href="#orgcc96797">5. 资源共享和通信</a>
 <ul>
-<li><a href="#org18dffa0">5.1. 存储在 Pods 中</a></li>
-<li><a href="#org8049dd4">5.2. Pod 网络</a></li>
+<li><a href="#orgbccb8b0">5.1. 存储在 Pods 中</a></li>
+<li><a href="#orgd28c5b1">5.2. Pod 网络</a></li>
 </ul>
 </li>
-<li><a href="#orgf0a6073">6. 容器的特权模式</a></li>
-<li><a href="#org7526fc9">7. 静态 Pods</a></li>
-<li><a href="#org41ddefc">8. 下一步</a></li>
+<li><a href="#orgc1dd872">6. 容器的特权模式</a></li>
+<li><a href="#orgb1bd59a">7. 静态 Pods</a></li>
+<li><a href="#orgc0b9173">8. 下一步</a></li>
 </ul>
 </div>
 </div>
@@ -265,8 +265,8 @@ Pod 为特性应用程序的『逻辑主机』建模：它包含一个或者多�
 除了应用程序之外，Pod 还可以包含 Pod 启动过程中运行的 <a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/">init containers</a>。如果集群提供此功能，还可以注入 <a href="https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/">临时容器</a> 来调试。
 </p>
 
-<div id="outline-container-org52f6787" class="outline-2">
-<h2 id="org52f6787"><span class="section-number-2">1.</span> 什么是 Pods？</h2>
+<div id="outline-container-org6467a7e" class="outline-2">
+<h2 id="org6467a7e"><span class="section-number-2">1.</span> 什么是 Pods？</h2>
 <div class="outline-text-2" id="text-1">
 <blockquote>
 <p>
@@ -285,8 +285,8 @@ Pod 的共享上下文是一组 Linux namespaces，cgroups 和其它隔离方面
 </div>
 </div>
 
-<div id="outline-container-org4b37b98" class="outline-2">
-<h2 id="org4b37b98"><span class="section-number-2">2.</span> 使用 Pods</h2>
+<div id="outline-container-orga3d616f" class="outline-2">
+<h2 id="orga3d616f"><span class="section-number-2">2.</span> 使用 Pods</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 通常情况下，你不需要直接或者单独创建 Pods。而是使用工作负载资源（类似 Deployment，Job 等）间接的创建它们。
@@ -322,8 +322,8 @@ Pod 包装了这些容器，存储资源和临时的网络标识一起作为一�
 </p>
 </div>
 
-<div id="outline-container-orgfe29f91" class="outline-3">
-<h3 id="orgfe29f91"><span class="section-number-3">2.1.</span> Pod 如何管理多个容器</h3>
+<div id="outline-container-org0c7a6b8" class="outline-3">
+<h3 id="org0c7a6b8"><span class="section-number-3">2.1.</span> Pod 如何管理多个容器</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Pod 设计旨在支持多个协作进程（作为容器），协作进程组合一个紧密联系的服务单元。Pod 中的容器会自动位于同一集群中的同一物理机和虚拟机上，并在
@@ -335,7 +335,7 @@ Pod 设计旨在支持多个协作进程（作为容器），协作进程组合�
 </p>
 
 
-<div id="orgdfc59ee" class="figure">
+<div id="org51733e0" class="figure">
 <p><img src="https://d33wubrfki0l68.cloudfront.net/aecab1f649bc640ebef1f05581bfcc91a48038c4/728d6/images/docs/pod.svg" alt="pod.svg" class="org-svg" />
 </p>
 <p><span class="figure-number">Figure 1: </span>Pod</p>
@@ -352,8 +352,8 @@ Pod 在本地提供了两种共享资源：<a href="https://kubernetes.io/docs/c
 </div>
 </div>
 
-<div id="outline-container-orgf44da22" class="outline-2">
-<h2 id="orgf44da22"><span class="section-number-2">3.</span> 与 Pods 一起工作</h2>
+<div id="outline-container-org1a648dc" class="outline-2">
+<h2 id="org1a648dc"><span class="section-number-2">3.</span> 与 Pods 一起工作</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 你很少会直接在 Kubernetes 中单独创建 Pods。这是因为 Pod 被设计为相对短暂的一次性实体。当 Pod 被创建时（你直接创建或者通过控制器创建），
@@ -371,8 +371,8 @@ Pod 在本地提供了两种共享资源：<a href="https://kubernetes.io/docs/c
 </p>
 </div>
 
-<div id="outline-container-org0906f85" class="outline-3">
-<h3 id="org0906f85"><span class="section-number-3">3.1.</span> Pods 和控制器（controllers）</h3>
+<div id="outline-container-orgdc16d7d" class="outline-3">
+<h3 id="orgdc16d7d"><span class="section-number-3">3.1.</span> Pods 和控制器（controllers）</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 你可以使用工作负载资源创建和管理你的 Pods。资源的控制器处理复制和推出（rollout）和 Pod 失败情况下自愈。比如说，节点挂了，控制器会注意到节点上的 Pods
@@ -391,8 +391,8 @@ Pod 在本地提供了两种共享资源：<a href="https://kubernetes.io/docs/c
 </div>
 </div>
 
-<div id="outline-container-org8cc262e" class="outline-3">
-<h3 id="org8cc262e"><span class="section-number-3">3.2.</span> Pod 模板</h3>
+<div id="outline-container-orgd880680" class="outline-3">
+<h3 id="orgd880680"><span class="section-number-3">3.2.</span> Pod 模板</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 工作负载的资源控制器通过 <i>pod template</i> 来创建 Pods，然后代表你来管理这些 Pods。
@@ -417,14 +417,14 @@ PodTemplates 是创建 Pod 的规范（Spec），并且包含在工作负载资�
   <span style="color: #6a1868;">name</span>: hello
 <span style="color: #6a1868;">spec</span>:
   <span style="color: #6a1868;">template</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">This is the pod template</span>
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">spec</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">  containers</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">  - name</span>: hello
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #6a1868;">image</span>: busybox
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">        </span><span style="color: #6a1868;">command</span>: [<span style="color: #50a14f;">'sh'</span>, <span style="color: #50a14f;">'-c'</span>, <span style="color: #50a14f;">'echo "Hello, Kubernetes!" &amp;&amp; sleep 3600'</span>]
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">  restartPolicy</span>: OnFailure
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">The pod template ends here</span>
+    <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">This is the pod template</span>
+    <span style="color: #6a1868;">spec</span>:
+      <span style="color: #6a1868;">containers</span>:
+      - <span style="color: #6a1868;">name</span>: hello
+        <span style="color: #6a1868;">image</span>: busybox
+        <span style="color: #6a1868;">command</span>: [<span style="color: #50a14f;">'sh'</span>, <span style="color: #50a14f;">'-c'</span>, <span style="color: #50a14f;">'echo "Hello, Kubernetes!" &amp;&amp; sleep 3600'</span>]
+      <span style="color: #6a1868;">restartPolicy</span>: OnFailure
+    <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">The pod template ends here</span>
 </pre>
 </div>
 
@@ -449,8 +449,8 @@ StatefulSet 会基于新的模板创建新的 Pods。最终，所有旧的 Pods 
 </div>
 </div>
 
-<div id="outline-container-org6536021" class="outline-2">
-<h2 id="org6536021"><span class="section-number-2">4.</span> Pod 的更新和替换</h2>
+<div id="outline-container-org8b33deb" class="outline-2">
+<h2 id="org8b33deb"><span class="section-number-2">4.</span> Pod 的更新和替换</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 如上一节所述，当工作负载资源的 Pod 模板被修改之后，控制器基于新模板创建新的 Pods 而不是更新或者修补（patching）已有的 Pod。
@@ -475,16 +475,16 @@ Kubernetes 不会阻止你直接管理 Pods。可以对直接运行的 Pod 更�
 </div>
 </div>
 
-<div id="outline-container-org7dcdb66" class="outline-2">
-<h2 id="org7dcdb66"><span class="section-number-2">5.</span> 资源共享和通信</h2>
+<div id="outline-container-orgcc96797" class="outline-2">
+<h2 id="orgcc96797"><span class="section-number-2">5.</span> 资源共享和通信</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Pod 支持在内部容器之间数据共享和通信。
 </p>
 </div>
 
-<div id="outline-container-org18dffa0" class="outline-3">
-<h3 id="org18dffa0"><span class="section-number-3">5.1.</span> 存储在 Pods 中</h3>
+<div id="outline-container-orgbccb8b0" class="outline-3">
+<h3 id="orgbccb8b0"><span class="section-number-3">5.1.</span> 存储在 Pods 中</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 Pod 可以指定一组共享存储卷。在 Pod 中的所有容器可以访问共享卷，允许这些容器来共享数据。卷还允许 Pod 中持久化数据保留下来，以防其中有一个容器重新启动。
@@ -493,8 +493,8 @@ Pod 可以指定一组共享存储卷。在 Pod 中的所有容器可以访问�
 </div>
 </div>
 
-<div id="outline-container-org8049dd4" class="outline-3">
-<h3 id="org8049dd4"><span class="section-number-3">5.2.</span> Pod 网络</h3>
+<div id="outline-container-orgd28c5b1" class="outline-3">
+<h3 id="orgd28c5b1"><span class="section-number-3">5.2.</span> Pod 网络</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 每个 Pod 会被分配一个唯一的 IP 地址。Pod 中的容器共享网络命名空间，包括 IP 地址和网络端口。在 Pod 内部（也只有在内部），容器相互之间可以通过
@@ -510,8 +510,8 @@ IP 地址和端口空间，并且可以直接通过 <code>localhost</code> 找�
 </div>
 </div>
 
-<div id="outline-container-orgf0a6073" class="outline-2">
-<h2 id="orgf0a6073"><span class="section-number-2">6.</span> 容器的特权模式</h2>
+<div id="outline-container-orgc1dd872" class="outline-2">
+<h2 id="orgc1dd872"><span class="section-number-2">6.</span> 容器的特权模式</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 在 Pod 中的任何容器都可以开启特权模式，在容器规范（spec）的安全上下文中使用 <code>privileged</code> 标记。这对于想要使用操作系统管理功能（比如操作网络堆栈
@@ -526,8 +526,8 @@ IP 地址和端口空间，并且可以直接通过 <code>localhost</code> 找�
 </div>
 </div>
 
-<div id="outline-container-org7526fc9" class="outline-2">
-<h2 id="org7526fc9"><span class="section-number-2">7.</span> 静态 Pods</h2>
+<div id="outline-container-orgb1bd59a" class="outline-2">
+<h2 id="orgb1bd59a"><span class="section-number-2">7.</span> 静态 Pods</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 <i>静态 Pods</i> 由指定节点上的 kubelet 守护进程直接管理，无需 API server 对其进行观察（observing）。尽管大多数 Pod 由控制平面（比如，Deployment）
@@ -545,8 +545,8 @@ kubelet 自动尝试在 Kubernetes API server 上为每个静态 Pod 创建一�
 </div>
 </div>
 
-<div id="outline-container-org41ddefc" class="outline-2">
-<h2 id="org41ddefc"><span class="section-number-2">8.</span> 下一步</h2>
+<div id="outline-container-orgc0b9173" class="outline-2">
+<h2 id="orgc0b9173"><span class="section-number-2">8.</span> 下一步</h2>
 <div class="outline-text-2" id="text-8">
 <ul class="org-ul">
 <li>学习 <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/">Pod 的生命周期</a>；</li>
@@ -573,7 +573,7 @@ kubelet 自动尝试在 Kubernetes API server 上为每个静态 Pod 创建一�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-21 17:13:12 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2021-04-21 17:13:12 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
 </div>
 </body>
 </html>

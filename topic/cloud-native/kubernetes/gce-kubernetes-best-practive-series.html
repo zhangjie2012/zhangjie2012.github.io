@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-01-01 Sun 17:15 -->
+<!-- 2023-05-28 Sun 13:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GCE 的 Kubernetes 最佳实践系列</title>
@@ -223,23 +223,23 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orga732c0b">1. 使用命令空间进行组织</a>
+<li><a href="#org4df9f28">1. 使用命令空间进行组织</a>
 <ul>
-<li><a href="#org2ec8d8c">1.1. 服务发现</a></li>
-<li><a href="#orgc13acfc">1.2. 空间的粒度</a></li>
+<li><a href="#orgfe450be">1.1. 服务发现</a></li>
+<li><a href="#orge34e74b">1.2. 空间的粒度</a></li>
 </ul>
 </li>
-<li><a href="#org5c38c11">2. 使用就绪探针和存活探针进行健康检测</a></li>
-<li><a href="#orgca09e46">3. 资源的 requests 和 limits</a></li>
-<li><a href="#org1308554">4. 优雅终止</a></li>
-<li><a href="#org6abd553">5. 外部服务映射</a></li>
-<li><a href="#org5819b82">6. 零宕机更新集群</a></li>
+<li><a href="#orgf33f677">2. 使用就绪探针和存活探针进行健康检测</a></li>
+<li><a href="#orgdd66a89">3. 资源的 requests 和 limits</a></li>
+<li><a href="#org41a82e9">4. 优雅终止</a></li>
+<li><a href="#orgcb91f64">5. 外部服务映射</a></li>
+<li><a href="#org3116bd7">6. 零宕机更新集群</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga732c0b" class="outline-2">
-<h2 id="orga732c0b"><span class="section-number-2">1.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-organizing-with-namespaces">使用命令空间进行组织</a></h2>
+<div id="outline-container-org4df9f28" class="outline-2">
+<h2 id="org4df9f28"><span class="section-number-2">1.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-organizing-with-namespaces">使用命令空间进行组织</a></h2>
 <div class="outline-text-2" id="text-1">
 <p>
 命名空间可以理解成 Kubernetes 集群中的虚拟集群，一个 Kubernetes 集群中可以包含多个命名空间，逻辑上相互隔离；
@@ -262,8 +262,8 @@
 </p>
 </div>
 
-<div id="outline-container-org2ec8d8c" class="outline-3">
-<h3 id="org2ec8d8c"><span class="section-number-3">1.1.</span> 服务发现</h3>
+<div id="outline-container-orgfe450be" class="outline-3">
+<h3 id="orgfe450be"><span class="section-number-3">1.1.</span> 服务发现</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Kubernetes 中 Services 使用以下的通用 DNS 模式来暴露他们的端点（endpoints）。类似这样：
@@ -288,8 +288,8 @@ Kubernetes 中 Services 使用以下的通用 DNS 模式来暴露他们的端点
 </div>
 </div>
 
-<div id="outline-container-orgc13acfc" class="outline-3">
-<h3 id="orgc13acfc"><span class="section-number-3">1.2.</span> 空间的粒度</h3>
+<div id="outline-container-orge34e74b" class="outline-3">
+<h3 id="orge34e74b"><span class="section-number-3">1.2.</span> 空间的粒度</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 视公司的阶段和规模而定。大公司下业务比较复杂（技术栈丰富），团队较多，需要配合 CI/CD 工具来使用，使用 RBAC 和资源配合是个好主意。
@@ -298,12 +298,12 @@ Kubernetes 中 Services 使用以下的通用 DNS 模式来暴露他们的端点
 </div>
 </div>
 
-<div id="outline-container-org5c38c11" class="outline-2">
-<h2 id="org5c38c11"><span class="section-number-2">2.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-setting-up-health-checks-with-readiness-and-liveness-probes">使用就绪探针和存活探针进行健康检测</a></h2>
+<div id="outline-container-orgf33f677" class="outline-2">
+<h2 id="orgf33f677"><span class="section-number-2">2.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-setting-up-health-checks-with-readiness-and-liveness-probes">使用就绪探针和存活探针进行健康检测</a></h2>
 </div>
 
-<div id="outline-container-orgca09e46" class="outline-2">
-<h2 id="orgca09e46"><span class="section-number-2">3.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits">资源的 requests 和 limits</a></h2>
+<div id="outline-container-orgdd66a89" class="outline-2">
+<h2 id="orgdd66a89"><span class="section-number-2">3.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits">资源的 requests 和 limits</a></h2>
 <div class="outline-text-2" id="text-3">
 <p>
 requests 和 limits 是 Kubernetes 控制 CPU 和内存资源的机制。Requests 的值是 Kubernetes 一定给服务分配到的，分配不到就会提示
@@ -321,8 +321,8 @@ requests 和 limits 是 Kubernetes 控制 CPU 和内存资源的机制。Request
 </div>
 </div>
 
-<div id="outline-container-org1308554" class="outline-2">
-<h2 id="org1308554"><span class="section-number-2">4.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-terminating-with-grace">优雅终止</a></h2>
+<div id="outline-container-org41a82e9" class="outline-2">
+<h2 id="org41a82e9"><span class="section-number-2">4.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-terminating-with-grace">优雅终止</a></h2>
 <div class="outline-text-2" id="text-4">
 <ol class="org-ol">
 <li>Pod 被设置为 "Terminating" 时，会从 Service 中的 endpoints 列表中移出；</li>
@@ -338,8 +338,8 @@ requests 和 limits 是 Kubernetes 控制 CPU 和内存资源的机制。Request
 </div>
 </div>
 
-<div id="outline-container-org6abd553" class="outline-2">
-<h2 id="org6abd553"><span class="section-number-2">5.</span> <a href="https://prog.world/kubernetes-best-practices-mapping-external-services/">外部服务映射</a></h2>
+<div id="outline-container-orgcb91f64" class="outline-2">
+<h2 id="orgcb91f64"><span class="section-number-2">5.</span> <a href="https://prog.world/kubernetes-best-practices-mapping-external-services/">外部服务映射</a></h2>
 <div class="outline-text-2" id="text-5">
 <p>
 类似数据库这样的服务通常是运行在集群外部的，在集群内部通常会有这样一个需求：一个服务在不同的环境，有相同的配置，但是却要连到不同
@@ -356,12 +356,12 @@ requests 和 limits 是 Kubernetes 控制 CPU 和内存资源的机制。Request
 </div>
 </div>
 
-<div id="outline-container-org5819b82" class="outline-2">
-<h2 id="org5819b82"><span class="section-number-2">6.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-upgrading-your-clusters-with-zero-downtime">零宕机更新集群</a></h2>
+<div id="outline-container-org3116bd7" class="outline-2">
+<h2 id="org3116bd7"><span class="section-number-2">6.</span> <a href="https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-upgrading-your-clusters-with-zero-downtime">零宕机更新集群</a></h2>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-05-11 16:58:20 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2021-05-11 16:58:20 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
 </div>
 </body>
 </html>

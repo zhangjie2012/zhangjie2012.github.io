@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2023-01-01 Sun 17:16 -->
+<!-- 2023-05-28 Sun 13:54 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>微信第三方平台开发：授权流程</title>
@@ -223,11 +223,11 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgedb7886">1. <code>component_access_token</code> 获取与更新</a></li>
-<li><a href="#orgaa7a1d1">2. <code>pre_auth_code</code> 获取</a></li>
-<li><a href="#org089cb1c">3. 引导用户进入授权页</a></li>
-<li><a href="#org316d0e4">4. 获取接口调用凭据和账号基本信息</a></li>
-<li><a href="#org1d4882b">5. 定时刷新授权公众号接口调用令牌</a></li>
+<li><a href="#orgf98ed18">1. <code>component_access_token</code> 获取与更新</a></li>
+<li><a href="#org29d3aee">2. <code>pre_auth_code</code> 获取</a></li>
+<li><a href="#org3207162">3. 引导用户进入授权页</a></li>
+<li><a href="#org8fd3b26">4. 获取接口调用凭据和账号基本信息</a></li>
+<li><a href="#org2ace506">5. 定时刷新授权公众号接口调用令牌</a></li>
 </ul>
 </div>
 </div>
@@ -290,8 +290,8 @@ a, b, d 都是独立的，相互之间不会有通信，关联都是通过 c 来
 所以我们的第一个问题来了。
 </p>
 
-<div id="outline-container-orgedb7886" class="outline-2">
-<h2 id="orgedb7886"><span class="section-number-2">1.</span> <code>component_access_token</code> 获取与更新</h2>
+<div id="outline-container-orgf98ed18" class="outline-2">
+<h2 id="orgf98ed18"><span class="section-number-2">1.</span> <code>component_access_token</code> 获取与更新</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 在开发者第三方平台创建审核通过之后，a 会每隔 10 分钟向第三方的消息接收地址推送一次 <code>component_verify_ticket=，
@@ -341,8 +341,8 @@ c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供�
 </div>
 </div>
 
-<div id="outline-container-orgaa7a1d1" class="outline-2">
-<h2 id="orgaa7a1d1"><span class="section-number-2">2.</span> <code>pre_auth_code</code> 获取</h2>
+<div id="outline-container-org29d3aee" class="outline-2">
+<h2 id="org29d3aee"><span class="section-number-2">2.</span> <code>pre_auth_code</code> 获取</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 预授权码与令牌不同，虽然它也有有效期（30分钟），但是只有在需要授权时才需要，所以我们同步获取即可，不需要定时更新。
@@ -358,8 +358,8 @@ c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供�
 </div>
 </div>
 
-<div id="outline-container-org089cb1c" class="outline-2">
-<h2 id="org089cb1c"><span class="section-number-2">3.</span> 引导用户进入授权页</h2>
+<div id="outline-container-org3207162" class="outline-2">
+<h2 id="org3207162"><span class="section-number-2">3.</span> 引导用户进入授权页</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 要注意，授权页本身是由微信自身（a）提供的，不是我们自己（c）提供的。c 提供的仅仅是一个「引导」。实操的时候两步即可：
@@ -380,8 +380,8 @@ c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供�
 </div>
 </div>
 
-<div id="outline-container-org316d0e4" class="outline-2">
-<h2 id="org316d0e4"><span class="section-number-2">4.</span> 获取接口调用凭据和账号基本信息</h2>
+<div id="outline-container-org8fd3b26" class="outline-2">
+<h2 id="org8fd3b26"><span class="section-number-2">4.</span> 获取接口调用凭据和账号基本信息</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 有了 <code>auth_code</code> 之后：
@@ -402,8 +402,8 @@ c 接收到的数据是加密的，解密所需的字段在 GET 参数中提供�
 </div>
 </div>
 
-<div id="outline-container-org1d4882b" class="outline-2">
-<h2 id="org1d4882b"><span class="section-number-2">5.</span> 定时刷新授权公众号接口调用令牌</h2>
+<div id="outline-container-org2ace506" class="outline-2">
+<h2 id="org2ace506"><span class="section-number-2">5.</span> 定时刷新授权公众号接口调用令牌</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 <code>auth_access_token</code> 是有有效期的，所以和 <code>component_access_token</code> 一样，需要定时更新。

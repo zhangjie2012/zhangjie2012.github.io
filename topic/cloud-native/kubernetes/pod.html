@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-01-01 Sun 17:15 -->
+<!-- 2023-05-28 Sun 13:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Pod</title>
@@ -223,26 +223,26 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgce4f78a">1. 基本概念</a></li>
-<li><a href="#orgdc64956">2. 设计 pod 的目的</a></li>
-<li><a href="#orgf20c9ed">3. 使用 pod</a></li>
-<li><a href="#orgb3c121d">4. 终止 pod</a>
+<li><a href="#orgac83201">1. 基本概念</a></li>
+<li><a href="#org1cd743d">2. 设计 pod 的目的</a></li>
+<li><a href="#org0957c41">3. 使用 pod</a></li>
+<li><a href="#orgc3d6008">4. 终止 pod</a>
 <ul>
-<li><a href="#org92ea74c">4.1. 优雅终止</a></li>
-<li><a href="#orge287da7">4.2. 强制删除</a></li>
+<li><a href="#orga9da373">4.1. 优雅终止</a></li>
+<li><a href="#org16268ca">4.2. 强制删除</a></li>
 </ul>
 </li>
-<li><a href="#org77f1142">5. Pod 的持久性（或稀缺性）</a></li>
-<li><a href="#org6d5024b">6. Pod 的状态标识</a></li>
-<li><a href="#orgbabb015">7. 容器探针(probes)</a></li>
-<li><a href="#org3b18c05">8. Pod 的重启策略</a></li>
-<li><a href="#org5497b7c">9. Pod 的 lifetime</a></li>
+<li><a href="#org1530276">5. Pod 的持久性（或稀缺性）</a></li>
+<li><a href="#org39e2177">6. Pod 的状态标识</a></li>
+<li><a href="#org1e60eae">7. 容器探针(probes)</a></li>
+<li><a href="#orgecfc3c2">8. Pod 的重启策略</a></li>
+<li><a href="#org24ddc98">9. Pod 的 lifetime</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgce4f78a" class="outline-2">
-<h2 id="orgce4f78a"><span class="section-number-2">1.</span> 基本概念</h2>
+<div id="outline-container-orgac83201" class="outline-2">
+<h2 id="orgac83201"><span class="section-number-2">1.</span> 基本概念</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Pod 是 Kubernetes 的基本执行单元，是对象模型中创建或者部署的最小和最简单的单元。Pod 表示在集群上运行的进程。
@@ -279,8 +279,8 @@ Pod 是 Kubernetes 的基本执行单元，是对象模型中创建或者部署�
 </div>
 </div>
 
-<div id="outline-container-orgdc64956" class="outline-2">
-<h2 id="orgdc64956"><span class="section-number-2">2.</span> 设计 pod 的目的</h2>
+<div id="outline-container-org1cd743d" class="outline-2">
+<h2 id="org1cd743d"><span class="section-number-2">2.</span> 设计 pod 的目的</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Pod 是形成内聚服务单元的多个协作过程模式的模型。它们提供了一个比它们的应用组成集合更高级的抽象，从而简化了应用的部署和管理。
@@ -308,8 +308,8 @@ Pod 可以用作部署、水平扩展和制作副本的最小单元。
 </div>
 </div>
 
-<div id="outline-container-orgf20c9ed" class="outline-2">
-<h2 id="orgf20c9ed"><span class="section-number-2">3.</span> 使用 pod</h2>
+<div id="outline-container-org0957c41" class="outline-2">
+<h2 id="org0957c41"><span class="section-number-2">3.</span> 使用 pod</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 尽管 pod 可以单独被创建，但是实际使用过程中，不会直接使用。因为以 pod 为单独，不方便用户管理而且服务不可自愈。
@@ -330,12 +330,12 @@ Kubernetes 提供了更高级别的抽象 <i>控制器</i> 来管理 pod。
 <span style="color: #6a1868;">metadata</span>:
   <span style="color: #6a1868;">name</span>: myapp-pod
   <span style="color: #6a1868;">labels</span>:
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">app</span>: myapp
+    <span style="color: #6a1868;">app</span>: myapp
 <span style="color: #6a1868;">spec</span>:
   <span style="color: #6a1868;">containers</span>:
   - <span style="color: #6a1868;">name</span>: myapp-container
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">image</span>: busybox
-<span style="color: #ff0000; background-color: #ff0000; font-weight: bold;">    </span><span style="color: #6a1868;">command</span>: [<span style="color: #50a14f;">'sh'</span>, <span style="color: #50a14f;">'-c'</span>, <span style="color: #50a14f;">'echo Hello Kubernetes! &amp;&amp; sleep 3600'</span>]
+    <span style="color: #6a1868;">image</span>: busybox
+    <span style="color: #6a1868;">command</span>: [<span style="color: #50a14f;">'sh'</span>, <span style="color: #50a14f;">'-c'</span>, <span style="color: #50a14f;">'echo Hello Kubernetes! &amp;&amp; sleep 3600'</span>]
 </pre>
 </div>
 
@@ -345,12 +345,12 @@ Kubernetes 提供了更高级别的抽象 <i>控制器</i> 来管理 pod。
 </div>
 </div>
 
-<div id="outline-container-orgb3c121d" class="outline-2">
-<h2 id="orgb3c121d"><span class="section-number-2">4.</span> 终止 pod</h2>
+<div id="outline-container-orgc3d6008" class="outline-2">
+<h2 id="orgc3d6008"><span class="section-number-2">4.</span> 终止 pod</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org92ea74c" class="outline-3">
-<h3 id="org92ea74c"><span class="section-number-3">4.1.</span> 优雅终止</h3>
+<div id="outline-container-orga9da373" class="outline-3">
+<h3 id="orga9da373"><span class="section-number-3">4.1.</span> 优雅终止</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 优雅终止 pod 是很重要的，用户可以设置容器的 <b>宽限期</b> ，默认的时间是 30 秒。流程如下：
@@ -390,8 +390,8 @@ Kubernetes 提供了更高级别的抽象 <i>控制器</i> 来管理 pod。
 </div>
 </div>
 
-<div id="outline-container-orge287da7" class="outline-3">
-<h3 id="orge287da7"><span class="section-number-3">4.2.</span> 强制删除</h3>
+<div id="outline-container-org16268ca" class="outline-3">
+<h3 id="org16268ca"><span class="section-number-3">4.2.</span> 强制删除</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 强制删除指的是：从集群状态和 etcd 中立即删除 Pod；API 服务器不会等待 kubelet 的确认信息（该 Pod 是否被所运行的节点终止）。
@@ -404,8 +404,8 @@ Kubernetes 提供了更高级别的抽象 <i>控制器</i> 来管理 pod。
 </div>
 </div>
 
-<div id="outline-container-org77f1142" class="outline-2">
-<h2 id="org77f1142"><span class="section-number-2">5.</span> Pod 的持久性（或稀缺性）</h2>
+<div id="outline-container-org1530276" class="outline-2">
+<h2 id="org1530276"><span class="section-number-2">5.</span> Pod 的持久性（或稀缺性）</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 <b>不能将 pod 视为持久的实体。</b> 它们无法在调度失败、节点故障或其他驱逐策略（例如由于缺乏资源或在节点维护的情况下）中生存。
@@ -445,8 +445,8 @@ Pod 可以当做一个应用实例，但不能当成虚拟机的定位。它们�
 </div>
 </div>
 
-<div id="outline-container-org6d5024b" class="outline-2">
-<h2 id="org6d5024b"><span class="section-number-2">6.</span> Pod 的状态标识</h2>
+<div id="outline-container-org39e2177" class="outline-2">
+<h2 id="org39e2177"><span class="section-number-2">6.</span> Pod 的状态标识</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Pod 的 <code>status</code> 字段是一个 PodStatus 对象，其中包含 <code>phase</code> 和 <code>conditions</code> 用来标识 pod 的状态。
@@ -532,8 +532,8 @@ Pod 的阶段（phase）是一个简单的，高层次的总结了 Pod 在生命
 </div>
 </div>
 
-<div id="outline-container-orgbabb015" class="outline-2">
-<h2 id="orgbabb015"><span class="section-number-2">7.</span> 容器探针(probes)</h2>
+<div id="outline-container-org1e60eae" class="outline-2">
+<h2 id="org1e60eae"><span class="section-number-2">7.</span> 容器探针(probes)</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 探针（probes）是 kubelet 对容器的定时诊断。提供三种探测方式：
@@ -581,8 +581,8 @@ kubelet 对已经运行的容器可选的执行下面三种探针：
 </div>
 </div>
 
-<div id="outline-container-org3b18c05" class="outline-2">
-<h2 id="org3b18c05"><span class="section-number-2">8.</span> Pod 的重启策略</h2>
+<div id="outline-container-orgecfc3c2" class="outline-2">
+<h2 id="orgecfc3c2"><span class="section-number-2">8.</span> Pod 的重启策略</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 Pod 有可以设置重启策略，由 pod 所在容器的 kubelet 来判断容器状态（异常退出、存活检测失败），重启策略由 PodSpec 中的
@@ -601,8 +601,8 @@ Pod 有可以设置重启策略，由 pod 所在容器的 kubelet 来判断容�
 </div>
 </div>
 
-<div id="outline-container-org5497b7c" class="outline-2">
-<h2 id="org5497b7c"><span class="section-number-2">9.</span> Pod 的 lifetime</h2>
+<div id="outline-container-org24ddc98" class="outline-2">
+<h2 id="org24ddc98"><span class="section-number-2">9.</span> Pod 的 lifetime</h2>
 <div class="outline-text-2" id="text-9">
 <p>
 Pod 除非是人工或者控制器删除，否则会一直存在。当 pod 的数量超过配置的阈值时（由 kube-controller-manager 配置的
@@ -632,7 +632,7 @@ ReplicationControllers 仅适用于 <code>restartPolicy</code> 为 always 的 po
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-08 15:20:07 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2020-02-08 15:20:07 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
 </div>
 </body>
 </html>

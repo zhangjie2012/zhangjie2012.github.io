@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2023-01-01 Sun 17:16 -->
+<!-- 2023-05-28 Sun 13:54 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ingress-nginx 工作原理（下）：服务启动、运行和停止</title>
@@ -223,10 +223,10 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgf424c98">1. 服务启动</a></li>
-<li><a href="#orga120cd1">2. 服务运行</a></li>
-<li><a href="#org318e488">3. 服务终止</a></li>
-<li><a href="#org29fe54f">4. syncIngress</a></li>
+<li><a href="#orgccbf169">1. 服务启动</a></li>
+<li><a href="#org07d1519">2. 服务运行</a></li>
+<li><a href="#org701428d">3. 服务终止</a></li>
+<li><a href="#org95b1798">4. syncIngress</a></li>
 </ul>
 </div>
 </div>
@@ -234,8 +234,8 @@
 <a href="ingress-nginx-code-analysis-1.html">接上文。</a>
 </p>
 
-<div id="outline-container-orgf424c98" class="outline-2">
-<h2 id="orgf424c98"><span class="section-number-2">1.</span> 服务启动</h2>
+<div id="outline-container-orgccbf169" class="outline-2">
+<h2 id="orgccbf169"><span class="section-number-2">1.</span> 服务启动</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 在 <code>main</code> 中 <code>ngx.Start()</code> 将启动服务。
@@ -322,8 +322,8 @@
 </div>
 </div>
 
-<div id="outline-container-orga120cd1" class="outline-2">
-<h2 id="orga120cd1"><span class="section-number-2">2.</span> 服务运行</h2>
+<div id="outline-container-org07d1519" class="outline-2">
+<h2 id="org07d1519"><span class="section-number-2">2.</span> 服务运行</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 服务正常运行是不断从 K8s 接受资源变更事件，然后转换成 nginx 新配置，进而 reload nginx 的过程。
@@ -348,8 +348,8 @@
 </div>
 </div>
 
-<div id="outline-container-org318e488" class="outline-2">
-<h2 id="org318e488"><span class="section-number-2">3.</span> 服务终止</h2>
+<div id="outline-container-org701428d" class="outline-2">
+<h2 id="org701428d"><span class="section-number-2">3.</span> 服务终止</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 上面的 <code>for ... select</code> 中的 <code>case &lt;-n.stopCh</code> ，等 <code>stopCh</code> 有数据时，for 循环 break，服务正常结束。
@@ -434,8 +434,8 @@
 </div>
 </div>
 
-<div id="outline-container-org29fe54f" class="outline-2">
-<h2 id="org29fe54f"><span class="section-number-2">4.</span> syncIngress</h2>
+<div id="outline-container-org95b1798" class="outline-2">
+<h2 id="org95b1798"><span class="section-number-2">4.</span> syncIngress</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">ingress/controller/controller.go</span>

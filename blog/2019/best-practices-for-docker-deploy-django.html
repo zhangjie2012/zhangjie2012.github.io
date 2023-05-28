@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2023-01-01 Sun 17:16 -->
+<!-- 2023-05-28 Sun 13:54 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>使用 Docker 部署 Django Web server 最佳实践</title>
@@ -223,11 +223,11 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org37994fd">1. 使用 Supervisor</a></li>
-<li><a href="#org61b4ca2">2. 服务参数传递</a></li>
-<li><a href="#org432d764">3. 设置 bind mounts</a></li>
-<li><a href="#org2230033">4. 将 migrate 在启动脚本中执行</a></li>
-<li><a href="#orgd8789b6">5. 对上篇文章的纠正</a></li>
+<li><a href="#orge1eefe6">1. 使用 Supervisor</a></li>
+<li><a href="#orgdf82304">2. 服务参数传递</a></li>
+<li><a href="#org77b7b76">3. 设置 bind mounts</a></li>
+<li><a href="#org48b6a7d">4. 将 migrate 在启动脚本中执行</a></li>
+<li><a href="#org034cadb">5. 对上篇文章的纠正</a></li>
 </ul>
 </div>
 </div>
@@ -235,8 +235,8 @@
 2018 年 9 月 8 日，我写了 <a href="../2018/docker-run-django-project.html">Docker 运行 Django 项目</a>，随着自己对 Docker 的更深一步了解，以及在 [qwerty](<a href="https://github.com/zhangjie2012/qwerty">https://github.com/zhangjie2012/qwerty</a>) 项目中的实践，感觉之前写的略有不足。这篇文章进行一定的补充说明。
 </p>
 
-<div id="outline-container-org37994fd" class="outline-2">
-<h2 id="org37994fd"><span class="section-number-2">1.</span> 使用 Supervisor</h2>
+<div id="outline-container-orge1eefe6" class="outline-2">
+<h2 id="orge1eefe6"><span class="section-number-2">1.</span> 使用 Supervisor</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 在虚拟机上部署 Django 项目，一般使用的是 uwsgi，但是在容器中运行的服务必须有一个前台进程，所以在之前的文章中去掉了 uwsgi 的 <code>daemonize2</code> 选项，uwsgi 日志相关的配置也都删除了（因为要跑到前台），所以 uwsgi 的日志相当于是打在了标准输出上。
@@ -259,8 +259,8 @@ command = /usr/local/bin/uwsgi --ini /code/uwsgi.ini
 </div>
 </div>
 
-<div id="outline-container-org61b4ca2" class="outline-2">
-<h2 id="org61b4ca2"><span class="section-number-2">2.</span> 服务参数传递</h2>
+<div id="outline-container-orgdf82304" class="outline-2">
+<h2 id="orgdf82304"><span class="section-number-2">2.</span> 服务参数传递</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Web 服务会有一些参数要设置，比如 DB，缓存的地址、账号、密码等，以及日志的输出路径等等，Docker 部署时建议可变参数已环境变量（ <code>--env</code> ）的方式注入，但是实际操作中发现服务配置项往往与预期的要多，使用环境的方式启动命令会很长，很容易搞错，不容易维护。
@@ -269,8 +269,8 @@ Web 服务会有一些参数要设置，比如 DB，缓存的地址、账号、�
 </div>
 </div>
 
-<div id="outline-container-org432d764" class="outline-2">
-<h2 id="org432d764"><span class="section-number-2">3.</span> 设置 bind mounts</h2>
+<div id="outline-container-org77b7b76" class="outline-2">
+<h2 id="org77b7b76"><span class="section-number-2">3.</span> 设置 bind mounts</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 一些需要落地宿主机的文件，最常见的为服务日志，使用 bind mounts（ <code>--mounts</code> ）日志目录映射到宿主机（按照固定的目录规则，也方面后期日志收集），上面所有的服务配置文件也可以 mount 到容器中；
@@ -278,8 +278,8 @@ Web 服务会有一些参数要设置，比如 DB，缓存的地址、账号、�
 </div>
 </div>
 
-<div id="outline-container-org2230033" class="outline-2">
-<h2 id="org2230033"><span class="section-number-2">4.</span> 将 migrate 在启动脚本中执行</h2>
+<div id="outline-container-org48b6a7d" class="outline-2">
+<h2 id="org48b6a7d"><span class="section-number-2">4.</span> 将 migrate 在启动脚本中执行</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 使用 Django 经常会需要 <code>migrate</code> ，在容器启动后，手动进入容器中执行 <code>migrate</code> 非常麻烦。好在 Dockerfile 中的 <code>ENTRYPOINT~，~CMD</code> 运行直接指定一个启动脚本，以应对复杂的服务启动。
@@ -288,8 +288,8 @@ Web 服务会有一些参数要设置，比如 DB，缓存的地址、账号、�
 </div>
 </div>
 
-<div id="outline-container-orgd8789b6" class="outline-2">
-<h2 id="orgd8789b6"><span class="section-number-2">5.</span> 对上篇文章的纠正</h2>
+<div id="outline-container-org034cadb" class="outline-2">
+<h2 id="org034cadb"><span class="section-number-2">5.</span> 对上篇文章的纠正</h2>
 <div class="outline-text-2" id="text-5">
 <ol class="org-ol">
 <li>使用 <code>--network</code> 而不是 <code>--link</code> ， <code>--link</code> 将被 Docker 废弃，network 的方式功能更强大，也比 <code>--link</code> 好用，具体见：<a href="https://docs.docker.com/network/links/">Legacy container links</a>；</li>

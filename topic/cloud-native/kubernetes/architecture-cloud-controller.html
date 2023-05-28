@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-01-01 Sun 17:15 -->
+<!-- 2023-05-28 Sun 13:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 集群架构：云控制器管理器</title>
@@ -223,20 +223,20 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org85e90f0">1. 设计</a></li>
-<li><a href="#orgd59db93">2. 云控制器管理器功能</a>
+<li><a href="#orgd7e358d">1. 设计</a></li>
+<li><a href="#org0a79d03">2. 云控制器管理器功能</a>
 <ul>
-<li><a href="#org4f5164f">2.1. 节点控制器</a></li>
-<li><a href="#org36fd52c">2.2. 路由（Route）控制器</a></li>
-<li><a href="#org7937ac7">2.3. Service 控制器</a></li>
+<li><a href="#org58a2bb7">2.1. 节点控制器</a></li>
+<li><a href="#orgb09cf86">2.2. 路由（Route）控制器</a></li>
+<li><a href="#org8a16145">2.3. Service 控制器</a></li>
 </ul>
 </li>
-<li><a href="#orge099987">3. 授权</a>
+<li><a href="#orgc06f7e9">3. 授权</a>
 <ul>
-<li><a href="#org0c98cbe">3.1. 节点控制器</a></li>
-<li><a href="#orgcda64e1">3.2. 路由控制器</a></li>
-<li><a href="#orgd554b26">3.3. Service 控制器</a></li>
-<li><a href="#org8f6ce26">3.4. 其它</a></li>
+<li><a href="#orgf291c02">3.1. 节点控制器</a></li>
+<li><a href="#org988cbc6">3.2. 路由控制器</a></li>
+<li><a href="#org68840b2">3.3. Service 控制器</a></li>
+<li><a href="#org874e915">3.4. 其它</a></li>
 </ul>
 </li>
 </ul>
@@ -264,11 +264,11 @@
 云控制器管理器使用插件机制构建，该机制允许不同的云提供商将其平台与 Kubernetes 集成。
 </p>
 
-<div id="outline-container-org85e90f0" class="outline-2">
-<h2 id="org85e90f0"><span class="section-number-2">1.</span> 设计</h2>
+<div id="outline-container-orgd7e358d" class="outline-2">
+<h2 id="orgd7e358d"><span class="section-number-2">1.</span> 设计</h2>
 <div class="outline-text-2" id="text-1">
 
-<div id="orgea0f689" class="figure">
+<div id="orgbea13bb" class="figure">
 <p><img src="https://d33wubrfki0l68.cloudfront.net/2475489eaf20163ec0f54ddc1d92aa8d4c87c96b/e7c81/images/docs/components-of-kubernetes.svg" alt="components-of-kubernetes.svg" class="org-svg" />
 </p>
 </div>
@@ -285,16 +285,16 @@
 </div>
 </div>
 
-<div id="outline-container-orgd59db93" class="outline-2">
-<h2 id="orgd59db93"><span class="section-number-2">2.</span> 云控制器管理器功能</h2>
+<div id="outline-container-org0a79d03" class="outline-2">
+<h2 id="org0a79d03"><span class="section-number-2">2.</span> 云控制器管理器功能</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 云控制器管理器内部的控制器包括：
 </p>
 </div>
 
-<div id="outline-container-org4f5164f" class="outline-3">
-<h3 id="org4f5164f"><span class="section-number-3">2.1.</span> 节点控制器</h3>
+<div id="outline-container-org58a2bb7" class="outline-3">
+<h3 id="org58a2bb7"><span class="section-number-3">2.1.</span> 节点控制器</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 在云基础架构中创建新服务器时，节点控制器负责创建节点对象。节点控制器获取有关在租户内部通过云提供商运行的主机的信息。
@@ -315,8 +315,8 @@
 </div>
 </div>
 
-<div id="outline-container-org36fd52c" class="outline-3">
-<h3 id="org36fd52c"><span class="section-number-3">2.2.</span> 路由（Route）控制器</h3>
+<div id="outline-container-orgb09cf86" class="outline-3">
+<h3 id="orgb09cf86"><span class="section-number-3">2.2.</span> 路由（Route）控制器</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 路由控制器的责任是在云中配置路由规则来确保 Kubernetes 集群中不同节点的容器可以互通。
@@ -328,8 +328,8 @@
 </div>
 </div>
 
-<div id="outline-container-org7937ac7" class="outline-3">
-<h3 id="org7937ac7"><span class="section-number-3">2.3.</span> Service 控制器</h3>
+<div id="outline-container-org8a16145" class="outline-3">
+<h3 id="org8a16145"><span class="section-number-3">2.3.</span> Service 控制器</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Services 和云基础架构组件集成，比如管理负载均衡器，IP 地址，网络包过滤，和目标运行状态检查。当你声明一个 Service 资源说明你需要他们时，
@@ -339,16 +339,16 @@ service 控制器和云提供商 APIs 互动来设置负载均衡器和其他基
 </div>
 </div>
 
-<div id="outline-container-orge099987" class="outline-2">
-<h2 id="orge099987"><span class="section-number-2">3.</span> 授权</h2>
+<div id="outline-container-orgc06f7e9" class="outline-2">
+<h2 id="orgc06f7e9"><span class="section-number-2">3.</span> 授权</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 本节将分解云控制器管理器对各种API对象进行执行操作所需的访问权限。
 </p>
 </div>
 
-<div id="outline-container-org0c98cbe" class="outline-3">
-<h3 id="org0c98cbe"><span class="section-number-3">3.1.</span> 节点控制器</h3>
+<div id="outline-container-orgf291c02" class="outline-3">
+<h3 id="orgf291c02"><span class="section-number-3">3.1.</span> 节点控制器</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 节点控制器仅适用于节点对象。它需要完全访问权限才能读取和修改节点对象。
@@ -370,8 +370,8 @@ service 控制器和云提供商 APIs 互动来设置负载均衡器和其他基
 </div>
 </div>
 
-<div id="outline-container-orgcda64e1" class="outline-3">
-<h3 id="orgcda64e1"><span class="section-number-3">3.2.</span> 路由控制器</h3>
+<div id="outline-container-org988cbc6" class="outline-3">
+<h3 id="org988cbc6"><span class="section-number-3">3.2.</span> 路由控制器</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 路由控制器监听节点对象的创建并适当地配置路由。它需要获得对节点对象的访问权限。
@@ -387,8 +387,8 @@ service 控制器和云提供商 APIs 互动来设置负载均衡器和其他基
 </div>
 </div>
 
-<div id="outline-container-orgd554b26" class="outline-3">
-<h3 id="orgd554b26"><span class="section-number-3">3.3.</span> Service 控制器</h3>
+<div id="outline-container-org68840b2" class="outline-3">
+<h3 id="org68840b2"><span class="section-number-3">3.3.</span> Service 控制器</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 Service 控制器监听 Service 对象的 Create、Update 和 Delete 事件，然后为这些 Service 配置 Endpoints。
@@ -416,8 +416,8 @@ Service 控制器监听 Service 对象的 Create、Update 和 Delete 事件，�
 </div>
 </div>
 
-<div id="outline-container-org8f6ce26" class="outline-3">
-<h3 id="org8f6ce26"><span class="section-number-3">3.4.</span> 其它</h3>
+<div id="outline-container-org874e915" class="outline-3">
+<h3 id="org874e915"><span class="section-number-3">3.4.</span> 其它</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 云控制器管理器核心的实现需要访问权限以创建事件对象，并且为了确保安全操作，还需要访问权限以创建 ServiceAccounts。
@@ -513,7 +513,7 @@ Service 控制器监听 Service 对象的 Create、Update 和 Delete 事件，�
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2021-04-14 17:27:05 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.6)</p>
+<p class="postamble">First created: 2021-04-14 17:27:05 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
 </div>
 </body>
 </html>
