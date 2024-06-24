@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-05-28 Sun 13:54 -->
+<!-- 2024-06-24 Mon 14:21 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go log package 选择</title>
@@ -292,12 +292,14 @@ Uber 开源的日志系统。
 <ul class="org-ul">
 <li>性能 <span class="underline"><span class="underline">非常</span></span> 好</li>
 <li>支持 Hook</li>
-<li>可能是设计就是为了设计之初就是为了高性能，定制性很强，就是非常不人性化，以至于不知道怎么定制···，好在有这个 <a href="https://github.com/sandipb/zap-examples">sandipb/zap-examples</a></li>
-</ul>
+<li><p>
+可能是设计就是为了设计之初就是为了高性能，定制性很强，就是非常不人性化，以至于不知道怎么定制···，好在有这个 <a href="https://github.com/sandipb/zap-examples">sandipb/zap-examples</a>
+</p>
 
 <p>
 性能相比： <code>zap &gt; glog &gt; logrus &gt; log</code> ，值得一提的是，zap 是远大于 glog 和 logrus 的。
-</p>
+</p></li>
+</ul>
 </div>
 </div>
 
@@ -319,45 +321,45 @@ Uber 开源的日志系统。
 <h3 id="org4406236"><span class="section-number-3">6.1.</span> logrus</h3>
 <div class="outline-text-3" id="text-6-1">
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #e45649;">func</span> <span style="color: #a626a4;">init</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">TEXT</span>
-    logrus.<span style="color: #a626a4;">SetFormatter</span><span style="color: #a626a4;">(</span>&amp;<span style="color: #986801;">logrus.TextFormatter</span><span style="color: #50a14f;">{</span>
-        <span style="color: #b751b6;">ForceColors</span>:     <span style="color: #b751b6;">false</span>,
-        <span style="color: #b751b6;">DisableColors</span>:   <span style="color: #b751b6;">true</span>,
-        <span style="color: #b751b6;">FullTimestamp</span>:   <span style="color: #b751b6;">true</span>,
-        <span style="color: #b751b6;">TimestampFormat</span>: <span style="color: #50a14f;">"2006-01-02 15:04:05.000"</span>,
-        <span style="color: #b751b6;">CallerPrettyfier</span>: <span style="color: #e45649;">func</span><span style="color: #b751b6;">(</span><span style="color: #6a1868;">frame</span> *<span style="color: #986801;">runtime.Frame</span><span style="color: #b751b6;">)</span> <span style="color: #b751b6;">(</span><span style="color: #6a1868;">function</span> <span style="color: #986801;">string</span>, <span style="color: #6a1868;">file</span> <span style="color: #986801;">string</span><span style="color: #b751b6;">)</span> <span style="color: #b751b6;">{</span>
-            <span style="color: #6a1868;">ss</span> := strings.<span style="color: #a626a4;">Split</span><span style="color: #4db5bd;">(</span>frame.Function, <span style="color: #50a14f;">"."</span><span style="color: #4db5bd;">)</span>
-            function = ss<span style="color: #4db5bd;">[</span><span style="color: #a626a4;">len</span><span style="color: #4078f2;">(</span>ss<span style="color: #4078f2;">)</span>-1<span style="color: #4db5bd;">]</span>
-            file = fmt.<span style="color: #a626a4;">Sprintf</span><span style="color: #4db5bd;">(</span><span style="color: #50a14f;">"%s:%d"</span>, filepath.<span style="color: #a626a4;">Base</span><span style="color: #4078f2;">(</span>frame.File<span style="color: #4078f2;">)</span>, frame.Line<span style="color: #4db5bd;">)</span>
-            <span style="color: #e45649;">return</span> function, file
-        <span style="color: #b751b6;">}</span>,
-    <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">JSON</span>
-    logrus.<span style="color: #a626a4;">SetFormatter</span><span style="color: #a626a4;">(</span>&amp;<span style="color: #986801;">logrus.JSONFormatter</span><span style="color: #50a14f;">{</span>
-        <span style="color: #b751b6;">TimestampFormat</span>: <span style="color: #50a14f;">"2006-01-02 15:04:05.000"</span>,
-        <span style="color: #b751b6;">CallerPrettyfier</span>: <span style="color: #e45649;">func</span><span style="color: #b751b6;">(</span><span style="color: #6a1868;">frame</span> *<span style="color: #986801;">runtime.Frame</span><span style="color: #b751b6;">)</span> <span style="color: #b751b6;">(</span><span style="color: #6a1868;">function</span> <span style="color: #986801;">string</span>, <span style="color: #6a1868;">file</span> <span style="color: #986801;">string</span><span style="color: #b751b6;">)</span> <span style="color: #b751b6;">{</span>
-            <span style="color: #6a1868;">ss</span> := strings.<span style="color: #a626a4;">Split</span><span style="color: #4db5bd;">(</span>frame.Function, <span style="color: #50a14f;">"."</span><span style="color: #4db5bd;">)</span>
-            function = ss<span style="color: #4db5bd;">[</span><span style="color: #a626a4;">len</span><span style="color: #4078f2;">(</span>ss<span style="color: #4078f2;">)</span>-1<span style="color: #4db5bd;">]</span>
-            file = fmt.<span style="color: #a626a4;">Sprintf</span><span style="color: #4db5bd;">(</span><span style="color: #50a14f;">"%s:%d"</span>, filepath.<span style="color: #a626a4;">Base</span><span style="color: #4078f2;">(</span>frame.File<span style="color: #4078f2;">)</span>, frame.Line<span style="color: #4db5bd;">)</span>
-            <span style="color: #e45649;">return</span> function, file
-        <span style="color: #b751b6;">}</span>,
-        <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">FieldMap: logrus.FieldMap{</span>
-        <span style="color: #9ca0a4;">//  </span><span style="color: #9ca0a4;">logrus.FieldKeyTime:  "@timestamp",</span>
-        <span style="color: #9ca0a4;">//  </span><span style="color: #9ca0a4;">logrus.FieldKeyLevel: "@level",</span>
-        <span style="color: #9ca0a4;">//  </span><span style="color: #9ca0a4;">logrus.FieldKeyMsg:   "@message",</span>
-        <span style="color: #9ca0a4;">//  </span><span style="color: #9ca0a4;">logrus.FieldKeyFunc:  "@caller",</span>
-        <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">},</span>
-        <span style="color: #b751b6;">PrettyPrint</span>: <span style="color: #b751b6;">true</span>,
-    <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
+<pre class="src src-go"><span style="color: #51afef;">func</span> <span style="color: #c678dd;">init</span><span style="color: #51afef;">()</span> <span style="color: #51afef;">{</span>
+    <span style="color: #5B6268;">// </span><span style="color: #5B6268;">TEXT</span>
+    logrus.<span style="color: #c678dd;">SetFormatter</span><span style="color: #c678dd;">(</span>&amp;<span style="color: #ECBE7B;">logrus.TextFormatter</span><span style="color: #98be65;">{</span>
+        <span style="color: #a9a1e1;">ForceColors</span>:     <span style="color: #a9a1e1;">false</span>,
+        <span style="color: #a9a1e1;">DisableColors</span>:   <span style="color: #a9a1e1;">true</span>,
+        <span style="color: #a9a1e1;">FullTimestamp</span>:   <span style="color: #a9a1e1;">true</span>,
+        <span style="color: #a9a1e1;">TimestampFormat</span>: <span style="color: #98be65;">"2006-01-02 15:04:05.000"</span>,
+        <span style="color: #a9a1e1;">CallerPrettyfier</span>: <span style="color: #51afef;">func</span><span style="color: #a9a1e1;">(</span><span style="color: #dcaeea;">frame</span> *<span style="color: #ECBE7B;">runtime.Frame</span><span style="color: #a9a1e1;">)</span> <span style="color: #a9a1e1;">(</span><span style="color: #dcaeea;">function</span> <span style="color: #ECBE7B;">string</span>, <span style="color: #dcaeea;">file</span> <span style="color: #ECBE7B;">string</span><span style="color: #a9a1e1;">)</span> <span style="color: #a9a1e1;">{</span>
+            <span style="color: #dcaeea;">ss</span> := strings.<span style="color: #c678dd;">Split</span><span style="color: #4db5bd;">(</span>frame.Function, <span style="color: #98be65;">"."</span><span style="color: #4db5bd;">)</span>
+            function = ss<span style="color: #4db5bd;">[</span><span style="color: #c678dd;">len</span><span style="color: #51afef;">(</span>ss<span style="color: #51afef;">)</span>-1<span style="color: #4db5bd;">]</span>
+            file = fmt.<span style="color: #c678dd;">Sprintf</span><span style="color: #4db5bd;">(</span><span style="color: #98be65;">"%s:%d"</span>, filepath.<span style="color: #c678dd;">Base</span><span style="color: #51afef;">(</span>frame.File<span style="color: #51afef;">)</span>, frame.Line<span style="color: #4db5bd;">)</span>
+            <span style="color: #51afef;">return</span> function, file
+        <span style="color: #a9a1e1;">}</span>,
+    <span style="color: #98be65;">}</span><span style="color: #c678dd;">)</span>
+    <span style="color: #5B6268;">// </span><span style="color: #5B6268;">JSON</span>
+    logrus.<span style="color: #c678dd;">SetFormatter</span><span style="color: #c678dd;">(</span>&amp;<span style="color: #ECBE7B;">logrus.JSONFormatter</span><span style="color: #98be65;">{</span>
+        <span style="color: #a9a1e1;">TimestampFormat</span>: <span style="color: #98be65;">"2006-01-02 15:04:05.000"</span>,
+        <span style="color: #a9a1e1;">CallerPrettyfier</span>: <span style="color: #51afef;">func</span><span style="color: #a9a1e1;">(</span><span style="color: #dcaeea;">frame</span> *<span style="color: #ECBE7B;">runtime.Frame</span><span style="color: #a9a1e1;">)</span> <span style="color: #a9a1e1;">(</span><span style="color: #dcaeea;">function</span> <span style="color: #ECBE7B;">string</span>, <span style="color: #dcaeea;">file</span> <span style="color: #ECBE7B;">string</span><span style="color: #a9a1e1;">)</span> <span style="color: #a9a1e1;">{</span>
+            <span style="color: #dcaeea;">ss</span> := strings.<span style="color: #c678dd;">Split</span><span style="color: #4db5bd;">(</span>frame.Function, <span style="color: #98be65;">"."</span><span style="color: #4db5bd;">)</span>
+            function = ss<span style="color: #4db5bd;">[</span><span style="color: #c678dd;">len</span><span style="color: #51afef;">(</span>ss<span style="color: #51afef;">)</span>-1<span style="color: #4db5bd;">]</span>
+            file = fmt.<span style="color: #c678dd;">Sprintf</span><span style="color: #4db5bd;">(</span><span style="color: #98be65;">"%s:%d"</span>, filepath.<span style="color: #c678dd;">Base</span><span style="color: #51afef;">(</span>frame.File<span style="color: #51afef;">)</span>, frame.Line<span style="color: #4db5bd;">)</span>
+            <span style="color: #51afef;">return</span> function, file
+        <span style="color: #a9a1e1;">}</span>,
+        <span style="color: #5B6268;">// </span><span style="color: #5B6268;">FieldMap: logrus.FieldMap{</span>
+        <span style="color: #5B6268;">//  </span><span style="color: #5B6268;">logrus.FieldKeyTime:  "@timestamp",</span>
+        <span style="color: #5B6268;">//  </span><span style="color: #5B6268;">logrus.FieldKeyLevel: "@level",</span>
+        <span style="color: #5B6268;">//  </span><span style="color: #5B6268;">logrus.FieldKeyMsg:   "@message",</span>
+        <span style="color: #5B6268;">//  </span><span style="color: #5B6268;">logrus.FieldKeyFunc:  "@caller",</span>
+        <span style="color: #5B6268;">// </span><span style="color: #5B6268;">},</span>
+        <span style="color: #a9a1e1;">PrettyPrint</span>: <span style="color: #a9a1e1;">true</span>,
+    <span style="color: #98be65;">}</span><span style="color: #c678dd;">)</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#35774;&#32622;&#36755;&#20986;&#27969;</span>
-    logrus.<span style="color: #a626a4;">SetOutput</span><span style="color: #a626a4;">(</span>os.Stdout<span style="color: #a626a4;">)</span>
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">include calling method</span>
-    logrus.<span style="color: #a626a4;">SetReportCaller</span><span style="color: #a626a4;">(</span><span style="color: #b751b6;">true</span><span style="color: #a626a4;">)</span>
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#26085;&#24535;&#32423;&#21035;</span>
-    logrus.<span style="color: #a626a4;">SetLevel</span><span style="color: #a626a4;">(</span>logrus.TraceLevel<span style="color: #a626a4;">)</span>
-<span style="color: #4078f2;">}</span>
+    <span style="color: #5B6268;">// </span><span style="color: #5B6268;">&#35774;&#32622;&#36755;&#20986;&#27969;</span>
+    logrus.<span style="color: #c678dd;">SetOutput</span><span style="color: #c678dd;">(</span>os.Stdout<span style="color: #c678dd;">)</span>
+    <span style="color: #5B6268;">// </span><span style="color: #5B6268;">include calling method</span>
+    logrus.<span style="color: #c678dd;">SetReportCaller</span><span style="color: #c678dd;">(</span><span style="color: #a9a1e1;">true</span><span style="color: #c678dd;">)</span>
+    <span style="color: #5B6268;">// </span><span style="color: #5B6268;">&#26085;&#24535;&#32423;&#21035;</span>
+    logrus.<span style="color: #c678dd;">SetLevel</span><span style="color: #c678dd;">(</span>logrus.TraceLevel<span style="color: #c678dd;">)</span>
+<span style="color: #51afef;">}</span>
 </pre>
 </div>
 </div>
@@ -367,20 +369,20 @@ Uber 开源的日志系统。
 <h3 id="org1a02155"><span class="section-number-3">6.2.</span> zap</h3>
 <div class="outline-text-3" id="text-6-2">
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #6a1868;">logger</span>, <span style="color: #6a1868;">_</span> := <span style="color: #986801;">zap.Config</span><span style="color: #4078f2;">{</span>
-    <span style="color: #b751b6;">Encoding</span>:      <span style="color: #50a14f;">"console"</span>,
-    <span style="color: #b751b6;">Level</span>:         zap.<span style="color: #a626a4;">NewAtomicLevelAt</span><span style="color: #a626a4;">(</span>logLevel<span style="color: #a626a4;">)</span>,
-    <span style="color: #b751b6;">DisableCaller</span>: <span style="color: #b751b6;">true</span>,
-    <span style="color: #b751b6;">OutputPaths</span>:   <span style="color: #a626a4;">[]</span><span style="color: #986801;">string</span><span style="color: #a626a4;">{</span><span style="color: #50a14f;">"stdout"</span><span style="color: #a626a4;">}</span>,
-    <span style="color: #b751b6;">EncoderConfig</span>: <span style="color: #986801;">zapcore.EncoderConfig</span><span style="color: #a626a4;">{</span>
-        <span style="color: #b751b6;">TimeKey</span>:     <span style="color: #50a14f;">"ts"</span>,
-        <span style="color: #b751b6;">LevelKey</span>:    <span style="color: #50a14f;">"level"</span>,
-        <span style="color: #b751b6;">MessageKey</span>:  <span style="color: #50a14f;">"msg"</span>,
-        <span style="color: #b751b6;">EncodeLevel</span>: zapcore.CapitalLevelEncoder,
-        <span style="color: #b751b6;">EncodeTime</span>:  zapcore.RFC3339TimeEncoder,
-    <span style="color: #a626a4;">}</span>,
-<span style="color: #4078f2;">}</span>.<span style="color: #a626a4;">Build</span><span style="color: #4078f2;">()</span>
-zap.<span style="color: #a626a4;">ReplaceGlobals</span><span style="color: #4078f2;">(</span>logger<span style="color: #4078f2;">)</span>
+<pre class="src src-go"><span style="color: #dcaeea;">logger</span>, <span style="color: #dcaeea;">_</span> := <span style="color: #ECBE7B;">zap.Config</span><span style="color: #51afef;">{</span>
+    <span style="color: #a9a1e1;">Encoding</span>:      <span style="color: #98be65;">"console"</span>,
+    <span style="color: #a9a1e1;">Level</span>:         zap.<span style="color: #c678dd;">NewAtomicLevelAt</span><span style="color: #c678dd;">(</span>logLevel<span style="color: #c678dd;">)</span>,
+    <span style="color: #a9a1e1;">DisableCaller</span>: <span style="color: #a9a1e1;">true</span>,
+    <span style="color: #a9a1e1;">OutputPaths</span>:   <span style="color: #c678dd;">[]</span><span style="color: #ECBE7B;">string</span><span style="color: #c678dd;">{</span><span style="color: #98be65;">"stdout"</span><span style="color: #c678dd;">}</span>,
+    <span style="color: #a9a1e1;">EncoderConfig</span>: <span style="color: #ECBE7B;">zapcore.EncoderConfig</span><span style="color: #c678dd;">{</span>
+        <span style="color: #a9a1e1;">TimeKey</span>:     <span style="color: #98be65;">"ts"</span>,
+        <span style="color: #a9a1e1;">LevelKey</span>:    <span style="color: #98be65;">"level"</span>,
+        <span style="color: #a9a1e1;">MessageKey</span>:  <span style="color: #98be65;">"msg"</span>,
+        <span style="color: #a9a1e1;">EncodeLevel</span>: zapcore.CapitalLevelEncoder,
+        <span style="color: #a9a1e1;">EncodeTime</span>:  zapcore.RFC3339TimeEncoder,
+    <span style="color: #c678dd;">}</span>,
+<span style="color: #51afef;">}</span>.<span style="color: #c678dd;">Build</span><span style="color: #51afef;">()</span>
+zap.<span style="color: #c678dd;">ReplaceGlobals</span><span style="color: #51afef;">(</span>logger<span style="color: #51afef;">)</span>
 </pre>
 </div>
 </div>
@@ -388,7 +390,7 @@ zap.<span style="color: #a626a4;">ReplaceGlobals</span><span style="color: #4078
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2019-03-14 17:50:00 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
+<p class="postamble">First created: 2019-03-14 17:50:00 <br />Last updated: 2024-06-24 Mon 14:13 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.3 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
 </html>
