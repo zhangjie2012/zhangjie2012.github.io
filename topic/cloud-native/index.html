@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-05-28 Sun 13:53 -->
+<!-- 2024-06-27 Thu 10:49 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>云原生</title>
@@ -243,13 +243,14 @@
 <li><a href="#orgab7fa6f">7. Kubernetes</a>
 <ul>
 <li><a href="#orgf2baa69">7.1. 概念（Concepts）</a></li>
-<li><a href="#orgbeb66e9">7.2. 集群规模</a></li>
-<li><a href="#org92152c2">7.3. 搭建本地 Kubernetes</a></li>
-<li><a href="#org385e73f">7.4. 构建部署</a></li>
-<li><a href="#org051d520">7.5. kubectl CLI</a></li>
-<li><a href="#orgb0c54be">7.6. 最佳实践</a></li>
-<li><a href="#org49075e8">7.7. 监控告警</a></li>
-<li><a href="#orge43339b">7.8. 管理平台</a></li>
+<li><a href="#org95f4ce5">7.2. API 对接</a></li>
+<li><a href="#orgbeb66e9">7.3. 集群规模</a></li>
+<li><a href="#org92152c2">7.4. 搭建本地 Kubernetes</a></li>
+<li><a href="#org385e73f">7.5. 构建部署</a></li>
+<li><a href="#org051d520">7.6. kubectl CLI</a></li>
+<li><a href="#orgb0c54be">7.7. 最佳实践</a></li>
+<li><a href="#org49075e8">7.8. 监控告警</a></li>
+<li><a href="#orge43339b">7.9. 管理平台</a></li>
 </ul>
 </li>
 <li><a href="#org1bebfa6">8. 日志体系</a>
@@ -752,9 +753,21 @@ API server 和它暴露的 HTTP API。用户和集群的不同组件以及外部
 </div>
 </div>
 
-<div id="outline-container-orgbeb66e9" class="outline-3">
-<h3 id="orgbeb66e9"><span class="section-number-3">7.2.</span> 集群规模</h3>
+<div id="outline-container-org95f4ce5" class="outline-3">
+<h3 id="org95f4ce5"><span class="section-number-3">7.2.</span> API 对接</h3>
 <div class="outline-text-3" id="text-7-2">
+<ul class="org-ul">
+<li>概念：<a href="https://kubernetes.io/zh-cn/docs/reference/using-api/api-concepts/">https://kubernetes.io/zh-cn/docs/reference/using-api/api-concepts/</a></li>
+<li>精确到资源的 API 说明 <a href="https://kubernetes.io/zh-cn/docs/reference/kubernetes-api/">https://kubernetes.io/zh-cn/docs/reference/kubernetes-api/</a></li>
+<li>资源定义 <a href="https://github.com/kubernetes/api">https://github.com/kubernetes/api</a> 代码中直接引用</li>
+<li>在线x文档：<a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#api-overview">https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#api-overview</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbeb66e9" class="outline-3">
+<h3 id="orgbeb66e9"><span class="section-number-3">7.3.</span> 集群规模</h3>
+<div class="outline-text-3" id="text-7-3">
 <p>
 <a href="https://kubernetes.io/docs/setup/best-practices/cluster-large/">https://kubernetes.io/docs/setup/best-practices/cluster-large/</a>
 </p>
@@ -773,8 +786,8 @@ API server 和它暴露的 HTTP API。用户和集群的不同组件以及外部
 </div>
 
 <div id="outline-container-org92152c2" class="outline-3">
-<h3 id="org92152c2"><span class="section-number-3">7.3.</span> 搭建本地 Kubernetes</h3>
-<div class="outline-text-3" id="text-7-3">
+<h3 id="org92152c2"><span class="section-number-3">7.4.</span> 搭建本地 Kubernetes</h3>
+<div class="outline-text-3" id="text-7-4">
 <p>
 一般用于 K8s 学习和应用程序开发人员。
 </p>
@@ -795,8 +808,8 @@ minikube 和 kind 的定位是完全相同的：避免 K8s 安装复杂，用于
 </div>
 
 <div id="outline-container-org385e73f" class="outline-3">
-<h3 id="org385e73f"><span class="section-number-3">7.4.</span> 构建部署</h3>
-<div class="outline-text-3" id="text-7-4">
+<h3 id="org385e73f"><span class="section-number-3">7.5.</span> 构建部署</h3>
+<div class="outline-text-3" id="text-7-5">
 <ul class="org-ul">
 <li><a href="https://helm.sh/zh/">Helm</a> Kubernetes 包管理器，用于项目的（含多个微服务，以及每个服务的依赖配置）打包、部署、回滚等生命周期管理</li>
 <li><a href="https://kubernetes.io/docs/concepts/extend-kubernetes/operator/">operator</a> CRD + Controller = Operator，可以认为 Operator 是自定义资源的控制器。Operator 用来对 K8s API 进行扩展，用来创建
@@ -824,8 +837,8 @@ Operator 来做的。
 </div>
 
 <div id="outline-container-org051d520" class="outline-3">
-<h3 id="org051d520"><span class="section-number-3">7.5.</span> kubectl CLI</h3>
-<div class="outline-text-3" id="text-7-5">
+<h3 id="org051d520"><span class="section-number-3">7.6.</span> kubectl CLI</h3>
+<div class="outline-text-3" id="text-7-6">
 <p>
 kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </p>
@@ -838,8 +851,8 @@ kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </div>
 
 <div id="outline-container-orgb0c54be" class="outline-3">
-<h3 id="orgb0c54be"><span class="section-number-3">7.6.</span> 最佳实践</h3>
-<div class="outline-text-3" id="text-7-6">
+<h3 id="orgb0c54be"><span class="section-number-3">7.7.</span> 最佳实践</h3>
+<div class="outline-text-3" id="text-7-7">
 <ul class="org-ul">
 <li><a href="kubernetes/k8s-practice.html">最佳实践</a></li>
 <li><a href="kubernetes/k8s-deployment-strategies.html">部署策略</a> 几种常见的部署策略
@@ -852,8 +865,8 @@ kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </div>
 
 <div id="outline-container-org49075e8" class="outline-3">
-<h3 id="org49075e8"><span class="section-number-3">7.7.</span> 监控告警</h3>
-<div class="outline-text-3" id="text-7-7">
+<h3 id="org49075e8"><span class="section-number-3">7.8.</span> 监控告警</h3>
+<div class="outline-text-3" id="text-7-8">
 <ul class="org-ul">
 <li><a href="kubernetes/monitor.html">监控</a>: 通过 kube-state-metrics 和 cAdvisor 暴露指标</li>
 </ul>
@@ -861,8 +874,8 @@ kubectl 是用来管理 Kubernetes 集群的命令行工具。
 </div>
 
 <div id="outline-container-orge43339b" class="outline-3">
-<h3 id="orge43339b"><span class="section-number-3">7.8.</span> 管理平台</h3>
-<div class="outline-text-3" id="text-7-8">
+<h3 id="orge43339b"><span class="section-number-3">7.9.</span> 管理平台</h3>
+<div class="outline-text-3" id="text-7-9">
 <p>
 Kubernetes 管理平台一般是对 K8s 能力平台化，降低运维管理成本（标准化化、自动化，DevOps），覆盖应用研发迭代生命周期（CI、CD、告警、日志等）。
 </p>
@@ -1018,7 +1031,7 @@ Mac 地址等网络信息都是 Pause 容器的；</li>
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
+<p class="postamble">First created: 2020-02-01 09:30:20 <br />Last updated: 2024-06-27 Thu 10:48 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.3 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
 </html>
