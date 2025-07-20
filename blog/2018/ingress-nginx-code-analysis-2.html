@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2023-05-28 Sun 13:54 -->
+<!-- 2025-07-20 Sun 11:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ingress-nginx 工作原理（下）：服务启动、运行和停止</title>
@@ -223,10 +223,10 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgccbf169">1. 服务启动</a></li>
-<li><a href="#org07d1519">2. 服务运行</a></li>
-<li><a href="#org701428d">3. 服务终止</a></li>
-<li><a href="#org95b1798">4. syncIngress</a></li>
+<li><a href="#org1798d27">1. 服务启动</a></li>
+<li><a href="#org102b317">2. 服务运行</a></li>
+<li><a href="#orgf2c13ef">3. 服务终止</a></li>
+<li><a href="#orgb0d7975">4. syncIngress</a></li>
 </ul>
 </div>
 </div>
@@ -234,39 +234,39 @@
 <a href="ingress-nginx-code-analysis-1.html">接上文。</a>
 </p>
 
-<div id="outline-container-orgccbf169" class="outline-2">
-<h2 id="orgccbf169"><span class="section-number-2">1.</span> 服务启动</h2>
+<div id="outline-container-org1798d27" class="outline-2">
+<h2 id="org1798d27"><span class="section-number-2">1.</span> 服务启动</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 在 <code>main</code> 中 <code>ngx.Start()</code> 将启动服务。
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">internal/ingress/controller/nginx.go</span>
-<span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">n</span> *<span style="color: #986801;">NGINXController</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">Start</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(1)</span>
-    n.store.<span style="color: #a626a4;">Run</span><span style="color: #a626a4;">(</span>n.stopCh<span style="color: #a626a4;">)</span>
+<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">internal/ingress/controller/nginx.go
+</span><span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">n</span> *<span style="color: #986801;">NGINXController</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">Start</span><span style="color: #4078f2;">()</span> <span style="color: #4078f2;">{</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(1)
+</span>    n.store.<span style="color: #a626a4;">Run</span><span style="color: #a626a4;">(</span>n.stopCh<span style="color: #a626a4;">)</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(2)</span>
-    <span style="color: #6a1868;">cmd</span> := exec.<span style="color: #a626a4;">Command</span><span style="color: #a626a4;">(</span>n.binary, <span style="color: #50a14f;">"-c"</span>, cfgPath<span style="color: #a626a4;">)</span>
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">put nginx in another process group to prevent it</span>
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">to receive signals meant for the controller</span>
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#25226; nginx &#25172;&#36827;&#21478;&#22806;&#19968;&#20010;&#36827;&#31243;&#32452;&#65292;&#38450;&#27490;&#20182;&#25509;&#21463;&#25511;&#21046;&#22120;&#30340;&#20449;&#21495;</span>
-    cmd.SysProcAttr = &amp;<span style="color: #986801;">syscall.SysProcAttr</span><span style="color: #a626a4;">{</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(2)
+</span>    <span style="color: #6a1868;">cmd</span> := exec.<span style="color: #a626a4;">Command</span><span style="color: #a626a4;">(</span>n.binary, <span style="color: #50a14f;">"-c"</span>, cfgPath<span style="color: #a626a4;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">put nginx in another process group to prevent it
+</span>    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">to receive signals meant for the controller
+</span>    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#25226; nginx &#25172;&#36827;&#21478;&#22806;&#19968;&#20010;&#36827;&#31243;&#32452;&#65292;&#38450;&#27490;&#20182;&#25509;&#21463;&#25511;&#21046;&#22120;&#30340;&#20449;&#21495;
+</span>    cmd.SysProcAttr = &amp;<span style="color: #986801;">syscall.SysProcAttr</span><span style="color: #a626a4;">{</span>
         <span style="color: #b751b6;">Setpgid</span>: <span style="color: #b751b6;">true</span>,
         <span style="color: #b751b6;">Pgid</span>:    0,
     <span style="color: #a626a4;">}</span>
     n.<span style="color: #a626a4;">start</span><span style="color: #a626a4;">(</span>cmd<span style="color: #a626a4;">)</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(3)</span>
-    <span style="color: #e45649;">go</span> n.syncQueue.<span style="color: #a626a4;">Run</span><span style="color: #a626a4;">(</span>time.Second, n.stopCh<span style="color: #a626a4;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(3)
+</span>    <span style="color: #e45649;">go</span> n.syncQueue.<span style="color: #a626a4;">Run</span><span style="color: #a626a4;">(</span>time.Second, n.stopCh<span style="color: #a626a4;">)</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4)</span>
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">force initial sync</span>
-    n.syncQueue.<span style="color: #a626a4;">Enqueue</span><span style="color: #a626a4;">(</span>&amp;<span style="color: #986801;">extensions.Ingress</span><span style="color: #50a14f;">{}</span><span style="color: #a626a4;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4)
+</span>    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">force initial sync
+</span>    n.syncQueue.<span style="color: #a626a4;">Enqueue</span><span style="color: #a626a4;">(</span>&amp;<span style="color: #986801;">extensions.Ingress</span><span style="color: #50a14f;">{}</span><span style="color: #a626a4;">)</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(5)</span>
-    <span style="color: #e45649;">for</span> <span style="color: #a626a4;">{</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(5)
+</span>    <span style="color: #e45649;">for</span> <span style="color: #a626a4;">{</span>
         <span style="color: #e45649;">select</span> <span style="color: #50a14f;">{</span>
         <span style="color: #e45649;">case</span> <span style="color: #6a1868;">err</span> := &lt;-n.ngxErrCh:
             <span style="color: #e45649;">if</span> n.isShuttingDown <span style="color: #b751b6;">{</span>
@@ -275,10 +275,10 @@
 
             <span style="color: #e45649;">if</span> process.<span style="color: #a626a4;">IsRespawnIfRequired</span><span style="color: #b751b6;">(</span>err<span style="color: #b751b6;">)</span> <span style="color: #b751b6;">{</span>
                 process.<span style="color: #a626a4;">WaitUntilPortIsAvailable</span><span style="color: #4db5bd;">(</span>n.cfg.ListenPorts.HTTP<span style="color: #4db5bd;">)</span>
-                <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">release command resources</span>
-                cmd.Process.<span style="color: #a626a4;">Release</span><span style="color: #4db5bd;">()</span>
-                <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">start a new nginx master process if the controller is not being stopped</span>
-                cmd = exec.<span style="color: #a626a4;">Command</span><span style="color: #4db5bd;">(</span>n.binary, <span style="color: #50a14f;">"-c"</span>, cfgPath<span style="color: #4db5bd;">)</span>
+                <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">release command resources
+</span>                cmd.Process.<span style="color: #a626a4;">Release</span><span style="color: #4db5bd;">()</span>
+                <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">start a new nginx master process if the controller is not being stopped
+</span>                cmd = exec.<span style="color: #a626a4;">Command</span><span style="color: #4db5bd;">(</span>n.binary, <span style="color: #50a14f;">"-c"</span>, cfgPath<span style="color: #4db5bd;">)</span>
                 cmd.SysProcAttr = &amp;<span style="color: #986801;">syscall.SysProcAttr</span><span style="color: #4db5bd;">{</span>
                     <span style="color: #b751b6;">Setpgid</span>: <span style="color: #b751b6;">true</span>,
                     <span style="color: #b751b6;">Pgid</span>:    0,
@@ -322,8 +322,8 @@
 </div>
 </div>
 
-<div id="outline-container-org07d1519" class="outline-2">
-<h2 id="org07d1519"><span class="section-number-2">2.</span> 服务运行</h2>
+<div id="outline-container-org102b317" class="outline-2">
+<h2 id="org102b317"><span class="section-number-2">2.</span> 服务运行</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 服务正常运行是不断从 K8s 接受资源变更事件，然后转换成 nginx 新配置，进而 reload nginx 的过程。
@@ -348,8 +348,8 @@
 </div>
 </div>
 
-<div id="outline-container-org701428d" class="outline-2">
-<h2 id="org701428d"><span class="section-number-2">3.</span> 服务终止</h2>
+<div id="outline-container-orgf2c13ef" class="outline-2">
+<h2 id="orgf2c13ef"><span class="section-number-2">3.</span> 服务终止</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 上面的 <code>for ... select</code> 中的 <code>case &lt;-n.stopCh</code> ，等 <code>stopCh</code> 有数据时，for 循环 break，服务正常结束。
@@ -400,14 +400,14 @@
 <pre class="src src-go"><span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">n</span> *<span style="color: #986801;">NGINXController</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">Stop</span><span style="color: #4078f2;">()</span> <span style="color: #986801;">error</span> <span style="color: #4078f2;">{</span>
     n.isShuttingDown = <span style="color: #b751b6;">true</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#20851;&#38381; stopCh &#31649;&#36947;</span>
-    <span style="color: #a626a4;">close</span><span style="color: #a626a4;">(</span>n.stopCh<span style="color: #a626a4;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#20851;&#38381; stopCh &#31649;&#36947;
+</span>    <span style="color: #a626a4;">close</span><span style="color: #a626a4;">(</span>n.stopCh<span style="color: #a626a4;">)</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#20851;&#38381; syncQueue</span>
-    <span style="color: #e45649;">go</span> n.syncQueue.<span style="color: #a626a4;">Shutdown</span><span style="color: #a626a4;">()</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#20851;&#38381; syncQueue
+</span>    <span style="color: #e45649;">go</span> n.syncQueue.<span style="color: #a626a4;">Shutdown</span><span style="color: #a626a4;">()</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#36864;&#20986; nginx &#36827;&#31243;</span>
-    <span style="color: #6a1868;">cmd</span> := exec.<span style="color: #a626a4;">Command</span><span style="color: #a626a4;">(</span>n.binary, <span style="color: #50a14f;">"-c"</span>, cfgPath, <span style="color: #50a14f;">"-s"</span>, <span style="color: #50a14f;">"quit"</span><span style="color: #a626a4;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#36864;&#20986; nginx &#36827;&#31243;
+</span>    <span style="color: #6a1868;">cmd</span> := exec.<span style="color: #a626a4;">Command</span><span style="color: #a626a4;">(</span>n.binary, <span style="color: #50a14f;">"-c"</span>, cfgPath, <span style="color: #50a14f;">"-s"</span>, <span style="color: #50a14f;">"quit"</span><span style="color: #a626a4;">)</span>
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
     <span style="color: #6a1868;">err</span> := cmd.<span style="color: #a626a4;">Run</span><span style="color: #a626a4;">()</span>
@@ -423,8 +423,8 @@
 
 <div class="org-src-container">
 <pre class="src src-go">mux.<span style="color: #a626a4;">HandleFunc</span><span style="color: #4078f2;">(</span><span style="color: #50a14f;">"/stop"</span>, <span style="color: #e45649;">func</span><span style="color: #a626a4;">(</span><span style="color: #6a1868;">w</span> <span style="color: #986801;">http.ResponseWriter</span>, <span style="color: #6a1868;">r</span> *<span style="color: #986801;">http.Request</span><span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
-    <span style="color: #6a1868;">err</span> := syscall.<span style="color: #a626a4;">Kill</span><span style="color: #50a14f;">(</span>syscall.<span style="color: #a626a4;">Getpid</span><span style="color: #b751b6;">()</span>, syscall.SIGTERM<span style="color: #50a14f;">)</span> <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&lt;- &#36825;&#37324;</span>
-<span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span>
+    <span style="color: #6a1868;">err</span> := syscall.<span style="color: #a626a4;">Kill</span><span style="color: #50a14f;">(</span>syscall.<span style="color: #a626a4;">Getpid</span><span style="color: #b751b6;">()</span>, syscall.SIGTERM<span style="color: #50a14f;">)</span> <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&lt;- &#36825;&#37324;
+</span><span style="color: #a626a4;">}</span><span style="color: #4078f2;">)</span>
 </pre>
 </div>
 
@@ -434,28 +434,28 @@
 </div>
 </div>
 
-<div id="outline-container-org95b1798" class="outline-2">
-<h2 id="org95b1798"><span class="section-number-2">4.</span> syncIngress</h2>
+<div id="outline-container-orgb0d7975" class="outline-2">
+<h2 id="orgb0d7975"><span class="section-number-2">4.</span> syncIngress</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">ingress/controller/controller.go</span>
-<span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">n</span> *<span style="color: #986801;">NGINXController</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">syncIngress</span><span style="color: #4078f2;">(</span><span style="color: #e45649;">interface</span><span style="color: #a626a4;">{}</span><span style="color: #4078f2;">)</span> <span style="color: #986801;">error</span> <span style="color: #4078f2;">{</span>
+<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">ingress/controller/controller.go
+</span><span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">n</span> *<span style="color: #986801;">NGINXController</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">syncIngress</span><span style="color: #4078f2;">(</span><span style="color: #e45649;">interface</span><span style="color: #a626a4;">{}</span><span style="color: #4078f2;">)</span> <span style="color: #986801;">error</span> <span style="color: #4078f2;">{</span>
     n.syncRateLimiter.<span style="color: #a626a4;">Accept</span><span style="color: #a626a4;">()</span>
 
     <span style="color: #e45649;">if</span> n.syncQueue.<span style="color: #a626a4;">IsShuttingDown</span><span style="color: #a626a4;">()</span> <span style="color: #a626a4;">{</span>
         <span style="color: #e45649;">return</span> <span style="color: #b751b6;">nil</span>
     <span style="color: #a626a4;">}</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(1)</span>
-    <span style="color: #6a1868;">ings</span> := n.store.<span style="color: #a626a4;">ListIngresses</span><span style="color: #a626a4;">()</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(1)
+</span>    <span style="color: #6a1868;">ings</span> := n.store.<span style="color: #a626a4;">ListIngresses</span><span style="color: #a626a4;">()</span>
     sort.<span style="color: #a626a4;">SliceStable</span><span style="color: #a626a4;">(</span>ings, <span style="color: #e45649;">func</span><span style="color: #50a14f;">(</span><span style="color: #6a1868;">i</span>, <span style="color: #6a1868;">j</span> <span style="color: #986801;">int</span><span style="color: #50a14f;">)</span> <span style="color: #986801;">bool</span> <span style="color: #50a14f;">{</span>
         <span style="color: #6a1868;">ir</span> := ings<span style="color: #b751b6;">[</span>i<span style="color: #b751b6;">]</span>.ResourceVersion
         <span style="color: #6a1868;">jr</span> := ings<span style="color: #b751b6;">[</span>j<span style="color: #b751b6;">]</span>.ResourceVersion
         <span style="color: #e45649;">return</span> ir &lt; jr
     <span style="color: #50a14f;">}</span><span style="color: #a626a4;">)</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(2)</span>
-    <span style="color: #6a1868;">upstreams</span>, <span style="color: #6a1868;">servers</span> := n.<span style="color: #a626a4;">getBackendServers</span><span style="color: #a626a4;">(</span>ings<span style="color: #a626a4;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(2)
+</span>    <span style="color: #6a1868;">upstreams</span>, <span style="color: #6a1868;">servers</span> := n.<span style="color: #a626a4;">getBackendServers</span><span style="color: #a626a4;">(</span>ings<span style="color: #a626a4;">)</span>
     <span style="color: #e45649;">var</span> <span style="color: #6a1868;">passUpstreams</span> <span style="color: #a626a4;">[]</span>*<span style="color: #986801;">ingress.SSLPassthroughBackend</span>
 
     <span style="color: #e45649;">for</span> <span style="color: #6a1868;">_</span>, <span style="color: #6a1868;">server</span> := <span style="color: #e45649;">range</span> servers <span style="color: #a626a4;">{</span>
@@ -478,8 +478,8 @@
         <span style="color: #50a14f;">}</span>
     <span style="color: #a626a4;">}</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(3)</span>
-    <span style="color: #6a1868;">pcfg</span> := <span style="color: #986801;">ingress.Configuration</span><span style="color: #a626a4;">{</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(3)
+</span>    <span style="color: #6a1868;">pcfg</span> := <span style="color: #986801;">ingress.Configuration</span><span style="color: #a626a4;">{</span>
         <span style="color: #b751b6;">Backends</span>:            upstreams,
         <span style="color: #b751b6;">Servers</span>:             servers,
         <span style="color: #b751b6;">TCPEndpoints</span>:        n.<span style="color: #a626a4;">getStreamServices</span><span style="color: #50a14f;">(</span>n.cfg.TCPConfigMapName, apiv1.ProtocolTCP<span style="color: #50a14f;">)</span>,
@@ -487,17 +487,17 @@
         <span style="color: #b751b6;">PassthroughBackends</span>: passUpstreams,
     <span style="color: #a626a4;">}</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4)</span>
-    <span style="color: #e45649;">if</span> <span style="color: #4078f2; font-weight: bold;">!</span>n.<span style="color: #a626a4;">isForceReload</span><span style="color: #a626a4;">()</span> &amp;&amp; n.runningConfig.<span style="color: #a626a4;">Equal</span><span style="color: #a626a4;">(</span>&amp;pcfg<span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(4)
+</span>    <span style="color: #e45649;">if</span> <span style="color: #4078f2; font-weight: bold;">!</span>n.<span style="color: #a626a4;">isForceReload</span><span style="color: #a626a4;">()</span> &amp;&amp; n.runningConfig.<span style="color: #a626a4;">Equal</span><span style="color: #a626a4;">(</span>&amp;pcfg<span style="color: #a626a4;">)</span> <span style="color: #a626a4;">{</span>
         glog.<span style="color: #a626a4;">V</span><span style="color: #50a14f;">(</span>3<span style="color: #50a14f;">)</span>.<span style="color: #a626a4;">Infof</span><span style="color: #50a14f;">(</span><span style="color: #50a14f;">"skipping backend reload (no changes detected)"</span><span style="color: #50a14f;">)</span>
         <span style="color: #e45649;">return</span> <span style="color: #b751b6;">nil</span>
     <span style="color: #a626a4;">}</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(5)</span>
-    <span style="color: #6a1868;">err</span> := n.<span style="color: #a626a4;">OnUpdate</span><span style="color: #a626a4;">(</span>pcfg<span style="color: #a626a4;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(5)
+</span>    <span style="color: #6a1868;">err</span> := n.<span style="color: #a626a4;">OnUpdate</span><span style="color: #a626a4;">(</span>pcfg<span style="color: #a626a4;">)</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(6)</span>
-    n.runningConfig = &amp;pcfg
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">(6)
+</span>    n.runningConfig = &amp;pcfg
 
     <span style="color: #e45649;">return</span> <span style="color: #b751b6;">nil</span>
 <span style="color: #4078f2;">}</span>
@@ -547,7 +547,7 @@ store.<span style="color: #a626a4;">syncSecrets</span><span style="color: #4078f
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-06-13 10:52:40 <br />Last updated: 2025-03-30 Sun 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

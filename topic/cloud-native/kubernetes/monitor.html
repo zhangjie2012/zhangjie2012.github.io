@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-05-28 Sun 13:53 -->
+<!-- 2025-07-20 Sun 11:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - 监控</title>
@@ -223,23 +223,23 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org6f7b0b8">1. 容器监控</a>
+<li><a href="#orgd784eb0">1. 容器监控</a>
 <ul>
-<li><a href="#org494753a">1.1. CPU 利用率</a></li>
-<li><a href="#org0785f86">1.2. 内存利用率</a></li>
-<li><a href="#org7d82ce6">1.3. 磁盘占用</a></li>
-<li><a href="#org89ce242">1.4. 空间 CPU 配额</a></li>
-<li><a href="#org15b80a9">1.5. 空间内存配额不足</a></li>
-<li><a href="#orgbedfe75">1.6. Ingress QPS</a></li>
-<li><a href="#org8f23dc8">1.7. 打开 fd 数量</a></li>
+<li><a href="#org8426588">1.1. CPU 利用率</a></li>
+<li><a href="#orge8d8242">1.2. 内存利用率</a></li>
+<li><a href="#org2f1ad08">1.3. 磁盘占用</a></li>
+<li><a href="#org0e48bcd">1.4. 空间 CPU 配额</a></li>
+<li><a href="#orge7ce4fe">1.5. 空间内存配额不足</a></li>
+<li><a href="#orgeb46c40">1.6. Ingress QPS</a></li>
+<li><a href="#orgc2b35f9">1.7. 打开 fd 数量</a></li>
 </ul>
 </li>
-<li><a href="#orge2fbdf3">2. 节点监控</a>
+<li><a href="#orgad65bf0">2. 节点监控</a>
 <ul>
-<li><a href="#org8ac87cf">2.1. CPU 利用率</a></li>
-<li><a href="#org7b77680">2.2. 内存利用率</a></li>
-<li><a href="#org7cf7501">2.3. 磁盘利用率</a></li>
-<li><a href="#org467c877">2.4. 网络</a></li>
+<li><a href="#org39f2003">2.1. CPU 利用率</a></li>
+<li><a href="#org5d8342d">2.2. 内存利用率</a></li>
+<li><a href="#org794be86">2.3. 磁盘利用率</a></li>
+<li><a href="#org8a49cb0">2.4. 网络</a></li>
 </ul>
 </li>
 </ul>
@@ -254,16 +254,16 @@
 <li><a href="https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md">cAdvisor export metric</a>：容器暴露的 metric name、类型、描述、单位等</li>
 </ul>
 
-<div id="outline-container-org6f7b0b8" class="outline-2">
-<h2 id="org6f7b0b8"><span class="section-number-2">1.</span> 容器监控</h2>
+<div id="outline-container-orgd784eb0" class="outline-2">
+<h2 id="orgd784eb0"><span class="section-number-2">1.</span> 容器监控</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 <b>以下表达式适用于 K8s v1.19，不同版本暴露的 metrics 的 label 可能略有差异。</b>
 </p>
 </div>
 
-<div id="outline-container-org494753a" class="outline-3">
-<h3 id="org494753a"><span class="section-number-3">1.1.</span> CPU 利用率</h3>
+<div id="outline-container-org8426588" class="outline-3">
+<h3 id="org8426588"><span class="section-number-3">1.1.</span> CPU 利用率</h3>
 <div class="outline-text-3" id="text-1-1">
 <pre class="example">
 (sum(rate(container_cpu_usage_seconds_total{namespace != "", container != ""}[5m])) by (namespace, pod)) / (sum(container_spec_cpu_quota{namespace!="", container!=""}/container_spec_cpu_period{namespace!="", container!=""}) by (namespace, pod)) * 100
@@ -285,8 +285,8 @@ container_cpu_usage_seconds_total{cpu="total",id="/kubepods.slice/kubepods-burst
 </div>
 </div>
 
-<div id="outline-container-org0785f86" class="outline-3">
-<h3 id="org0785f86"><span class="section-number-3">1.2.</span> 内存利用率</h3>
+<div id="outline-container-orge8d8242" class="outline-3">
+<h3 id="orge8d8242"><span class="section-number-3">1.2.</span> 内存利用率</h3>
 <div class="outline-text-3" id="text-1-2">
 <pre class="example">
 (sum(container_memory_usage_bytes{container != "POD", container != "", namespace !="kube-system"} - container_memory_cache{container != "POD", container != "", namespace !="kube-system"}) by (pod, namespace, container)) / (sum(container_spec_memory_limit_bytes{container != "POD",container != "",namespace !="kube-system"}) by (pod, namespace, container)) * 100
@@ -294,8 +294,8 @@ container_cpu_usage_seconds_total{cpu="total",id="/kubepods.slice/kubepods-burst
 </div>
 </div>
 
-<div id="outline-container-org7d82ce6" class="outline-3">
-<h3 id="org7d82ce6"><span class="section-number-3">1.3.</span> 磁盘占用</h3>
+<div id="outline-container-org2f1ad08" class="outline-3">
+<h3 id="org2f1ad08"><span class="section-number-3">1.3.</span> 磁盘占用</h3>
 <div class="outline-text-3" id="text-1-3">
 <pre class="example">
 (sum by (namespace, container, pod) (container_fs_usage_bytes{container!="POD", container!=""}) / (1024 * 1024 * 1024))
@@ -303,8 +303,8 @@ container_cpu_usage_seconds_total{cpu="total",id="/kubepods.slice/kubepods-burst
 </div>
 </div>
 
-<div id="outline-container-org89ce242" class="outline-3">
-<h3 id="org89ce242"><span class="section-number-3">1.4.</span> 空间 CPU 配额</h3>
+<div id="outline-container-org0e48bcd" class="outline-3">
+<h3 id="org0e48bcd"><span class="section-number-3">1.4.</span> 空间 CPU 配额</h3>
 <div class="outline-text-3" id="text-1-4">
 <pre class="example">
 sum(kube_resourcequota{type="hard", resource="limits.cpu"}) by (namespace) - sum(kube_resourcequota{type="used", resource="limits.cpu"}) by (namespace)
@@ -312,8 +312,8 @@ sum(kube_resourcequota{type="hard", resource="limits.cpu"}) by (namespace) - sum
 </div>
 </div>
 
-<div id="outline-container-org15b80a9" class="outline-3">
-<h3 id="org15b80a9"><span class="section-number-3">1.5.</span> 空间内存配额不足</h3>
+<div id="outline-container-orge7ce4fe" class="outline-3">
+<h3 id="orge7ce4fe"><span class="section-number-3">1.5.</span> 空间内存配额不足</h3>
 <div class="outline-text-3" id="text-1-5">
 <pre class="example">
 (sum(kube_resourcequota{type="hard", resource="limits.memory"}) by (namespace) - sum(kube_resourcequota{type="used", resource="limits.memory"}) by (namespace) ) / 1024 / 1024 / 1024
@@ -321,8 +321,8 @@ sum(kube_resourcequota{type="hard", resource="limits.cpu"}) by (namespace) - sum
 </div>
 </div>
 
-<div id="outline-container-orgbedfe75" class="outline-3">
-<h3 id="orgbedfe75"><span class="section-number-3">1.6.</span> Ingress QPS</h3>
+<div id="outline-container-orgeb46c40" class="outline-3">
+<h3 id="orgeb46c40"><span class="section-number-3">1.6.</span> Ingress QPS</h3>
 <div class="outline-text-3" id="text-1-6">
 <pre class="example">
 sum by (kubernetes_node) (rate(nginx_ingress_controller_nginx_process_requests_total{job="kubernetes-service-endpoints"}[1m]))
@@ -330,8 +330,8 @@ sum by (kubernetes_node) (rate(nginx_ingress_controller_nginx_process_requests_t
 </div>
 </div>
 
-<div id="outline-container-org8f23dc8" class="outline-3">
-<h3 id="org8f23dc8"><span class="section-number-3">1.7.</span> 打开 fd 数量</h3>
+<div id="outline-container-orgc2b35f9" class="outline-3">
+<h3 id="orgc2b35f9"><span class="section-number-3">1.7.</span> 打开 fd 数量</h3>
 <div class="outline-text-3" id="text-1-7">
 <pre class="example">
 sum by (kubernetes_namespace, instance, kubernetes_io_hostname) (process_open_fds)
@@ -340,12 +340,12 @@ sum by (kubernetes_namespace, instance, kubernetes_io_hostname) (process_open_fd
 </div>
 </div>
 
-<div id="outline-container-orge2fbdf3" class="outline-2">
-<h2 id="orge2fbdf3"><span class="section-number-2">2.</span> 节点监控</h2>
+<div id="outline-container-orgad65bf0" class="outline-2">
+<h2 id="orgad65bf0"><span class="section-number-2">2.</span> 节点监控</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org8ac87cf" class="outline-3">
-<h3 id="org8ac87cf"><span class="section-number-3">2.1.</span> CPU 利用率</h3>
+<div id="outline-container-org39f2003" class="outline-3">
+<h3 id="org39f2003"><span class="section-number-3">2.1.</span> CPU 利用率</h3>
 <div class="outline-text-3" id="text-2-1">
 <pre class="example">
 100 - (avg by (kubernetes_node) (irate(node_cpu_seconds_total{mode="idle", kubernetes_node!=""}[2m]))) * 100
@@ -353,8 +353,8 @@ sum by (kubernetes_namespace, instance, kubernetes_io_hostname) (process_open_fd
 </div>
 </div>
 
-<div id="outline-container-org7b77680" class="outline-3">
-<h3 id="org7b77680"><span class="section-number-3">2.2.</span> 内存利用率</h3>
+<div id="outline-container-org5d8342d" class="outline-3">
+<h3 id="org5d8342d"><span class="section-number-3">2.2.</span> 内存利用率</h3>
 <div class="outline-text-3" id="text-2-2">
 <pre class="example">
 sum by (kubernetes_node) (100 - ((node_memory_MemFree_bytes{kubernetes_node!=""}+node_memory_Cached_bytes{kubernetes_node!=""}+node_memory_Buffers_bytes{kubernetes_node!=""}+node_memory_Slab_bytes{kubernetes_node!=""})/node_memory_MemTotal_bytes{kubernetes_node!=""}) * 100)
@@ -366,8 +366,8 @@ sum by (kubernetes_node) (100 - ((node_memory_MemFree_bytes{kubernetes_node!=""}
 </div>
 </div>
 
-<div id="outline-container-org7cf7501" class="outline-3">
-<h3 id="org7cf7501"><span class="section-number-3">2.3.</span> 磁盘利用率</h3>
+<div id="outline-container-org794be86" class="outline-3">
+<h3 id="org794be86"><span class="section-number-3">2.3.</span> 磁盘利用率</h3>
 <div class="outline-text-3" id="text-2-3">
 <pre class="example">
 100 - (sum by (kubernetes_node) (node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs",kubernetes_node!=""})) / (sum by (kubernetes_node) (node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs",kubernetes_node!=""})) * 100
@@ -375,8 +375,8 @@ sum by (kubernetes_node) (100 - ((node_memory_MemFree_bytes{kubernetes_node!=""}
 </div>
 </div>
 
-<div id="outline-container-org467c877" class="outline-3">
-<h3 id="org467c877"><span class="section-number-3">2.4.</span> 网络</h3>
+<div id="outline-container-org8a49cb0" class="outline-3">
+<h3 id="org8a49cb0"><span class="section-number-3">2.4.</span> 网络</h3>
 <div class="outline-text-3" id="text-2-4">
 <pre class="example">
 sum by (kubernetes_node) (irate(node_network_transmit_bytes_total{kubernetes_node!="", device=~"eth[0-9]"}[2m])) / (1024*1024) # 流出
@@ -401,7 +401,7 @@ sum by (kubernetes_node) (irate(node_network_transmit_bytes_total{kubernetes_nod
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-09-28 16:21:42 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
+<p class="postamble">First created: 2020-09-28 16:21:42 <br />Last updated: 2025-03-30 Sun 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.4 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
 </html>

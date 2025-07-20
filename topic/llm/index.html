@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2025-07-20 Sun 11:31 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LLM</title>
+<meta name="author" content="ByteDance" />
+<meta name="description" content="Keep It Simple, Stupid" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/static/site.css" />
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">LLM</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orge9b45d5">1. 目标</a></li>
+<li><a href="#org67d498b">2. 大模型三要素</a></li>
+<li><a href="#org8f03fe7">3. 概念</a></li>
+<li><a href="#orgced445a">4. 基础知识</a>
+<ul>
+<li><a href="#orgdb791d6">4.1. 训练（Training）和推理（Inference）</a></li>
+<li><a href="#org6c03794">4.2. 分布式推理</a></li>
+<li><a href="#org044645b">4.3. GPU 的利用率</a></li>
+<li><a href="#org5817516">4.4. MoE（专家混合）</a></li>
+<li><a href="#org452bd57">4.5. AI Agent（智能体）</a></li>
+</ul>
+</li>
+<li><a href="#orgc50703c">5. Awesome</a></li>
+</ul>
+</div>
+</div>
+<blockquote>
+<p>
+个人理解，不保证正确
+</p>
+</blockquote>
+
+<div id="outline-container-orge9b45d5" class="outline-2">
+<h2 id="orge9b45d5"><span class="section-number-2">1.</span> 目标</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+工程化学习 LLM 中上下游链路知识，了解涉及到的技术解决了什么问题（应用），而不是怎么解决的（原理）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org67d498b" class="outline-2">
+<h2 id="org67d498b"><span class="section-number-2">2.</span> 大模型三要素</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>算法</li>
+<li>算力（GPU 卡）</li>
+<li>数据（训练）</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8f03fe7" class="outline-2">
+<h2 id="org8f03fe7"><span class="section-number-2">3.</span> 概念</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>LLM，Large Language Model 大语言模型</li>
+<li>TTFT Time to First Token，首 token 到达的时间，问问题第一字蹦出来的时间</li>
+<li>TPOT Time Per-Output Token，Per token，之后每一个 token 蹦出来的时间</li>
+<li>batchsize：推理引擎能够同时并行处理的请求数</li>
+<li>32k/64k/128k：模型能够接收输入的最大文本数</li>
+<li>输入输出比：模型 Input 和 Output 的 token 比值</li>
+<li>prefill 和 decode，对应推理的两个阶段，分别负责输入（Prompt phase）和输出（Token generation phase）。prefill 对于算力要求较高（大模型计算并存储原始输入 token 的 KV Cache，并生成第一个输出 token）；decode 对于内存和带宽要求较高（因为 KV Cache，需要一级一级的判断）
+<ul class="org-ul">
+<li>prefill 预填充，在任务处理处理之前，提供一些初始数据和信息，以便模型更好地开始工作或更快地收敛到一个较好的结果。它主要是 <b>对输入进行初步处理和分析</b> ，为后续的操作奠定基础</li>
+<li>decode 解码，通常是在模型经过一系列计算后，根据模型输出的概率分布等信息， <b>生成具体的输出结果</b> ，比如文本生成任务中的逐个生成后续的词元以形成完整的文本</li>
+</ul></li>
+<li>CUDA：CUDA（Compute Unified Device Architecture，统一计算架构）是由 NVIDIA 公司推出的一种并行计算平台和编程模型。它允许开发者使用 NVIDIA 的 GPU（图形处理单元）进行通用计算，
+即所谓的 GPGPU（General-Purpose computing on Graphics Processing Units，图形处理单元上的通用计算）。 <b>我的理解：GPU 原本的设计是处理图形的，基于 CUDA 可以用来做通用计算。</b></li>
+<li>Distillation 蒸馏，模型压缩技术，主要将大型的、复杂的模型知识转移到一个较小、轻量的模型，以提高推理速度和计算效率，同时尽可能保持性能不下降太多。 <b>核心思想是让小模型（学生模型）学习大模型（教师模型）。</b></li>
+<li>CoT（Chain of Thought）思维链，即整个大模型的推理过程（思考过程）</li>
+<li>多模态模型（Multimodal Model）：不仅仅能够处理文本，还能理解、生成和融合多种数据模态（如图像、音频、视频）的模型</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgced445a" class="outline-2">
+<h2 id="orgced445a"><span class="section-number-2">4.</span> 基础知识</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgdb791d6" class="outline-3">
+<h3 id="orgdb791d6"><span class="section-number-3">4.1.</span> 训练（Training）和推理（Inference）</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+练是“教模型怎么做”的过程；推理是“让模型去做”的过程。 训练是学习，推理的应用。训练所需要的时间与参数量相关，小模型几小时、几天；中模型几天到几周；大模型数周和数月。
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">属性</th>
+<th scope="col" class="org-left">训练（Training）</th>
+<th scope="col" class="org-left">推理（Inference）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">目的</td>
+<td class="org-left">学习输入输出映射关系，调整模型参数</td>
+<td class="org-left">利用模型生成预测结果</td>
+</tr>
+
+<tr>
+<td class="org-left">数据需求</td>
+<td class="org-left">输入 + 标签</td>
+<td class="org-left">输入即可</td>
+</tr>
+
+<tr>
+<td class="org-left">计算需求</td>
+<td class="org-left">高（前向 + 反向传播）</td>
+<td class="org-left">低（仅前向传播）</td>
+</tr>
+
+<tr>
+<td class="org-left">时间消耗</td>
+<td class="org-left">长</td>
+<td class="org-left">短</td>
+</tr>
+
+<tr>
+<td class="org-left">参数状态</td>
+<td class="org-left">动态调整</td>
+<td class="org-left">固定</td>
+</tr>
+
+<tr>
+<td class="org-left">硬件需求</td>
+<td class="org-left">高性能 GPU/TPU</td>
+<td class="org-left">GPU/CPU/边缘设备均可</td>
+</tr>
+
+<tr>
+<td class="org-left">典型场景</td>
+<td class="org-left">模型训练、微调</td>
+<td class="org-left">实时推理、批量预测</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org6c03794" class="outline-3">
+<h3 id="org6c03794"><span class="section-number-3">4.2.</span> 分布式推理</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+将推理按照阶段拆分，然后把各个阶段的结果组合到一起，以提高效率。 <b>因为 prefill 和 decode 对与算力的要求不同，放在一起会出现拖累。</b> 分布式就是把 prefill 和 decode 分成两类服务。简单来说：
+</p>
+
+<ul class="org-ul">
+<li>非分布式，是同一个服务来实现推理</li>
+<li>分布式，分 prefill 和 decode 两个服务协作完成推理</li>
+</ul>
+
+<p>
+为什么 LLM 做 benchmark 难？个人理解：对于传统的服务做压测是简单的，因为输出相对明确，输出也是相对明确的（输出是一次性给出的）。
+反观 LLM 一次推理过程，返回的 Token 是连续给出的，推理耗时不光会受 Input Token, Output Token 长度的影响，而且也会受 Input/Output 比例影响。因此在实验室环境下，只能人为约定一个 Input/Output Ratio 来压测，但实际上用户的使用场景是千差万别的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org044645b" class="outline-3">
+<h3 id="org044645b"><span class="section-number-3">4.3.</span> GPU 的利用率</h3>
+<div class="outline-text-3" id="text-4-3">
+<ul class="org-ul">
+<li>Tensor Core Utility 是衡量 GPU 中 Tensor Cores 使用效率的指标，用于评估矩阵运算（如深度学习任务）是否充分利用了这些专用硬件单元的性能。</li>
+<li>SMActivity：Streaming Multiprocessor (SM) Activity，是衡量 GPU 利用率的重要指标。SM (Streaming Multiprocessor) 是 NVIDIA GPU 架构中的核心计算单元，每个 SM 包含若干个 CUDA 核心、纹理单元和其他硬件资源，用于并行处理任务。</li>
+<li>GPU Util：GPU 利用率是 GPU 的整体视图，除了了 SM（计算核心）之外，还有内存、带宽等。粒度比较粗糙。</li>
+</ul>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">指标</th>
+<th scope="col" class="org-left">Tensor Core Utility</th>
+<th scope="col" class="org-left">SMActivity</th>
+<th scope="col" class="org-left">GPU Utilization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">关注层面</td>
+<td class="org-left">Tensor Cores</td>
+<td class="org-left">GPU 的 SM 计算核心</td>
+<td class="org-left">GPU 的整体利用率</td>
+</tr>
+
+<tr>
+<td class="org-left">粒度</td>
+<td class="org-left">专注于矩阵计算硬件的使用效率</td>
+<td class="org-left">细粒度（专注计算核心）</td>
+<td class="org-left">粗粒度（计算 + 内存 + 数据传输等）</td>
+</tr>
+
+<tr>
+<td class="org-left">是否计算内存操作</td>
+<td class="org-left">-</td>
+<td class="org-left">-</td>
+<td class="org-left">计算</td>
+</tr>
+
+<tr>
+<td class="org-left">优化目标</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">提高计算核心利用率</td>
+<td class="org-left">提高整体 GPU 资源利用率</td>
+</tr>
+
+<tr>
+<td class="org-left">适用场景</td>
+<td class="org-left">矩阵运算</td>
+<td class="org-left">核心优化（如 CUDA 核函数调优）</td>
+<td class="org-left">GPU 是否被任务充分占用的整体评估</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org5817516" class="outline-3">
+<h3 id="org5817516"><span class="section-number-3">4.4.</span> MoE（专家混合）</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+Mixture of Experts 是一种深度学习模型架构。主要解决了 <b>大模型的计算效率和可扩展性问题</b> ，使得超大规模 Transformer 结构在计算资源受限的情况下仍然可以高效训练和推理。
+</p>
+
+<ul class="org-ul">
+<li><b>计算更高效</b> 稀疏计算减少计算需求，提升训练和推理速度</li>
+<li><b>大规模训练可行</b> 允许超大规模模型（万亿参数级）在有限计算资源下训练</li>
+<li><b>任务泛化更强</b> 不同专家专注不同任务，提高多任务和多模态性能</li>
+<li><b>负载均衡优化</b> 确保计算资源合理分配，避免专家过载或闲置</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org452bd57" class="outline-3">
+<h3 id="org452bd57"><span class="section-number-3">4.5.</span> AI Agent（智能体）</h3>
+<div class="outline-text-3" id="text-4-5">
+<p>
+AI Agent（人工智能智能体） 是一种能够 <b>自主感知环境、做出决策并执行任务</b> 的 AI 系统。相比于传统 LLM（大语言模型）仅用于回答问题，AI Agent 具备更强的 <b>自主性和交互能力</b> ，可以持续与环境交互，完成复杂任务。
+</p>
+
+<p>
+一个典型的 AI Agent 由以下部分组成：
+</p>
+<ol class="org-ol">
+<li>感知模块（Perception）
+<ul class="org-ul">
+<li>输入：文本、图像、语音、环境数据。</li>
+<li>例如，语音助手通过麦克风接收用户语音指令。</li>
+</ul></li>
+<li>思维 / 规划（Reasoning / Planning）
+<ul class="org-ul">
+<li>负责分析输入，并决定下一步行动。</li>
+<li>例如，AutoGPT 解析问题后，可能会搜索信息或编写代码。</li>
+</ul></li>
+<li>工具调用（Tool Use / Action Execution）
+<ul class="org-ul">
+<li>AI Agent 可以调用外部 API、数据库、搜索引擎、执行代码等。</li>
+<li>例如，Copilot 在编程时调用 IDE 进行代码补全。</li>
+</ul></li>
+<li>记忆（Memory）
+<ul class="org-ul">
+<li>传统 LLM 只能处理当前对话，而 AI Agent 可以存储长期记忆，跨对话保持上下文。</li>
+<li>例如，ReAct 框架结合记忆与推理，允许 AI 进行多步推理。</li>
+</ul></li>
+<li>反馈循环（Feedback Loop）
+<ul class="org-ul">
+<li>AI Agent 执行任务后，会评估结果，调整策略，进行下一步行动。</li>
+<li>例如，AI 机器人在尝试登录失败后，会修改输入参数重试。</li>
+</ul></li>
+</ol>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">对比项</th>
+<th scope="col" class="org-left">传统 LLM（如 GPT-4）</th>
+<th scope="col" class="org-left">AI Agent（如 AutoGPT）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">决策能力</td>
+<td class="org-left">被动回答问题</td>
+<td class="org-left">自主分析并执行任务</td>
+</tr>
+
+<tr>
+<td class="org-left">上下文记忆</td>
+<td class="org-left">仅限于当前对话</td>
+<td class="org-left">具备长期记忆</td>
+</tr>
+
+<tr>
+<td class="org-left">工具使用</td>
+<td class="org-left">依赖用户手动输入</td>
+<td class="org-left">可自动调用 API、运行代码</td>
+</tr>
+
+<tr>
+<td class="org-left">交互方式</td>
+<td class="org-left">单轮对话</td>
+<td class="org-left">持续交互、动态调整</td>
+</tr>
+
+<tr>
+<td class="org-left">应用范围</td>
+<td class="org-left">主要是文本处理</td>
+<td class="org-left">任务执行、数据分析、自动化</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+典型的应用场景：智能客服（独自处理用户咨询，提供售后支持）、编程助手（GitHub Copilot）、机器人和自动驾驶（结合摄像头、传感器、视觉等技术）
+</p>
+
+<p>
+通俗的理解：AI Agent 让 AI 不只是“给建议”，而是“帮你把事情办了”。比如：智能家居助手，当你说“帮我调节房间温度”，普通 AI 会告诉你：“你可以用遥控器调节到 24 ℃”，但是 agent 直接“帮你把房间温度调节到舒适的温度，并且还能记忆你的习惯，下次自动调整”。
+</p>
+
+<p>
+再通俗的理解：AI Agent 借助更多的技术（NLP、视觉、传感器等）丰富了 AI 的上下文信息，再解决一些自动化工具做一些事情，并且有了记忆功能，不断的优化自身。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc50703c" class="outline-2">
+<h2 id="orgc50703c"><span class="section-number-2">5.</span> Awesome</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li><a href="https://github.com/Hannibal046/Awesome-LLM">Awesome-LLM</a></li>
+<li><a href="https://github.com/Shubhamsaboo/awesome-llm-apps">awesome-llm-apps</a></li>
+<li><a href="https://www.wangrs.site/awesome-LLM-resourses/">awesome-LLM-resourses</a> 学习资料</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="postamble">First created: 2025-02-05 21:27:15 <br />Last updated: 2025-03-30 Sun 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.4 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
+</div>
+</body>
+</html>

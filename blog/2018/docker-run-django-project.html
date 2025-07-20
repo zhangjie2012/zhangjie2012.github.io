@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2023-05-28 Sun 13:54 -->
+<!-- 2025-07-20 Sun 11:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>使用 Docker 运行 Django 项目</title>
@@ -233,8 +233,8 @@ Docker 除了众所周知的一些特性之外，最基本的特性就是环境�
 
 <div class="org-src-container">
 <pre class="src src-shell">pip3 install django
-django-admin --version <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">2.1.1</span>
-django startproject demo
+django-admin --version <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">2.1.1
+</span>django startproject demo
 </pre>
 </div>
 
@@ -254,14 +254,14 @@ django startproject demo
 
 <div class="org-src-container">
 <pre class="src src-shell">docker pull mysql:5.7
-docker images <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">6a834f03bd02</span>
-docker run --name dj-mysql -d -e <span style="color: #6a1868;">MYSQL_ROOT_PASSWORD</span>=my-secret -p 127.0.0.1:3306:3306 6a834f03bd02
+docker images <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">6a834f03bd02
+</span>docker run --name dj-mysql -d -e <span style="color: #6a1868;">MYSQL_ROOT_PASSWORD</span>=my-secret -p 127.0.0.1:3306:3306 6a834f03bd02
 docker ps -a
-<span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS                                 NAMES</span>
-<span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">390ac3e7d3ab        6a834f03bd02        "docker-entrypoint.s&#8230;"   About a minute ago   Up About a minute  127.0.0.1:3306-&gt; 3306/tcp, 33060/tcp   dj-mysql</span>
-docker exec -it 390ac3e7d3ab mysql -uroot -pmy-secret
-mysql&gt; create database demo <span style="color: #6a1868;">charset</span>=<span style="color: #50a14f;">"utf8mb4"</span>;   <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">&#21019;&#24314;&#25968;&#25454;&#24211;</span>
-Query OK, 1 row affected <span style="color: #4078f2;">(</span>0.30 sec<span style="color: #4078f2;">)</span>
+<span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS                                 NAMES
+</span><span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">390ac3e7d3ab        6a834f03bd02        "docker-entrypoint.s&#8230;"   About a minute ago   Up About a minute  127.0.0.1:3306-&gt; 3306/tcp, 33060/tcp   dj-mysql
+</span>docker exec -it 390ac3e7d3ab mysql -uroot -pmy-secret
+mysql&gt; create database demo <span style="color: #6a1868;">charset</span>=<span style="color: #50a14f;">"utf8mb4"</span>;   <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">&#21019;&#24314;&#25968;&#25454;&#24211;
+</span>Query OK, 1 row affected <span style="color: #4078f2;">(</span>0.30 sec<span style="color: #4078f2;">)</span>
 mysql&gt; ^DBy
 </pre>
 </div>
@@ -272,11 +272,11 @@ mysql&gt; ^DBy
 
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #6a1868;">DATABASES</span> = <span style="color: #4078f2;">{</span>
-    <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">'default': {</span>
-    <span style="color: #9ca0a4;">#     </span><span style="color: #9ca0a4;">'ENGINE': 'django.db.backends.sqlite3',</span>
-    <span style="color: #9ca0a4;">#     </span><span style="color: #9ca0a4;">'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),</span>
-    <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">}</span>
-    <span style="color: #50a14f;">'default'</span>: <span style="color: #a626a4;">{</span>
+    <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">'default': {
+</span>    <span style="color: #9ca0a4;">#     </span><span style="color: #9ca0a4;">'ENGINE': 'django.db.backends.sqlite3',
+</span>    <span style="color: #9ca0a4;">#     </span><span style="color: #9ca0a4;">'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+</span>    <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">}
+</span>    <span style="color: #50a14f;">'default'</span>: <span style="color: #a626a4;">{</span>
         <span style="color: #50a14f;">'ENGINE'</span>: <span style="color: #50a14f;">'django.db.backends.mysql'</span>,
         <span style="color: #50a14f;">'NAME'</span>: <span style="color: #50a14f;">'demo'</span>,
         <span style="color: #50a14f;">'USER'</span>: <span style="color: #50a14f;">'root'</span>,
@@ -408,7 +408,7 @@ btw，如果仅在本地测试的话 <code>docker-compose</code> 要更方便一
 </ol>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-09-08 10:40 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-09-08 10:40 <br />Last updated: 2025-03-30 Sun 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2023-05-28 Sun 13:54 -->
+<!-- 2025-07-20 Sun 11:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C++虚函数及虚函数表解析</title>
@@ -281,7 +281,7 @@ C++ "虚函数"的存在是为了实现面向对象中的"多态"，即父类类
 实例：
 </p>
 
-<pre class="example" id="orgffdd01a">
+<pre class="example" id="org26eca93">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -379,7 +379,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example" id="orgb2eb30e">
+<pre class="example" id="org491eb31">
 This is  base_class's normal_func()
 This is  base_class's virtual_fuc()
 This is  base_class's normal_func()
@@ -392,7 +392,7 @@ This is  drived_class2's virtual_fuc()
 假如将 base_class 类中的 <code>virtual_fuc()</code> 写成下面这样（纯虚函数，虚基类）：
 </p>
 
-<pre class="example" id="org65ae9be">
+<pre class="example" id="org70d34b3">
 // 无实现体
 virtual int virtual_fuc() = 0;
 </pre>
@@ -421,7 +421,7 @@ virtual int virtual_fuc() = 0;
 <div id="outline-container-二无继承时的虚函数表" class="outline-2">
 <h2 id="二无继承时的虚函数表"><span class="section-number-2">2.</span> 无继承时的虚函数表</h2>
 <div class="outline-text-2" id="text-二无继承时的虚函数表">
-<pre class="example" id="org659e7a3">
+<pre class="example" id="orgea420b4">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -469,7 +469,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example" id="org19e42ef">
+<pre class="example" id="orgd570727">
 base_class 的虚函数表首地址为：0x22ff0c
 base_class 的 第一个函数首地址：0x472c98
 base_class 的 第二个函数首地址：0x472c9c
@@ -506,7 +506,7 @@ This is base_class's v_func3()
 </p>
 
 
-<div id="org71fdfdb" class="figure">
+<div id="org85b7422" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/vt_analysis1.jpg" alt="vt_analysis1.jpg" />
 </p>
 </div>
@@ -525,7 +525,7 @@ This is base_class's v_func3()
 （<a href="http://coolshell.cn/">陈皓</a>文章中用了"覆盖"一词，我觉得太合理，但是我又找不到更合理的词语，所以就用一个句子代替了。^{-}）
 </p>
 
-<pre class="example" id="orgdb0fe4c">
+<pre class="example" id="orga12cf9a">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -584,7 +584,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example" id="orge927d9c">
+<pre class="example" id="orgca172fb">
 dev_class 的虚函数表首地址为：0x22ff0c
 dev_class 的 第一个函数首地址：0x472d10
 dev_class 的 第二个函数首地址：0x472d14
@@ -604,7 +604,7 @@ This is dev_class's v_func5()
 </p>
 
 
-<div id="org0e26125" class="figure">
+<div id="org5d5880b" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/vt_analysis2.jpg" alt="vt_analysis2.jpg" />
 </p>
 </div>
@@ -618,7 +618,7 @@ This is dev_class's v_func5()
 <div id="outline-container-子类有重写父类的虚函数" class="outline-3">
 <h3 id="子类有重写父类的虚函数"><span class="section-number-3">3.2.</span> 子类有重写父类的虚函数</h3>
 <div class="outline-text-3" id="text-子类有重写父类的虚函数">
-<pre class="example" id="org1c4e9ce">
+<pre class="example" id="org0cbc32b">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -685,7 +685,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example" id="org2ebb3fb">
+<pre class="example" id="org754591c">
 dev_class 的虚函数表首地址为：0x22ff0c
 dev_class 的 第一个函数首地址：0x472d50
 dev_class 的 第二个函数首地址：0x472d54
@@ -705,7 +705,7 @@ This is dev_class's v_func5()
 </p>
 
 
-<div id="orgc1ba0d7" class="figure">
+<div id="orgea685dd" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/vt_analysis3.jpg" alt="vt_analysis3.jpg" />
 </p>
 </div>
@@ -719,7 +719,7 @@ This is dev_class's v_func5()
 不知道看到这里，你心里有没有一个小问题？至少我是有的。看下面的代码：
 </p>
 
-<pre class="example" id="orgc05f514">
+<pre class="example" id="orgc710fa7">
 virtual void v_func1()
 {
     base_class::v_func1();
@@ -755,7 +755,7 @@ base_class::v_func1，会不会有错呢？答案是没错的，可以正确的�
 <div id="outline-container-子类没有重写父类的虚函数-1" class="outline-3">
 <h3 id="子类没有重写父类的虚函数-1"><span class="section-number-3">4.1.</span> 子类没有重写父类的虚函数</h3>
 <div class="outline-text-3" id="text-子类没有重写父类的虚函数-1">
-<pre class="example" id="org986794c">
+<pre class="example" id="org556a4f2">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -815,7 +815,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example" id="org888c6f4">
+<pre class="example" id="org7ce2f63">
 dc 的虚函数表 bc1_vt 地址：0x22ff08
 dc 的虚函数表 bc1_vt 第一个虚函数地址：0x472d38
 dc 的虚函数表 bc1_vt 第二个虚函数地址：0x472d3c
@@ -833,7 +833,7 @@ This is bc2_func1's v_func1()
 </p>
 
 
-<div id="orgb5ddb9d" class="figure">
+<div id="org05ea865" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/vt_analysis4.jpg" alt="vt_analysis4.jpg" />
 </p>
 </div>
@@ -854,7 +854,7 @@ This is bc2_func1's v_func1()
 <div id="outline-container-子类重写了父类的虚函数" class="outline-3">
 <h3 id="子类重写了父类的虚函数"><span class="section-number-3">4.2.</span> 子类重写了父类的虚函数</h3>
 <div class="outline-text-3" id="text-子类重写了父类的虚函数">
-<pre class="example" id="org2cd43b8">
+<pre class="example" id="org8da21d4">
 #include &lt;iostream&gt;
 using namespace std;
 
@@ -939,7 +939,7 @@ int main()
 输出结果：
 </p>
 
-<pre class="example" id="org2ad78e7">
+<pre class="example" id="org7db587f">
 dc 的虚函数表 bc1_vt 地址：0x22ff08
 dc 的虚函数表 bc1_vt 第一个虚函数地址：0x472e28
 dc 的虚函数表 bc1_vt 第二个虚函数地址：0x472e2c
@@ -963,7 +963,7 @@ This is base_class2's bc2_func2()
 </p>
 
 
-<div id="org3495304" class="figure">
+<div id="orgbac1d89" class="figure">
 <p><img src="https://blog-1252349778.cos.ap-beijing.myqcloud.com/2012/vt_analysis5.jpg" alt="vt_analysis5.jpg" />
 </p>
 </div>
@@ -1037,7 +1037,7 @@ This is base_class2's bc2_func2()
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2012-07-11 07:02:00 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2012-07-11 07:02:00 <br />Last updated: 2025-03-30 Sun 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

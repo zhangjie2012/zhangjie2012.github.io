@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-05-28 Sun 13:53 -->
+<!-- 2025-07-20 Sun 11:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes - Service</title>
@@ -223,78 +223,78 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgf3d446b">1. 动机</a></li>
-<li><a href="#org0536341">2. Service 资源</a>
+<li><a href="#org3dacd68">1. 动机</a></li>
+<li><a href="#orge4dbdfe">2. Service 资源</a>
 <ul>
-<li><a href="#orgd46abfb">2.1. 云原生的服务发现</a></li>
+<li><a href="#org923037b">2.1. 云原生的服务发现</a></li>
 </ul>
 </li>
-<li><a href="#org59a6664">3. 定义 Service</a>
+<li><a href="#orgecff85b">3. 定义 Service</a>
 <ul>
-<li><a href="#org9930b20">3.1. 没有选择器的 Services</a></li>
-<li><a href="#orgae8f543">3.2. EndpointSlices</a></li>
-<li><a href="#orge967006">3.3. Application Protocol</a></li>
+<li><a href="#orgc22033f">3.1. 没有选择器的 Services</a></li>
+<li><a href="#orgde63a7a">3.2. EndpointSlices</a></li>
+<li><a href="#org88bac55">3.3. Application Protocol</a></li>
 </ul>
 </li>
-<li><a href="#orgd308c29">4. 虚拟 IPs 和服务代理</a>
+<li><a href="#orgd1fa203">4. 虚拟 IPs 和服务代理</a>
 <ul>
-<li><a href="#org971d7be">4.1. 为什么不使用 DNS 轮询？</a></li>
-<li><a href="#orgadc07c9">4.2. 使用空间代理模式（User space proxy mode）</a></li>
-<li><a href="#orgbd3bcb3">4.3. <code>iptables</code> 代理模式</a></li>
-<li><a href="#org30d5760">4.4. IPVS 代理模式</a></li>
+<li><a href="#org90fd631">4.1. 为什么不使用 DNS 轮询？</a></li>
+<li><a href="#org5887ba2">4.2. 使用空间代理模式（User space proxy mode）</a></li>
+<li><a href="#org9579fbd">4.3. <code>iptables</code> 代理模式</a></li>
+<li><a href="#orgd42bf1f">4.4. IPVS 代理模式</a></li>
 </ul>
 </li>
-<li><a href="#org555ba11">5. 多端口 Services</a></li>
-<li><a href="#orga7abdab">6. 选择自己的 IP 地址</a></li>
-<li><a href="#orgb451bdf">7. 服务发现</a>
+<li><a href="#orge6600d1">5. 多端口 Services</a></li>
+<li><a href="#org74a959f">6. 选择自己的 IP 地址</a></li>
+<li><a href="#org3b61efc">7. 服务发现</a>
 <ul>
-<li><a href="#org6847223">7.1. 环境变量</a></li>
-<li><a href="#org9da07cc">7.2. DNS</a></li>
+<li><a href="#org31319df">7.1. 环境变量</a></li>
+<li><a href="#org7eaa71e">7.2. DNS</a></li>
 </ul>
 </li>
-<li><a href="#org3b69fbf">8. Headless Services</a>
+<li><a href="#org4e5c2d8">8. Headless Services</a>
 <ul>
-<li><a href="#org78c3ad2">8.1. 有选择器（with selectors）</a></li>
-<li><a href="#org6198dd8">8.2. 无选择器（without selectors）</a></li>
+<li><a href="#orgaf6528f">8.1. 有选择器（with selectors）</a></li>
+<li><a href="#org367e426">8.2. 无选择器（without selectors）</a></li>
 </ul>
 </li>
-<li><a href="#org7a7ec7b">9. 发布 Services (ServiceTypes)</a>
+<li><a href="#orgaa082ec">9. 发布 Services (ServiceTypes)</a>
 <ul>
-<li><a href="#org95630f2">9.1. NodePort 类型</a></li>
-<li><a href="#org695ceb0">9.2. LoadBalancer 类型</a></li>
-<li><a href="#orga038b00">9.3. ExternalName 类型</a></li>
-<li><a href="#orgc42c674">9.4. ExternalIPs</a></li>
+<li><a href="#org92aeac9">9.1. NodePort 类型</a></li>
+<li><a href="#orgf21baad">9.2. LoadBalancer 类型</a></li>
+<li><a href="#org85bf86a">9.3. ExternalName 类型</a></li>
+<li><a href="#orgf0343d8">9.4. ExternalIPs</a></li>
 </ul>
 </li>
-<li><a href="#org26397ac">10. 缺点</a></li>
-<li><a href="#orgc4b1b5e">11. 虚拟 IP 实现</a>
+<li><a href="#org4e08b70">10. 缺点</a></li>
+<li><a href="#org4a4a5ac">11. 虚拟 IP 实现</a>
 <ul>
-<li><a href="#org4696d48">11.1. 避免冲突（Avoiding collisions）</a></li>
-<li><a href="#org610d3ae">11.2. Service IP 地址</a>
+<li><a href="#orgf632acd">11.1. 避免冲突（Avoiding collisions）</a></li>
+<li><a href="#orga9a28c6">11.2. Service IP 地址</a>
 <ul>
-<li><a href="#org6af0275">11.2.1. 用户空间</a></li>
-<li><a href="#orgd622793">11.2.2. iptables</a></li>
-<li><a href="#org956ca4b">11.2.3. IPVS</a></li>
+<li><a href="#org584c63c">11.2.1. 用户空间</a></li>
+<li><a href="#org9059c3f">11.2.2. iptables</a></li>
+<li><a href="#org7dd2ba7">11.2.3. IPVS</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgec7492b">12. API 对象</a></li>
-<li><a href="#orgc759532">13. 支持的协议</a>
+<li><a href="#org5ce0fb4">12. API 对象</a></li>
+<li><a href="#orgf152e0c">13. 支持的协议</a>
 <ul>
-<li><a href="#org77b85de">13.1. TCP</a></li>
-<li><a href="#orgfa3f15b">13.2. UDP</a></li>
-<li><a href="#orgd6fe332">13.3. SCTP</a>
+<li><a href="#orge35297c">13.1. TCP</a></li>
+<li><a href="#orgce04fd8">13.2. UDP</a></li>
+<li><a href="#org28ab4ca">13.3. SCTP</a>
 <ul>
-<li><a href="#org26e6359">13.3.1. 警告</a></li>
+<li><a href="#orge642bc8">13.3.1. 警告</a></li>
 </ul>
 </li>
-<li><a href="#org4ca73ee">13.4. Windows</a></li>
-<li><a href="#orge9c8c45">13.5. HTTP</a></li>
-<li><a href="#org9b723f6">13.6. PROXY 协议</a></li>
+<li><a href="#org6510070">13.4. Windows</a></li>
+<li><a href="#org0de4939">13.5. HTTP</a></li>
+<li><a href="#org86d710e">13.6. PROXY 协议</a></li>
 </ul>
 </li>
-<li><a href="#orgfacd3b1">14. 官方文档之外</a></li>
+<li><a href="#org7502f3e">14. 官方文档之外</a></li>
 </ul>
 </div>
 </div>
@@ -317,8 +317,8 @@ Kubernetes 为每一个 Pod 提供单独的 IP 并且为一组 Pod 提供单独�
 </p>
 </blockquote>
 
-<div id="outline-container-orgf3d446b" class="outline-2">
-<h2 id="orgf3d446b"><span class="section-number-2">1.</span> 动机</h2>
+<div id="outline-container-org3dacd68" class="outline-2">
+<h2 id="org3dacd68"><span class="section-number-2">1.</span> 动机</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Kubernetes 的 Pod 不是一个持久的实体。使用 Deployment 运行应用时，它会动态的创建和销毁 Pods。
@@ -339,8 +339,8 @@ Kubernetes 的 Pod 不是一个持久的实体。使用 Deployment 运行应用�
 </div>
 </div>
 
-<div id="outline-container-org0536341" class="outline-2">
-<h2 id="org0536341"><span class="section-number-2">2.</span> Service 资源</h2>
+<div id="outline-container-orge4dbdfe" class="outline-2">
+<h2 id="orge4dbdfe"><span class="section-number-2">2.</span> Service 资源</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Service 是一种抽象，定义了 Pod 的逻辑集合和访问策略（有时称之为微服务）。Service 和目标 Pods 的关联通常由 selector w来关联。
@@ -356,8 +356,8 @@ Service 的抽象使这种解耦成为了可能。
 </p>
 </div>
 
-<div id="outline-container-orgd46abfb" class="outline-3">
-<h3 id="orgd46abfb"><span class="section-number-3">2.1.</span> 云原生的服务发现</h3>
+<div id="outline-container-org923037b" class="outline-3">
+<h3 id="org923037b"><span class="section-number-3">2.1.</span> 云原生的服务发现</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 在你的应用程序中你可以使用 Kubernetes APIs 做服务发现，可以向 API Server 查询 Endpoints，每当在 Service 中的 Pod 集合发生变更时，
@@ -371,8 +371,8 @@ Service 的抽象使这种解耦成为了可能。
 </div>
 </div>
 
-<div id="outline-container-org59a6664" class="outline-2">
-<h2 id="org59a6664"><span class="section-number-2">3.</span> 定义 Service</h2>
+<div id="outline-container-orgecff85b" class="outline-2">
+<h2 id="orgecff85b"><span class="section-number-2">3.</span> 定义 Service</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Service 和 Pod 一样，是一个 REST 对象，和其它的对象一样，你可以 <code>POST</code> 一个 Service 到 API server 来创建一个实例。
@@ -414,8 +414,8 @@ Service 控制器负责持续扫描与选择器相匹配的 Pod，然后更新 <
 </blockquote>
 </div>
 
-<div id="outline-container-org9930b20" class="outline-3">
-<h3 id="org9930b20"><span class="section-number-3">3.1.</span> 没有选择器的 Services</h3>
+<div id="outline-container-orgc22033f" class="outline-3">
+<h3 id="orgc22033f"><span class="section-number-3">3.1.</span> 没有选择器的 Services</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Service 最常见的是抽象对 Pod 集合的访问，但是他们也可以抽象其它类型的后端，比如：
@@ -490,8 +490,8 @@ ExternalName Service 是 Service 的特例，它没有选择器，而是使用 D
 </div>
 </div>
 
-<div id="outline-container-orgae8f543" class="outline-3">
-<h3 id="orgae8f543"><span class="section-number-3">3.2.</span> EndpointSlices</h3>
+<div id="outline-container-orgde63a7a" class="outline-3">
+<h3 id="orgde63a7a"><span class="section-number-3">3.2.</span> EndpointSlices</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 <b>特性状态</b>: <code>Kubernetes v1.17 [beta]</code>
@@ -509,8 +509,8 @@ EndpointSlices 提供了其他属性和功能，具体见：<a href="https://kub
 </div>
 </div>
 
-<div id="outline-container-orge967006" class="outline-3">
-<h3 id="orge967006"><span class="section-number-3">3.3.</span> Application Protocol</h3>
+<div id="outline-container-org88bac55" class="outline-3">
+<h3 id="org88bac55"><span class="section-number-3">3.3.</span> Application Protocol</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 <b>特性状态</b>: <code>Kubernetes v1.20 [stable]</code>
@@ -527,16 +527,16 @@ EndpointSlices 提供了其他属性和功能，具体见：<a href="https://kub
 </div>
 </div>
 
-<div id="outline-container-orgd308c29" class="outline-2">
-<h2 id="orgd308c29"><span class="section-number-2">4.</span> 虚拟 IPs 和服务代理</h2>
+<div id="outline-container-orgd1fa203" class="outline-2">
+<h2 id="orgd1fa203"><span class="section-number-2">4.</span> 虚拟 IPs 和服务代理</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> 。 <code>kube-proxy</code> 的责任是实现除了 ExternalName 之外的 <code>Services</code> 的虚拟 IP。
 </p>
 </div>
 
-<div id="outline-container-org971d7be" class="outline-3">
-<h3 id="org971d7be"><span class="section-number-3">4.1.</span> 为什么不使用 DNS 轮询？</h3>
+<div id="outline-container-org90fd631" class="outline-3">
+<h3 id="org90fd631"><span class="section-number-3">4.1.</span> 为什么不使用 DNS 轮询？</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 经常会有人问，为什么 Kubernetes 要依赖于代理将流量转发到后端，而不是使用其他方式，比如说：是否可以配置具有多个 A 值的 DNS 记录，
@@ -555,8 +555,8 @@ Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> �
 </div>
 </div>
 
-<div id="outline-container-orgadc07c9" class="outline-3">
-<h3 id="orgadc07c9"><span class="section-number-3">4.2.</span> 使用空间代理模式（User space proxy mode）</h3>
+<div id="outline-container-org5887ba2" class="outline-3">
+<h3 id="org5887ba2"><span class="section-number-3">4.2.</span> 使用空间代理模式（User space proxy mode）</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 在此模式下，Kube-proxy 监听 Kubernetes master 以添加或者删除 Service 和 Endpoint 对象。
@@ -574,7 +574,7 @@ Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> �
 </p>
 
 
-<div id="orgb9d21a4" class="figure">
+<div id="orgfbbbe68" class="figure">
 <p><img src="https://d33wubrfki0l68.cloudfront.net/e351b830334b8622a700a8da6568cb081c464a9b/13020/images/docs/services-userspace-overview.svg" alt="services-userspace-overview.svg" class="org-svg" />
 </p>
 <p><span class="figure-number">Figure 1: </span>from <a href="https://kubernetes.io/">https://kubernetes.io/</a></p>
@@ -582,8 +582,8 @@ Kubernetes 集群中的每一个结点都运行一个 <code>kube-proxy</code> �
 </div>
 </div>
 
-<div id="outline-container-orgbd3bcb3" class="outline-3">
-<h3 id="orgbd3bcb3"><span class="section-number-3">4.3.</span> <code>iptables</code> 代理模式</h3>
+<div id="outline-container-org9579fbd" class="outline-3">
+<h3 id="org9579fbd"><span class="section-number-3">4.3.</span> <code>iptables</code> 代理模式</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
 在这种模式下，kube-proxy 监听 Kubernetes 控制面板用于添加和删除 Service 和 Endpoint 对象。对于每一个 Services，它安装
@@ -610,7 +610,7 @@ iptables 规则，用来捕获到 Service 的 <code>clusterIP</code> 和 <code>p
 </p>
 
 
-<div id="orgcb5667e" class="figure">
+<div id="org8d1b493" class="figure">
 <p><img src="https://d33wubrfki0l68.cloudfront.net/27b2978647a8d7bdc2a96b213f0c0d3242ef9ce0/e8c9b/images/docs/services-iptables-overview.svg" alt="services-iptables-overview.svg" class="org-svg" />
 </p>
 <p><span class="figure-number">Figure 2: </span>from <a href="https://kubernetes.io/">https://kubernetes.io/</a></p>
@@ -618,8 +618,8 @@ iptables 规则，用来捕获到 Service 的 <code>clusterIP</code> 和 <code>p
 </div>
 </div>
 
-<div id="outline-container-org30d5760" class="outline-3">
-<h3 id="org30d5760"><span class="section-number-3">4.4.</span> IPVS 代理模式</h3>
+<div id="outline-container-orgd42bf1f" class="outline-3">
+<h3 id="orgd42bf1f"><span class="section-number-3">4.4.</span> IPVS 代理模式</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 <code>Kubernetes v1.11</code> 之后支持的特性, <span class="underline">stable</span> 。
@@ -662,7 +662,7 @@ IPVS 为后端 Pods 流量的负载均衡提供了更多的选项：
 </blockquote>
 
 
-<div id="orga536057" class="figure">
+<div id="org340e3b9" class="figure">
 <p><img src="https://d33wubrfki0l68.cloudfront.net/2d3d2b521cf7f9ff83238218dac1c019c270b1ed/9ac5c/images/docs/services-ipvs-overview.svg" alt="services-ipvs-overview.svg" class="org-svg" />
 </p>
 <p><span class="figure-number">Figure 3: </span>from <a href="https://kubernetes.io/">https://kubernetes.io/</a></p>
@@ -681,8 +681,8 @@ IPVS 为后端 Pods 流量的负载均衡提供了更多的选项：
 </div>
 </div>
 
-<div id="outline-container-org555ba11" class="outline-2">
-<h2 id="org555ba11"><span class="section-number-2">5.</span> 多端口 Services</h2>
+<div id="outline-container-orge6600d1" class="outline-2">
+<h2 id="orge6600d1"><span class="section-number-2">5.</span> 多端口 Services</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 对于一些 Services，你需要暴露多个端口。Kubernetes 允许你在 Service 对象定义是配置多个端口。
@@ -719,8 +719,8 @@ IPVS 为后端 Pods 流量的负载均衡提供了更多的选项：
 </div>
 </div>
 
-<div id="outline-container-orga7abdab" class="outline-2">
-<h2 id="orga7abdab"><span class="section-number-2">6.</span> 选择自己的 IP 地址</h2>
+<div id="outline-container-org74a959f" class="outline-2">
+<h2 id="org74a959f"><span class="section-number-2">6.</span> 选择自己的 IP 地址</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 你可以在 Service 的创建请求中指定你自己的集群 IP 地址。只需要设置 <code>.spec.clusterIP</code> 字段。
@@ -734,16 +734,16 @@ IPVS 为后端 Pods 流量的负载均衡提供了更多的选项：
 </div>
 </div>
 
-<div id="outline-container-orgb451bdf" class="outline-2">
-<h2 id="orgb451bdf"><span class="section-number-2">7.</span> 服务发现</h2>
+<div id="outline-container-org3b61efc" class="outline-2">
+<h2 id="org3b61efc"><span class="section-number-2">7.</span> 服务发现</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 Kubernetes 支持两种主要的模式来找到一个 Service - 环境变量和 DNS。
 </p>
 </div>
 
-<div id="outline-container-org6847223" class="outline-3">
-<h3 id="org6847223"><span class="section-number-3">7.1.</span> 环境变量</h3>
+<div id="outline-container-org31319df" class="outline-3">
+<h3 id="org31319df"><span class="section-number-3">7.1.</span> 环境变量</h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 当节点上运行一个 Pod，kubelet 回味每个激活的 Service 添加一组环境变量。它既支持 Docker lins compatible 变量又支持简单的
@@ -779,8 +779,8 @@ REDIS_MASTER_PORT_6379_TCP_ADDR=10.0.0.11
 </div>
 </div>
 
-<div id="outline-container-org9da07cc" class="outline-3">
-<h3 id="org9da07cc"><span class="section-number-3">7.2.</span> DNS</h3>
+<div id="outline-container-org7eaa71e" class="outline-3">
+<h3 id="org7eaa71e"><span class="section-number-3">7.2.</span> DNS</h3>
 <div class="outline-text-3" id="text-7-2">
 <p>
 你应该添加<a href="https://kubernetes.io/docs/concepts/cluster-administration/addons/">插件</a>来为你的集群创建一个 DNS 服务（并且总应该这么做）。
@@ -813,8 +813,8 @@ Kubernetes DNS 服务器是唯一访问 <code>ExternalName</code> Services 的�
 </div>
 </div>
 
-<div id="outline-container-org3b69fbf" class="outline-2">
-<h2 id="org3b69fbf"><span class="section-number-2">8.</span> Headless Services</h2>
+<div id="outline-container-org4e5c2d8" class="outline-2">
+<h2 id="org4e5c2d8"><span class="section-number-2">8.</span> Headless Services</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 有时你不需要负载均衡和单独的 Service IP。这种情况下，你可以创建一个名为 "headless" 的 Services，通过显示的将集群 IP
@@ -831,8 +831,8 @@ Kubernetes DNS 服务器是唯一访问 <code>ExternalName</code> Services 的�
 </p>
 </div>
 
-<div id="outline-container-org78c3ad2" class="outline-3">
-<h3 id="org78c3ad2"><span class="section-number-3">8.1.</span> 有选择器（with selectors）</h3>
+<div id="outline-container-orgaf6528f" class="outline-3">
+<h3 id="orgaf6528f"><span class="section-number-3">8.1.</span> 有选择器（with selectors）</h3>
 <div class="outline-text-3" id="text-8-1">
 <p>
 如果定义了选择器，endpoints 控制器在 API 中创建 <code>Endpoints</code> 记录，然后修改 DNS 配置返回记录（指向 <code>Service</code> 后面的 <code>Pods</code> ）。
@@ -840,8 +840,8 @@ Kubernetes DNS 服务器是唯一访问 <code>ExternalName</code> Services 的�
 </div>
 </div>
 
-<div id="outline-container-org6198dd8" class="outline-3">
-<h3 id="org6198dd8"><span class="section-number-3">8.2.</span> 无选择器（without selectors）</h3>
+<div id="outline-container-org367e426" class="outline-3">
+<h3 id="org367e426"><span class="section-number-3">8.2.</span> 无选择器（without selectors）</h3>
 <div class="outline-text-3" id="text-8-2">
 <p>
 如果没有定义选择器的话，endpoints 控制器不会创建 <code>Endpoints</code> 记录。然而，DNS 系统会查找并配置以下任意一项：
@@ -855,8 +855,8 @@ Kubernetes DNS 服务器是唯一访问 <code>ExternalName</code> Services 的�
 </div>
 </div>
 
-<div id="outline-container-org7a7ec7b" class="outline-2">
-<h2 id="org7a7ec7b"><span class="section-number-2">9.</span> 发布 Services (ServiceTypes)</h2>
+<div id="outline-container-orgaa082ec" class="outline-2">
+<h2 id="orgaa082ec"><span class="section-number-2">9.</span> 发布 Services (ServiceTypes)</h2>
 <div class="outline-text-2" id="text-9">
 <p>
 对于一些应用，你可能希望把 Service 暴露成一个集群外部的 IP 地址。
@@ -891,8 +891,8 @@ ExternalName: 通过返回带有 <code>CNAME</code> 记录的值，把服务映�
 </p>
 </div>
 
-<div id="outline-container-org95630f2" class="outline-3">
-<h3 id="org95630f2"><span class="section-number-3">9.1.</span> NodePort 类型</h3>
+<div id="outline-container-org92aeac9" class="outline-3">
+<h3 id="org92aeac9"><span class="section-number-3">9.1.</span> NodePort 类型</h3>
 <div class="outline-text-3" id="text-9-1">
 <p>
 当你的 <code>type</code> 字段设置为 <code>NodePort</code> ，Kubernetes 控制平面会从 <code>--service-node-port-range</code> 中分配一个端口
@@ -940,19 +940,19 @@ kube-proxy 中设置了，将被过滤 NodeIPs ）。
     <span style="color: #6a1868;">selector</span>:
       <span style="color: #6a1868;">app</span>: MyApp
       <span style="color: #6a1868;">ports</span>:
-        <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">By default and for convenience, the `targetPort` is set to the same value as the `port` field.</span>
-        - <span style="color: #6a1868;">port</span>: 80
+        <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">By default and for convenience, the `targetPort` is set to the same value as the `port` field.
+</span>        - <span style="color: #6a1868;">port</span>: 80
           <span style="color: #6a1868;">targetPort</span>: 80
-          <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">Optional field</span>
-          <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)</span>
-          <span style="color: #6a1868;">nodePort</span>: 30007
+          <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">Optional field
+</span>          <span style="color: #9ca0a4;"># </span><span style="color: #9ca0a4;">By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)
+</span>          <span style="color: #6a1868;">nodePort</span>: 30007
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org695ceb0" class="outline-3">
-<h3 id="org695ceb0"><span class="section-number-3">9.2.</span> LoadBalancer 类型</h3>
+<div id="outline-container-orgf21baad" class="outline-3">
+<h3 id="orgf21baad"><span class="section-number-3">9.2.</span> LoadBalancer 类型</h3>
 <div class="outline-text-3" id="text-9-2">
 <p>
 <a href="https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer">https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer</a>
@@ -960,8 +960,8 @@ kube-proxy 中设置了，将被过滤 NodeIPs ）。
 </div>
 </div>
 
-<div id="outline-container-orga038b00" class="outline-3">
-<h3 id="orga038b00"><span class="section-number-3">9.3.</span> ExternalName 类型</h3>
+<div id="outline-container-org85bf86a" class="outline-3">
+<h3 id="org85bf86a"><span class="section-number-3">9.3.</span> ExternalName 类型</h3>
 <div class="outline-text-3" id="text-9-3">
 <p>
 类型为 ExternalName 的 Service 会将 Service 映射为一个 DNS 名字，而不是一个典型的类似 <code>my-service</code> 或者 <code>cassandra</code> 的选择器。
@@ -1012,8 +1012,8 @@ TLS 服务器将无法提供与客户端连接的主机名匹配的证书。
 </div>
 </div>
 
-<div id="outline-container-orgc42c674" class="outline-3">
-<h3 id="orgc42c674"><span class="section-number-3">9.4.</span> ExternalIPs</h3>
+<div id="outline-container-orgf0343d8" class="outline-3">
+<h3 id="orgf0343d8"><span class="section-number-3">9.4.</span> ExternalIPs</h3>
 <div class="outline-text-3" id="text-9-4">
 <p>
 如果有外部的 IP 路由到一个或者多个集群节点，Kubernetes Services 可以在 <code>externalIPs</code> 上暴露。
@@ -1046,8 +1046,8 @@ TLS 服务器将无法提供与客户端连接的主机名匹配的证书。
 </div>
 </div>
 
-<div id="outline-container-org26397ac" class="outline-2">
-<h2 id="org26397ac"><span class="section-number-2">10.</span> 缺点</h2>
+<div id="outline-container-org4e08b70" class="outline-2">
+<h2 id="org4e08b70"><span class="section-number-2">10.</span> 缺点</h2>
 <div class="outline-text-2" id="text-10">
 <p>
 VIPs 使用用户空间代理模式可以在中小型范围内使用，但不能扩展到具有千个服务的超大型集群。<a href="https://github.com/kubernetes/kubernetes/issues/1107">最初的设计稿</a> 有说明。
@@ -1065,16 +1065,16 @@ VIPs 使用用户空间代理模式可以在中小型范围内使用，但不能
 </div>
 </div>
 
-<div id="outline-container-orgc4b1b5e" class="outline-2">
-<h2 id="orgc4b1b5e"><span class="section-number-2">11.</span> 虚拟 IP 实现</h2>
+<div id="outline-container-org4a4a5ac" class="outline-2">
+<h2 id="org4a4a5ac"><span class="section-number-2">11.</span> 虚拟 IP 实现</h2>
 <div class="outline-text-2" id="text-11">
 <p>
 对于只想使用 Services 的人来说，之前的信息应该足够了。但是，Services 后面的很多事情也值得我们去了解。
 </p>
 </div>
 
-<div id="outline-container-org4696d48" class="outline-3">
-<h3 id="org4696d48"><span class="section-number-3">11.1.</span> 避免冲突（Avoiding collisions）</h3>
+<div id="outline-container-orgf632acd" class="outline-3">
+<h3 id="orgf632acd"><span class="section-number-3">11.1.</span> 避免冲突（Avoiding collisions）</h3>
 <div class="outline-text-3" id="text-11-1">
 <p>
 Kubernetes 的一个主要的设计哲学是：不是你的错误，你不应该面临可能导致失败的场景。对于 Service 资源的设计，意味着如果你选择的端口
@@ -1098,8 +1098,8 @@ Services 才能分配到一个 IP 地址。否则会创建失败，并且提示�
 </div>
 </div>
 
-<div id="outline-container-org610d3ae" class="outline-3">
-<h3 id="org610d3ae"><span class="section-number-3">11.2.</span> Service IP 地址</h3>
+<div id="outline-container-orga9a28c6" class="outline-3">
+<h3 id="orga9a28c6"><span class="section-number-3">11.2.</span> Service IP 地址</h3>
 <div class="outline-text-3" id="text-11-2">
 <p>
 不想 Pod 的 IP 地址，真实的路由到固定的目的地，Service IPs 不是由真实的单个主机来应答。而是，kube-proxy 使用 iptables（
@@ -1112,8 +1112,8 @@ kube-proxy 支持三种代理模式 - 用户空间（usespace），iptables 和 
 </p>
 </div>
 
-<div id="outline-container-org6af0275" class="outline-4">
-<h4 id="org6af0275"><span class="section-number-4">11.2.1.</span> 用户空间</h4>
+<div id="outline-container-org584c63c" class="outline-4">
+<h4 id="org584c63c"><span class="section-number-4">11.2.1.</span> 用户空间</h4>
 <div class="outline-text-4" id="text-11-2-1">
 <p>
 作为一个范例，考虑上面的描述的图像处理程序。当后端 Servie 创建了之后，Kubernetes master 会分配一个虚拟 IP 地址，比如说是 10.0.0.1.
@@ -1132,8 +1132,8 @@ kube-proxy 支持三种代理模式 - 用户空间（usespace），iptables 和 
 </div>
 </div>
 
-<div id="outline-container-orgd622793" class="outline-4">
-<h4 id="orgd622793"><span class="section-number-4">11.2.2.</span> iptables</h4>
+<div id="outline-container-org9059c3f" class="outline-4">
+<h4 id="org9059c3f"><span class="section-number-4">11.2.2.</span> iptables</h4>
 <div class="outline-text-4" id="text-11-2-2">
 <p>
 同样，当后端 Service 创建之后，Kubernetes 控制平面分配一个虚拟 IP 地址，比如是 10.0.0.1。Services 的端口是 1234，
@@ -1152,8 +1152,8 @@ kube-proxy 支持三种代理模式 - 用户空间（usespace），iptables 和 
 </div>
 </div>
 
-<div id="outline-container-org956ca4b" class="outline-4">
-<h4 id="org956ca4b"><span class="section-number-4">11.2.3.</span> IPVS</h4>
+<div id="outline-container-org7dd2ba7" class="outline-4">
+<h4 id="org7dd2ba7"><span class="section-number-4">11.2.3.</span> IPVS</h4>
 <div class="outline-text-4" id="text-11-2-3">
 <p>
 在大型集群中 iptables 操作会明显变慢，比如说 10000 个 Service。IPVS 专门为负载均衡而设计，并且基于内核的哈希表。
@@ -1165,8 +1165,8 @@ kube-proxy 支持三种代理模式 - 用户空间（usespace），iptables 和 
 </div>
 </div>
 
-<div id="outline-container-orgec7492b" class="outline-2">
-<h2 id="orgec7492b"><span class="section-number-2">12.</span> API 对象</h2>
+<div id="outline-container-org5ce0fb4" class="outline-2">
+<h2 id="org5ce0fb4"><span class="section-number-2">12.</span> API 对象</h2>
 <div class="outline-text-2" id="text-12">
 <p>
 Service 是 Kubernetes REST API 的顶级资源，在 <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#service-v1-core">Service API 对象</a> 找到更多的信息。
@@ -1174,12 +1174,12 @@ Service 是 Kubernetes REST API 的顶级资源，在 <a href="https://kubernete
 </div>
 </div>
 
-<div id="outline-container-orgc759532" class="outline-2">
-<h2 id="orgc759532"><span class="section-number-2">13.</span> 支持的协议</h2>
+<div id="outline-container-orgf152e0c" class="outline-2">
+<h2 id="orgf152e0c"><span class="section-number-2">13.</span> 支持的协议</h2>
 <div class="outline-text-2" id="text-13">
 </div>
-<div id="outline-container-org77b85de" class="outline-3">
-<h3 id="org77b85de"><span class="section-number-3">13.1.</span> TCP</h3>
+<div id="outline-container-orge35297c" class="outline-3">
+<h3 id="orge35297c"><span class="section-number-3">13.1.</span> TCP</h3>
 <div class="outline-text-3" id="text-13-1">
 <p>
 在任何的 Services 上你可以使用 TCP 协议，这也是默认的网络协议。
@@ -1187,8 +1187,8 @@ Service 是 Kubernetes REST API 的顶级资源，在 <a href="https://kubernete
 </div>
 </div>
 
-<div id="outline-container-orgfa3f15b" class="outline-3">
-<h3 id="orgfa3f15b"><span class="section-number-3">13.2.</span> UDP</h3>
+<div id="outline-container-orgce04fd8" class="outline-3">
+<h3 id="orgce04fd8"><span class="section-number-3">13.2.</span> UDP</h3>
 <div class="outline-text-3" id="text-13-2">
 <p>
 在大多数 Services 上你可以使用 UDP 协议，对于 type=LoadBalancer 的 Services，UDP 的支持取决于提供此功能的云厂商。
@@ -1196,8 +1196,8 @@ Service 是 Kubernetes REST API 的顶级资源，在 <a href="https://kubernete
 </div>
 </div>
 
-<div id="outline-container-orgd6fe332" class="outline-3">
-<h3 id="orgd6fe332"><span class="section-number-3">13.3.</span> SCTP</h3>
+<div id="outline-container-org28ab4ca" class="outline-3">
+<h3 id="org28ab4ca"><span class="section-number-3">13.3.</span> SCTP</h3>
 <div class="outline-text-3" id="text-13-3">
 <p>
 <b>特性状态：</b> <code>kubernetes v1.20 [stable]</code>
@@ -1209,8 +1209,8 @@ Service 是 Kubernetes REST API 的顶级资源，在 <a href="https://kubernete
 </p>
 </div>
 
-<div id="outline-container-org26e6359" class="outline-4">
-<h4 id="org26e6359"><span class="section-number-4">13.3.1.</span> 警告</h4>
+<div id="outline-container-orge642bc8" class="outline-4">
+<h4 id="orge642bc8"><span class="section-number-4">13.3.1.</span> 警告</h4>
 <div class="outline-text-4" id="text-13-3-1">
 <p>
 支持多宿主 SCTP 关联
@@ -1234,8 +1234,8 @@ NAT for multihomed SCTP associations requires special logic in the corresponding
 </div>
 </div>
 
-<div id="outline-container-org4ca73ee" class="outline-3">
-<h3 id="org4ca73ee"><span class="section-number-3">13.4.</span> Windows</h3>
+<div id="outline-container-org6510070" class="outline-3">
+<h3 id="org6510070"><span class="section-number-3">13.4.</span> Windows</h3>
 <div class="outline-text-3" id="text-13-4">
 <blockquote>
 <p>
@@ -1255,8 +1255,8 @@ NAT for multihomed SCTP associations requires special logic in the corresponding
 </div>
 </div>
 
-<div id="outline-container-orge9c8c45" class="outline-3">
-<h3 id="orge9c8c45"><span class="section-number-3">13.5.</span> HTTP</h3>
+<div id="outline-container-org0de4939" class="outline-3">
+<h3 id="org0de4939"><span class="section-number-3">13.5.</span> HTTP</h3>
 <div class="outline-text-3" id="text-13-5">
 <p>
 如果你的云厂商提供了它，你就可以使用 Service 的 LoadBalancer 模式来设置外部的 HTTP/HTTPS 反向代理，转发到 Service 的 Endpoints。
@@ -1270,8 +1270,8 @@ NAT for multihomed SCTP associations requires special logic in the corresponding
 </div>
 </div>
 
-<div id="outline-container-org9b723f6" class="outline-3">
-<h3 id="org9b723f6"><span class="section-number-3">13.6.</span> PROXY 协议</h3>
+<div id="outline-container-org86d710e" class="outline-3">
+<h3 id="org86d710e"><span class="section-number-3">13.6.</span> PROXY 协议</h3>
 <div class="outline-text-3" id="text-13-6">
 <p>
 如果你的云厂商提供了它，你就可以使用 Service 的 LoadBalancer 模式来配置 Kubernetes 自身之外的负载均衡，它会转发以 PROXY 协议
@@ -1293,8 +1293,8 @@ PROXY TCP4 192.0.2.202 10.0.42.7 12345 7\r\n
 </div>
 </div>
 
-<div id="outline-container-orgfacd3b1" class="outline-2">
-<h2 id="orgfacd3b1"><span class="section-number-2">14.</span> 官方文档之外</h2>
+<div id="outline-container-org7502f3e" class="outline-2">
+<h2 id="org7502f3e"><span class="section-number-2">14.</span> 官方文档之外</h2>
 <div class="outline-text-2" id="text-14">
 <p>
 <b><span class="timestamp-wrapper"><span class="timestamp">&lt;2021-02-22 Mon 13:58&gt; </span></span> Headless Service 应用场景</b>
@@ -1411,7 +1411,7 @@ IP 地址。
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
+<p class="postamble">First created: 2020-04-28 21:18:10 <br />Last updated: 2025-03-30 Sun 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.4 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
 </html>

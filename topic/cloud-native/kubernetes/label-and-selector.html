@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-05-28 Sun 13:53 -->
+<!-- 2025-07-20 Sun 11:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes Labels 和 Selectors</title>
@@ -223,22 +223,22 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgaf045c9">1. 动机</a></li>
-<li><a href="#org83f88d4">2. 语法和字符集</a></li>
-<li><a href="#orgbec2c51">3. 标签选择器（Label selectors）</a>
+<li><a href="#orgbac435e">1. 动机</a></li>
+<li><a href="#org4b2f71c">2. 语法和字符集</a></li>
+<li><a href="#org00382c6">3. 标签选择器（Label selectors）</a>
 <ul>
-<li><a href="#orgd7c020f">3.1. 基于相等性的请求</a></li>
-<li><a href="#org13f44e8">3.2. 基于集合的请求</a></li>
+<li><a href="#orgb27ef6f">3.1. 基于相等性的请求</a></li>
+<li><a href="#org21d59d9">3.2. 基于集合的请求</a></li>
 </ul>
 </li>
-<li><a href="#org7756c91">4. API</a>
+<li><a href="#org607242f">4. API</a>
 <ul>
-<li><a href="#orgeb692da">4.1. LIST 和 WATCH 过滤</a></li>
-<li><a href="#org749fabf">4.2. API 对象中的设置参考</a>
+<li><a href="#org12cd9b9">4.1. LIST 和 WATCH 过滤</a></li>
+<li><a href="#org6c8178c">4.2. API 对象中的设置参考</a>
 <ul>
-<li><a href="#org395b61c">4.2.1. Service 和 ReplicationController</a></li>
-<li><a href="#org580ef77">4.2.2. 支持基于集合请求的资源</a></li>
-<li><a href="#org0c5d2d3">4.2.3. 选择节点集合</a></li>
+<li><a href="#orgb6764dc">4.2.1. Service 和 ReplicationController</a></li>
+<li><a href="#orga997054">4.2.2. 支持基于集合请求的资源</a></li>
+<li><a href="#orgf3caef6">4.2.3. 选择节点集合</a></li>
 </ul>
 </li>
 </ul>
@@ -276,8 +276,8 @@
 如果是非标识性的，尤其是大型的结构化数据应该使用<a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">注解</a>来记录，而不是标签。
 </p>
 
-<div id="outline-container-orgaf045c9" class="outline-2">
-<h2 id="orgaf045c9"><span class="section-number-2">1.</span> 动机</h2>
+<div id="outline-container-orgbac435e" class="outline-2">
+<h2 id="orgbac435e"><span class="section-number-2">1.</span> 动机</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 标签使用户能够以松散耦合的方式将他们自己的组织结构映射到系统对象，而无需客户端存储这些映射。
@@ -301,8 +301,8 @@
 </div>
 </div>
 
-<div id="outline-container-org83f88d4" class="outline-2">
-<h2 id="org83f88d4"><span class="section-number-2">2.</span> 语法和字符集</h2>
+<div id="outline-container-org4b2f71c" class="outline-2">
+<h2 id="org4b2f71c"><span class="section-number-2">2.</span> 语法和字符集</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 <i>键值对。</i>
@@ -353,8 +353,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgbec2c51" class="outline-2">
-<h2 id="orgbec2c51"><span class="section-number-2">3.</span> 标签选择器（Label selectors）</h2>
+<div id="outline-container-org00382c6" class="outline-2">
+<h2 id="org00382c6"><span class="section-number-2">3.</span> 标签选择器（Label selectors）</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 不像<a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/names/">名称和 UID</a>，标签不需要提供唯一性。而且，我们希望许多对象带有相同的标签。
@@ -388,8 +388,8 @@ API 目前支持两种类型的选择器： <i>基于相等性的</i> 和 <i>基
 </div>
 
 
-<div id="outline-container-orgd7c020f" class="outline-3">
-<h3 id="orgd7c020f"><span class="section-number-3">3.1.</span> 基于相等性的请求</h3>
+<div id="outline-container-orgb27ef6f" class="outline-3">
+<h3 id="orgb27ef6f"><span class="section-number-3">3.1.</span> 基于相等性的请求</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 基于相等或者不相等的请求允许按照标签的 key 和 value 进行过滤。匹配的对象必须满足所有指定的标签约束，尽管它们可能还有额外的标签。
@@ -431,8 +431,8 @@ tier != frontend
 </div>
 </div>
 
-<div id="outline-container-org13f44e8" class="outline-3">
-<h3 id="org13f44e8"><span class="section-number-3">3.2.</span> 基于集合的请求</h3>
+<div id="outline-container-org21d59d9" class="outline-3">
+<h3 id="org21d59d9"><span class="section-number-3">3.2.</span> 基于集合的请求</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 基于集合的请求允许根据一组值过滤 key。支持 3 种运算符： <code>in</code>, <code>notin</code> 和 <code>exists</code> 。比如：
@@ -464,12 +464,12 @@ partition
 </div>
 </div>
 
-<div id="outline-container-org7756c91" class="outline-2">
-<h2 id="org7756c91"><span class="section-number-2">4.</span> API</h2>
+<div id="outline-container-org607242f" class="outline-2">
+<h2 id="org607242f"><span class="section-number-2">4.</span> API</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orgeb692da" class="outline-3">
-<h3 id="orgeb692da"><span class="section-number-3">4.1.</span> LIST 和 WATCH 过滤</h3>
+<div id="outline-container-org12cd9b9" class="outline-3">
+<h3 id="org12cd9b9"><span class="section-number-3">4.1.</span> LIST 和 WATCH 过滤</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 LIST 和 WATCH 操作可以指定标签选择器以过滤使用查询参数（query string）返回的对象集。这两种请求都是允许的：
@@ -501,16 +501,16 @@ LIST 和 WATCH 操作可以指定标签选择器以过滤使用查询参数（qu
 </div>
 </div>
 
-<div id="outline-container-org749fabf" class="outline-3">
-<h3 id="org749fabf"><span class="section-number-3">4.2.</span> API 对象中的设置参考</h3>
+<div id="outline-container-org6c8178c" class="outline-3">
+<h3 id="org6c8178c"><span class="section-number-3">4.2.</span> API 对象中的设置参考</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 一些 Kubernetes 对象，比如 <a href="https://kubernetes.io/docs/concepts/services-networking/service/">services</a> 和 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/">replicationcontrollers</a>，也可以使用标签选择器来指定其它资源集，比如 <a href="https://kubernetes.io/docs/concepts/workloads/pods/">pods</a>。
 </p>
 </div>
 
-<div id="outline-container-org395b61c" class="outline-4">
-<h4 id="org395b61c"><span class="section-number-4">4.2.1.</span> Service 和 ReplicationController</h4>
+<div id="outline-container-orgb6764dc" class="outline-4">
+<h4 id="orgb6764dc"><span class="section-number-4">4.2.1.</span> Service 和 ReplicationController</h4>
 <div class="outline-text-4" id="text-4-2-1">
 <p>
 <code>service</code> 指向的 pods 集合通过标签选择器来定义。类似的， <code>replicationcontroller</code> 使用标签定义了它所管理的 pods 数量。
@@ -536,8 +536,8 @@ LIST 和 WATCH 操作可以指定标签选择器以过滤使用查询参数（qu
 </div>
 
 
-<div id="outline-container-org580ef77" class="outline-4">
-<h4 id="org580ef77"><span class="section-number-4">4.2.2.</span> 支持基于集合请求的资源</h4>
+<div id="outline-container-orga997054" class="outline-4">
+<h4 id="orga997054"><span class="section-number-4">4.2.2.</span> 支持基于集合请求的资源</h4>
 <div class="outline-text-4" id="text-4-2-2">
 <p>
 较新的资源，比如 Job，Deployment，ReplicaSet 和 DaemonSet，也支持基于集合的请求。
@@ -555,8 +555,8 @@ LIST 和 WATCH 操作可以指定标签选择器以过滤使用查询参数（qu
 </div>
 </div>
 
-<div id="outline-container-org0c5d2d3" class="outline-4">
-<h4 id="org0c5d2d3"><span class="section-number-4">4.2.3.</span> 选择节点集合</h4>
+<div id="outline-container-orgf3caef6" class="outline-4">
+<h4 id="orgf3caef6"><span class="section-number-4">4.2.3.</span> 选择节点集合</h4>
 <div class="outline-text-4" id="text-4-2-3">
 <p>
 标签选择器的一个用例是约束 pod 可以调度的节点集合。在<a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/">节点选择</a>文档中有更多的描述。
@@ -567,7 +567,7 @@ LIST 和 WATCH 操作可以指定标签选择器以过滤使用查询参数（qu
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-02-05 12:25:24 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
+<p class="postamble">First created: 2020-02-05 12:25:24 <br />Last updated: 2025-03-30 Sun 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.4 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
 </html>

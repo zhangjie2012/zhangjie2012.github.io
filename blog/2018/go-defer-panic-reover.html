@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh">
 <head>
-<!-- 2023-05-28 Sun 13:54 -->
+<!-- 2025-07-20 Sun 11:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go 的异常处理：defer，panic，recover</title>
@@ -248,8 +248,8 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">go/net/http.go</span>
-<span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">c</span> *<span style="color: #986801;">conn</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">serve</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">ctx</span> <span style="color: #986801;">context.Context</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
+<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">go/net/http.go
+</span><span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">c</span> *<span style="color: #986801;">conn</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">serve</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">ctx</span> <span style="color: #986801;">context.Context</span><span style="color: #4078f2;">)</span> <span style="color: #4078f2;">{</span>
     <span style="color: #e45649;">defer</span> <span style="color: #e45649;">func</span><span style="color: #a626a4;">()</span> <span style="color: #a626a4;">{</span>
         <span style="color: #e45649;">if</span> <span style="color: #6a1868;">err</span> := <span style="color: #a626a4;">recover</span><span style="color: #50a14f;">()</span>; err != <span style="color: #b751b6;">nil</span> &amp;&amp; err != ErrAbortHandler <span style="color: #50a14f;">{</span>
             <span style="color: #e45649;">const</span> <span style="color: #b751b6;">size</span> = 64 &lt;&lt; 10
@@ -263,10 +263,10 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
         <span style="color: #50a14f;">}</span>
     <span style="color: #a626a4;">}()</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">...</span>
-    <span style="color: #e45649;">for</span> <span style="color: #a626a4;">{</span>
-        <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#24403; ServeHTTP(&#22238;&#25481;&#19994;&#21153;&#20013;&#30340; ServeHTTP) &#20986;&#29616;&#23849;&#28291;&#26102;&#65292;&#20250;&#34987;&#21069;&#38754;&#30340; recover() &#25429;&#33719;&#65292;&#24182;&#33719;&#21462;&#23558;&#22534;&#26632;&#20449;&#24687;&#36755;&#20986;&#21040;&#26085;&#24535;&#20013;</span>
-        <span style="color: #986801;">serverHandler</span><span style="color: #50a14f;">{</span>c.server<span style="color: #50a14f;">}</span>.<span style="color: #a626a4;">ServeHTTP</span><span style="color: #50a14f;">(</span>w, w.req<span style="color: #50a14f;">)</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">...
+</span>    <span style="color: #e45649;">for</span> <span style="color: #a626a4;">{</span>
+        <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">&#24403; ServeHTTP(&#22238;&#25481;&#19994;&#21153;&#20013;&#30340; ServeHTTP) &#20986;&#29616;&#23849;&#28291;&#26102;&#65292;&#20250;&#34987;&#21069;&#38754;&#30340; recover() &#25429;&#33719;&#65292;&#24182;&#33719;&#21462;&#23558;&#22534;&#26632;&#20449;&#24687;&#36755;&#20986;&#21040;&#26085;&#24535;&#20013;
+</span>        <span style="color: #986801;">serverHandler</span><span style="color: #50a14f;">{</span>c.server<span style="color: #50a14f;">}</span>.<span style="color: #a626a4;">ServeHTTP</span><span style="color: #50a14f;">(</span>w, w.req<span style="color: #50a14f;">)</span>
     <span style="color: #a626a4;">}</span>
 <span style="color: #4078f2;">}</span>
 </pre>
@@ -322,7 +322,7 @@ Go 的 <code>panic</code> 机制，完美的解决了这个问题，比如在 Go
 </ol>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-03-01 17:50:00 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+<p class="postamble">First created: 2018-03-01 17:50:00 <br />Last updated: 2025-03-30 Sun 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
 </div>
 </body>
 </html>

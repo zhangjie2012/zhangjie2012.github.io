@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-05-28 Sun 13:53 -->
+<!-- 2025-07-20 Sun 11:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kubernetes 实践</title>
@@ -223,30 +223,30 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4da2395">1. 实例关联节点</a>
+<li><a href="#orgaae6465">1. 实例关联节点</a>
 <ul>
-<li><a href="#orgcfc13ce">1.1. nodeSelector</a>
+<li><a href="#orgb33d966">1.1. nodeSelector</a>
 <ul>
-<li><a href="#orge6f91b8">1.1.1. 给节点添加标签</a></li>
-<li><a href="#org56707cf">1.1.2. 添加 nodeSelector 字段到实例配置中</a></li>
+<li><a href="#org261d6b8">1.1.1. 给节点添加标签</a></li>
+<li><a href="#orgaf7f436">1.1.2. 添加 nodeSelector 字段到实例配置中</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org2a0537d">2. 应用自查和调试</a>
+<li><a href="#org123c0af">2. 应用自查和调试</a>
 <ul>
-<li><a href="#org8f673c5">2.1. 查看详细信息</a></li>
-<li><a href="#org797aa1d">2.2. 查看事件</a></li>
-<li><a href="#org3136a65">2.3. 查看日志</a></li>
-<li><a href="#org2f729fe">2.4. 进入容器</a></li>
+<li><a href="#org2197377">2.1. 查看详细信息</a></li>
+<li><a href="#orgbe2cba6">2.2. 查看事件</a></li>
+<li><a href="#org34718ab">2.3. 查看日志</a></li>
+<li><a href="#org3c8108c">2.4. 进入容器</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4da2395" class="outline-2">
-<h2 id="org4da2395"><span class="section-number-2">1.</span> 实例关联节点</h2>
+<div id="outline-container-orgaae6465" class="outline-2">
+<h2 id="orgaae6465"><span class="section-number-2">1.</span> 实例关联节点</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 名词对应关系：
@@ -267,16 +267,16 @@
 </p>
 </div>
 
-<div id="outline-container-orgcfc13ce" class="outline-3">
-<h3 id="orgcfc13ce"><span class="section-number-3">1.1.</span> nodeSelector</h3>
+<div id="outline-container-orgb33d966" class="outline-3">
+<h3 id="orgb33d966"><span class="section-number-3">1.1.</span> nodeSelector</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 <code>nodeSelector</code> 是最简单的约束形式， <code>nodeSelector</code> 的 PodSpec 的一个字段，它是键值对的映射。实例要想在节点上运行，节点必须要与实例相关的键值对作为标签（还可以包含其他标签）。常见的做法是一对键值对。
 </p>
 </div>
 
-<div id="outline-container-orge6f91b8" class="outline-4">
-<h4 id="orge6f91b8"><span class="section-number-4">1.1.1.</span> 给节点添加标签</h4>
+<div id="outline-container-org261d6b8" class="outline-4">
+<h4 id="org261d6b8"><span class="section-number-4">1.1.1.</span> 给节点添加标签</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <ol class="org-ol">
 <li><code>kubectl get node</code> 找到集群的节点</li>
@@ -288,20 +288,20 @@
 举例，将 <code>disktype=ssd</code> 添加到节点 <code>kubernetes-foo-node-1.c.a-robinson.internal</code> 上
 </p>
 
-<pre class="example" id="org9cf2a92">
+<pre class="example" id="org7634e0c">
 kubectl label nodes kubernetes-foo-node-1.c.a-robinson.internal disktype=ssd
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org56707cf" class="outline-4">
-<h4 id="org56707cf"><span class="section-number-4">1.1.2.</span> 添加 nodeSelector 字段到实例配置中</h4>
+<div id="outline-container-orgaf7f436" class="outline-4">
+<h4 id="orgaf7f436"><span class="section-number-4">1.1.2.</span> 添加 nodeSelector 字段到实例配置中</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <p>
 找到运行实例的配置文件，并添加 nodeSelector 字段：
 </p>
 
-<pre class="example" id="org0e72368">
+<pre class="example" id="org504ce2c">
 # pods/pod-nginx.yaml
 apiVersion: v1
 kind: Pod
@@ -326,12 +326,12 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-org2a0537d" class="outline-2">
-<h2 id="org2a0537d"><span class="section-number-2">2.</span> 应用自查和调试</h2>
+<div id="outline-container-org123c0af" class="outline-2">
+<h2 id="org123c0af"><span class="section-number-2">2.</span> 应用自查和调试</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org8f673c5" class="outline-3">
-<h3 id="org8f673c5"><span class="section-number-3">2.1.</span> 查看详细信息</h3>
+<div id="outline-container-org2197377" class="outline-3">
+<h3 id="org2197377"><span class="section-number-3">2.1.</span> 查看详细信息</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 <code>kubectl describe node/deployment/service/pod/ingress/...</code>
@@ -339,8 +339,8 @@ spec:
 </div>
 </div>
 
-<div id="outline-container-org797aa1d" class="outline-3">
-<h3 id="org797aa1d"><span class="section-number-3">2.2.</span> 查看事件</h3>
+<div id="outline-container-orgbe2cba6" class="outline-3">
+<h3 id="orgbe2cba6"><span class="section-number-3">2.2.</span> 查看事件</h3>
 <div class="outline-text-3" id="text-2-2">
 <ul class="org-ul">
 <li><code>kubectl get events</code> 查看 node 事件</li>
@@ -351,7 +351,7 @@ spec:
 事件只能到节点和空间级别，不能直接查看 Deployment、ReplicaSet、Pod 的事件，但是可以通过 namespace 的事件列表过滤出来。比如：
 </p>
 
-<pre class="example" id="orgeb41477">
+<pre class="example" id="orgbf8f49b">
 kubectl get events --namespace=test --field-selector involvedObject.name=test-3380989872-wxvdq
 </pre>
 
@@ -361,19 +361,19 @@ kubectl get events --namespace=test --field-selector involvedObject.name=test-33
 </div>
 </div>
 
-<div id="outline-container-org3136a65" class="outline-3">
-<h3 id="org3136a65"><span class="section-number-3">2.3.</span> 查看日志</h3>
+<div id="outline-container-org34718ab" class="outline-3">
+<h3 id="org34718ab"><span class="section-number-3">2.3.</span> 查看日志</h3>
 <div class="outline-text-3" id="text-2-3">
-<pre class="example" id="orge61718f">
+<pre class="example" id="org35cfc3e">
 kubectl logs -f --namespace=k2 pod-name
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org2f729fe" class="outline-3">
-<h3 id="org2f729fe"><span class="section-number-3">2.4.</span> 进入容器</h3>
+<div id="outline-container-org3c8108c" class="outline-3">
+<h3 id="org3c8108c"><span class="section-number-3">2.4.</span> 进入容器</h3>
 <div class="outline-text-3" id="text-2-4">
-<pre class="example" id="orgd2b3e8e">
+<pre class="example" id="orgc63e729">
 kubectl exec -it --namespace=xxx pod-name
 </pre>
 </div>
@@ -381,7 +381,7 @@ kubectl exec -it --namespace=xxx pod-name
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2018-12-04 15:04 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
+<p class="postamble">First created: 2018-12-04 15:04 <br />Last updated: 2025-03-30 Sun 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.4 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
 </html>

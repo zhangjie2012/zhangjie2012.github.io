@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-05-28 Sun 13:54 -->
+<!-- 2025-07-20 Sun 11:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go MongoDB</title>
@@ -223,12 +223,12 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orge66a662">1. 连接报错</a></li>
-<li><a href="#orgebf37b0">2. interface{} decode to bson.M</a></li>
-<li><a href="#org80bfb88">3. 分页、排序</a></li>
-<li><a href="#orgecbfede">4. 只取 Document 中的一部分</a></li>
-<li><a href="#org679045a">5. 存储时间时区问题</a></li>
-<li><a href="#org3dd0c30">6. mongo-go-driver 构建索引报错：</a></li>
+<li><a href="#org6eef4d7">1. 连接报错</a></li>
+<li><a href="#orgd8d9deb">2. interface{} decode to bson.M</a></li>
+<li><a href="#org2c30dc4">3. 分页、排序</a></li>
+<li><a href="#org4affe8e">4. 只取 Document 中的一部分</a></li>
+<li><a href="#org84a7589">5. 存储时间时区问题</a></li>
+<li><a href="#org652945e">6. mongo-go-driver 构建索引报错：</a></li>
 </ul>
 </div>
 </div>
@@ -236,8 +236,8 @@
 建议使用 <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a>，目前已经 v1.5.1。mgo.v2 我也用过一段时间，但是目前已经不在维护了。
 </p>
 
-<div id="outline-container-orge66a662" class="outline-2">
-<h2 id="orge66a662"><span class="section-number-2">1.</span> 连接报错</h2>
+<div id="outline-container-org6eef4d7" class="outline-2">
+<h2 id="org6eef4d7"><span class="section-number-2">1.</span> 连接报错</h2>
 <div class="outline-text-2" id="text-1">
 <pre class="example">
 connection() error occured during connection handshake: auth error: sasl conversation error: unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.
@@ -255,8 +255,8 @@ MongoDB 的权限比较复杂，我也折腾不明白。不过报这个错，肯
 </div>
 </div>
 
-<div id="outline-container-orgebf37b0" class="outline-2">
-<h2 id="orgebf37b0"><span class="section-number-2">2.</span> interface{} decode to bson.M</h2>
+<div id="outline-container-orgd8d9deb" class="outline-2">
+<h2 id="orgd8d9deb"><span class="section-number-2">2.</span> interface{} decode to bson.M</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 业务场景是这样的：在插入 MongoDB 时，会插入一个前端给的 JSON，而后端对 JSON 的具体格式并不确定，希望怎么插入就怎么输出。
@@ -284,15 +284,15 @@ MongoDB 的权限比较复杂，我也折腾不明白。不过报这个错，肯
 </p>
 
 <div class="org-src-container">
-<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">RegisterTypeMapEntry will register the provided type to the BSON type. The primary usage for this</span>
-<span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">mapping is decoding situations where an empty interface is used and a default type needs to be</span>
-<span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">created and decoded into.</span>
-<span style="color: #9ca0a4;">//</span>
-<span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">By default, BSON documents will decode into interface{} values as bson.D. To change the default type for BSON</span>
-<span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">documents, a type map entry for bsontype.EmbeddedDocument should be registered. For example, to force BSON documents</span>
-<span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">to decode to bson.Raw, use the following code:</span>
-<span style="color: #9ca0a4;">//  </span><span style="color: #9ca0a4;">rb.RegisterTypeMapEntry(bsontype.EmbeddedDocument, reflect.TypeOf(bson.Raw{}))</span>
-<span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">rb</span> *<span style="color: #986801;">RegistryBuilder</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">RegisterTypeMapEntry</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">bt</span> <span style="color: #986801;">bsontype.Type</span>, <span style="color: #6a1868;">rt</span> <span style="color: #986801;">reflect.Type</span><span style="color: #4078f2;">)</span> *<span style="color: #986801;">RegistryBuilder</span> <span style="color: #4078f2;">{</span>
+<pre class="src src-go"><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">RegisterTypeMapEntry will register the provided type to the BSON type. The primary usage for this
+</span><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">mapping is decoding situations where an empty interface is used and a default type needs to be
+</span><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">created and decoded into.
+</span><span style="color: #9ca0a4;">//</span><span style="color: #9ca0a4;">
+</span><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">By default, BSON documents will decode into interface{} values as bson.D. To change the default type for BSON
+</span><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">documents, a type map entry for bsontype.EmbeddedDocument should be registered. For example, to force BSON documents
+</span><span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">to decode to bson.Raw, use the following code:
+</span><span style="color: #9ca0a4;">//  </span><span style="color: #9ca0a4;">rb.RegisterTypeMapEntry(bsontype.EmbeddedDocument, reflect.TypeOf(bson.Raw{}))
+</span><span style="color: #e45649;">func</span> <span style="color: #4078f2;">(</span><span style="color: #6a1868;">rb</span> *<span style="color: #986801;">RegistryBuilder</span><span style="color: #4078f2;">)</span> <span style="color: #a626a4;">RegisterTypeMapEntry</span><span style="color: #4078f2;">(</span><span style="color: #6a1868;">bt</span> <span style="color: #986801;">bsontype.Type</span>, <span style="color: #6a1868;">rt</span> <span style="color: #986801;">reflect.Type</span><span style="color: #4078f2;">)</span> *<span style="color: #986801;">RegistryBuilder</span> <span style="color: #4078f2;">{</span>
     rb.typeMap<span style="color: #a626a4;">[</span>bt<span style="color: #a626a4;">]</span> = rt
     <span style="color: #e45649;">return</span> rb
 <span style="color: #4078f2;">}</span>
@@ -310,8 +310,8 @@ MongoDB 的权限比较复杂，我也折腾不明白。不过报这个错，肯
 </div>
 </div>
 
-<div id="outline-container-org80bfb88" class="outline-2">
-<h2 id="org80bfb88"><span class="section-number-2">3.</span> 分页、排序</h2>
+<div id="outline-container-org2c30dc4" class="outline-2">
+<h2 id="org2c30dc4"><span class="section-number-2">3.</span> 分页、排序</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 MongoDB 在查询时的选项都是有 <code>FindOptions</code> 控制的。分页通过 <code>FindOptions</code> 的 <code>Skip</code> 和 <code>Limit</code> 来实现：
@@ -332,8 +332,8 @@ options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.M{"create_timestamp": 
 </div>
 </div>
 
-<div id="outline-container-orgecbfede" class="outline-2">
-<h2 id="orgecbfede"><span class="section-number-2">4.</span> 只取 Document 中的一部分</h2>
+<div id="outline-container-org4affe8e" class="outline-2">
+<h2 id="org4affe8e"><span class="section-number-2">4.</span> 只取 Document 中的一部分</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 很多时候，把 Document 中的所有的字段全部取出来性能是很低下的，而且真实的业务场景也是需要其中的部分字段。
@@ -349,8 +349,8 @@ options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.M{"create_timestamp": 
 </div>
 </div>
 
-<div id="outline-container-org679045a" class="outline-2">
-<h2 id="org679045a"><span class="section-number-2">5.</span> 存储时间时区问题</h2>
+<div id="outline-container-org84a7589" class="outline-2">
+<h2 id="org84a7589"><span class="section-number-2">5.</span> 存储时间时区问题</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 MongoDB 在存储的时候本地时间会自动转换成 <a href="https://time.is/zh/UTC">UTC</a> 时间。在 Mongo cli 查询需要 <code>ISODate</code> 加上本地时区做转换。
@@ -364,8 +364,8 @@ MongoDB 在存储的时候本地时间会自动转换成 <a href="https://time.i
 </div>
 </div>
 
-<div id="outline-container-org3dd0c30" class="outline-2">
-<h2 id="org3dd0c30"><span class="section-number-2">6.</span> <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a> 构建索引报错：</h2>
+<div id="outline-container-org652945e" class="outline-2">
+<h2 id="org652945e"><span class="section-number-2">6.</span> <a href="https://github.com/mongodb/mongo-go-driver">mongo-go-driver</a> 构建索引报错：</h2>
 <div class="outline-text-2" id="text-6">
 <blockquote>
 <p>
@@ -397,12 +397,12 @@ maxTimeMS
     <span style="color: #a626a4;">}</span>
 
     <span style="color: #6a1868;">collection</span> := db.<span style="color: #a626a4;">Collection</span><span style="color: #a626a4;">(</span>name<span style="color: #a626a4;">)</span>
-    <span style="color: #6a1868;">opts</span> := options.<span style="color: #a626a4;">CreateIndexes</span><span style="color: #a626a4;">()</span>.<span style="color: #a626a4;">SetMaxTime</span><span style="color: #a626a4;">(</span>20 * time.Second<span style="color: #a626a4;">)</span> <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">set max build time</span>
-    <span style="color: #6a1868;">indexModel</span> := <span style="color: #a626a4;">yieldIndexModel</span><span style="color: #a626a4;">(</span>key, unique, ASCENDING<span style="color: #a626a4;">)</span>
+    <span style="color: #6a1868;">opts</span> := options.<span style="color: #a626a4;">CreateIndexes</span><span style="color: #a626a4;">()</span>.<span style="color: #a626a4;">SetMaxTime</span><span style="color: #a626a4;">(</span>20 * time.Second<span style="color: #a626a4;">)</span> <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">set max build time
+</span>    <span style="color: #6a1868;">indexModel</span> := <span style="color: #a626a4;">yieldIndexModel</span><span style="color: #a626a4;">(</span>key, unique, ASCENDING<span style="color: #a626a4;">)</span>
     <span style="color: #6a1868;">indexName</span>, <span style="color: #6a1868;">err</span> := collection.<span style="color: #a626a4;">Indexes</span><span style="color: #a626a4;">()</span>.<span style="color: #a626a4;">CreateOne</span><span style="color: #a626a4;">(</span>context.<span style="color: #a626a4;">Background</span><span style="color: #50a14f;">()</span>, indexModel, opts<span style="color: #a626a4;">)</span>
 
-    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">...</span>
-<span style="color: #4078f2;">}</span>
+    <span style="color: #9ca0a4;">// </span><span style="color: #9ca0a4;">...
+</span><span style="color: #4078f2;">}</span>
 </pre>
 </div>
 
@@ -427,7 +427,7 @@ maxTimeMS
 </div>
 </div></div>
 <div id="postamble" class="status">
-<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2022-12-11 Sun 12:49 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.0.91 (<a href="https://orgmode.org">Org</a> mode 9.6.6)</p>
+<p class="postamble">First created: 2020-03-17 16:32:37 <br />Last updated: 2025-03-30 Sun 10:25 <br />Power by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.4 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
 </div>
 </body>
 </html>
